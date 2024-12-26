@@ -7,8 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystemData.generated.h"
 
-class UAttributeSet;
-class UGameplayAbility;
+class URsGameplayAbility;
+class URsAttributeSet;
 class UGameplayEffect;
 
 // Contains data used to initialize an Ability System Component.
@@ -19,7 +19,7 @@ struct FAbilitySystemInitializationData
 
 	// An array of Attribute Sets to create.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UAttributeSet>> AttributeSets;
+	TArray<TSubclassOf<URsAttributeSet>> AttributeSets;
 
 	// A map of Attributes / float used to set base values.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -27,7 +27,7 @@ struct FAbilitySystemInitializationData
 
 	// An Array of Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UGameplayAbility>> GameplayAbilities;
+	TArray<TSubclassOf<URsGameplayAbility>> GameplayAbilities;
 
 	// An array of Gameplay Effects to apply.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

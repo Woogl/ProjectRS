@@ -75,35 +75,17 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 	{
 		RsAbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
 	}
-
-	// // Set the Ability System Component pointer using Ability System Globals (IAbilitySystemInterface) with the Player State as a reference.
-	// AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-	//
-	// if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
-	// {
-	// 	// Call the function on "Custom Ability System Component" to set up references and Init data. (Server)
-	// 	RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
-	//
-	// 	PostInitializeAbilitySystem();
-	// }
 }
 
 void ARsPlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
-
-	// // Set the Ability System Component pointer using Ability System Globals (IAbilitySystemInterface) with the Player State as a reference.
-	// AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-	//
-	// if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
-	// {
-	// 	// Call the function on "Custom Ability System Component" to set up references and Init data. (Client)
-	// 	RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
-	//
-	// 	PostInitializeAbilitySystem();
-	// }
+	AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
+	if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		RsAbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
+	}
 }
 
 void ARsPlayerCharacter::HandleMove(const FInputActionValue& Value)

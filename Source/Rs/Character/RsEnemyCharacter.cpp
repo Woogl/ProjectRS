@@ -13,13 +13,6 @@ ARsEnemyCharacter::ARsEnemyCharacter()
 
 void ARsEnemyCharacter::BeginPlay()
 {
-	// if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
-	// {
-	// 	// Call the function on "Custom Ability System Component" to set up references and Init data. (Client and Server)
-	// 	RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
-	// 	
-	// }
-
 	Super::BeginPlay();
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
