@@ -5,6 +5,8 @@
 
 #include "Rs/AbilitySystem/Data/AbilitySystemData.h"
 #include "Rs/Character/RsCharacterBase.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
+#include "Rs/AbilitySystem/AttributeSet/RsAttributeSet.h"
 
 URsAbilitySystemComponent::URsAbilitySystemComponent()
 {
@@ -48,7 +50,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySystem
 		// Grant Attribute Sets if the array isn't empty.
 		if (!InitializationData.AttributeSets.IsEmpty())
 		{
-			for (const TSubclassOf<UAttributeSet> AttributeSetClass : InitializationData.AttributeSets)
+			for (const TSubclassOf<URsAttributeSet> AttributeSetClass : InitializationData.AttributeSets)
 			{
 				GetOrCreateAttributeSubobject(AttributeSetClass);
 			}
@@ -69,7 +71,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(const FAbilitySystem
 		// Grant Gameplay Abilities if the array isn't empty.
 		if (!InitializationData.GameplayAbilities.IsEmpty())
 		{
-			for (const TSubclassOf<UGameplayAbility> GameplayAbility : InitializationData.GameplayAbilities)
+			for (const TSubclassOf<URsGameplayAbility> GameplayAbility : InitializationData.GameplayAbilities)
 			{
 				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 1, INDEX_NONE, this);
 				
