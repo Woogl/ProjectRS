@@ -11,7 +11,7 @@ ARsPlayerState::ARsPlayerState()
 	SetNetUpdateFrequency(100.f);
 
 	// Create the Ability System Component sub-object.
-	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>("Ability System Component");
+	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 }
 
 UAbilitySystemComponent* ARsPlayerState::GetAbilitySystemComponent() const

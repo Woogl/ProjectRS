@@ -28,7 +28,6 @@ void ARsPlayerCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
 
-	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -44,25 +43,8 @@ void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// Set up move action binding
-		for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
-		{
-			if (Mapping.Action && Mapping.Action->GetFName() == FName("IA_Move"))
-			{
-				EnhancedInputComponent->BindAction(Mapping.Action, ETriggerEvent::Triggered, this, &ThisClass::HandleMove);
-				break;
-			}
-		}
-
-		// Set up look action binding
-		for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
-		{
-			if (Mapping.Action && Mapping.Action->GetFName() == FName("IA_Look"))
-			{
-				EnhancedInputComponent->BindAction(Mapping.Action, ETriggerEvent::Triggered, this, &ThisClass::HandleLook);
-				break;
-			}
-		}
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::HandleMove);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::HandleLook);
 	}
 }
 
@@ -70,21 +52,27 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-	if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
-	{
-		RsAbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
-	}
+	// Server side
+	InitializeAbilitySystem();
 }
 
 void ARsPlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState());
-	if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
+	// Client side
+	InitializeAbilitySystem();
+}
+
+void ARsPlayerCharacter::InitializeAbilitySystem()
+{
+	AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
+	if (AbilitySystemComponent)
 	{
-		RsAbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
+		if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
+		{
+			RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, GetPlayerState(), this);
+		}
 	}
 }
 

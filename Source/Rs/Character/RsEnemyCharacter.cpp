@@ -8,12 +8,15 @@
 ARsEnemyCharacter::ARsEnemyCharacter()
 {
 	// Set the pointer from Character Base to the Ability System Component sub-object.
-	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>("Ability System Component");
+	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 }
 
 void ARsEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
+	}
 }

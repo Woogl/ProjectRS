@@ -6,6 +6,7 @@
 #include "RsCharacterBase.h"
 #include "RsPlayerCharacter.generated.h"
 
+class UInputAction;
 struct FInputActionValue;
 class UInputMappingContext;
 class UCameraComponent;
@@ -26,6 +27,12 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> LookAction;
 	
 public:
 	ARsPlayerCharacter();
@@ -39,6 +46,8 @@ protected:
 
 	// Called on the client when the Character is assigned its Player State.
 	virtual void OnRep_PlayerState() override;
+
+	void InitializeAbilitySystem();
 
 private:
 	void HandleMove(const FInputActionValue& Value);
