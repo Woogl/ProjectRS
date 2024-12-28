@@ -3,7 +3,9 @@
 
 #include "HealthSet.h"
 
+#include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
+#include "GameplayTagsManager.h"
 #include "Net/UnrealNetwork.h"
 
 UHealthSet::UHealthSet()
@@ -56,6 +58,14 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 			// Apply the Health change and then clamp it.
 			const float NewHealth = GetCurrentHealth() - LocalDamageDone;
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+			if (CurrentHealth.GetCurrentValue() <= 0.0f)
+			{
+				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwningActor()))
+				{
+					ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Death")).GetSingleTagContainer());
+				}
+			}
 		}
 	}
 
