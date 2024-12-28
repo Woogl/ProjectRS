@@ -72,6 +72,7 @@ void ARsPlayerCharacter::InitializeAbilitySystem()
 		if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
 		{
 			RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, GetPlayerState(), this);
+			PostInitializeAbilitySystem();
 		}
 	}
 }

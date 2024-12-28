@@ -20,6 +20,10 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	URsAbilitySystemComponent* GetRsAbilitySystemComponent() const;
+	
+	// This event is fired after Ability System Component initialization is finished.
+    UFUNCTION(BlueprintImplementableEvent)
+    void PostInitializeAbilitySystem();
 
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.

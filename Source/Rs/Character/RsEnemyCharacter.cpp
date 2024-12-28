@@ -18,5 +18,6 @@ void ARsEnemyCharacter::BeginPlay()
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->InitializeAbilitySystemData(AbilitySystemInitializationData, this, this);
+		PostInitializeAbilitySystem();
 	}
 }
