@@ -9,7 +9,7 @@
 #include "AbilitySystemData.generated.h"
 
 class URsGameplayAbility;
-class URsAttributeSet;
+class URsAttributeSetBase;
 class UGameplayEffect;
 
 // Contains data used to initialize an Ability System Component.
@@ -20,7 +20,7 @@ struct FAbilitySystemInitializationData
 
 	// An array of Attribute Sets to create.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSet<TSubclassOf<URsAttributeSet>> AttributeSets;
+	TSet<TSubclassOf<URsAttributeSetBase>> AttributeSets;
 
 	// A map of Attributes / float used to set base values.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

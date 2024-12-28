@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "RsAttributeSet.generated.h"
+#include "RsAttributeSetBase.generated.h"
 
 // Use macros from AttributeSet.h
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -18,7 +18,7 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
  * 
  */
 UCLASS()
-class RS_API URsAttributeSet : public UAttributeSet
+class RS_API URsAttributeSetBase : public UAttributeSet
 {
 	GENERATED_BODY()
 

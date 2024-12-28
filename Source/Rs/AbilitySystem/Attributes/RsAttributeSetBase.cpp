@@ -1,9 +1,9 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsAttributeSet.h"
+#include "RsAttributeSetBase.h"
 
-void URsAttributeSet::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
+void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
 {
 	UAbilitySystemComponent* AbilitySystemComponent = GetOwningAbilitySystemComponent();
 

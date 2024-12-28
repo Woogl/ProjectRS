@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAttributeSet.h"
+#include "RsAttributeSetBase.h"
 #include "StaggerSet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API UStaggerSet : public URsAttributeSet
+class RS_API UStaggerSet : public URsAttributeSetBase
 {
 	GENERATED_BODY()
 

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAttributeSet.h"
+#include "RsAttributeSetBase.h"
 #include "HealthSet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API UHealthSet : public URsAttributeSet
+class RS_API UHealthSet : public URsAttributeSetBase
 {
 	GENERATED_BODY()
 

@@ -5,7 +5,7 @@
 
 #include "Rs/AbilitySystem/Data/AbilitySystemData.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
-#include "Rs/AbilitySystem/Attributes/RsAttributeSet.h"
+#include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 
 URsAbilitySystemComponent::URsAbilitySystemComponent()
 {
