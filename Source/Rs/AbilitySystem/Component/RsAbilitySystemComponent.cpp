@@ -16,7 +16,7 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	SetIsReplicated(true);
 }
 
-void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor)
+void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor)
 {
 	if (AbilitySystemDataInitialized)
 	{

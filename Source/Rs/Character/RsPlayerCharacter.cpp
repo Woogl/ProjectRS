@@ -53,7 +53,7 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// Server side
-	InitializeAbilitySystem();
+	InitAbilitySystem();
 }
 
 void ARsPlayerCharacter::OnRep_PlayerState()
@@ -61,17 +61,17 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	// Client side
-	InitializeAbilitySystem();
+	InitAbilitySystem();
 }
 
-void ARsPlayerCharacter::InitializeAbilitySystem()
+void ARsPlayerCharacter::InitAbilitySystem()
 {
 	AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
 	if (AbilitySystemComponent)
 	{
 		if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
 		{
-			RsAbilitySystemComponent->InitializeAbilitySystemData(AbilitySet, GetPlayerState(), this);
+			RsAbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
 			PostInitializeAbilitySystem();
 		}
 	}

@@ -47,7 +47,7 @@ protected:
 	// Called on the client when the Character is assigned its Player State.
 	virtual void OnRep_PlayerState() override;
 
-	void InitializeAbilitySystem();
+	void InitAbilitySystem();
 
 private:
 	void HandleMove(const FInputActionValue& Value);

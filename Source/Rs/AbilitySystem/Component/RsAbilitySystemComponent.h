@@ -18,10 +18,9 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	URsAbilitySystemComponent();
 
-	// Called to initialize an Ability System Component with the supplied data. (Can be found in "AbilitySystemData.h")
+	// Called to initialize an Ability System Component with the supplied data.
 	// Call this on the Server and Client to properly init references / values.
-	UFUNCTION(BlueprintCallable)
-	void InitializeAbilitySystemData(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor);
+	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor);
 	
 private:
 	bool AbilitySystemDataInitialized = false;
