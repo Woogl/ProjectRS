@@ -85,11 +85,11 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), 0.0f, GetMaxHealth()));
 	}
 	
-	if (CurrentHealth.GetCurrentValue() <= 0.0f)
+	if (GetCurrentHealth() <= 0.0f)
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwningActor()))
 		{
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("Character.State.Dead")));
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Dead")));
 		}
 	}
 }

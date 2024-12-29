@@ -3,6 +3,7 @@
 
 #include "StaggerSet.h"
 
+#include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
@@ -35,6 +36,14 @@ void UStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData
 	else if (Data.EvaluatedData.Attribute == GetStaggerRegenAttribute())
 	{
 		SetStaggerRegen(FMath::Clamp(GetStaggerRegen(), 0.0f, GetMaxStagger()));
+	}
+
+	if (GetCurrentStagger() >= GetMaxStagger())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwningActor()))
+		{
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Stun")));
+		}
 	}
 }
 
