@@ -24,6 +24,9 @@ public class Rs : ModuleRules
 			"GameplayTasks", 
 			"GameplayTags", 
 			"ModelViewViewModel",
+			"CommonUI",
+			"CommonGame",
+			"ModularGameplayActors",
 		});
 	}
 }

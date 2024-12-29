@@ -17,7 +17,7 @@ class RS_API UStaggerSetViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UStaggerSetViewModel* CreateStaggerSetViewModel(AActor* Model);
 
 	void Initialize();

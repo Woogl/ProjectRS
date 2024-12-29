@@ -40,10 +40,7 @@ void UStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData
 
 	if (GetCurrentStagger() >= GetMaxStagger())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwningActor()))
-		{
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Stun")));
-		}
+		GetOwningAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Stun")));
 	}
 }
 

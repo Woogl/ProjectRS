@@ -18,7 +18,7 @@ class RS_API URsCharacterViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Model);
 
 	void Initialize();

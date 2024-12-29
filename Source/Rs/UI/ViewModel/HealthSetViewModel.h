@@ -17,7 +17,7 @@ class RS_API UHealthSetViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
 
 	void Initialize();
