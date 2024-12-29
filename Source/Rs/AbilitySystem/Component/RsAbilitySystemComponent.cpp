@@ -3,7 +3,7 @@
 
 #include "RsAbilitySystemComponent.h"
 
-#include "Rs/AbilitySystem/Data/RsAbilitySystemDataAsset.h"
+#include "Rs/AbilitySystem/Data/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 
@@ -16,7 +16,7 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	SetIsReplicated(true);
 }
 
-void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySystemDataAsset* InitializationData, AActor* InOwningActor, AActor* InAvatarActor)
+void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor)
 {
 	if (AbilitySystemDataInitialized)
 	{
@@ -28,9 +28,9 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySystemData
 	InitAbilityActorInfo(InOwningActor, InAvatarActor);
 
 	// Apply the Gameplay Tag container as loose Gameplay Tags. (These are not replicated by default and should be applied on both server and client respectively.)
-	if (!InitializationData->GameplayTags.IsEmpty())
+	if (!AbilitySet->GrantedTags.IsEmpty())
 	{
-		AddLooseGameplayTags(InitializationData->GameplayTags);
+		AddLooseGameplayTags(AbilitySet->GrantedTags);
 	}
 	
 	// Check to see if we have authority. (Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.)
@@ -40,18 +40,18 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySystemData
 	}
 	
 	// Grant Attribute Sets if the array isn't empty.
-	if (!InitializationData->AttributeSets.IsEmpty())
+	if (!AbilitySet->GrantedAttributes.IsEmpty())
 	{
-		for (const TSubclassOf<UAttributeSet> AttributeSetClass : InitializationData->AttributeSets)
+		for (const TSubclassOf<UAttributeSet> AttributeSetClass : AbilitySet->GrantedAttributes)
 		{
 			GetOrCreateAttributeSubobject(AttributeSetClass);
 		}
 	}
 
 	// Set base attribute values if the map isn't empty.
-	if (!InitializationData->AttributeBaseValues.IsEmpty())
+	if (!AbilitySet->GrantedAttributeValues.IsEmpty())
 	{
-		for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : InitializationData->AttributeBaseValues)
+		for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributeValues)
 		{
 			if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
 			{
@@ -61,9 +61,9 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySystemData
 	}
 
 	// Grant Gameplay Abilities if the array isn't empty.
-	if (!InitializationData->GameplayAbilities.IsEmpty())
+	if (!AbilitySet->GrantedAbilities.IsEmpty())
 	{
-		for (const TSubclassOf<URsGameplayAbility> GameplayAbility : InitializationData->GameplayAbilities)
+		for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
 		{
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, this);
 			GiveAbility(AbilitySpec);
@@ -71,9 +71,9 @@ void URsAbilitySystemComponent::InitializeAbilitySystemData(URsAbilitySystemData
 	}
 
 	// Apply Gameplay Effects if the array isn't empty.
-	if (!InitializationData->GameplayEffects.IsEmpty())
+	if (!AbilitySet->GrantedEffects.IsEmpty())
 	{
-		for (const TSubclassOf<UGameplayEffect>& GameplayEffect : InitializationData->GameplayEffects)
+		for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
 		{
 			if (!IsValid(GameplayEffect))
 			{

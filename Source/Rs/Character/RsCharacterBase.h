@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
-#include "Rs/AbilitySystem/Data/RsAbilitySystemDataAsset.h"
+#include "Rs/AbilitySystem/Data/RsAbilitySet.h"
 #include "RsCharacterBase.generated.h"
 
 class URsAbilitySystemComponent;
@@ -34,5 +34,5 @@ protected:
 
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability System")
-	TObjectPtr<URsAbilitySystemDataAsset> AbilitySystemData;
+	TObjectPtr<URsAbilitySet> AbilitySet;
 };
