@@ -50,6 +50,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UHealthSet, HealthRegen)
 
 protected:
+	void NotifyIfDead();
 	
 	UFUNCTION()
 	virtual void OnRep_CurrentHealth(const FGameplayAttributeData& OldValue);

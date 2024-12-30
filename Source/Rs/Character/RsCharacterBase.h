@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "Rs/AbilitySystem/Data/RsAbilitySet.h"
 #include "RsCharacterBase.generated.h"
@@ -11,7 +12,7 @@
 class URsAbilitySystemComponent;
 
 UCLASS(Abstract, NotBlueprintable)
-class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface
+class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -25,6 +26,10 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void PostInitializeAbilitySystem();
 
+	// IGenericTeamAgentInterface
+	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override { TeamID = InTeamID; }
+	virtual FGenericTeamId GetGenericTeamId() const override { return TeamID; }
+
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
@@ -35,4 +40,7 @@ protected:
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability System")
 	TObjectPtr<URsAbilitySet> AbilitySet;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, EditDefaultsOnly)
+	FGenericTeamId TeamID = FGenericTeamId::NoTeam;
 };

@@ -13,7 +13,8 @@
 				"GameplayAbilities",
 				"ModelViewViewModel",
 				"CommonUI",
-				"CommonGame"
+				"CommonGame",
+				"AIModule"
 			]
 		}
 	],

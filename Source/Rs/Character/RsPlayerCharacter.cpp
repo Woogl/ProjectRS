@@ -22,6 +22,9 @@ ARsPlayerCharacter::ARsPlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	// Team Id "0" is for player.
+	TeamID = 0;
 }
 
 void ARsPlayerCharacter::NotifyControllerChanged()
