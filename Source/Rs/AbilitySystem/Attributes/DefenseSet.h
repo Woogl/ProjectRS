@@ -17,13 +17,23 @@ class RS_API UDefenseSet : public URsAttributeSetBase
 public:
 	UDefenseSet();
 
+	// Set Attributes to replicate.
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// Value related to damage reduction when attacked
-	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Defense)
 	FGameplayAttributeData Defense;
 	ATTRIBUTE_ACCESSORS(UDefenseSet, Defense)
 
 	// Value related to stagger gain reduction when attacked
-	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Will)
 	FGameplayAttributeData Will;
 	ATTRIBUTE_ACCESSORS(UDefenseSet, Will)
+
+protected:
+	UFUNCTION()
+	virtual void OnRep_Defense(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_Will(const FGameplayAttributeData& OldValue);
 };
