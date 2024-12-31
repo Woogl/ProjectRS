@@ -3,16 +3,37 @@
 
 #include "RsAttributeSetBase.h"
 
-void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
+#include "AbilitySystemBlueprintLibrary.h"
+
+void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const
 {
-	UAbilitySystemComponent* AbilitySystemComponent = GetOwningAbilitySystemComponent();
-
-	if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue(); !FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilitySystemComponent)
+	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
+	if (!ASC)
 	{
-		// Change current value to maintain the Current Value / Maximum Value percentage.
-		const float CurrentValue = AffectedAttribute.GetCurrentValue();
-		const float NewDelta = CurrentMaxValue > 0.f ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue : NewMaxValue;
+		return;
+	}
+	
+	if (OldMaxValue <= 0.f || FMath::IsNearlyEqual(OldMaxValue, NewMaxValue, 0.f))
+	{
+		return;
+	}
+	
+	// Change current value to maintain the Current Value / Maximum Value percentage.
+	ASC->SetNumericAttributeBase(AffectedAttribute, ASC->GetNumericAttributeBase(AffectedAttribute) * NewMaxValue / OldMaxValue);
+}
 
-		AbilitySystemComponent->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+void URsAttributeSetBase::SendEventIfAttributeOverMax(const FGameplayTag& EventTag, const FGameplayAttributeData& MaxAttribute, const FGameplayAttributeData& CurrentAttribute) const
+{
+	if (MaxAttribute.GetCurrentValue() <= CurrentAttribute.GetCurrentValue())
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), EventTag, FGameplayEventData());
+	}
+}
+
+void URsAttributeSetBase::SendEventIfAttributeBelowZero(const FGameplayTag& EventTag, float OldValue, float NewValue) const
+{
+	if (NewValue <= 0.f && OldValue > 0.f)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), EventTag, FGameplayEventData());
 	}
 }

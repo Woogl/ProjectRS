@@ -37,7 +37,12 @@ void UHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& 
 	
 	if (Attribute == GetMaxHealthAttribute())
 	{
-		AdjustAttributeForMaxChange(CurrentHealth, MaxHealth, NewValue, GetCurrentHealthAttribute());
+		NewValue = FMath::Max(NewValue, 1.f);
+	}
+	
+	else if (Attribute == GetCurrentHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
 }
 
@@ -84,10 +89,16 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 	{
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), 0.0f, GetMaxHealth()));
 	}
+}
 
-	if (GetCurrentHealth() <= 0.0f)
+void UHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	
+	if (Attribute == GetCurrentHealthAttribute())
 	{
-		GetOwningAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Dead")));
+		FGameplayTag DeathTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Death"));
+		SendEventIfAttributeBelowZero(DeathTag, OldValue, NewValue);
 	}
 }
 

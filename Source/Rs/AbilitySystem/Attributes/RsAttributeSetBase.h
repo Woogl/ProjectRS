@@ -23,5 +23,8 @@ class RS_API URsAttributeSetBase : public UAttributeSet
 	GENERATED_BODY()
 
 protected:
-	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;
+	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
+
+	void SendEventIfAttributeOverMax(const FGameplayTag& EventTag, const FGameplayAttributeData& MaxAttribute, const FGameplayAttributeData& CurrentAttribute) const;
+	void SendEventIfAttributeBelowZero(const FGameplayTag& EventTag, float OldValue, float NewValue) const;
 };
