@@ -13,6 +13,7 @@ struct RsStaggerStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Impact);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Will);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentStagger);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerGain);
 
 	RsStaggerStatics()
 	{
@@ -20,12 +21,13 @@ struct RsStaggerStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttackSet, Impact, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDefenseSet, Will, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UStaggerSet, CurrentStagger, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UStaggerSet, StaggerGain, Target, false);
 	}
 
 	static const RsStaggerStatics& Get()
 	{
-		static RsStaggerStatics DmgStatics;
-		return DmgStatics;
+		static RsStaggerStatics StaggerStatics;
+		return StaggerStatics;
 	}
 };
 
@@ -68,5 +70,5 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 		return;
 	}
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->CurrentStaggerProperty, EGameplayModOp::Additive, +FinalStaggerGain));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerGainProperty, EGameplayModOp::Additive, FinalStaggerGain));
 }

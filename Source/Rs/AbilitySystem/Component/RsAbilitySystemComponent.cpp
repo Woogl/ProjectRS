@@ -13,7 +13,7 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	ReplicationMode = EGameplayEffectReplicationMode::Mixed;
 
 	// Explicitly set the Ability System Component to replicate.
-	SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 }
 
 void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor)

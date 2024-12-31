@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter()
 {
@@ -23,7 +24,9 @@ ARsPlayerCharacter::ARsPlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	// Team Id "0" is for player.
+	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
+
+	// Team ID "0" is for player.
 	TeamID = 0;
 }
 
@@ -75,6 +78,7 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		if (URsAbilitySystemComponent* RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent))
 		{
 			RsAbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
+			HealthComponent->Initialize(RsAbilitySystemComponent);
 			PostInitializeAbilitySystem();
 		}
 	}

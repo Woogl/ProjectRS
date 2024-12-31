@@ -13,6 +13,7 @@ struct RsDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentHealth);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
 
 	RsDamageStatics()
 	{
@@ -20,12 +21,13 @@ struct RsDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttackSet, Attack, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDefenseSet, Defense, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UHealthSet, CurrentHealth, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UHealthSet, Damage, Target, false);
 	}
 
 	static const RsDamageStatics& Get()
 	{
-		static RsDamageStatics DmgStatics;
-		return DmgStatics;
+		static RsDamageStatics DamageStatics;
+		return DamageStatics;
 	}
 };
 
@@ -68,5 +70,5 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 		return;
 	}
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->CurrentHealthProperty, EGameplayModOp::Additive, -FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->DamageProperty, EGameplayModOp::Additive, FinalDamage));
 }
