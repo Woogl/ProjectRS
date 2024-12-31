@@ -40,7 +40,10 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	TSet<UClass*> AttributeSetClasses;
 	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributeValues)
 	{
-		AttributeSetClasses.Add(GrantedAttribute.Key.GetAttributeSetClass());
+		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
+		{
+			AttributeSetClasses.Add(AttributeSetClass);
+		}
 	}
 	for (UClass* AttributeSetClass : AttributeSetClasses)
 	{
