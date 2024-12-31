@@ -57,7 +57,6 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 			// Apply the Health change and then clamp it.
 			const float NewHealth = GetCurrentHealth() - LocalDamageDone;
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
-			NotifyIfDead();
 		}
 	}
 
@@ -79,17 +78,13 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaxHealth()));
-		NotifyIfDead();
 	}
 
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenAttribute())
 	{
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), 0.0f, GetMaxHealth()));
 	}
-}
 
-void UHealthSet::NotifyIfDead()
-{
 	if (GetCurrentHealth() <= 0.0f)
 	{
 		GetOwningAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Dead")));

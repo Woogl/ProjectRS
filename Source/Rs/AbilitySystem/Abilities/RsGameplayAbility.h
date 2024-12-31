@@ -33,7 +33,7 @@ public:
 
 	// What Input Action trigger type to listen to for input released events.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	ETriggerEvent InputReleasedTriggerType = ETriggerEvent::None;
+	ETriggerEvent InputReleasedTriggerType = ETriggerEvent::Completed;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.

@@ -89,8 +89,7 @@ void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo
 		return;
 	}
 
-	UGameplayAbility* Ability = Spec->Ability.Get();
-	if (Ability->bReplicateInputDirectly && !AbilitySystemComponent->IsOwnerActorAuthoritative())
+	if (Spec->Ability->bReplicateInputDirectly && !AbilitySystemComponent->IsOwnerActorAuthoritative())
 	{
 		AbilitySystemComponent->ServerSetInputPressed(Spec->Ability.Get()->GetCurrentAbilitySpecHandle());
 	}
@@ -98,8 +97,9 @@ void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo
 	AbilitySystemComponent->AbilitySpecInputPressed(*Spec);
 
 	// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec->Handle, Spec->ActivationInfo.GetActivationPredictionKey());
-
+	TArray<UGameplayAbility*> Instances = Spec->GetAbilityInstances();
+	const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
+	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec->Handle, ActivationInfo.GetActivationPredictionKey());
 }
 
 void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)
@@ -118,8 +118,7 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 	}
 	
 	Spec->InputPressed = false;
-	UGameplayAbility* Ability = Spec->Ability.Get();
-	if (Ability->bReplicateInputDirectly && !AbilitySystemComponent->IsOwnerActorAuthoritative())
+	if (Spec->Ability->bReplicateInputDirectly && !AbilitySystemComponent->IsOwnerActorAuthoritative())
 	{
 		AbilitySystemComponent->ServerSetInputReleased(SpecHandle);
 	}
@@ -127,7 +126,9 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 	AbilitySystemComponent->AbilitySpecInputReleased(*Spec);
 
 	// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, SpecHandle, Spec->ActivationInfo.GetActivationPredictionKey());
+	TArray<UGameplayAbility*> Instances = Spec->GetAbilityInstances();
+	const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
+	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec->Handle, ActivationInfo.GetActivationPredictionKey());
 }
 
 void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
