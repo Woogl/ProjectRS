@@ -38,7 +38,7 @@ protected:
 	TObjectPtr<URsAbilitySystemComponent> AbilitySystemComponent;
 
 	// Data used to initialize the Ability System Component.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability System")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS|Ability System")
 	TObjectPtr<URsAbilitySet> AbilitySet;
 
 	UPROPERTY(Replicated, BlueprintReadOnly, EditDefaultsOnly)

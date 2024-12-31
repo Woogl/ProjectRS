@@ -20,19 +20,19 @@ public:
 	URsGameplayAbility();
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Rs Gameplay Ability")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Gameplay Ability")
 	bool ActivateAbilityOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Input")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
 	// What Input Action trigger type to listen to for input pressed events.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Input")
 	ETriggerEvent InputPressedTriggerType = ETriggerEvent::Triggered;
 
 	// What Input Action trigger type to listen to for input released events.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Input")
 	ETriggerEvent InputReleasedTriggerType = ETriggerEvent::Completed;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
