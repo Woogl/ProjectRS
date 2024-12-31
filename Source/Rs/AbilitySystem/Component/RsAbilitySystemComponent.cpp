@@ -28,65 +28,55 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	InitAbilityActorInfo(InOwningActor, InAvatarActor);
 
 	// Apply the Gameplay Tag container as loose Gameplay Tags. (These are not replicated by default and should be applied on both server and client respectively.)
-	if (!AbilitySet->GrantedTags.IsEmpty())
-	{
-		AddLooseGameplayTags(AbilitySet->GrantedTags);
-	}
+	AddLooseGameplayTags(AbilitySet->GrantedTags);
 	
 	// Check to see if we have authority. (Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.)
 	if (!GetOwnerActor()->HasAuthority())
 	{
 		return;
 	}
-	
-	// Grant Attribute Sets if the array isn't empty.
-	if (!AbilitySet->GrantedAttributes.IsEmpty())
+
+	// Grant attribute sets.
+	TSet<UClass*> AttributeSetClasses;
+	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributeValues)
 	{
-		for (const TSubclassOf<UAttributeSet> AttributeSetClass : AbilitySet->GrantedAttributes)
+		AttributeSetClasses.Add(GrantedAttribute.Key.GetAttributeSetClass());
+	}
+	for (UClass* AttributeSetClass : AttributeSetClasses)
+	{
+		GetOrCreateAttributeSubobject(AttributeSetClass);
+	}
+
+	// Set base attribute values.
+	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributeValues)
+	{
+		if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
 		{
-			GetOrCreateAttributeSubobject(AttributeSetClass);
+			SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
 		}
 	}
 
-	// Set base attribute values if the map isn't empty.
-	if (!AbilitySet->GrantedAttributeValues.IsEmpty())
+	// Grant Gameplay Abilities.
+	for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
 	{
-		for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributeValues)
-		{
-			if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
-			{
-				SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
-			}
-		}
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, this);
+		GiveAbility(AbilitySpec);
 	}
 
-	// Grant Gameplay Abilities if the array isn't empty.
-	if (!AbilitySet->GrantedAbilities.IsEmpty())
+	// Apply Gameplay Effects.
+	for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
 	{
-		for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
+		if (!IsValid(GameplayEffect))
 		{
-			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, this);
-			GiveAbility(AbilitySpec);
+			continue;
 		}
-	}
-
-	// Apply Gameplay Effects if the array isn't empty.
-	if (!AbilitySet->GrantedEffects.IsEmpty())
-	{
-		for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
-		{
-			if (!IsValid(GameplayEffect))
-			{
-				continue;
-			}
 			
-			FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
-			EffectContextHandle.AddSourceObject(this);
+		FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
+		EffectContextHandle.AddSourceObject(this);
 
-			if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 1, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
-			{
-				ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
-			}
+		if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 1, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
+		{
+			ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
 		}
 	}
 }
