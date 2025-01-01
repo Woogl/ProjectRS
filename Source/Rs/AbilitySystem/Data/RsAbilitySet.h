@@ -21,7 +21,7 @@ class URsAbilitySet : public UDataAsset
 public:
 	// Attributes / float used to set base values.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute")
-	TMap<FGameplayAttribute, FScalableFloat> GrantedAttributeValues;
+	TMap<FGameplayAttribute, FScalableFloat> GrantedAttributes;
 
 	// Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability")

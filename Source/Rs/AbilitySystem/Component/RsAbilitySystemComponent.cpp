@@ -38,7 +38,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 
 	// Grant attribute sets.
 	TSet<UClass*> AttributeSetClasses;
-	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributeValues)
+	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
 	{
 		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
 		{
@@ -51,7 +51,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	}
 
 	// Set base attribute values.
-	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributeValues)
+	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributes)
 	{
 		if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
 		{
