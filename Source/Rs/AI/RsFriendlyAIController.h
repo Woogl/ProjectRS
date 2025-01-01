@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "RsAIControllerBase.h"
-#include "RsEnemyAIController.generated.h"
+#include "RsFriendlyAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API ARsEnemyAIController : public ARsAIControllerBase
+class RS_API ARsFriendlyAIController : public ARsAIControllerBase
 {
 	GENERATED_BODY()
-	
+
 public:
-	ARsEnemyAIController();
+	ARsFriendlyAIController();
 
 protected:
 	virtual void BeginPlay() override;

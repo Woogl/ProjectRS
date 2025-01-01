@@ -21,10 +21,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	URsAbilitySystemComponent* GetRsAbilitySystemComponent() const;
-	
-	// This event is fired after Ability System Component initialization is finished.
-    UFUNCTION(BlueprintImplementableEvent)
-    void PostInitializeAbilitySystem();
 
 	// IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override { TeamID = InTeamID; }

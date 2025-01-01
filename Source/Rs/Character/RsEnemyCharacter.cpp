@@ -24,6 +24,5 @@ void ARsEnemyCharacter::BeginPlay()
 	{
 		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
 		HealthComponent->Initialize(AbilitySystemComponent);
-		PostInitializeAbilitySystem();
 	}
 }
