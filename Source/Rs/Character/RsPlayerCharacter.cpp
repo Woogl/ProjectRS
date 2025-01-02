@@ -77,6 +77,7 @@ void ARsPlayerCharacter::InitAbilitySystem()
 	{
 		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
 		HealthComponent->Initialize(AbilitySystemComponent);
+		PostInitializeAbilitySystem();
 	}
 }
 

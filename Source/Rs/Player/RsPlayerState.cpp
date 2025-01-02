@@ -12,6 +12,8 @@ ARsPlayerState::ARsPlayerState()
 
 	// Create the Ability System Component sub-object.
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	// This will replicate minimal Gameplay Effects to Simulated Proxies and full info to everyone else.
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }
 
 UAbilitySystemComponent* ARsPlayerState::GetAbilitySystemComponent() const

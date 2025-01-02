@@ -14,7 +14,8 @@
 				"ModelViewViewModel",
 				"CommonUI",
 				"CommonGame",
-				"AIModule"
+				"AIModule",
+				"TargetingSystem"
 			]
 		}
 	],

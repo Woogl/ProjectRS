@@ -27,6 +27,7 @@ public class Rs : ModuleRules
 			"CommonUI",
 			"CommonGame",
 			"ModularGameplayActors",
+			"TargetingSystem",
 		});
 	}
 }

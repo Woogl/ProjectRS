@@ -23,8 +23,10 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 	
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
 	HealthSet = AbilitySystemComponent->GetSet<URsHealthSet>();
-
-	OnHealthChanged.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
+	if (HealthSet)
+	{
+		OnHealthChanged.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
+	}
 }
 
 float URsHealthComponent::GetCurrentHealth()

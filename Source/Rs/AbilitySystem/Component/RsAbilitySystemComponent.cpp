@@ -9,9 +9,6 @@
 
 URsAbilitySystemComponent::URsAbilitySystemComponent()
 {
-	// Sets the Ability System Component to use "Mixed" replication mode. This will replicate minimal Gameplay Effects to Simulated Proxies and full info to everyone else.
-	ReplicationMode = EGameplayEffectReplicationMode::Mixed;
-
 	// Explicitly set the Ability System Component to replicate.
 	SetIsReplicatedByDefault(true);
 }
