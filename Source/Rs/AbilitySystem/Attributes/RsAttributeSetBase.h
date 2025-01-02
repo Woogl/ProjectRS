@@ -24,7 +24,4 @@ class RS_API URsAttributeSetBase : public UAttributeSet
 
 protected:
 	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
-
-	void SendEventIfAttributeOverMax(const FGameplayTag& EventTag, const FGameplayAttributeData& MaxAttribute, const FGameplayAttributeData& CurrentAttribute) const;
-	void SendEventIfAttributeBelowZero(const FGameplayTag& EventTag, float OldValue, float NewValue) const;
 };

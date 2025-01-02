@@ -56,11 +56,11 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	float Attack = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->AttackDef, EvaluationParameters, Attack);
+	// Attack shouldn't be minus value
 	Attack = FMath::Max(Attack, 0.f);
 
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
-	// Defense can be minus value
 	
 	// Damage Calculation
 	float FinalDamage = FMath::Max(Attack - Defense, 0.f);

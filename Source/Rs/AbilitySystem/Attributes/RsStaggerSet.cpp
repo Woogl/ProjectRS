@@ -3,7 +3,7 @@
 
 #include "RsStaggerSet.h"
 
-#include "AbilitySystemGlobals.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
@@ -63,8 +63,11 @@ void URsStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, flo
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
-	FGameplayTag StunTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"));
-	SendEventIfAttributeOverMax(StunTag, MaxStagger, CurrentStagger);
+	if (CurrentStagger.GetCurrentValue() >= MaxStagger.GetCurrentValue())
+	{
+		FGameplayTag StunTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"));
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), StunTag, FGameplayEventData());
+	}
 }
 
 void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

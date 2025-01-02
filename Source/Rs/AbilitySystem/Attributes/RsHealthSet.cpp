@@ -3,7 +3,7 @@
 
 #include "RsHealthSet.h"
 
-#include "AbilitySystemGlobals.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
@@ -97,8 +97,16 @@ void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, floa
 	
 	if (Attribute == GetCurrentHealthAttribute())
 	{
-		FGameplayTag DeathTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Death"));
-		SendEventIfAttributeBelowZero(DeathTag, OldValue, NewValue);
+		if (NewValue <= 0.f && OldValue > 0.f)
+		{
+			FGameplayTag DeathTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Death"));
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), DeathTag, FGameplayEventData());
+		}
+		else if (OldValue > 0.f && OldValue > NewValue)
+		{
+			FGameplayTag HitReactionTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.HitReaction"));
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), HitReactionTag, FGameplayEventData());
+		}
 	}
 }
 

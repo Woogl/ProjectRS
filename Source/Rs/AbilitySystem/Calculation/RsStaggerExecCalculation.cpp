@@ -56,11 +56,11 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 
 	float Impact = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ImpactDef, EvaluationParameters, Impact);
+	// Impact shouldn't be minus value
 	Impact = FMath::Max(Impact, 0.f);
 
 	float Will = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->WillDef, EvaluationParameters, Will);
-	// Will can be minus value
 	
 	// Stagger Calculation
 	float FinalStaggerGain = FMath::Max(Impact - Will, 0.f);

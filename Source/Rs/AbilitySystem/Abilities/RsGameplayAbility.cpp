@@ -34,7 +34,7 @@ void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorI
 {
 	// Check to see if the "Activation Input Action" is valid.
 	URsGameplayAbility* const AbilityInstance = Cast<URsGameplayAbility>(Spec.Ability.Get());
-	if (!AbilityInstance || !AbilityInstance->ActivationInputAction || (InputPressedTriggerType == ETriggerEvent::None && InputReleasedTriggerType == ETriggerEvent::None))
+	if (!AbilityInstance || !AbilityInstance->ActivationInputAction)
 	{
 		return;
 	}
