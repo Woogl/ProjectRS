@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
-#include "StaggerSetViewModel.generated.h"
+#include "RsStaggerSetViewModel.generated.h"
 
 struct FOnAttributeChangeData;
 
@@ -12,13 +12,13 @@ struct FOnAttributeChangeData;
  * 
  */
 UCLASS()
-class RS_API UStaggerSetViewModel : public UMVVMViewModelBase
+class RS_API URsStaggerSetViewModel : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static UStaggerSetViewModel* CreateStaggerSetViewModel(AActor* Model);
+	static URsStaggerSetViewModel* CreateStaggerSetViewModel(AActor* Model);
 
 	void Initialize();
 

@@ -4,7 +4,7 @@
 #include "RsHealthComponent.h"
 
 #include "GameplayEffectExtension.h"
-#include "Rs/AbilitySystem/Attributes/HealthSet.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 
 URsHealthComponent::URsHealthComponent()
 {
@@ -21,8 +21,8 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 		return;
 	}
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
-	HealthSet = AbilitySystemComponent->GetSet<UHealthSet>();
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
+	HealthSet = AbilitySystemComponent->GetSet<URsHealthSet>();
 
 	OnHealthChanged.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
 }

@@ -3,9 +3,9 @@
 
 #include "RsStaggerExecCalculation.h"
 
-#include "Rs/AbilitySystem/Attributes/AttackSet.h"
-#include "Rs/AbilitySystem/Attributes/DefenseSet.h"
-#include "Rs/AbilitySystem/Attributes/StaggerSet.h"
+#include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
+#include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsStaggerStatics
@@ -18,10 +18,10 @@ struct RsStaggerStatics
 	RsStaggerStatics()
 	{
 		// Capture optional attribute set
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttackSet, Impact, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UDefenseSet, Will, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UStaggerSet, CurrentStagger, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UStaggerSet, StaggerGain, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Impact, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Will, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, CurrentStagger, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerGain, Target, false);
 	}
 
 	static const RsStaggerStatics& Get()

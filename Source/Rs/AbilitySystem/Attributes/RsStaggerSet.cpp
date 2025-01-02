@@ -1,20 +1,20 @@
 // Copyright 2024 Team BH.
 
 
-#include "StaggerSet.h"
+#include "RsStaggerSet.h"
 
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
-UStaggerSet::UStaggerSet()
+URsStaggerSet::URsStaggerSet()
 {
 	MaxStagger = 0.f;
 	CurrentStagger = 0.f;
 	StaggerRegen = 0.f;
 }
 
-void UStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
@@ -29,7 +29,7 @@ void UStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float&
 	}
 }
 
-void UStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 
@@ -59,7 +59,7 @@ void UStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData
 	}
 }
 
-void UStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void URsStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
@@ -67,7 +67,7 @@ void UStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, float
 	SendEventIfAttributeOverMax(StunTag, MaxStagger, CurrentStagger);
 }
 
-void UStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
@@ -76,26 +76,26 @@ void UStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Params.Condition = COND_None;
 
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(UStaggerSet, CurrentStagger, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(UStaggerSet, MaxStagger, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, CurrentStagger, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, MaxStagger, Params);
 
 	// Owner Only
 	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(UStaggerSet, StaggerRegen, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, StaggerRegen, Params);
 }
 
-void UStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
+void URsStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UStaggerSet, CurrentStagger, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, CurrentStagger, OldValue);
 }
 
-void UStaggerSet::OnRep_MaxStagger(const FGameplayAttributeData& OldValue)
+void URsStaggerSet::OnRep_MaxStagger(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UStaggerSet, MaxStagger, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, MaxStagger, OldValue);
 }
 
-void UStaggerSet::OnRep_StaggerRegen(const FGameplayAttributeData& OldValue)
+void URsStaggerSet::OnRep_StaggerRegen(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UStaggerSet, StaggerRegen, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, StaggerRegen, OldValue);
 
 }

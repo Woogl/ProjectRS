@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
-#include "HealthSetViewModel.generated.h"
+#include "RsHealthSetViewModel.generated.h"
 
 struct FOnAttributeChangeData;
 
@@ -12,13 +12,13 @@ struct FOnAttributeChangeData;
  * 
  */
 UCLASS()
-class RS_API UHealthSetViewModel : public UMVVMViewModelBase
+class RS_API URsHealthSetViewModel : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static UHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
+	static URsHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
 
 	void Initialize();
 

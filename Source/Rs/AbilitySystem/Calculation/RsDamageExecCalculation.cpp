@@ -3,9 +3,9 @@
 
 #include "RsDamageExecCalculation.h"
 
-#include "Rs/AbilitySystem/Attributes/AttackSet.h"
-#include "Rs/AbilitySystem/Attributes/DefenseSet.h"
-#include "Rs/AbilitySystem/Attributes/HealthSet.h"
+#include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
@@ -18,10 +18,10 @@ struct RsDamageStatics
 	RsDamageStatics()
 	{
 		// Capture optional attribute set
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttackSet, Attack, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UDefenseSet, Defense, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UHealthSet, CurrentHealth, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UHealthSet, Damage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Attack, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, CurrentHealth, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, Damage, Target, false);
 	}
 
 	static const RsDamageStatics& Get()

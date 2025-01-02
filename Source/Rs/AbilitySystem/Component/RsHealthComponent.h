@@ -7,7 +7,7 @@
 #include "RsHealthComponent.generated.h"
 
 class UAbilitySystemComponent;
-class UHealthSet;
+class URsHealthSet;
 struct FOnAttributeChangeData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FHealthAttributeChanged, float, OldValue, float, NewValue, AActor*, Instigator);
@@ -35,5 +35,5 @@ protected:
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
 
 	UPROPERTY()
-	TObjectPtr<const UHealthSet> HealthSet;
+	TObjectPtr<const URsHealthSet> HealthSet;
 };

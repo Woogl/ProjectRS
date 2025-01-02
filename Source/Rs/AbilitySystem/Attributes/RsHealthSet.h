@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "RsAttributeSetBase.h"
-#include "HealthSet.generated.h"
+#include "RsHealthSet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API UHealthSet : public URsAttributeSetBase
+class RS_API URsHealthSet : public URsAttributeSetBase
 {
 	GENERATED_BODY()
 
 public:
-	UHealthSet();
+	URsHealthSet();
 
 	// Attribute Set Overrides.
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
@@ -28,27 +28,27 @@ public:
 	// Used to create a local copy of Damage which is then subtracted from Current Health.
 	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
 	FGameplayAttributeData Damage;
-	ATTRIBUTE_ACCESSORS(UHealthSet, Damage)
+	ATTRIBUTE_ACCESSORS(URsHealthSet, Damage)
 
 	// Used to create a local copy of Healing which is then added to Current Health.
 	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
 	FGameplayAttributeData Healing;
-	ATTRIBUTE_ACCESSORS(UHealthSet, Healing)
+	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
 	
 	// Holds the current value for Health.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentHealth)
 	FGameplayAttributeData CurrentHealth;
-	ATTRIBUTE_ACCESSORS(UHealthSet, CurrentHealth)
+	ATTRIBUTE_ACCESSORS(URsHealthSet, CurrentHealth)
 
 	// Holds the value for Maximum Health.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UHealthSet, MaxHealth)
+	ATTRIBUTE_ACCESSORS(URsHealthSet, MaxHealth)
 
 	// Holds the value for Health Regeneration.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegen)
 	FGameplayAttributeData HealthRegen;
-	ATTRIBUTE_ACCESSORS(UHealthSet, HealthRegen)
+	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthRegen)
 
 protected:
 	UFUNCTION()

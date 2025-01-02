@@ -52,17 +52,11 @@ void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorI
 		return;
 	}
 	
-	// If we have a valid "Input Pressed Trigger" type bind the pressed event.
-	if (InputPressedTriggerType != ETriggerEvent::None)
-	{
-		EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, AbilityInstance->InputPressedTriggerType, AbilityInstance, &ThisClass::HandleInputPressedEvent, ActorInfo, Spec.Handle);
-	}
+	// Input pressed event.
+	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Triggered, AbilityInstance, &ThisClass::HandleInputPressedEvent, ActorInfo, Spec.Handle);
 
-	// If we have a valid "Input Released Trigger" type bind the released event.
-	if (InputReleasedTriggerType != ETriggerEvent::None)
-	{
-		EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, AbilityInstance->InputReleasedTriggerType, AbilityInstance, &ThisClass::HandleInputReleasedEvent, ActorInfo, Spec.Handle);
-	}
+	// Input released event.
+	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Completed, AbilityInstance, &ThisClass::HandleInputReleasedEvent, ActorInfo, Spec.Handle);
 }
 
 void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)

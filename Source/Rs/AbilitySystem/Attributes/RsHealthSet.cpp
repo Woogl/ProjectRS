@@ -1,20 +1,20 @@
 // Copyright 2024 Team BH.
 
 
-#include "HealthSet.h"
+#include "RsHealthSet.h"
 
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
-UHealthSet::UHealthSet()
+URsHealthSet::URsHealthSet()
 {
 	MaxHealth = 0.0f;
 	CurrentHealth = 0.0f;
 	HealthRegen = 0.0f;
 }
 
-void UHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
@@ -23,15 +23,15 @@ void UHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	Params.Condition = COND_None;
 	
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthSet, CurrentHealth, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthSet, MaxHealth, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, CurrentHealth, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, MaxHealth, Params);
 
 	// Only Owner
 	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(UHealthSet, HealthRegen, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, HealthRegen, Params);
 }
 
-void UHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 	
@@ -46,7 +46,7 @@ void UHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& 
 	}
 }
 
-void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 
@@ -91,7 +91,7 @@ void UHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData&
 	}
 }
 
-void UHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 	
@@ -102,17 +102,17 @@ void UHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float 
 	}
 }
 
-void UHealthSet::OnRep_CurrentHealth(const FGameplayAttributeData& OldValue)
+void URsHealthSet::OnRep_CurrentHealth(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthSet, CurrentHealth, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, CurrentHealth, OldValue);
 }
 
-void UHealthSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
+void URsHealthSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthSet, MaxHealth, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, MaxHealth, OldValue);
 }
 
-void UHealthSet::OnRep_HealthRegen(const FGameplayAttributeData& OldValue)
+void URsHealthSet::OnRep_HealthRegen(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UHealthSet, HealthRegen, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, HealthRegen, OldValue);
 }

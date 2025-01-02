@@ -3,8 +3,8 @@
 
 #include "RsCharacterViewModel.h"
 
-#include "HealthSetViewModel.h"
-#include "StaggerSetViewModel.h"
+#include "RsHealthSetViewModel.h"
+#include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsCharacterBase.h"
 
@@ -21,8 +21,8 @@ void URsCharacterViewModel::Initialize()
 	SetCharacterName(FText::FromString(DisplayName));
 	
 	ARsCharacterBase* Model = Cast<ARsCharacterBase>(GetOuter());
-	HealthSetViewModel = UHealthSetViewModel::CreateHealthSetViewModel(Model);
-	StaggerSetViewModel = UStaggerSetViewModel::CreateStaggerSetViewModel(Model);
+	HealthSetViewModel = URsHealthSetViewModel::CreateHealthSetViewModel(Model);
+	StaggerSetViewModel = URsStaggerSetViewModel::CreateStaggerSetViewModel(Model);
 }
 
 FText URsCharacterViewModel::GetCharacterName() const

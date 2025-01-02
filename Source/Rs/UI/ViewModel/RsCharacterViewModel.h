@@ -6,8 +6,8 @@
 #include "MVVMViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
-class UStaggerSetViewModel;
-class UHealthSetViewModel;
+class URsStaggerSetViewModel;
+class URsHealthSetViewModel;
 class ARsCharacterBase;
 /**
  * 
@@ -31,8 +31,8 @@ private:
 	FText CharacterName;
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<UHealthSetViewModel> HealthSetViewModel;
+	TObjectPtr<URsHealthSetViewModel> HealthSetViewModel;
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<UStaggerSetViewModel> StaggerSetViewModel;
+	TObjectPtr<URsStaggerSetViewModel> StaggerSetViewModel;
 };
