@@ -3,6 +3,8 @@
 
 #include "RsBattleLibrary.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 TArray<AActor*> URsBattleLibrary::PerformTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset)
@@ -36,10 +38,19 @@ TArray<AActor*> URsBattleLibrary::PerformTargeting(AActor* SourceActor, const UT
 		FoundActors.Add(HitResult.GetActor());
 	}
 
-	SourceActor->GetWorld()->GetTimerManager().SetTimerForNextTick([&]()
-	{
-		TargetingSubsystem->ReleaseTargetRequestHandle(Handle);
-	});
+	TargetingSubsystem->ReleaseTargetRequestHandle(Handle);
 	
 	return FoundActors;
+}
+
+void URsBattleLibrary::ApplyDamageEffect(AActor* SourceActor, AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	
+	if (SourceASC && TargetASC && GameplayEffectClass)
+	{
+		UGameplayEffect* GameplayEffect = GameplayEffectClass->GetDefaultObject<UGameplayEffect>();
+		SourceASC->ApplyGameplayEffectToTarget(GameplayEffect, TargetASC);
+	}
 }

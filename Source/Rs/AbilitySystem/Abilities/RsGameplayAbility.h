@@ -20,11 +20,11 @@ public:
 	URsGameplayAbility();
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Gameplay Ability")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
 	bool ActivateAbilityOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS|Input")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
@@ -51,4 +51,9 @@ protected:
 
 	// Override "OnRemoveAbility" to clean up Enhanced Input Bindings.
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+	void HandleGameplayEvent(const FGameplayEventData* EventData);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent", meta=(ScriptName = "OnGameplayEvent"))
+	void K2_OnGameplayEvent(FGameplayTag EventTag);
 };
