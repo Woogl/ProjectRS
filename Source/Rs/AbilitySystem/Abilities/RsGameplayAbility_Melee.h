@@ -19,12 +19,15 @@ class RS_API URsGameplayAbility_Melee : public URsGameplayAbility
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	UAnimMontage* MontageToPlay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UTargetingPreset* FocusTargetingPreset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UTargetingPreset* DamageTargetingPreset;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "Event"))
 	FGameplayTag HitDetectEventTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
-	UTargetingPreset* HitDetectTargetingPreset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TSubclassOf<UGameplayEffect> DamageEffect;

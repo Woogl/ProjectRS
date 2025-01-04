@@ -3,10 +3,10 @@
 
 #include "RsGameplayAbility_Melee.h"
 
-#include "AbilitySystemComponent.h"
 #include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 
 void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -22,6 +22,17 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
 			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->ReadyForActivation();
+		}
+	}
+
+	if (FocusTargetingPreset)
+	{
+		bool bFound = false;
+		TArray<AActor*> Victims = URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), FocusTargetingPreset, bFound);
+		if (bFound == true)
+		{
+			URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, Victims[0]->GetActorLocation());
+			TurnTask->ReadyForActivation();
 		}
 	}
 	
@@ -56,7 +67,8 @@ void URsGameplayAbility_Melee::HandleMontageCancelled()
 
 void URsGameplayAbility_Melee::HandleHitDetectEvent(FGameplayEventData EventData)
 {
-	TArray<AActor*> Victims = URsBattleLibrary::PerformTargeting(GetAvatarActorFromActorInfo(), HitDetectTargetingPreset);
+	bool bFound = false;
+	TArray<AActor*> Victims = URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), DamageTargetingPreset, bFound);
 	for (AActor* Victim : Victims)
 	{
 		URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), Victim, DamageEffect);

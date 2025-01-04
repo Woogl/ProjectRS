@@ -18,7 +18,7 @@ class RS_API URsBattleLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static TArray<AActor*> PerformTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset);
+	static TArray<AActor*> ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, bool& bFound);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static void ApplyDamageEffect(AActor* SourceActor, AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
