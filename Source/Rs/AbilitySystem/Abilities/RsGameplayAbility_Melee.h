@@ -6,6 +6,7 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Melee.generated.h"
 
+class UAbilityTask_WaitGameplayEvent;
 class UTargetingPreset;
 /**
  * 
@@ -29,10 +30,15 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	
 	UFUNCTION()
 	void HandleMontageEnd();
 
 	UFUNCTION()
 	void HandleHitDetectEvent(FGameplayEventData EventData);
+
+private:
+	UPROPERTY(Transient)
+	UAbilityTask_WaitGameplayEvent* HitDetectTask = nullptr;
 };

@@ -3,6 +3,7 @@
 
 #include "RsGameplayAbility_Melee.h"
 
+#include "AbilitySystemComponent.h"
 #include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
@@ -26,11 +27,20 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	
 	if (HitDetectEventTag.IsValid())
 	{
-		if (UAbilityTask_WaitGameplayEvent* GameplayEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag))
-		{
-			GameplayEventTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetectEvent);
-			GameplayEventTask->Activate();
-		}
+		HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
+		HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetectEvent);
+		HitDetectTask->Activate();
+	}
+}
+
+void URsGameplayAbility_Melee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if (HitDetectTask)
+	{
+		HitDetectTask->EndTask();
+		HitDetectTask = nullptr;
 	}
 }
 
