@@ -9,33 +9,12 @@
 
 URsGameplayAbility_Combo::URsGameplayAbility_Combo()
 {
-	bRetriggerInstancedAbility = true;
 }
 
 void URsGameplayAbility_Combo::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
-
-	if (ComboWindowStartTag.IsValid())
-	{
-		if (UAbilityTask_WaitGameplayEvent* ComboWindowStartTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowStartTag))
-		{
-			ComboWindowStartTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowStarted);
-			ComboWindowStartTask->Activate();
-		}
-	}
-
-	if (ComboWindowEndTag.IsValid())
-	{
-		if (UAbilityTask_WaitGameplayEvent* ComboWindowEndTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowEndTag))
-		{
-			ComboWindowEndTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowEnded);
-			ComboWindowEndTask->Activate();
-		}
-	}
 	
-	ActorInfo->AbilitySystemComponent->OnAbilityEnded.AddUObject(this, &ThisClass::HandleInnerAbilityEnded);
-
 	for (TSubclassOf<URsGameplayAbility> InnerAbility : InnerAbilities)
 	{
 		FGameplayAbilitySpec InnerSpec(InnerAbility, GetAbilityLevel(), INDEX_NONE, ActorInfo->AvatarActor.Get());
@@ -46,16 +25,41 @@ void URsGameplayAbility_Combo::OnGiveAbility(const FGameplayAbilityActorInfo* Ac
 	}
 	
 	MaxComboIndex = InnerAbilities.Num();
+	
+	ActorInfo->AbilitySystemComponent->AbilityActivatedCallbacks.AddUObject(this, &ThisClass::HandleInnerAbilityActivated);
+	ActorInfo->AbilitySystemComponent->OnAbilityEnded.AddUObject(this, &ThisClass::HandleInnerAbilityEnded);
 }
 
 void URsGameplayAbility_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	
-	ActorInfo->AbilitySystemComponent->TryActivateAbility(InnerSpecHandles[CurrentComboIndex]);
-	IncreaseComboIndex();
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	if (ComboWindowStartTag.IsValid())
+	{
+		UAbilityTask_WaitGameplayEvent* ComboWindowStartTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowStartTag);
+		ComboWindowStartTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowStarted);
+		ComboWindowStartTask->ReadyForActivation();
+	}
+	
+	if (ComboWindowEndTag.IsValid())
+	{
+		UAbilityTask_WaitGameplayEvent* ComboWindowEndTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowEndTag);
+		ComboWindowEndTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowEnded);
+		ComboWindowEndTask->ReadyForActivation();
+	}
+	
+	ActivateInnerAbility();
+}
+
+void URsGameplayAbility_Combo::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	if (InputPressTask)
+	{
+		InputPressTask->EndTask();
+		InputPressTask = nullptr;
+	}
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -70,7 +74,20 @@ void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* 
 	Super::OnRemoveAbility(ActorInfo, Spec);
 }
 
-int32 URsGameplayAbility_Combo::IncreaseComboIndex()
+void URsGameplayAbility_Combo::ActivateInnerAbility()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CurrentComboIndex : %d"), CurrentComboIndex);
+	if (GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(InnerSpecHandles[CurrentComboIndex]))
+	{
+		IncrementComboIndex();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to activate InnerAbility at ComboIndex %d"), CurrentComboIndex);
+	}
+}
+
+int32 URsGameplayAbility_Combo::IncrementComboIndex()
 {
 	CurrentComboIndex++;
 	if (CurrentComboIndex >= MaxComboIndex)
@@ -80,31 +97,47 @@ int32 URsGameplayAbility_Combo::IncreaseComboIndex()
 	return CurrentComboIndex;
 }
 
+void URsGameplayAbility_Combo::ResetComboIndex()
+{
+	CurrentComboIndex = 0;
+}
+
 void URsGameplayAbility_Combo::HandleComboWindowStarted(FGameplayEventData Data)
 {
-	CachedPressTask = UAbilityTask_WaitInputPress::WaitInputPress(this);
-	CachedPressTask->OnPress.AddDynamic(this, &ThisClass::HandleInputPressed);
-	CachedPressTask->Activate();
+	InputPressTask = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	InputPressTask->OnPress.AddDynamic(this, &ThisClass::HandleInputPressed);
+	InputPressTask->ReadyForActivation();
 }
 
 void URsGameplayAbility_Combo::HandleComboWindowEnded(FGameplayEventData Data)
 {
-	if (CachedPressTask)
+	if (InputPressTask)
 	{
-		CachedPressTask->EndTask();
-		CachedPressTask = nullptr;
+		InputPressTask->EndTask();
+		InputPressTask = nullptr;
 	}
 }
 
 void URsGameplayAbility_Combo::HandleInputPressed(float TimeWaited)
 {
-	GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(InnerSpecHandles[CurrentComboIndex]);
-	IncreaseComboIndex();
-
-	if (CachedPressTask)
+	if (InputPressTask)
 	{
-		CachedPressTask->EndTask();
-		CachedPressTask = nullptr;
+		InputPressTask->EndTask();
+		InputPressTask = nullptr;
+	}
+	
+	if (GetAbilitySystemComponentFromActorInfo()->FindAbilitySpecFromHandle(InnerSpecHandles[CurrentComboIndex]))
+	{
+		ActivateInnerAbility();
+	}
+}
+
+void URsGameplayAbility_Combo::HandleInnerAbilityActivated(UGameplayAbility* ActivatedAbility)
+{
+	FGameplayAbilitySpecHandle ActivatedHandle = ActivatedAbility->GetCurrentAbilitySpecHandle();
+	if (InnerSpecHandles.Contains(ActivatedHandle))
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("InnerAbilityActivated: %s"), *ActivatedAbility->GetFName().ToString());
 	}
 }
 
@@ -112,6 +145,13 @@ void URsGameplayAbility_Combo::HandleInnerAbilityEnded(const FAbilityEndedData& 
 {
 	if (InnerSpecHandles.Contains(AbilityEndData.AbilitySpecHandle))
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		FGameplayAbilitySpec* EndSpec = GetAbilitySystemComponentFromActorInfo()->FindAbilitySpecFromHandle(AbilityEndData.AbilitySpecHandle);
+		// UE_LOG(LogTemp, Warning, TEXT("InnerAbilityEnded: %s"), *Spec->Ability.GetFName().ToString());
+		if (EndSpec->IsActive() && AbilityEndData.bWasCancelled == true)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Reset ComboIndex"));
+			CurrentComboIndex = 0;
+		}
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 	}
 }

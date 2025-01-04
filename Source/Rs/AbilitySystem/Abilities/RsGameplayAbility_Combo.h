@@ -6,6 +6,7 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Combo.generated.h"
 
+class UAbilityTask_WaitGameplayEvent;
 class UAbilityTask_WaitInputPress;
 /**
  * Composite Ability that can activate inner abilities.
@@ -21,7 +22,13 @@ public:
 protected:
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+	void ActivateInnerAbility();
+	
+	int32 IncrementComboIndex();
+	void ResetComboIndex();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TArray<TSubclassOf<URsGameplayAbility>> InnerAbilities;
@@ -31,9 +38,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "Event"))
 	FGameplayTag ComboWindowEndTag;
-
-	int32 IncreaseComboIndex();
-
+	
+	UPROPERTY()
+	TArray<FGameplayAbilitySpec> InnerSpecs;
+	
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> InnerSpecHandles;
+	
 	UFUNCTION()
 	void HandleComboWindowStarted(FGameplayEventData Data);
 
@@ -42,22 +53,17 @@ protected:
 	
 	UFUNCTION()
 	void HandleInputPressed(float TimeWaited);
-	
+
+	void HandleInnerAbilityActivated(UGameplayAbility* ActivatedAbility);
 	void HandleInnerAbilityEnded(const FAbilityEndedData& AbilityEndData);
 	
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient)
+	UAbilityTask_WaitInputPress* InputPressTask = nullptr;
+
+	UPROPERTY(Transient)
 	int32 MaxComboIndex = 0;
-	
-	UPROPERTY(VisibleAnywhere)
+
+	UPROPERTY(Transient)
 	int32 CurrentComboIndex = 0;
-
-	UPROPERTY()
-	TArray<FGameplayAbilitySpec> InnerSpecs;
-	
-	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> InnerSpecHandles;
-
-	UPROPERTY()
-	UAbilityTask_WaitInputPress* CachedPressTask = nullptr;
 };

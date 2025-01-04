@@ -17,11 +17,11 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	{
 		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
 		{
-			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageEnd);
-			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageEnd);
-			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageEnd);
-			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageEnd);
-			MontageTask->Activate();
+			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
+			MontageTask->ReadyForActivation();
 		}
 	}
 	
@@ -29,7 +29,7 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	{
 		HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
 		HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetectEvent);
-		HitDetectTask->Activate();
+		HitDetectTask->ReadyForActivation();
 	}
 }
 
@@ -44,9 +44,14 @@ void URsGameplayAbility_Melee::EndAbility(const FGameplayAbilitySpecHandle Handl
 	}
 }
 
-void URsGameplayAbility_Melee::HandleMontageEnd()
+void URsGameplayAbility_Melee::HandleMontageCompleted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void URsGameplayAbility_Melee::HandleMontageCancelled()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void URsGameplayAbility_Melee::HandleHitDetectEvent(FGameplayEventData EventData)
