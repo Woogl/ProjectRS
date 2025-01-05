@@ -36,6 +36,13 @@ void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 	}
 }
 
+void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+	
+	K2_OnGiveAbility();
+}
+
 void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	// Check to see if the "Activation Input Action" is valid.
@@ -154,6 +161,8 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	}
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);
+
+	K2_OnRemoveAbility();
 }
 
 void URsGameplayAbility::HandleGameplayEvent(const FGameplayEventData* EventData)

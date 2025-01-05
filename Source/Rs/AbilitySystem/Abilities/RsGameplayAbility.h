@@ -40,6 +40,8 @@ protected:
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
 	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable. 
 	void SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
@@ -54,6 +56,12 @@ protected:
 
 	virtual void HandleGameplayEvent(const FGameplayEventData* EventData);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent", meta=(ScriptName = "OnGameplayEvent"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGiveAbility")
+	void K2_OnGiveAbility();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
+	void K2_OnRemoveAbility();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent")
 	void K2_OnGameplayEvent(FGameplayTag EventTag);
 };

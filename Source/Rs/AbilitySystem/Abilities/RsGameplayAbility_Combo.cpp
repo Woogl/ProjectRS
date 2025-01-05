@@ -76,14 +76,9 @@ void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* 
 
 void URsGameplayAbility_Combo::ActivateInnerAbility()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CurrentComboIndex : %d"), CurrentComboIndex);
 	if (GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(InnerSpecHandles[CurrentComboIndex]))
 	{
 		IncrementComboIndex();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to activate InnerAbility at ComboIndex %d"), CurrentComboIndex);
 	}
 }
 
@@ -126,10 +121,7 @@ void URsGameplayAbility_Combo::HandleInputPressed(float TimeWaited)
 		InputPressTask = nullptr;
 	}
 	
-	if (GetAbilitySystemComponentFromActorInfo()->FindAbilitySpecFromHandle(InnerSpecHandles[CurrentComboIndex]))
-	{
-		ActivateInnerAbility();
-	}
+	ActivateInnerAbility();
 }
 
 void URsGameplayAbility_Combo::HandleInnerAbilityActivated(UGameplayAbility* ActivatedAbility)
@@ -137,7 +129,7 @@ void URsGameplayAbility_Combo::HandleInnerAbilityActivated(UGameplayAbility* Act
 	FGameplayAbilitySpecHandle ActivatedHandle = ActivatedAbility->GetCurrentAbilitySpecHandle();
 	if (InnerSpecHandles.Contains(ActivatedHandle))
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("InnerAbilityActivated: %s"), *ActivatedAbility->GetFName().ToString());
+		InnerSpecHandlesActivating.Add(ActivatedHandle);
 	}
 }
 
@@ -145,13 +137,13 @@ void URsGameplayAbility_Combo::HandleInnerAbilityEnded(const FAbilityEndedData& 
 {
 	if (InnerSpecHandles.Contains(AbilityEndData.AbilitySpecHandle))
 	{
-		FGameplayAbilitySpec* EndSpec = GetAbilitySystemComponentFromActorInfo()->FindAbilitySpecFromHandle(AbilityEndData.AbilitySpecHandle);
-		// UE_LOG(LogTemp, Warning, TEXT("InnerAbilityEnded: %s"), *Spec->Ability.GetFName().ToString());
-		if (EndSpec->IsActive() && AbilityEndData.bWasCancelled == true)
+		InnerSpecHandlesActivating.Remove(AbilityEndData.AbilitySpecHandle);
+		if (InnerSpecHandlesActivating.Num() > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Reset ComboIndex"));
-			CurrentComboIndex = 0;
+			return;
 		}
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 	}
+
+	ResetComboIndex();
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 }

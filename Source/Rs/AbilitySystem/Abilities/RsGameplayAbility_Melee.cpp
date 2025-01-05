@@ -19,7 +19,7 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 		{
 			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
 			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageCompleted);
-			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->ReadyForActivation();
 		}
