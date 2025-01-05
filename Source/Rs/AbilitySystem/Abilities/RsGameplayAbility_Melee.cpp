@@ -27,7 +27,6 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 	if (FocusTargetingPreset)
 	{
-		bool bFound = false;
 		TArray<AActor*> Victims;
 		if (URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), FocusTargetingPreset, Victims))
 		{
@@ -75,7 +74,6 @@ void URsGameplayAbility_Melee::HandleMontageCancelled()
 
 void URsGameplayAbility_Melee::HandleHitDetectEvent(FGameplayEventData EventData)
 {
-	bool bFound = false;
 	TArray<AActor*> Victims;
 	if (URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), DamageTargetingPreset, Victims))
 	{

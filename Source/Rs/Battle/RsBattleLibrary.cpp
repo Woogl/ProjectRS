@@ -22,6 +22,7 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	
 	FTargetingSourceContext Context;
 	Context.SourceActor = SourceActor;
+	Context.InstigatorActor = SourceActor;
 	Context.SourceObject = SourceActor;
 	Context.SourceLocation = SourceActor->GetActorLocation();
 	
