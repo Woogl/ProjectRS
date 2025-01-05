@@ -7,17 +7,17 @@
 #include "AbilitySystemGlobals.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
-TArray<AActor*> URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, bool& bFound)
+bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
 {
 	if (SourceActor == nullptr || TargetingPreset == nullptr)
 	{
-		return TArray<AActor*>();
+		return false;
 	}
 	
 	UTargetingSubsystem* TargetingSubsystem = UTargetingSubsystem::Get(SourceActor->GetWorld());
 	if (TargetingSubsystem == nullptr)
 	{
-		return TArray<AActor*>();
+		return false;
 	}
 	
 	FTargetingSourceContext Context;
@@ -31,16 +31,14 @@ TArray<AActor*> URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UT
 	TArray<FHitResult> HitResults;
 	TargetingSubsystem->GetTargetingResults(Handle, HitResults);
 	
-	TArray<AActor*> TargetingResultActors;
 	for (const FHitResult& HitResult : HitResults)
 	{
-		TargetingResultActors.Add(HitResult.GetActor());
+		ResultActors.Add(HitResult.GetActor());
 	}
 
 	TargetingSubsystem->ReleaseTargetRequestHandle(Handle);
-	bFound = !TargetingResultActors.IsEmpty();
 	
-	return TargetingResultActors;
+	return !ResultActors.IsEmpty();
 }
 
 void URsBattleLibrary::ApplyDamageEffect(AActor* SourceActor, AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)

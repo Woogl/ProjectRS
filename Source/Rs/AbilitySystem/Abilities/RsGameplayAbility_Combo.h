@@ -63,9 +63,7 @@ protected:
 private:
 	UPROPERTY(Transient)
 	UAbilityTask_WaitInputPress* InputPressTask = nullptr;
-
-	bool bComboWindowOpened = false;
-
+	
 	UPROPERTY(Transient)
 	int32 MaxComboIndex = 0;
 

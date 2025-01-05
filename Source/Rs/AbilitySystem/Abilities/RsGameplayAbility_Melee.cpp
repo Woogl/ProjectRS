@@ -28,19 +28,27 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	if (FocusTargetingPreset)
 	{
 		bool bFound = false;
-		TArray<AActor*> Victims = URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), FocusTargetingPreset, bFound);
-		if (bFound == true)
+		TArray<AActor*> Victims;
+		if (URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), FocusTargetingPreset, Victims))
 		{
-			URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, Victims[0]->GetActorLocation());
+			URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, Victims[0]->GetActorLocation(), RotatingSpeed, RotatingMaxDuration);
 			TurnTask->ReadyForActivation();
 		}
 	}
-	
-	if (HitDetectEventTag.IsValid())
+
+	if (DamageTargetingPreset)
 	{
-		HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
-		HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetectEvent);
-		HitDetectTask->ReadyForActivation();
+		if (HitDetectEventTag.IsValid())
+		{
+			HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
+			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetectEvent);
+			HitDetectTask->ReadyForActivation();
+		}
+		else
+		{
+			// Deal damage immediately if Event tag is not set.
+			HandleHitDetectEvent(FGameplayEventData());
+		}
 	}
 }
 
@@ -68,9 +76,12 @@ void URsGameplayAbility_Melee::HandleMontageCancelled()
 void URsGameplayAbility_Melee::HandleHitDetectEvent(FGameplayEventData EventData)
 {
 	bool bFound = false;
-	TArray<AActor*> Victims = URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), DamageTargetingPreset, bFound);
-	for (AActor* Victim : Victims)
+	TArray<AActor*> Victims;
+	if (URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), DamageTargetingPreset, Victims))
 	{
-		URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), Victim, DamageEffect);
+		for (AActor* Victim : Victims)
+		{
+			URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), Victim, DamageEffect);
+		}
 	}
 }

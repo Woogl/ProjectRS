@@ -11,7 +11,7 @@ URsAbilityTask_TurnToLocation::URsAbilityTask_TurnToLocation()
 	bTickingTask = true;
 	bSimulatedTask = true;
 
-	Duration = 0.f;
+	MaxDuration = 0.f;
 	RotatingSpeed = 0.f;
 
 	TargetLocation = FVector::ZeroVector;
@@ -28,7 +28,7 @@ void URsAbilityTask_TurnToLocation::GetLifetimeReplicatedProps(TArray< FLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ThisClass, TargetLocation);
-	DOREPLIFETIME(ThisClass, Duration);
+	DOREPLIFETIME(ThisClass, MaxDuration);
 	DOREPLIFETIME(ThisClass, RotatingSpeed);
 }
 
@@ -37,15 +37,15 @@ void URsAbilityTask_TurnToLocation::InitSimulatedTask(UGameplayTasksComponent& I
 	Super::InitSimulatedTask(InGameplayTasksComponent);
 
 	StartTime = GetWorld()->GetTimeSeconds();
-	EndTime = StartTime + Duration;
+	EndTime = StartTime + MaxDuration;
 }
 
-URsAbilityTask_TurnToLocation* URsAbilityTask_TurnToLocation::TurnToLocation(UGameplayAbility* OwningAbility, FVector TargetLocation, float Duration, float RotatingSpeed, bool bRotatePitch, bool bRotateYaw, bool bRotateRoll)
+URsAbilityTask_TurnToLocation* URsAbilityTask_TurnToLocation::TurnToLocation(UGameplayAbility* OwningAbility, FVector TargetLocation, float RotatingSpeed, float MaxDuration, bool bRotatePitch, bool bRotateYaw, bool bRotateRoll)
 {
 	URsAbilityTask_TurnToLocation* MyTask = NewAbilityTask<URsAbilityTask_TurnToLocation>(OwningAbility);
 	MyTask->TargetLocation = TargetLocation;
-	MyTask->Duration = Duration;
 	MyTask->RotatingSpeed = RotatingSpeed;
+	MyTask->MaxDuration = MaxDuration;
 	MyTask->bRotatePitch = bRotatePitch;
 	MyTask->bRotateYaw = bRotateYaw;
 	MyTask->bRotateRoll = bRotateRoll;
@@ -57,7 +57,7 @@ void URsAbilityTask_TurnToLocation::Activate()
 	Super::Activate();
 
 	StartTime = GetWorld()->GetTimeSeconds();
-	EndTime = StartTime + Duration;
+	EndTime = StartTime + MaxDuration;
 }
 
 void URsAbilityTask_TurnToLocation::TickTask(float DeltaTime)
@@ -67,11 +67,11 @@ void URsAbilityTask_TurnToLocation::TickTask(float DeltaTime)
 	FRotator CurrentRotation = GetAvatarActor()->GetActorRotation();
 	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetAvatarActor()->GetActorLocation(), TargetLocation);
 
-	float PitchStep = bRotatePitch ? FMath::FixedTurn(CurrentRotation.Pitch, TargetRotation.Pitch, RotatingSpeed * DeltaTime) : CurrentRotation.Pitch;
-	float YawStep = bRotateYaw ? FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, RotatingSpeed * DeltaTime) : CurrentRotation.Yaw;
-	float RollStep = bRotateRoll ? FMath::FixedTurn(CurrentRotation.Roll, TargetRotation.Roll, RotatingSpeed * DeltaTime) : CurrentRotation.Roll;
+	float NewPitch = bRotatePitch ? FMath::FixedTurn(CurrentRotation.Pitch, TargetRotation.Pitch, RotatingSpeed * DeltaTime) : CurrentRotation.Pitch;
+	float NewYaw = bRotateYaw ? FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, RotatingSpeed * DeltaTime) : CurrentRotation.Yaw;
+	float NewRoll = bRotateRoll ? FMath::FixedTurn(CurrentRotation.Roll, TargetRotation.Roll, RotatingSpeed * DeltaTime) : CurrentRotation.Roll;
 
-	FRotator NewRotation = FRotator(PitchStep, YawStep, RollStep);
+	FRotator NewRotation = FRotator(NewPitch, NewYaw, NewRoll);
 	GetAvatarActor()->SetActorRotation(NewRotation);
 
 	bool bPitchComplete = !bRotatePitch || FMath::IsNearlyEqual(NewRotation.Pitch, TargetRotation.Pitch, 1.0f);

@@ -25,7 +25,7 @@ public:
 	virtual void InitSimulatedTask(UGameplayTasksComponent& InGameplayTasksComponent) override;
 	
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta=(HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_TurnToLocation* TurnToLocation(UGameplayAbility* OwningAbility, FVector TargetLocation, float Duration = 1.f, float RotatingSpeed = 300.f, bool bRotatePitch = false, bool bRotateYaw = true, bool bRotateRoll = false);
+	static URsAbilityTask_TurnToLocation* TurnToLocation(UGameplayAbility* OwningAbility, FVector TargetLocation, float RotatingSpeed = 300.f, float MaxDuration = 1.f, bool bRotatePitch = false, bool bRotateYaw = true, bool bRotateRoll = false);
 
 protected:
 	virtual void Activate() override;
@@ -34,12 +34,12 @@ protected:
 private:
 	UPROPERTY(Replicated)
 	FVector TargetLocation;
-	
-	UPROPERTY(Replicated)
-	float Duration;
 
 	UPROPERTY(Replicated)
 	float RotatingSpeed;
+
+	UPROPERTY(Replicated)
+	float MaxDuration;
 
 	bool bRotatePitch;
 	bool bRotateYaw;
