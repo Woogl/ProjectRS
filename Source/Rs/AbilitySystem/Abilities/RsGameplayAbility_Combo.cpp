@@ -53,13 +53,9 @@ void URsGameplayAbility_Combo::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Combo::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (InputPressTask)
-	{
-		InputPressTask->EndTask();
-		InputPressTask = nullptr;
-	}
-
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	ResetComboIndex();
 }
 
 void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -138,12 +134,9 @@ void URsGameplayAbility_Combo::HandleInnerAbilityEnded(const FAbilityEndedData& 
 	if (InnerSpecHandles.Contains(AbilityEndData.AbilitySpecHandle))
 	{
 		InnerSpecHandlesActivating.Remove(AbilityEndData.AbilitySpecHandle);
-		if (InnerSpecHandlesActivating.Num() > 0)
+		if (InnerSpecHandlesActivating.IsEmpty() == true)
 		{
-			return;
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 		}
 	}
-
-	ResetComboIndex();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 }

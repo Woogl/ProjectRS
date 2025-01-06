@@ -31,13 +31,13 @@ protected:
 	float RotatingMaxDuration = 1.f;
 
 	// If Projectile is none, deal instant damage
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Projectile")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<ARsProjectile> ProjectileClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Projectile", meta = (Categories = "Event"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "Event"))
 	FGameplayTag FireProjectileEventTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Projectile")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

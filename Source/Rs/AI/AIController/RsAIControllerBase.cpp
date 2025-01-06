@@ -33,15 +33,6 @@ void ARsAIControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-	{
-		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
-		
-		if (BehaviorTree)
-		{
-			GetBlackboardComponent()->SetValueAsObject(TEXT("PlayerControllingPawn"), PlayerController->GetPawn());
-		}
-	}
 }
 
 void ARsAIControllerBase::OnPossess(APawn* InPawn)
@@ -52,6 +43,12 @@ void ARsAIControllerBase::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(BehaviorTree);
 		GetBlackboardComponent()->SetValueAsObject(TEXT("SelfActor"), InPawn);
+
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+		{
+			PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
+			GetBlackboardComponent()->SetValueAsObject(TEXT("PlayerControllingPawn"), PlayerController->GetPawn());
+		}
 	}
 }
 
