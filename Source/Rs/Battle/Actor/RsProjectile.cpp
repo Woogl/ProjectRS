@@ -4,8 +4,6 @@
 #include "RsProjectile.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
-#include "RsBattleLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemGlobals.h"
@@ -49,7 +47,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		MaxHitCount--;
 	}
 	
-	if (MaxHitCount <= 0)
+	if (MaxHitCount == 0)
 	{
 		Destroy();
 	}

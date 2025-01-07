@@ -9,7 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/Battle/RsProjectile.h"
+#include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
 
 void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

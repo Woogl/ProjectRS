@@ -21,7 +21,7 @@ void URsGameplayAbility_Combo::OnGiveAbility(const FGameplayAbilityActorInfo* Ac
 		InnerSpecs.Add(InnerSpec);
 		
 		FGameplayAbilitySpecHandle InnerSpecHandle = ActorInfo->AbilitySystemComponent->GiveAbility(InnerSpec);
-		InnerSpecHandles.Add(InnerSpecHandle);
+		InnerHandles.Add(InnerSpecHandle);
 	}
 	
 	MaxComboIndex = InnerAbilities.Num();
@@ -62,7 +62,7 @@ void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* 
 {
 	ActorInfo->AbilitySystemComponent->OnAbilityEnded.RemoveAll(this);
 	
-	for (const FGameplayAbilitySpecHandle& InnerSpecHandle : InnerSpecHandles)
+	for (const FGameplayAbilitySpecHandle& InnerSpecHandle : InnerHandles)
 	{
 		ActorInfo->AbilitySystemComponent->ClearAbility(InnerSpecHandle);
 	}
@@ -72,9 +72,13 @@ void URsGameplayAbility_Combo::OnRemoveAbility(const FGameplayAbilityActorInfo* 
 
 void URsGameplayAbility_Combo::ActivateInnerAbility()
 {
-	if (GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(InnerSpecHandles[CurrentComboIndex]))
+	if (GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(InnerHandles[CurrentComboIndex]))
 	{
 		IncrementComboIndex();
+	}
+	else
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }
 
@@ -123,18 +127,18 @@ void URsGameplayAbility_Combo::HandleInputPressed(float TimeWaited)
 void URsGameplayAbility_Combo::HandleInnerAbilityActivated(UGameplayAbility* ActivatedAbility)
 {
 	FGameplayAbilitySpecHandle ActivatedHandle = ActivatedAbility->GetCurrentAbilitySpecHandle();
-	if (InnerSpecHandles.Contains(ActivatedHandle))
+	if (InnerHandles.Contains(ActivatedHandle))
 	{
-		InnerSpecHandlesActivating.Add(ActivatedHandle);
+		InnerHandlesActivating.Add(ActivatedHandle);
 	}
 }
 
 void URsGameplayAbility_Combo::HandleInnerAbilityEnded(const FAbilityEndedData& AbilityEndData)
 {
-	if (InnerSpecHandles.Contains(AbilityEndData.AbilitySpecHandle))
+	if (InnerHandles.Contains(AbilityEndData.AbilitySpecHandle))
 	{
-		InnerSpecHandlesActivating.Remove(AbilityEndData.AbilitySpecHandle);
-		if (InnerSpecHandlesActivating.IsEmpty() == true)
+		InnerHandlesActivating.Remove(AbilityEndData.AbilitySpecHandle);
+		if (InnerHandlesActivating.IsEmpty() == true)
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, AbilityEndData.bWasCancelled);
 		}

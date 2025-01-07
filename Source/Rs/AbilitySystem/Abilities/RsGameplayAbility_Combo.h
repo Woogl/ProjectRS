@@ -43,10 +43,10 @@ protected:
 	TArray<FGameplayAbilitySpec> InnerSpecs;
 	
 	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> InnerSpecHandles;
+	TArray<FGameplayAbilitySpecHandle> InnerHandles;
 
 	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> InnerSpecHandlesActivating;
+	TArray<FGameplayAbilitySpecHandle> InnerHandlesActivating;
 	
 	UFUNCTION()
 	void HandleComboWindowStarted(FGameplayEventData Data);

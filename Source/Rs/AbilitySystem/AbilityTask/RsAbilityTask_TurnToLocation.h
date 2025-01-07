@@ -20,7 +20,7 @@ public:
 	URsAbilityTask_TurnToLocation();
 
 	UPROPERTY(BlueprintAssignable)
-	FOnTurnToLocationFinished OnFinished;
+	FOnTurnToLocationFinished OnFinish;
 
 	virtual void InitSimulatedTask(UGameplayTasksComponent& InGameplayTasksComponent) override;
 	
@@ -29,7 +29,11 @@ public:
 
 protected:
 	virtual void Activate() override;
+	
+	/** Tick function for this task, if bTickingTask == true */
 	virtual void TickTask(float DeltaTime) override;
+
+	virtual void PreDestroyFromReplication() override;
 
 private:
 	UPROPERTY(Replicated)
@@ -47,4 +51,6 @@ private:
 	
 	float StartTime;
 	float EndTime;
+
+	bool bIsFinished;
 };

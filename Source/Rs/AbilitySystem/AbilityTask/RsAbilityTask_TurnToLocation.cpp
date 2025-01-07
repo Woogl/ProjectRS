@@ -62,6 +62,11 @@ void URsAbilityTask_TurnToLocation::Activate()
 
 void URsAbilityTask_TurnToLocation::TickTask(float DeltaTime)
 {
+	if (bIsFinished)
+	{
+		return;
+	}
+	
 	Super::TickTask(DeltaTime);
 	
 	FRotator CurrentRotation = GetAvatarActor()->GetActorRotation();
@@ -80,6 +85,14 @@ void URsAbilityTask_TurnToLocation::TickTask(float DeltaTime)
 	
 	if (GetWorld()->GetTimeSeconds() >= EndTime || (bPitchComplete && bYawComplete && bRollComplete))
 	{
+		bIsFinished = true;
+		OnFinish.Broadcast();
 		EndTask();
 	}
+}
+
+void URsAbilityTask_TurnToLocation::PreDestroyFromReplication()
+{
+	bIsFinished = true;
+	EndTask();
 }

@@ -16,6 +16,6 @@ class RS_API URsAILibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Rs AI Library")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "RS AI Library")
 	static uint8 GetTeamID(AActor* Actor);
 };
