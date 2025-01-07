@@ -6,7 +6,7 @@
 ARsWeapon::ARsWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 }
 
 void ARsWeapon::BeginPlay()
