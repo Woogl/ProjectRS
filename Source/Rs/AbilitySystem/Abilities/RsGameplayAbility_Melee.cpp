@@ -26,7 +26,7 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	{
 		if (HitDetectEventTag.IsValid())
 		{
-			HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
+			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
 			HitDetectTask->ReadyForActivation();
 		}
@@ -35,17 +35,6 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 			// Deal damage immediately if Event tag is not set.
 			HandleHitDetect(FGameplayEventData());
 		}
-	}
-}
-
-void URsGameplayAbility_Melee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	if (HitDetectTask)
-	{
-		HitDetectTask->EndTask();
-		HitDetectTask = nullptr;
 	}
 }
 
