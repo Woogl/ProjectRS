@@ -5,7 +5,6 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 
 void URsGameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {

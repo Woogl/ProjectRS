@@ -17,6 +17,10 @@ class RS_API URsGameplayAbility_Melee : public URsGameplayAbility_Attack
 	GENERATED_BODY()
 
 protected:
+	// Tag that define hit detect event
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
+	FGameplayTag HitDetectEventTag;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	UTargetingPreset* DamageTargetingPreset;
 

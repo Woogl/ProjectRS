@@ -54,6 +54,9 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 
+	// Set in RsGameplayAbility_Attack
+	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("DamageCoefficient"), true, 1.f), 0.f);
+
 	float Impact = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ImpactDef, EvaluationParameters, Impact);
 	// Impact shouldn't be minus value
@@ -63,7 +66,7 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->WillDef, EvaluationParameters, Will);
 	
 	// Stagger Calculation
-	float FinalStaggerGain = FMath::Max(Impact - Will, 0.f);
+	float FinalStaggerGain = FMath::Max((Impact * DamageCoefficient) - Will, 0.f);
 
 	if (FinalStaggerGain <= 0.f || Impact < 0.f)
 	{

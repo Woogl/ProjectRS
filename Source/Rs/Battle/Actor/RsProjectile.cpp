@@ -3,11 +3,11 @@
 
 #include "RsProjectile.h"
 
-#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/AI/RsAILibrary.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 
 
 ARsProjectile::ARsProjectile()
@@ -21,7 +21,7 @@ ARsProjectile::ARsProjectile()
 	Capsule->OnComponentHit.AddDynamic(this, &ThisClass::HandleBlock);
 	SetRootComponent(Capsule);
 	
-	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
 void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -39,17 +39,15 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		}
 	}
 	
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetInstigator());
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OtherActor);
-	if (SourceASC && TargetASC)
+	if (GetInstigator() && OtherActor)
 	{
-		SourceASC->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), TargetASC);
+		URsBattleLibrary::ApplyDamageEffectWithHandle(GetInstigator(), OtherActor, DamageSpecHandle);
+		
 		MaxHitCount--;
-	}
-	
-	if (MaxHitCount == 0)
-	{
-		Destroy();
+		if (MaxHitCount == 0)
+		{
+			Destroy();
+		}
 	}
 }
 

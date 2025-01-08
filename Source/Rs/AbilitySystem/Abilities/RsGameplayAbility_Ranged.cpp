@@ -28,9 +28,9 @@ void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle
 
 	if (ProjectileClass)
 	{
-		if (AttackEventTag.IsValid())
+		if (FireEventTag.IsValid())
 		{
-			UAbilityTask_WaitGameplayEvent* FireProjectileTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AttackEventTag);
+			UAbilityTask_WaitGameplayEvent* FireProjectileTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FireEventTag);
 			FireProjectileTask->EventReceived.AddDynamic(this, &ThisClass::HandleFireProjectile);
 			FireProjectileTask->ReadyForActivation();
 		}
@@ -65,22 +65,31 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 		FVector End = CachedVictim->GetActorLocation();
 		ProjectileTransform.SetRotation(UKismetMathLibrary::FindLookAtRotation(Start, End).Quaternion());
 	}
-	
-	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel());
-	
+
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	Projectile->DamageSpecHandle = DamageEffectSpecHandle;
+	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
+	if (DamageEffectSpecHandle.IsValid())
+	{
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
+		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
+	}
 	if (CachedVictim.IsValid())
 	{
 		Projectile->ProjectileMovement->HomingTargetComponent = CachedVictim.Get()->GetRootComponent();
 	}
+	
 	Projectile->FinishSpawning(AvatarCharacter->GetActorTransform());
 }
 
 void URsGameplayAbility_Ranged::HandleInstantDamage()
 {
-	if (CachedVictim.IsValid() && DamageEffect)
+	if (CachedVictim.IsValid() && DamageEffectClass)
 	{
-		URsBattleLibrary::ApplyDamageEffect(GetAvatarCharacter(), CachedVictim.Get(), DamageEffect);
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
+		if (DamageEffectSpecHandle.IsValid())
+		{
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
+			URsBattleLibrary::ApplyDamageEffectWithHandle(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
+		}
 	}
 }

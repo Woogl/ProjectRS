@@ -18,6 +18,10 @@ class RS_API URsGameplayAbility_Ranged : public URsGameplayAbility_Attack
 	GENERATED_BODY()
 
 protected:
+	// Tag that define fire projectile event
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
+	FGameplayTag FireEventTag;
+	
 	// If Projectile is none, deal instant damage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<ARsProjectile> ProjectileClass;

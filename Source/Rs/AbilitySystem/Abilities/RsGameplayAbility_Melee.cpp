@@ -3,6 +3,7 @@
 
 #include "RsGameplayAbility_Melee.h"
 
+#include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Battle/RsBattleLibrary.h"
@@ -23,9 +24,9 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	
 	if (DamageTargetingPreset)
 	{
-		if (AttackEventTag.IsValid())
+		if (HitDetectEventTag.IsValid())
 		{
-			HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AttackEventTag);
+			HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
 			HitDetectTask->ReadyForActivation();
 		}
@@ -55,7 +56,12 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 	{
 		for (AActor* Victim : Victims)
 		{
-			URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), Victim, DamageEffect);
+			FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
+			if (DamageEffectSpecHandle.IsValid())
+			{
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
+				URsBattleLibrary::ApplyDamageEffectWithHandle(GetAvatarActorFromActorInfo(), Victim, DamageEffectSpecHandle);
+			}
 		}
 	}
 }

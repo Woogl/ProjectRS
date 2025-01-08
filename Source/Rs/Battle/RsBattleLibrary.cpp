@@ -53,3 +53,15 @@ void URsBattleLibrary::ApplyDamageEffect(AActor* SourceActor, AActor* TargetActo
 		SourceASC->ApplyGameplayEffectToTarget(GameplayEffect, TargetASC);
 	}
 }
+
+void URsBattleLibrary::ApplyDamageEffectWithHandle(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	
+	if (SourceASC && TargetASC)
+	{
+		FGameplayEffectSpec EffectSpec = *EffectHandle.Data.Get();
+		SourceASC->ApplyGameplayEffectSpecToTarget(EffectSpec, TargetASC);
+	}
+}

@@ -28,7 +28,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageSpecHandle;
 
-	// Minus value means infinite hit
+	// Default 0 or Minus value means infinite hit
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	int32 MaxHitCount = 1;
 

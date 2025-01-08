@@ -54,6 +54,9 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
+	// Set in RsGameplayAbility_Attack
+	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("DamageCoefficient"), true, 1.f), 0.f);
+
 	float Attack = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->AttackDef, EvaluationParameters, Attack);
 	// Attack shouldn't be minus value
@@ -63,7 +66,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
 	
 	// Damage Calculation
-	float FinalDamage = FMath::Max(Attack - Defense, 0.f);
+	float FinalDamage = FMath::Max((Attack * DamageCoefficient) - Defense, 0.f);
 
 	if (FinalDamage <= 0.f || Attack < 0.f)
 	{

@@ -19,10 +19,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	UAnimMontage* MontageToPlay;
 	
-	// Tag that define hit detect or fire projectile event.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
-	FGameplayTag AttackEventTag;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Focus")
 	UTargetingPreset* FocusTargetingPreset;
 
@@ -33,7 +29,7 @@ protected:
 	float RotatingMaxDuration = 1.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	TSubclassOf<UGameplayEffect> DamageEffect;
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	float DamageCoefficient = 1.f;
