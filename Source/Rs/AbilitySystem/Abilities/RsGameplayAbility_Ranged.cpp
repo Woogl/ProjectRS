@@ -3,7 +3,6 @@
 
 #include "RsGameplayAbility_Ranged.h"
 
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -15,18 +14,6 @@
 void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if (MontageToPlay)
-	{
-		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
-		{
-			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
-			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageCompleted);
-			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCancelled);
-			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
-			MontageTask->ReadyForActivation();
-		}
-	}
 
 	if (FocusTargetingPreset)
 	{
@@ -41,9 +28,9 @@ void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle
 
 	if (ProjectileClass)
 	{
-		if (FireProjectileEventTag.IsValid())
+		if (AttackEventTag.IsValid())
 		{
-			UAbilityTask_WaitGameplayEvent* FireProjectileTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FireProjectileEventTag);
+			UAbilityTask_WaitGameplayEvent* FireProjectileTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AttackEventTag);
 			FireProjectileTask->EventReceived.AddDynamic(this, &ThisClass::HandleFireProjectile);
 			FireProjectileTask->ReadyForActivation();
 		}
@@ -65,16 +52,6 @@ void URsGameplayAbility_Ranged::EndAbility(const FGameplayAbilitySpecHandle Hand
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
 	CachedVictim = nullptr;
-}
-
-void URsGameplayAbility_Ranged::HandleMontageCompleted()
-{
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void URsGameplayAbility_Ranged::HandleMontageCancelled()
-{
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventData)
