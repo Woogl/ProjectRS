@@ -23,7 +23,6 @@ public:
 	ARsEnemyCharacter();
 
 protected:
-	// Override "BeginPlay" to initialize the Ability System Component.
-	// Note: The Ability System Component is created in the class constructor, so it should always be valid at this point.
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 };

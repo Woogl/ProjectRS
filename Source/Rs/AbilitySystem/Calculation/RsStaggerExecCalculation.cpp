@@ -73,5 +73,11 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 		return;
 	}
 
+	// Stun has 160 % damage bonus
+	if (EvaluationParameters.TargetTags->HasTagExact(FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"))))
+	{
+		FinalStaggerGain *= 1.6f;
+	}
+
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerGainProperty, EGameplayModOp::Additive, FinalStaggerGain));
 }

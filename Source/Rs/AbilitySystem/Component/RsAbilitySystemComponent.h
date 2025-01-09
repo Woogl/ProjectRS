@@ -7,6 +7,9 @@
 #include "RsAbilitySystemComponent.generated.h"
 
 class URsAbilitySet;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayEffectChanged, FActiveGameplayEffect&, Effect);
+
 /**
  * 
  */
