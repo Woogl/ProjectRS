@@ -16,17 +16,12 @@ URsGameplayAbility::URsGameplayAbility()
 
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
-	FGameplayTagContainer* MutableTags = const_cast<FGameplayTagContainer*>(&TempCooldownTags);
-	MutableTags->Reset();
-	
-	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
-	if (ParentTags)
+	if (CooldownTag.IsValid())
 	{
-		MutableTags->AppendTags(*ParentTags);
+		CachedCooldownTags.AddTag(CooldownTag);
+		return &CachedCooldownTags;
 	}
-	MutableTags->AddTag(CooldownTag);
-	
-	return MutableTags;
+	return nullptr;
 }
 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const

@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "MVVMViewModelBase.h"
 #include "RsAbilityViewModel.generated.h"
 
 struct FActiveGameplayEffect;
 class URsGameplayAbility;
+
 /**
  * 
  */
 UCLASS()
-class RS_API URsAbilityViewModel : public UMVVMViewModelBase
+class RS_API URsAbilityViewModel : public UMVVMViewModelBase, public FTickableGameObject
 {
 	GENERATED_BODY()
 	
@@ -32,6 +32,14 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCooldownPercent() const;
 
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool IsOnCooldown() const;
+
+	// FTickableGameObject
+	// NOTE: Ability class can't tick, but I want to display ability's info updated
+	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override;
+	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	float CooldownDuration;
@@ -40,8 +48,5 @@ private:
 	float CooldownRemaining;
 
 	UPROPERTY()
-	FGameplayTag CooldownTag;
-
-	UFUNCTION()
-	void HandleGameplayEffectChanged(FActiveGameplayEffect& Effect);
+	TWeakObjectPtr<URsGameplayAbility> CachedModel;
 };

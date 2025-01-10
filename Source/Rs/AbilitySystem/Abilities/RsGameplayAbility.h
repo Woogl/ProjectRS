@@ -27,11 +27,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
-	FScalableFloat CooldownTime;
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns", meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
+	FScalableFloat CooldownDuration;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
@@ -44,9 +44,6 @@ public:
 protected:
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
 	TWeakObjectPtr<ARsCharacterBase> AvatarCharacter = nullptr;
-
-	UPROPERTY(Transient)
-	FGameplayTagContainer TempCooldownTags;
 	
 	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.
@@ -78,4 +75,8 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent")
 	void K2_OnGameplayEvent(FGameplayTag EventTag);
+
+private:
+	UPROPERTY(Transient)
+	mutable FGameplayTagContainer CachedCooldownTags;
 };

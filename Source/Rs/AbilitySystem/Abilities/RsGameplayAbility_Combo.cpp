@@ -17,7 +17,7 @@ void URsGameplayAbility_Combo::OnGiveAbility(const FGameplayAbilityActorInfo* Ac
 	
 	for (TSubclassOf<URsGameplayAbility> InnerAbility : InnerAbilities)
 	{
-		FGameplayAbilitySpec InnerSpec(InnerAbility, GetAbilityLevel(), INDEX_NONE, ActorInfo->AvatarActor.Get());
+		FGameplayAbilitySpec InnerSpec(InnerAbility, GetAbilityLevel(), INDEX_NONE, ActorInfo->OwnerActor.Get());
 		InnerSpecs.Add(InnerSpec);
 		
 		FGameplayAbilitySpecHandle InnerSpecHandle = ActorInfo->AbilitySystemComponent->GiveAbility(InnerSpec);

@@ -59,7 +59,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	// Grant Gameplay Abilities.
 	for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, GetAvatarActor());
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwningActor);
 		GiveAbility(AbilitySpec);
 	}
 
@@ -74,7 +74,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
 		EffectContextHandle.AddSourceObject(this);
 
-		if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 1, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
+		if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
 		{
 			ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
 		}

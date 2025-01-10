@@ -3,9 +3,7 @@
 
 #include "RsAbilityViewModel.h"
 
-#include "AbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 
 URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Model)
 {
@@ -16,37 +14,7 @@ URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAb
 
 void URsAbilityViewModel::Initialize()
 {
-	URsGameplayAbility* Model = Cast<URsGameplayAbility>(GetOuter());
-	URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(Model->GetAbilitySystemComponentFromActorInfo());
-	if (RsASC == nullptr)
-	{
-		return;
-	}
-	
-	// RsASC->OnGameplayEffectChanged.AddDynamic(this, &ThisClass::HandleGameplayEffectChanged);
-	CooldownTag = Model->CooldownTag;
-	
-	if (Model->CooldownTag.IsValid())
-	{
-		FGameplayEffectQuery const Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(Model->CooldownTag.GetSingleTagContainer());
-		TArray<TPair<float, float>> DurationAndTimeRemaining = RsASC->GetActiveEffectsTimeRemainingAndDuration(Query);
-		if (DurationAndTimeRemaining.Num() > 0)
-		{
-			int32 BestIdx = 0;
-			float LongestTime = DurationAndTimeRemaining[0].Key;
-			for (int32 Idx = 1; Idx < DurationAndTimeRemaining.Num(); ++Idx)
-			{
-				if (DurationAndTimeRemaining[Idx].Key > LongestTime)
-				{
-					LongestTime = DurationAndTimeRemaining[Idx].Key;
-					BestIdx = Idx;
-				}
-			}
-
-			SetCooldownRemaining(DurationAndTimeRemaining[BestIdx].Key);
-			SetCooldownDuration(DurationAndTimeRemaining[BestIdx].Value);
-		}
-	}
+	CachedModel = Cast<URsGameplayAbility>(GetOuter());
 }
 
 float URsAbilityViewModel::GetCooldownDuration() const
@@ -64,6 +32,7 @@ void URsAbilityViewModel::SetCooldownDuration(float NewCooldownDuration)
 	if (UE_MVVM_SET_PROPERTY_VALUE(CooldownDuration, NewCooldownDuration))
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
 }
 
@@ -72,6 +41,7 @@ void URsAbilityViewModel::SetCooldownRemaining(float NewCooldownRemaining)
 	if (UE_MVVM_SET_PROPERTY_VALUE(CooldownRemaining, NewCooldownRemaining))
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
 }
 
@@ -84,11 +54,25 @@ float URsAbilityViewModel::GetCooldownPercent() const
 	return CooldownRemaining / CooldownDuration;
 }
 
-void URsAbilityViewModel::HandleGameplayEffectChanged(FActiveGameplayEffect& Effect)
+bool URsAbilityViewModel::IsOnCooldown() const
 {
-	if (Effect.Spec.DynamicGrantedTags.HasTag(CooldownTag))
+	return CooldownRemaining > 0.f;
+}
+
+void URsAbilityViewModel::Tick(float DeltaTime)
+{
+	if (CachedModel.IsValid())
 	{
-		SetCooldownDuration(Effect.GetDuration());
-		SetCooldownRemaining(Effect.GetTimeRemaining(GetWorld()->TimeSeconds));
+		float LocalCooldownRemaining;
+		float LocalCooldownDuration;
+		CachedModel->GetCooldownTimeRemainingAndDuration(FGameplayAbilitySpecHandle(), CachedModel->GetCurrentActorInfo(), LocalCooldownRemaining, LocalCooldownDuration);
+
+		SetCooldownRemaining(LocalCooldownRemaining);
+		SetCooldownDuration(LocalCooldownDuration);
 	}
+}
+
+TStatId URsAbilityViewModel::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(URsAbilityViewModel, STATGROUP_Tickables);
 }
