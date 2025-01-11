@@ -8,7 +8,6 @@
 URsDefenseSet::URsDefenseSet()
 {
 	Defense = 0.f;
-	Will = 0.f;
 }
 
 void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -21,16 +20,10 @@ void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	
 	// Replicated to all
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Defense, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Will, Params);
 }
 
 void URsDefenseSet::OnRep_Defense(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Defense, OldValue);
 
-}
-
-void URsDefenseSet::OnRep_Will(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Will, OldValue);
 }

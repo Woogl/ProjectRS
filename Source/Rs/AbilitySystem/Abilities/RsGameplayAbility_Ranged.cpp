@@ -71,6 +71,7 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	if (DamageEffectSpecHandle.IsValid())
 	{
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerCoefficient"), StaggerCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
 	if (CachedVictim.IsValid())
@@ -89,6 +90,7 @@ void URsGameplayAbility_Ranged::HandleInstantDamage()
 		if (DamageEffectSpecHandle.IsValid())
 		{
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerCoefficient"), StaggerCoefficient);
 			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
 		}
 	}

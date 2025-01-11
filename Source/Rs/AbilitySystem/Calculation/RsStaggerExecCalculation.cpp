@@ -11,7 +11,6 @@
 struct RsStaggerStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Impact);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Will);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentStagger);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerGain);
 
@@ -19,7 +18,6 @@ struct RsStaggerStatics
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Impact, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Will, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, CurrentStagger, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerGain, Target, false);
 	}
@@ -36,7 +34,6 @@ URsStaggerExecCalculation::URsStaggerExecCalculation()
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 	
 	RelevantAttributesToCapture.Add(DamageStatics->ImpactDef);
-	RelevantAttributesToCapture.Add(DamageStatics->WillDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CurrentStaggerDef);
 }
 
@@ -55,18 +52,15 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 
 	// Set in RsGameplayAbility_Attack
-	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("DamageCoefficient"), true, 1.f), 0.f);
+	float StaggerCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("StaggerCoefficient"), true, 1.f), 0.f);
 
 	float Impact = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ImpactDef, EvaluationParameters, Impact);
 	// Impact shouldn't be minus value
 	Impact = FMath::Max(Impact, 0.f);
-
-	float Will = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->WillDef, EvaluationParameters, Will);
 	
 	// Stagger Calculation
-	float FinalStaggerGain = FMath::Max((Impact * DamageCoefficient) - Will, 0.f);
+	float FinalStaggerGain = Impact * StaggerCoefficient;
 
 	if (FinalStaggerGain <= 0.f || Impact < 0.f)
 	{

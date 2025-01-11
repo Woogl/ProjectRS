@@ -25,15 +25,7 @@ public:
 	FGameplayAttributeData Defense;
 	ATTRIBUTE_ACCESSORS(URsDefenseSet, Defense)
 
-	// Value related to stagger gain reduction when attacked
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Will)
-	FGameplayAttributeData Will;
-	ATTRIBUTE_ACCESSORS(URsDefenseSet, Will)
-
 protected:
 	UFUNCTION()
 	virtual void OnRep_Defense(const FGameplayAttributeData& OldValue);
-
-	UFUNCTION()
-	virtual void OnRep_Will(const FGameplayAttributeData& OldValue);
 };
