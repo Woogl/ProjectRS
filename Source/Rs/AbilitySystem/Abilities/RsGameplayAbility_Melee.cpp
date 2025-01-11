@@ -49,7 +49,7 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 			if (DamageEffectSpecHandle.IsValid())
 			{
 				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
-				URsBattleLibrary::ApplyDamageEffectWithHandle(GetAvatarActorFromActorInfo(), Victim, DamageEffectSpecHandle);
+				URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), Victim, DamageEffectSpecHandle);
 			}
 		}
 	}

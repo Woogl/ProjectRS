@@ -54,7 +54,7 @@ void URsBattleLibrary::ApplyDamageEffect(AActor* SourceActor, AActor* TargetActo
 	}
 }
 
-void URsBattleLibrary::ApplyDamageEffectWithHandle(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+void URsBattleLibrary::ApplyDamageEffectSpec(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);

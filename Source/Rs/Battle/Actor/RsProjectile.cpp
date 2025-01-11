@@ -41,7 +41,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && OtherActor)
 	{
-		URsBattleLibrary::ApplyDamageEffectWithHandle(GetInstigator(), OtherActor, DamageSpecHandle);
+		URsBattleLibrary::ApplyDamageEffectSpec(GetInstigator(), OtherActor, DamageSpecHandle);
 		
 		MaxHitCount--;
 		if (MaxHitCount == 0)

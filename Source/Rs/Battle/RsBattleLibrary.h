@@ -25,5 +25,5 @@ public:
 	static void ApplyDamageEffect(AActor* SourceActor, AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageEffectWithHandle(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+	static void ApplyDamageEffectSpec(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
 };

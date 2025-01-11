@@ -89,7 +89,7 @@ void URsGameplayAbility_Ranged::HandleInstantDamage()
 		if (DamageEffectSpecHandle.IsValid())
 		{
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
-			URsBattleLibrary::ApplyDamageEffectWithHandle(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
+			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
 		}
 	}
 }
