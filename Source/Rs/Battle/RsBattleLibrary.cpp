@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -64,4 +65,17 @@ void URsBattleLibrary::ApplyDamageEffectSpec(AActor* SourceActor, AActor* Target
 		FGameplayEffectSpec EffectSpec = *EffectHandle.Data.Get();
 		SourceASC->ApplyGameplayEffectSpecToTarget(EffectSpec, TargetASC);
 	}
+}
+
+bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())
+	{
+		if (EffectContext->GetScriptStruct() == FRsGameplayEffectContext::StaticStruct())
+		{
+			FRsGameplayEffectContext RsEffectContext = *static_cast<FRsGameplayEffectContext*>(EffectContextHandle.Get());
+			return RsEffectContext.bIsCriticalHit;
+		}
+	}
+	return false;
 }

@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsBattleLibrary.generated.h"
 
+struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
 class UTargetingPreset;
@@ -26,4 +27,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static void ApplyDamageEffectSpec(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+
+	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
+	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);
 };

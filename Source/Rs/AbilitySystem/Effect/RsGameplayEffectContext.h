@@ -15,7 +15,7 @@ struct FRsGameplayEffectContext : public FGameplayEffectContext
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	bool bIsCriticalHit = false;
 	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
