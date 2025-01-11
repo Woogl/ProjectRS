@@ -8,7 +8,8 @@
 #include "RsGameSetting.generated.h"
 
 /**
- * 
+ * Golbal game setting datas for Project RS
+ * Datas in this class is always loaded in memory.
  */
 UCLASS()
 class RS_API URsGameSetting : public UPrimaryDataAsset
@@ -22,6 +23,15 @@ public:
 	static URsGameSetting* Get();
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
 	FGameplayTag DamageCoefficientTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
+	FGameplayTag HitReactionAbilityTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
+	FGameplayTag DeathAbilityTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
+	FGameplayTag StunAbilityTag;
 };

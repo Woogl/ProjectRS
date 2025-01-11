@@ -30,10 +30,26 @@ public:
 	FGameplayAttributeData Impact;
 	ATTRIBUTE_ACCESSORS(URsAttackSet, Impact)
 
+	// Critical rate value. Please use 0 ~ 100 in range.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalRate)
+	FGameplayAttributeData CriticalRate;
+	ATTRIBUTE_ACCESSORS(URsAttackSet, CriticalRate)
+
+	// If critical hit, deal {CriticalDmgBonus} %. If not critical hit, deal 100 %. Please use 100 over.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalDmgBonus)
+	FGameplayAttributeData CriticalDmgBonus;
+	ATTRIBUTE_ACCESSORS(URsAttackSet, CriticalDmgBonus)
+
 protected:
 	UFUNCTION()
 	virtual void OnRep_Attack(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
 	virtual void OnRep_Impact(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_CriticalRate(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_CriticalDmgBonus(const FGameplayAttributeData& OldValue);
 };

@@ -6,7 +6,9 @@
 ARsWeapon::ARsWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+
+	bReplicates = true;
+	bNetUseOwnerRelevancy = true;
 }
 
 void ARsWeapon::BeginPlay()

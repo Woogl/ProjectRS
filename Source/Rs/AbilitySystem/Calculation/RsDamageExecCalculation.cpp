@@ -11,6 +11,8 @@
 struct RsDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentHealth);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
@@ -19,6 +21,8 @@ struct RsDamageStatics
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Attack, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, CurrentHealth, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, Damage, Target, false);
@@ -36,6 +40,8 @@ URsDamageExecCalculation::URsDamageExecCalculation()
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 	
 	RelevantAttributesToCapture.Add(DamageStatics->AttackDef);
+	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
+	RelevantAttributesToCapture.Add(DamageStatics->CriticalDmgBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CurrentHealthDef);
 }
@@ -65,10 +71,25 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
 	
-	// Damage Calculation
-	float FinalDamage = FMath::Max((Attack * DamageCoefficient) - Defense, 0.f);
-
-	if (FinalDamage <= 0.f || Attack < 0.f)
+	float CriticalRate = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalRateDef, EvaluationParameters, CriticalRate);
+	// Critical Rate should be 0 ~ 100 range.
+	CriticalRate = FMath::Clamp(CriticalRate, 0.f, 100.f);
+	
+	float CriticalDmgBonus = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalDmgBonus);
+	
+	float RandomValue = FMath::RandRange(0.f, 100.f);
+	bool bCriticalHit = CriticalRate >= RandomValue;
+	
+	// Damage calculation start
+	float FinalDamage = (Attack * DamageCoefficient);
+	// Critical calc
+	FinalDamage *= (bCriticalHit ? (CriticalDmgBonus * 0.01f) : 1.f);
+	// Defense rate calc
+	FinalDamage *= (190.f / (Defense + 190.f));
+	
+	if (FinalDamage <= 0.f)
 	{
 		return;
 	}

@@ -22,6 +22,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static UGameplayAbility* FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch = true);
 
+	// Find the first RS ability that matches tag. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static URsGameplayAbility* FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch = true);
 };
