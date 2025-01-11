@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/RsGameplayAbility.h"
+#include "Effect/RsGameplayEffectContext.h"
 
 UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
@@ -38,4 +39,18 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbility
 		return Cast<URsGameplayAbility>(FoundAbility);
 	}
 	return nullptr;
+}
+
+FRsGameplayEffectContext URsAbilitySystemLibrary::ConvertToRsGameplayEffectContext(FGameplayEffectContextHandle& EffectContextHandle, bool& OutIsCritical)
+{
+	if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())
+	{
+		if (EffectContext->GetScriptStruct() == FRsGameplayEffectContext::StaticStruct())
+		{
+			FRsGameplayEffectContext RsEffectContext = *static_cast<FRsGameplayEffectContext*>(EffectContextHandle.Get());
+			OutIsCritical = RsEffectContext.bIsCriticalHit;
+			return *static_cast<FRsGameplayEffectContext*>(EffectContextHandle.Get());
+		}
+	}
+	return FRsGameplayEffectContext();
 }

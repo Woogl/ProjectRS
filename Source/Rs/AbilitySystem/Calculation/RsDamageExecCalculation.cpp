@@ -6,6 +6,7 @@
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
@@ -78,9 +79,16 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	
 	float CriticalDmgBonus = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalDmgBonus);
-	
+
+	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
 	bool bCriticalHit = CriticalRate >= RandomValue;
+	if (bCriticalHit)
+	{
+		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
+		FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		ContextHandle->bIsCriticalHit = true;
+	}
 	
 	// Damage calculation start
 	float FinalDamage = (Attack * DamageCoefficient);
@@ -89,7 +97,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	// Defense rate calc
 	FinalDamage *= (190.f / (Defense + 190.f));
 	
-	if (FinalDamage <= 0.f)
+	if (FinalDamage <= 0.f || Attack <= 0.f)
 	{
 		return;
 	}

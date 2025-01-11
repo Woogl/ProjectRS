@@ -15,7 +15,8 @@
 				"CommonUI",
 				"CommonGame",
 				"AIModule",
-				"TargetingSystem"
+				"TargetingSystem",
+				"CoreUObject"
 			]
 		}
 	],
