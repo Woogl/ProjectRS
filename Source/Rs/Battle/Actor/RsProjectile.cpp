@@ -14,7 +14,6 @@ ARsProjectile::ARsProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
-	InitialLifeSpan = 10.f;
 
 	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
 	Capsule->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::HandleBeginOverlap);
@@ -22,6 +21,16 @@ ARsProjectile::ARsProjectile()
 	SetRootComponent(Capsule);
 	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
+}
+
+void ARsProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (ProjectileMovement->MaxSpeed != 0)
+	{
+		SetLifeSpan(MaxRange / ProjectileMovement->MaxSpeed);
+	}
 }
 
 void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

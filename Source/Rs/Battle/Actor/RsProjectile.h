@@ -28,6 +28,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageSpecHandle;
 
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	float MaxRange = 1000.f;
+
 	// Default 0 or Minus value means infinite hit
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	int32 MaxHitCount = 1;
@@ -36,6 +39,8 @@ public:
 	bool bCannotHitFriend = true;
 
 protected:
+	virtual void BeginPlay() override;
+	
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
