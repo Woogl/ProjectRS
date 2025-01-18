@@ -8,10 +8,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/Party/RsPartyLibrary.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter()
 {
@@ -30,9 +32,9 @@ ARsPlayerCharacter::ARsPlayerCharacter()
 	TeamID = 0;
 }
 
-void ARsPlayerCharacter::NotifyControllerChanged()
+void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::NotifyControllerChanged();
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -41,11 +43,6 @@ void ARsPlayerCharacter::NotifyControllerChanged()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-}
-
-void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
@@ -54,12 +51,27 @@ void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	}
 }
 
+void ARsPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Register Party member
+	URsPartyLibrary::AddPartyMember(this);
+}
+
 void ARsPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
 	// Server side
 	InitAbilitySystem();
+}
+
+void ARsPlayerCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	GetMovementComponent()->StopMovementImmediately();
 }
 
 void ARsPlayerCharacter::OnRep_PlayerState()

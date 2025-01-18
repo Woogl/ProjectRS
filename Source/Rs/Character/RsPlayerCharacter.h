@@ -42,11 +42,12 @@ public:
 	ARsPlayerCharacter();
 	
 protected:
-	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void BeginPlay() override;
 
 	// Called on the server to acknowledge possession of this Character.
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
 
 	// Called on the client when the Character is assigned its Player State.
 	virtual void OnRep_PlayerState() override;

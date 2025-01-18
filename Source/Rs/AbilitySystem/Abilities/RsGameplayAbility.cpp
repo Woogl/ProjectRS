@@ -41,15 +41,6 @@ void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 
 	// Set the "Avatar Character" reference.
 	AvatarCharacter = Cast<ARsCharacterBase>(ActorInfo->AvatarActor);
-
-	// Set up Bindings for Enhanced Input.
-	SetupEnhancedInputBindings(ActorInfo, Spec);
-
-	// Try to Activate immediately if "Activate Ability On Granted" is true.
-	if (ActivateAbilityOnGranted)
-	{
-		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
-	}
 	
 	if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(ActorInfo->AbilitySystemComponent))
 	{
@@ -60,6 +51,15 @@ void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
+
+	// Set up Bindings for Enhanced Input.
+	SetupEnhancedInputBindings(ActorInfo, Spec);
+	
+	// Try to Activate immediately if "Activate Ability On Granted" is true.
+	if (ActivateAbilityOnGranted)
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
+	}
 	
 	K2_OnGiveAbility();
 }
@@ -68,7 +68,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// Apply cooldowns
+	// Apply cooldowns and costs
 	CommitAbility(Handle, ActorInfo, ActivationInfo);
 }
 
@@ -96,7 +96,7 @@ void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorI
 	
 	// Input pressed event.
 	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Triggered, AbilityInstance, &ThisClass::HandleInputPressedEvent, ActorInfo, Spec.Handle);
-
+	
 	// Input released event.
 	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Completed, AbilityInstance, &ThisClass::HandleInputReleasedEvent, ActorInfo, Spec.Handle);
 }

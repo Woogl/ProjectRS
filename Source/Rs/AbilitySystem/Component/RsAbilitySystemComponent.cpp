@@ -13,26 +13,29 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	SetIsReplicatedByDefault(true);
 }
 
-void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwningActor, AActor* InAvatarActor)
+void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
 {
-	if (AbilitySystemDataInitialized)
-	{
-		return;
-	}
-	AbilitySystemDataInitialized = true;
+	check(InOwnerActor);
+	check(InAvatarActor);
+
+	// Clean up the old ability system component.
+	UninitializeAbilitySystem();
 
 	// Set the Owning Actor and Avatar Actor. (Used throughout the Gameplay Ability System to get references etc.)
-	InitAbilityActorInfo(InOwningActor, InAvatarActor);
+	InitAbilityActorInfo(InOwnerActor, InAvatarActor);
 
 	// Apply the Gameplay Tag container as loose Gameplay Tags. (These are not replicated by default and should be applied on both server and client respectively.)
-	AddLooseGameplayTags(AbilitySet->GrantedTags);
+	if (AbilitySystemDataInitialized == false)
+	{
+		AddLooseGameplayTags(AbilitySet->GrantedTags);
+	}
 	
 	// Check to see if we have authority. (Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.)
 	if (!GetOwnerActor()->HasAuthority())
 	{
 		return;
 	}
-
+	
 	// Grant attribute sets.
 	TSet<UClass*> AttributeSetClasses;
 	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
@@ -44,9 +47,10 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	}
 	for (UClass* AttributeSetClass : AttributeSetClasses)
 	{
-		GetOrCreateAttributeSubobject(AttributeSetClass);
+		const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+		GrantedAttributeSets.Add(GrantedAttributeSet);
 	}
-
+		
 	// Set base attribute values.
 	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributes)
 	{
@@ -59,26 +63,39 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	// Grant Gameplay Abilities.
 	for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwningActor);
-		GiveAbility(AbilitySpec);
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwnerActor);
+		FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);
+		GrantedAbilityHandles.Add(GrantedAbilityHandle);
 	}
 
 	// Apply Gameplay Effects.
 	for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
 	{
-		if (!IsValid(GameplayEffect))
-		{
-			continue;
-		}
-			
 		FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
 		EffectContextHandle.AddSourceObject(this);
 
 		if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
 		{
-			ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
+			FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
+			GrantedEffectHandles.Add(GrantedEffectHandle);
 		}
 	}
+	
+	AbilitySystemDataInitialized = true;
+}
+
+void URsAbilitySystemComponent::UninitializeAbilitySystem()
+{
+	ClearAllAbilities();
+	GrantedAbilityHandles.Reset();
+	
+	for (FActiveGameplayEffectHandle& OldEffectHandle : GrantedEffectHandles)
+	{
+		RemoveActiveGameplayEffect(OldEffectHandle);
+	}
+	GrantedEffectHandles.Reset();
+	
+	GrantedAttributeSets.Reset();
 }
 
 int32 URsAbilitySystemComponent::HandleGameplayEvent(FGameplayTag EventTag, const FGameplayEventData* Payload)
