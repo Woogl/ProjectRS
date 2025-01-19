@@ -55,6 +55,7 @@ void URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController,
 	{
 		if (PlayerController->GetPawn() != NewPartyMember)
 		{
+			PlayerController->GetPrevController()->Possess(PlayerController->GetPawn());
 			PlayerController->Possess(NewPartyMember);
 		}
 		else

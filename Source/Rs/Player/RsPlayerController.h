@@ -18,9 +18,14 @@ class RS_API ARsPlayerController : public ACommonPlayerController
 
 	UPROPERTY(VisibleAnywhere, Category = "Party")
 	TObjectPtr<URsPartyComponent> PartyComponent;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AController> PrevController;
 public:
 	ARsPlayerController();
+	virtual void OnPossess(APawn* InPawn) override;
 
+	TObjectPtr<AController> GetPrevController() const;
 	URsPartyComponent* GetPartyComponent() const;
 };
+

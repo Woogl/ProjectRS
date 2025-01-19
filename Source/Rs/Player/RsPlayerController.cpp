@@ -14,3 +14,14 @@ URsPartyComponent* ARsPlayerController::GetPartyComponent() const
 {
 	return PartyComponent;
 }
+
+void ARsPlayerController::OnPossess(APawn* InPawn)
+{
+	PrevController = InPawn->GetController();
+	Super::OnPossess(InPawn);
+}
+
+TObjectPtr<AController> ARsPlayerController::GetPrevController() const
+{
+	return PrevController;
+}
