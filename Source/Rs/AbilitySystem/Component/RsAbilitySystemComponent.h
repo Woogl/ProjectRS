@@ -40,7 +40,7 @@ private:
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
 
-	// Pointers to the granted attribute sets
+	// Pointers to the granted attribute sets.
 	UPROPERTY()
 	TArray<const UAttributeSet*> GrantedAttributeSets;
 };

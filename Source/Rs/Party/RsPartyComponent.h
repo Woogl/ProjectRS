@@ -7,6 +7,7 @@
 #include "RsPartyComponent.generated.h"
 
 
+class ARsPlayerController;
 class ARsPlayerCharacter;
 
 UCLASS()
@@ -20,6 +21,7 @@ public:
 	ARsPlayerCharacter* GetPartyMember(int32 MemberIndex) const;
 	void AddPartyMember(ARsPlayerCharacter* NewMember);
 	void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
+	void SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	
 protected:
 	UPROPERTY(VisibleAnywhere)

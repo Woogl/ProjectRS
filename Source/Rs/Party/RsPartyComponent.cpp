@@ -3,6 +3,9 @@
 
 #include "RsPartyComponent.h"
 
+#include "Rs/Character/RsPlayerCharacter.h"
+#include "Rs/Player/RsPlayerController.h"
+
 URsPartyComponent::URsPartyComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -43,5 +46,20 @@ void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("RsPartyComponent::RemovePartyMember: Can't found Member"));
+	}
+}
+
+void URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex)
+{
+	if (ARsPlayerCharacter* NewPartyMember = GetPartyMember(MemberIndex))
+	{
+		if (PlayerController->GetPawn() != NewPartyMember)
+		{
+			PlayerController->Possess(NewPartyMember);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("RsPartyComponent::SwitchPartyMember: Can't switch to same character"));
+		}
 	}
 }

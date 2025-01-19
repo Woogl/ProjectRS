@@ -22,6 +22,5 @@ class RS_API ARsPlayerController : public ACommonPlayerController
 public:
 	ARsPlayerController();
 
-	void SwitchPartyMember(int32 MemberIndex);
 	URsPartyComponent* GetPartyComponent() const;
 };

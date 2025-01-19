@@ -12,7 +12,7 @@ void URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMe
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
 	{
-		RsPlayerController->SwitchPartyMember(NewMemberIndex);
+		RsPlayerController->GetPartyComponent()->SwitchPartyMember(RsPlayerController, NewMemberIndex);
 	}
 }
 
