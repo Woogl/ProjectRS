@@ -7,6 +7,7 @@
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
+#include "Rs/System/RsGameplayTags.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
@@ -62,7 +63,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
 	// Set in RsGameplayAbility_Attack
-	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("DamageCoefficient"), true, 1.f), 0.f);
+	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, true, 1.f), 0.f);
 
 	float Attack = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->AttackDef, EvaluationParameters, Attack);

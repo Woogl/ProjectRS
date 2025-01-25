@@ -24,11 +24,11 @@ public:
 
 	// Set Attributes to replicate.
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	// Used to create a local copy of Loss which is then subtracted from Current Stagger.
+	
+	// Used to create a local copy of stagger damage which is then added to Current Stagger.
 	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
-	FGameplayAttributeData StaggerGain;
-	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerGain)
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, Damage)
 	
 	// Holds the current value for Stagger.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentStagger)

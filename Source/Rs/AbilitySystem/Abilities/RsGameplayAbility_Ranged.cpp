@@ -10,6 +10,7 @@
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
+#include "Rs/System/RsGameplayTags.h"
 
 void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -70,8 +71,8 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerCoefficient"), StaggerCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("HealthDamageCoefficient"), HealthDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerDamageCoefficient"), StaggerDamageCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
 	if (CachedVictim.IsValid())
@@ -89,8 +90,8 @@ void URsGameplayAbility_Ranged::HandleInstantDamage()
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 		if (DamageEffectSpecHandle.IsValid())
 		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerCoefficient"), StaggerCoefficient);
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
 		}
 	}

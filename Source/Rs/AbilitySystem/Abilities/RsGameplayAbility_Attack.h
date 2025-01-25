@@ -32,10 +32,10 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float DamageCoefficient = 1.f;
+	float HealthDamageCoefficient = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float StaggerCoefficient = 1.f;
+	float StaggerDamageCoefficient = 1.f;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 

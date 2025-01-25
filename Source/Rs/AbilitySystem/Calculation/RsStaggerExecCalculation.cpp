@@ -6,20 +6,21 @@
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
+#include "Rs/System/RsGameplayTags.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsStaggerStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Impact);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentStagger);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerGain);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
 
 	RsStaggerStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Impact, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, CurrentStagger, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerGain, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, Damage, Target, false);
 	}
 
 	static const RsStaggerStatics& Get()
@@ -52,7 +53,7 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 
 	// Set in RsGameplayAbility_Attack
-	float StaggerCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FName("StaggerCoefficient"), true, 1.f), 0.f);
+	float StaggerCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, true, 1.f), 0.f);
 
 	float Impact = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ImpactDef, EvaluationParameters, Impact);
@@ -73,5 +74,5 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 		FinalStaggerGain *= 1.6f;
 	}
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerGainProperty, EGameplayModOp::Additive, FinalStaggerGain));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->DamageProperty, EGameplayModOp::Additive, FinalStaggerGain));
 }

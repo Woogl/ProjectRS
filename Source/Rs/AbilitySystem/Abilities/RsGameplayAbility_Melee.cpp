@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/System/RsGameplayTags.h"
 
 void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -48,8 +49,8 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 			FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 			if (DamageEffectSpecHandle.IsValid())
 			{
-				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("DamageCoefficient"), DamageCoefficient);
-				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerCoefficient"), StaggerCoefficient);
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 				URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), Victim, DamageEffectSpecHandle);
 			}
 		}

@@ -18,7 +18,7 @@ public:
 	UPROPERTY()
 	bool bIsCriticalHit = false;
 	
-	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
+	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 	virtual UScriptStruct* GetScriptStruct() const override;
 	virtual FGameplayEffectContext* Duplicate() const override;
 };
