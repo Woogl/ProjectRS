@@ -68,13 +68,21 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	}
 
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("HealthDamageCoefficient"), HealthDamageCoefficient);
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FName("StaggerDamageCoefficient"), StaggerDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
+
+	FGameplayEffectSpecHandle CostRecoveryEffectSpecHandle = MakeOutgoingGameplayEffectSpec(CostRecoveryEffectClass, GetAbilityLevel());
+	if (CostRecoveryEffectSpecHandle.IsValid())
+	{
+		Projectile->CostRecoverySpecHandle = CostRecoveryEffectSpecHandle;
+	}
+	
 	if (CachedVictim.IsValid())
 	{
 		Projectile->ProjectileMovement->HomingTargetComponent = CachedVictim.Get()->GetRootComponent();
@@ -94,5 +102,6 @@ void URsGameplayAbility_Ranged::HandleInstantDamage()
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
 		}
+		ApplyCostRecoveryEffect();
 	}
 }

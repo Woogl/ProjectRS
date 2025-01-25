@@ -14,6 +14,15 @@ URsGameplayAbility::URsGameplayAbility()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;	
 }
 
+void URsGameplayAbility::ApplyCostRecoveryEffect()
+{
+	if (CostRecoveryEffectClass)
+	{
+		const UGameplayEffect* CostRecoveryEffect = CostRecoveryEffectClass->GetDefaultObject<UGameplayEffect>();
+		ApplyGameplayEffectToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, CostRecoveryEffect, GetAbilityLevel());
+	}
+}
+
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
 	if (CooldownTag.IsValid())

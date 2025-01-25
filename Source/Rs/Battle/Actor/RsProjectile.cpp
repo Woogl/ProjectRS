@@ -3,6 +3,7 @@
 
 #include "RsProjectile.h"
 
+#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemGlobals.h"
@@ -56,6 +57,16 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (MaxHitCount == 0)
 		{
 			Destroy();
+		}
+	}
+
+	if (bEnableCostRecovery == true && CostRecoverySpecHandle.IsValid())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetInstigator()))
+		{
+			const FGameplayEffectSpec* CostRecoveryEffectSpec = CostRecoverySpecHandle.Data.Get();
+			ASC->ApplyGameplayEffectSpecToSelf(*CostRecoveryEffectSpec);
+			bEnableCostRecovery = false;
 		}
 	}
 }

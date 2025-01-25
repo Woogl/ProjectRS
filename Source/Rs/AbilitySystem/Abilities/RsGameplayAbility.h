@@ -34,7 +34,12 @@ public:
 	FScalableFloat CooldownDuration;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
-	FScalableFloat Cost;
+	FScalableFloat CostAmount;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
+
+	void ApplyCostRecoveryEffect();
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
@@ -43,7 +48,7 @@ public:
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-
+	
 protected:
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
 	TWeakObjectPtr<ARsCharacterBase> AvatarCharacter = nullptr;

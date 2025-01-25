@@ -54,5 +54,6 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 				URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), Victim, DamageEffectSpecHandle);
 			}
 		}
+		ApplyCostRecoveryEffect();
 	}
 }

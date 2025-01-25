@@ -9,6 +9,7 @@
 
 URsGameplayAbility_Combo::URsGameplayAbility_Combo()
 {
+	bRetriggerInstancedAbility = true;
 }
 
 void URsGameplayAbility_Combo::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

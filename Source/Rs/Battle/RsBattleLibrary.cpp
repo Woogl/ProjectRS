@@ -62,8 +62,8 @@ void URsBattleLibrary::ApplyDamageEffectSpec(AActor* SourceActor, AActor* Target
 	
 	if (SourceASC && TargetASC)
 	{
-		FGameplayEffectSpec EffectSpec = *EffectHandle.Data.Get();
-		SourceASC->ApplyGameplayEffectSpecToTarget(EffectSpec, TargetASC);
+		const FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get();
+		SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 	}
 }
 

@@ -14,5 +14,5 @@ float URsCostModCalculation::CalculateBaseMagnitude_Implementation(const FGamepl
 		return 0.f;
 	}
 
-	return Ability->Cost.GetValueAtLevel(Ability->GetAbilityLevel());
+	return Ability->CostAmount.GetValueAtLevel(Ability->GetAbilityLevel());
 }
