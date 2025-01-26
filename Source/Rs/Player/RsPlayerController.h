@@ -21,8 +21,10 @@ class RS_API ARsPlayerController : public ACommonPlayerController
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AController> PrevController;
+	
 public:
 	ARsPlayerController();
+	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 
 	TObjectPtr<AController> GetPrevController() const;

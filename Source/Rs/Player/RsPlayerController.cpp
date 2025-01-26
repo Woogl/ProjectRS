@@ -10,6 +10,14 @@ ARsPlayerController::ARsPlayerController()
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 }
 
+void ARsPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
+}
+
 URsPartyComponent* ARsPlayerController::GetPartyComponent() const
 {
 	return PartyComponent;
