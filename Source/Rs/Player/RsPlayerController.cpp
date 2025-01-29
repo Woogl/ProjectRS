@@ -3,7 +3,9 @@
 
 #include "RsPlayerController.h"
 
+#include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/Party/RsPartySubsystem.h"
 
 ARsPlayerController::ARsPlayerController()
 {
@@ -16,6 +18,15 @@ void ARsPlayerController::BeginPlay()
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
+	
+	if (URsPartySubsystem* PartySubsystem = URsPartySubsystem::Get(GetLocalPlayer()))
+	{
+		TArray<ARsPlayerCharacter*> SpawnedMembers = PartySubsystem->SpawnPartyMembers(GetPawn()->GetActorTransform());
+		if (!SpawnedMembers.IsEmpty())
+		{
+			Possess(SpawnedMembers[0]);
+		}
+	}
 }
 
 URsPartyComponent* ARsPlayerController::GetPartyComponent() const

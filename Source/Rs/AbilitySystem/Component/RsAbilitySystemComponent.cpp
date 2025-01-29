@@ -15,8 +15,10 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 
 void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
 {
-	check(InOwnerActor);
-	check(InAvatarActor);
+	if (!AbilitySet || !InOwnerActor || !InAvatarActor)
+	{
+		return;
+	}
 
 	// Clean up the old ability system component.
 	UninitializeAbilitySystem();
