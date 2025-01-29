@@ -17,12 +17,11 @@ class RS_API URsPartySubsystem : public ULocalPlayerSubsystem
 
 public:
 	static URsPartySubsystem* Get(ULocalPlayer* LocalPlayer);
-	
+
+	TSet<TSubclassOf<ARsPlayerCharacter>> GetPartyMemberClasses();
 	void AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewMemberClass);
 	void RemovePartyMemberClass(TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
 
-	TArray<ARsPlayerCharacter*> SpawnPartyMembers(FTransform SpawnTransform);
-	
 private:
 	UPROPERTY()
 	TSet<TSubclassOf<ARsPlayerCharacter>> PartyMemberClasses;

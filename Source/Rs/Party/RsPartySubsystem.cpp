@@ -14,6 +14,11 @@ URsPartySubsystem* URsPartySubsystem::Get(ULocalPlayer* LocalPlayer)
 	return nullptr;
 }
 
+TSet<TSubclassOf<ARsPlayerCharacter>> URsPartySubsystem::GetPartyMemberClasses()
+{
+	return PartyMemberClasses;
+}
+
 void URsPartySubsystem::AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewMember)
 {
 	PartyMemberClasses.Add(NewMember);
@@ -22,20 +27,4 @@ void URsPartySubsystem::AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewM
 void URsPartySubsystem::RemovePartyMemberClass(TSubclassOf<ARsPlayerCharacter> MemberToRemove)
 {
 	PartyMemberClasses.Remove(MemberToRemove);
-}
-
-TArray<ARsPlayerCharacter*> URsPartySubsystem::SpawnPartyMembers(FTransform SpawnTransform)
-{
-	if (GetWorld() == nullptr)
-	{
-		return TArray<ARsPlayerCharacter*>();
-	}
-
-	TArray<ARsPlayerCharacter*> PartyMembers;
-	for (TSubclassOf<ARsPlayerCharacter> Class : PartyMemberClasses)
-	{
-		ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(Class, SpawnTransform);
-		PartyMembers.Add(SpawnedActor);
-	}
-	return PartyMembers;
 }

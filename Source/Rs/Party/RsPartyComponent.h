@@ -24,6 +24,8 @@ public:
 	void SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(VisibleAnywhere)
 	TArray<ARsPlayerCharacter*> PartyMembers;
 };

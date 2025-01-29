@@ -3,6 +3,8 @@
 
 #include "RsPartyComponent.h"
 
+#include "RsPartySubsystem.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 
@@ -65,5 +67,31 @@ void URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController,
 		{
 			UE_LOG(LogTemp, Warning, TEXT("RsPartyComponent::SwitchPartyMember: Can't switch to same character"));
 		}
+	}
+}
+
+void URsPartyComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	APlayerController* OwningPlayerController = Cast<APlayerController>(GetOwner());
+	if (OwningPlayerController == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RsPartyComponent's owner should be RsPlayerController"));
+		return;
+	}
+	
+	if (ULocalPlayer* LocalPlayer = OwningPlayerController->GetLocalPlayer())
+	{
+		for (TSubclassOf<ARsPlayerCharacter> PartyMemberClass : URsPartySubsystem::Get(LocalPlayer)->GetPartyMemberClasses())
+		{
+			ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform());
+			PartyMembers.Add(SpawnedActor);
+		}
+	}
+	
+	if (!PartyMembers.IsEmpty())
+	{
+		OwningPlayerController->Possess(PartyMembers[0]);
 	}
 }

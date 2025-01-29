@@ -7,6 +7,10 @@
 
 URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Model)
 {
+	if (Model == nullptr)
+	{
+		return nullptr;
+	}
 	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Model);
 	ViewModel->Initialize();
 	return ViewModel;
