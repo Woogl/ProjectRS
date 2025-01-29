@@ -52,7 +52,7 @@ void URsGameplayAbility_Ranged::EndAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	CachedVictim = nullptr;
+	CachedVictim.Reset();
 }
 
 void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventData)
