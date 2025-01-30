@@ -4,7 +4,6 @@
 #include "RsPartyComponent.h"
 
 #include "RsPartySubsystem.h"
-#include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 

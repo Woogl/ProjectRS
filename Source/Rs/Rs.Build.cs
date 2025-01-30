@@ -28,6 +28,7 @@ public class Rs : ModuleRules
 			"CommonGame",
 			"ModularGameplayActors",
 			"TargetingSystem",
+			"GameplayCameras",
 		});
 	}
 }

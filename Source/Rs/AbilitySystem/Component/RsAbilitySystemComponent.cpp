@@ -37,28 +37,31 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	{
 		return;
 	}
-	
-	// Grant attribute sets.
-	TSet<UClass*> AttributeSetClasses;
-	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
+
+	if (AbilitySystemDataInitialized == false)
 	{
-		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
+		// Grant attribute sets.
+		TSet<UClass*> AttributeSetClasses;
+		for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
 		{
-			AttributeSetClasses.Add(AttributeSetClass);
+			if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
+			{
+				AttributeSetClasses.Add(AttributeSetClass);
+			}
 		}
-	}
-	for (UClass* AttributeSetClass : AttributeSetClasses)
-	{
-		const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
-		GrantedAttributeSets.Add(GrantedAttributeSet);
-	}
-		
-	// Set base attribute values.
-	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributes)
-	{
-		if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
+		for (UClass* AttributeSetClass : AttributeSetClasses)
 		{
-			SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
+			const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+			GrantedAttributeSets.Add(GrantedAttributeSet);
+		}
+		
+		// Set base attribute values.
+		for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributes)
+		{
+			if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
+			{
+				SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
+			}
 		}
 	}
 
