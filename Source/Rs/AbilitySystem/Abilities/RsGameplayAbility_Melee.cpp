@@ -31,11 +31,6 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
 			HitDetectTask->ReadyForActivation();
 		}
-		else
-		{
-			// Deal damage immediately if Event tag is not set.
-			HandleHitDetect(FGameplayEventData());
-		}
 	}
 }
 
