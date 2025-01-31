@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gameplay Event")
 	FGameplayTag EventTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location", meta = (GetOptions="GetSocketNames"))
 	FName SocketName = NAME_None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
@@ -67,6 +67,11 @@ private:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 	FCollisionShape GetCollisionShape() const;
+	
+	UFUNCTION()
+	TArray<FName> GetSocketNames() const;
+	
+	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
 
 #if WITH_EDITOR
 	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);

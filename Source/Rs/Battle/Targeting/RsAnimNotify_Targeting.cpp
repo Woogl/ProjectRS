@@ -28,6 +28,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		return;
 	}
 	
+	CachedMeshComp = MeshComp;
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
 
@@ -114,6 +115,15 @@ FCollisionShape URsAnimNotify_Targeting::GetCollisionShape() const
 	}
 	
 	return FCollisionShape();
+}
+
+TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
+{
+	if (CachedMeshComp.IsValid())
+	{
+		return CachedMeshComp->GetAllSocketNames();
+	}
+	return TArray<FName>();
 }
 
 #if WITH_EDITOR
