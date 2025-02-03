@@ -6,7 +6,6 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGameplayTags.h"
@@ -23,16 +22,6 @@ void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle
 			FireProjectileTask->EventReceived.AddDynamic(this, &ThisClass::HandleFireProjectile);
 			FireProjectileTask->ReadyForActivation();
 		}
-		else
-		{
-			// Spawn projectile immediately if Event tag is not set.
-			HandleFireProjectile(FGameplayEventData());
-		}
-	}
-	else
-	{
-		// Deal damage immediately if Projectile is not set.
-		HandleInstantDamage();
 	}
 }
 
@@ -64,12 +53,7 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
-
-	// FGameplayEffectSpecHandle CostRecoveryEffectSpecHandle = MakeOutgoingGameplayEffectSpec(CostRecoveryEffectClass, GetAbilityLevel());
-	// if (CostRecoveryEffectSpecHandle.IsValid())
-	// {
-	// 	Projectile->CostRecoverySpecHandle = CostRecoveryEffectSpecHandle;
-	// }
+	Projectile->OwningAbility = this;
 	
 	if (CachedVictim.IsValid())
 	{
@@ -77,19 +61,4 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	}
 	
 	Projectile->FinishSpawning(AvatarCharacter->GetActorTransform());
-}
-
-void URsGameplayAbility_Ranged::HandleInstantDamage()
-{
-	if (CachedVictim.IsValid() && DamageEffectClass)
-	{
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
-		if (DamageEffectSpecHandle.IsValid())
-		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
-			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
-		}
-		K2_OnHitTarget(CachedVictim.Get());
-	}
 }

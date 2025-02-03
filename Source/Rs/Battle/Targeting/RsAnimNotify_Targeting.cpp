@@ -83,6 +83,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 			for (AActor* ResultActor : ResultActors)
 			{
 				FGameplayEventData Payload;
+				Payload.Instigator = MeshComp->GetOwner();
 				Payload.Target = ResultActor;
 				ASC->HandleGameplayEvent(EventTag, &Payload);
 			}

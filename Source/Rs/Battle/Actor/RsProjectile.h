@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "RsProjectile.generated.h"
 
+class URsGameplayAbility_Attack;
 class UProjectileMovementComponent;
 class UCapsuleComponent;
 
@@ -25,11 +26,10 @@ public:
 public:	
 	ARsProjectile();
 
+	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
+	
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageSpecHandle;
-
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle CostRecoverySpecHandle;
 
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	float MaxRange = 1000.f;
@@ -49,7 +49,4 @@ protected:
 
 	UFUNCTION()
 	void HandleBlock(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	UPROPERTY(VisibleAnywhere)
-	bool bEnableCostRecovery = true;
 };

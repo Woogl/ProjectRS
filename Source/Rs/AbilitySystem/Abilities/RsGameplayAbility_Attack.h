@@ -6,7 +6,6 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
-class UTargetingPreset;
 /**
  * 
  */
@@ -29,13 +28,14 @@ protected:
 	float StaggerDamageCoefficient = 1.f;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
-	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGiveAbility")
-	void K2_OnHitTarget(const AActor* Target);
 	
 	UFUNCTION()
 	void HandleMontageCompleted();
 
 	UFUNCTION()
 	void HandleMontageCancelled();
+
+public:
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAttackHitTarget")
+	void K2_OnAttackHitTarget(const AActor* Target);
 };

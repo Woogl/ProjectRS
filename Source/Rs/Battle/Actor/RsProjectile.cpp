@@ -3,10 +3,10 @@
 
 #include "RsProjectile.h"
 
-#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AI/RsAILibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 
@@ -48,6 +48,11 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 			return;
 		}
 	}
+
+	if (OwningAbility.IsValid())
+	{
+		OwningAbility->K2_OnAttackHitTarget(OtherActor);
+	}
 	
 	if (GetInstigator() && OtherActor)
 	{
@@ -57,16 +62,6 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (MaxHitCount == 0)
 		{
 			Destroy();
-		}
-	}
-
-	if (bEnableCostRecovery == true && CostRecoverySpecHandle.IsValid())
-	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetInstigator()))
-		{
-			const FGameplayEffectSpec* CostRecoveryEffectSpec = CostRecoverySpecHandle.Data.Get();
-			ASC->ApplyGameplayEffectSpecToSelf(*CostRecoveryEffectSpec);
-			bEnableCostRecovery = false;
 		}
 	}
 }

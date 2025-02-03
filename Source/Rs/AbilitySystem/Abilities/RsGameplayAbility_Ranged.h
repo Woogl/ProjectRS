@@ -7,7 +7,6 @@
 #include "RsGameplayAbility_Ranged.generated.h"
 
 class ARsProjectile;
-class UTargetingPreset;
 
 /**
  * 
@@ -31,9 +30,6 @@ protected:
 
 	UFUNCTION()
 	void HandleFireProjectile(FGameplayEventData EventData);
-
-	UFUNCTION()
-	void HandleInstantDamage();
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<AActor> CachedVictim = nullptr;

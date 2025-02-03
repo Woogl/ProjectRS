@@ -7,7 +7,7 @@
 #include "RsGameplayAbility_Melee.generated.h"
 
 class UAbilityTask_WaitGameplayEvent;
-class UTargetingPreset;
+
 /**
  * 
  */

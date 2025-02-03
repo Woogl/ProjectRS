@@ -28,6 +28,6 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 		URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle);
-		K2_OnHitTarget(EventData.Target);
+		K2_OnAttackHitTarget(EventData.Target);
 	}
 }
