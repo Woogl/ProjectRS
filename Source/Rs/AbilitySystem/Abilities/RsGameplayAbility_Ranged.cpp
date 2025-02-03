@@ -6,7 +6,6 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
@@ -16,20 +15,9 @@ void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (FocusTargetingPreset)
-	{
-		TArray<AActor*> Victims;
-		if (URsBattleLibrary::ExecuteTargeting(GetAvatarActorFromActorInfo(), FocusTargetingPreset, Victims))
-		{
-			CachedVictim = Victims[0];
-			URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, Victims[0]->GetActorLocation(), RotatingSpeed, RotatingMaxDuration);
-			TurnTask->ReadyForActivation();
-		}
-	}
-
 	if (ProjectileClass)
 	{
-		if (FireEventTag.IsValid())
+		if (FireEventTag != FGameplayTag::EmptyTag)
 		{
 			UAbilityTask_WaitGameplayEvent* FireProjectileTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FireEventTag);
 			FireProjectileTask->EventReceived.AddDynamic(this, &ThisClass::HandleFireProjectile);
@@ -77,11 +65,11 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
 
-	FGameplayEffectSpecHandle CostRecoveryEffectSpecHandle = MakeOutgoingGameplayEffectSpec(CostRecoveryEffectClass, GetAbilityLevel());
-	if (CostRecoveryEffectSpecHandle.IsValid())
-	{
-		Projectile->CostRecoverySpecHandle = CostRecoveryEffectSpecHandle;
-	}
+	// FGameplayEffectSpecHandle CostRecoveryEffectSpecHandle = MakeOutgoingGameplayEffectSpec(CostRecoveryEffectClass, GetAbilityLevel());
+	// if (CostRecoveryEffectSpecHandle.IsValid())
+	// {
+	// 	Projectile->CostRecoverySpecHandle = CostRecoveryEffectSpecHandle;
+	// }
 	
 	if (CachedVictim.IsValid())
 	{
@@ -102,6 +90,6 @@ void URsGameplayAbility_Ranged::HandleInstantDamage()
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
 			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), CachedVictim.Get(), DamageEffectSpecHandle);
 		}
-		ApplyCostRecoveryEffect();
+		K2_OnHitTarget(CachedVictim.Get());
 	}
 }

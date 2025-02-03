@@ -23,11 +23,11 @@ public:
 	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageEffect(AActor* SourceActor, AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	static void ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageEffectSpec(AActor* SourceActor, AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+	static void ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
 
-	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
+	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);
 };

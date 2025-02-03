@@ -20,9 +20,6 @@ protected:
 	// Tag that define hit detect event
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
 	FGameplayTag HitDetectEventTag;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	UTargetingPreset* DamageTargetingPreset;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	

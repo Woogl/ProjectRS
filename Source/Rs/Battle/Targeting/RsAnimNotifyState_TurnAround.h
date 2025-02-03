@@ -5,28 +5,28 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "RsTargetingTypes.h"
-#include "Animation/AnimNotifies/AnimNotify.h"
-#include "RsAnimNotify_Targeting.generated.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "RsAnimNotifyState_TurnAround.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotify_Targeting : public UAnimNotify
+class RS_API URsAnimNotifyState_TurnAround : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
 public:
-	URsAnimNotify_Targeting();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gameplay Event")
-	FGameplayTag EventTag;
+	URsAnimNotifyState_TurnAround();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location", meta = (GetOptions="GetSocketNames"))
-	FName SocketName = NAME_None;
+	FName SocketName = FName("pelvis");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
 	FVector Offset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Speed")
+	float MaxRotatingSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
 	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;
@@ -42,21 +42,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bPreventSelfDamage = true;
-	
+	bool bIgnoreFriendlyTeam = true;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bPreventTeamDamage = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
-	bool bSortByDistance = false;
+	bool bIgnoreEnemyTeam = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bShowDebugInPIE = false;
 
 private:
-	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
 	FCollisionShape GetCollisionShape() const;
 	
@@ -64,6 +62,11 @@ private:
 	TArray<FName> GetSocketNames() const;
 	
 	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+
+	TWeakObjectPtr<AActor> CachedTarget;
+
+	UPROPERTY(Transient)
+	bool bTurnComplete = false;
 
 #if WITH_EDITOR
 	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);

@@ -1,21 +1,20 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsAnimNotify_Targeting.h"
+#include "RsAnimNotifyState_TurnAround.h"
 
-#include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "Engine/OverlapResult.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Rs/AI/RsAILibrary.h"
 
-URsAnimNotify_Targeting::URsAnimNotify_Targeting()
+URsAnimNotifyState_TurnAround::URsAnimNotifyState_TurnAround()
 {
 	bShouldFireInEditor = true;
 }
 
-void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
-	Super::Notify(MeshComp, Animation, EventReference);
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	if (MeshComp == nullptr)
 	{
@@ -49,16 +48,20 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	TArray<AActor*> ResultActors;
 	for (FOverlapResult& OverlapResult : OverlapResults)
 	{
-		if (bPreventSelfDamage)
+		if (OverlapResult.GetActor() == MeshComp->GetOwner())
 		{
-			if (OverlapResult.GetActor() == MeshComp->GetOwner())
+			continue;
+		}
+		if (bIgnoreFriendlyTeam)
+		{
+			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(MeshComp->GetOwner()))
 			{
 				continue;
 			}
 		}
-		if (bPreventTeamDamage)
+		if (bIgnoreEnemyTeam)
 		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) != URsAILibrary::GetTeamID(MeshComp->GetOwner()))
 			{
 				continue;
 			}
@@ -67,26 +70,16 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	}
 
 	/** Sorting */
-	if (bSortByDistance)
+	ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
 	{
-		ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
-		{
-			return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
-		});
-	}
-
-	/** Perform event for each result actor */
+		return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
+	});
+	
+	/** Keep nearest actor */
 	if (ResultActors.Num() > 0)
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
-		{
-			for (AActor* ResultActor : ResultActors)
-			{
-				FGameplayEventData Payload;
-				Payload.Target = ResultActor;
-				ASC->HandleGameplayEvent(EventTag, &Payload);
-			}
-		}
+		CachedTarget = ResultActors[0];
+		bTurnComplete = false;
 	}
 
 #if WITH_EDITOR
@@ -101,7 +94,42 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 #endif // WITH_EDITOR
 }
 
-FCollisionShape URsAnimNotify_Targeting::GetCollisionShape() const
+void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+
+	if (bTurnComplete == true || MeshComp == nullptr || CachedTarget == nullptr)
+	{
+		return;
+	}
+	
+	UWorld* World = MeshComp->GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+
+	AActor* OwnerActor = MeshComp->GetOwner();
+	if (OwnerActor == nullptr)
+	{
+		return;
+	}
+
+	FRotator CurrentRotation = OwnerActor->GetActorRotation();
+	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(OwnerActor->GetActorLocation(), CachedTarget->GetActorLocation());
+
+	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, MaxRotatingSpeed * FrameDeltaTime);
+
+	FRotator NewRotation = FRotator(CurrentRotation.Pitch, NewYaw, CurrentRotation.Roll);
+	OwnerActor->SetActorRotation(NewRotation);
+
+	if (bTurnComplete == false && FMath::IsNearlyEqual(NewRotation.Yaw, TargetRotation.Yaw, 1.0f))
+	{
+		bTurnComplete = true;
+	}
+}
+
+FCollisionShape URsAnimNotifyState_TurnAround::GetCollisionShape() const
 {
 	switch (ShapeType)
 	{
@@ -121,7 +149,7 @@ FCollisionShape URsAnimNotify_Targeting::GetCollisionShape() const
 	return FCollisionShape();
 }
 
-TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
+TArray<FName> URsAnimNotifyState_TurnAround::GetSocketNames() const
 {
 	if (CachedMeshComp.IsValid())
 	{
@@ -131,7 +159,7 @@ TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
 }
 
 #if WITH_EDITOR
-void URsAnimNotify_Targeting::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
+void URsAnimNotifyState_TurnAround::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	const UWorld* World = MeshComp->GetWorld();
 	const FCollisionShape CollisionShape = GetCollisionShape();

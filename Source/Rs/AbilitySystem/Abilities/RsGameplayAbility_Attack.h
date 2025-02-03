@@ -19,15 +19,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	UAnimMontage* MontageToPlay;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Focus")
-	UTargetingPreset* FocusTargetingPreset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Focus")
-	float RotatingSpeed = 300.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Focus")
-	float RotatingMaxDuration = 1.f;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
@@ -39,6 +30,9 @@ protected:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGiveAbility")
+	void K2_OnHitTarget(const AActor* Target);
+	
 	UFUNCTION()
 	void HandleMontageCompleted();
 

@@ -36,11 +36,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
 	FScalableFloat CostAmount;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
-	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
-
-	void ApplyCostRecoveryEffect();
-
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
 	UFUNCTION(BlueprintCallable, BlueprintPure)
