@@ -36,6 +36,7 @@ public:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	TObjectPtr<AController> GetPrevController() const;
+	void SetPrevController(AController* Controller);
 	URsPartyComponent* GetPartyComponent() const;
 };
 

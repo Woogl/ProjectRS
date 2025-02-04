@@ -46,3 +46,8 @@ TObjectPtr<AController> ARsPlayerController::GetPrevController() const
 {
 	return PrevController;
 }
+
+void ARsPlayerController::SetPrevController(AController* Controller)
+{
+	PrevController = Controller;
+}

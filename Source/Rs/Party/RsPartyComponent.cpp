@@ -4,6 +4,7 @@
 #include "RsPartyComponent.h"
 
 #include "RsPartySubsystem.h"
+#include "Rs/AI/AIController/RsFriendlyAIController.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 
@@ -56,6 +57,16 @@ void URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController,
 	{
 		if (PlayerController->GetPawn() != NewPartyMember)
 		{
+			if (PlayerController->GetPrevController() == nullptr)
+			{
+				if (PlayerController->GetPawn()->AIControllerClass)
+				{
+					if (AActor* PrevController = PlayerController->GetWorld()->SpawnActor(PlayerController->GetPawn()->AIControllerClass))
+					{
+						PlayerController->SetPrevController(Cast<AController>(PrevController));
+					}
+				}
+			}
 			if (PlayerController->GetPrevController())
 			{
 				PlayerController->GetPrevController()->Possess(PlayerController->GetPawn());
