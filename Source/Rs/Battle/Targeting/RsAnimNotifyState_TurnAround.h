@@ -24,8 +24,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
 	FVector Offset = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Speed")
-	float MaxRotatingSpeed = 300.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Rotation")
+	float MaxTurnAroundSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
 	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;

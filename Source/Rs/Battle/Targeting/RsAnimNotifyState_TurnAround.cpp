@@ -118,7 +118,7 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 	FRotator CurrentRotation = OwnerActor->GetActorRotation();
 	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(OwnerActor->GetActorLocation(), CachedTarget->GetActorLocation());
 
-	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, MaxRotatingSpeed * FrameDeltaTime);
+	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, MaxTurnAroundSpeed * FrameDeltaTime);
 
 	FRotator NewRotation = FRotator(CurrentRotation.Pitch, NewYaw, CurrentRotation.Roll);
 	OwnerActor->SetActorRotation(NewRotation);
