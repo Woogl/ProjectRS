@@ -17,7 +17,7 @@ struct RsDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentHealth);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
 
 	RsDamageStatics()
 	{
@@ -27,7 +27,7 @@ struct RsDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, CurrentHealth, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, Damage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
 	}
 
 	static const RsDamageStatics& Get()
@@ -92,13 +92,13 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	}
 	
 	// Damage calculation start
-	float FinalDamage = (Attack * DamageCoefficient);
+	float FinalHealthDamage = (Attack * DamageCoefficient);
 	// Critical calc
-	FinalDamage *= (bCriticalHit ? (CriticalDmgBonus * 0.01f) : 1.f);
+	FinalHealthDamage *= (bCriticalHit ? (CriticalDmgBonus * 0.01f) : 1.f);
 	// Defense rate calc
-	FinalDamage *= (190.f / (Defense + 190.f));
+	FinalHealthDamage *= (190.f / (Defense + 190.f));
 	
-	if (FinalDamage <= 0.f || Attack <= 0.f)
+	if (FinalHealthDamage <= 0.f || Attack <= 0.f)
 	{
 		return;
 	}
@@ -106,8 +106,8 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	// Stun has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"))))
 	{
-		FinalDamage *= 1.6f;
+		FinalHealthDamage *= 1.6f;
 	}
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->DamageProperty, EGameplayModOp::Additive, FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Additive, FinalHealthDamage));
 }

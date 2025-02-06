@@ -31,7 +31,7 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
 
-	/** Find targeting result actors */
+	/** Overlapping */
 	TArray<FOverlapResult> OverlapResults;
 	if (CollisionObjectTypes.Num() > 0)
 	{

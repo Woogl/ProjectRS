@@ -50,12 +50,12 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	if (Data.EvaluatedData.Attribute == GetHealthDamageAttribute())
 	{
 		// Store a local copy of the amount of Damage done and clear the Damage attribute.
-		const float LocalDamageDone = GetDamage();
+		const float LocalDamageDone = GetHealthDamage();
 
-		SetDamage(0.f);
+		SetHealthDamage(0.f);
 	
 		if (LocalDamageDone > 0.0f)
 		{

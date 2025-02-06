@@ -33,12 +33,12 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	if (Data.EvaluatedData.Attribute == GetStaggerDamageAttribute())
 	{
 		// Store a local copy of the amount of Stagger Gain done and clear the Stagger Gain attribute.
-		const float LocalDamage = GetDamage();
+		const float LocalDamage = GetStaggerDamage();
 
-		SetDamage(0.f);
+		SetStaggerDamage(0.f);
 	
 		if (LocalDamage > 0.0f)
 		{

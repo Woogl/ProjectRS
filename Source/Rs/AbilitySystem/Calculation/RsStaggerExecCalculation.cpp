@@ -13,14 +13,14 @@ struct RsStaggerStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Impact);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentStagger);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerDamage);
 
 	RsStaggerStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Impact, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, CurrentStagger, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, Damage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerDamage, Target, false);
 	}
 
 	static const RsStaggerStatics& Get()
@@ -61,9 +61,9 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	Impact = FMath::Max(Impact, 0.f);
 	
 	// Stagger Calculation
-	float FinalStaggerGain = Impact * StaggerCoefficient;
+	float FinalStaggerDamage = Impact * StaggerCoefficient;
 
-	if (FinalStaggerGain <= 0.f || Impact < 0.f)
+	if (FinalStaggerDamage <= 0.f || Impact < 0.f)
 	{
 		return;
 	}
@@ -71,8 +71,8 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	// Stun has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"))))
 	{
-		FinalStaggerGain *= 1.6f;
+		FinalStaggerDamage *= 1.6f;
 	}
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->DamageProperty, EGameplayModOp::Additive, FinalStaggerGain));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Additive, FinalStaggerDamage));
 }

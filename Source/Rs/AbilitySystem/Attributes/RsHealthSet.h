@@ -26,12 +26,12 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	// Used to create a local copy of Damage which is then subtracted from Current Health.
-	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
-	FGameplayAttributeData Damage;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, Damage)
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData HealthDamage;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthDamage)
 
 	// Used to create a local copy of Healing which is then added to Current Health.
-	UPROPERTY(BlueprintReadOnly, meta = (HideFromLevelInfos))
+	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
 	
