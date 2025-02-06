@@ -3,6 +3,8 @@
 
 #include "RsPlayerController.h"
 
+#include "AIController.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/GameplayControlRotationComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -32,7 +34,22 @@ URsPartyComponent* ARsPlayerController::GetPartyComponent() const
 
 void ARsPlayerController::OnPossess(APawn* InPawn)
 {
-	PrevController = InPawn->GetController();
+	if (GetCharacter())
+	{
+		if (GetCharacter()->IsBotControlled())
+		{
+			// When AI controlled.
+			PrevAIController = Cast<AAIController>(GetCharacter()->GetController());
+		}
+		else
+		{
+			// When player controlled.
+			if (PrevAIController == nullptr && GetCharacter()->AIControllerClass)
+			{
+				PrevAIController = GetWorld()->SpawnActor<AAIController>(GetCharacter()->AIControllerClass);
+			}
+		}
+	}
 	
 	Super::OnPossess(InPawn);
 
@@ -42,12 +59,7 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 	}
 }
 
-TObjectPtr<AController> ARsPlayerController::GetPrevController() const
+AAIController* ARsPlayerController::GetPrevAIController() const
 {
-	return PrevController;
-}
-
-void ARsPlayerController::SetPrevController(AController* Controller)
-{
-	PrevController = Controller;
+	return PrevAIController;
 }

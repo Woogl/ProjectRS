@@ -57,19 +57,9 @@ void URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController,
 	{
 		if (PlayerController->GetPawn() != NewPartyMember)
 		{
-			if (PlayerController->GetPrevController() == nullptr)
+			if (PlayerController->GetPrevAIController())
 			{
-				if (PlayerController->GetPawn()->AIControllerClass)
-				{
-					if (AActor* PrevController = PlayerController->GetWorld()->SpawnActor(PlayerController->GetPawn()->AIControllerClass))
-					{
-						PlayerController->SetPrevController(Cast<AController>(PrevController));
-					}
-				}
-			}
-			if (PlayerController->GetPrevController())
-			{
-				PlayerController->GetPrevController()->Possess(PlayerController->GetPawn());
+				PlayerController->GetPrevAIController()->Possess(PlayerController->GetPawn());
 			}
 			PlayerController->Possess(NewPartyMember);
 		}

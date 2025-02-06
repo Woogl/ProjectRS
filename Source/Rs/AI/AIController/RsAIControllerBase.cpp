@@ -32,6 +32,7 @@ ETeamAttitude::Type ARsAIControllerBase::GetTeamAttitudeTowards(const AActor& Ot
 void ARsAIControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
 		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
@@ -51,7 +52,7 @@ void ARsAIControllerBase::OnPossess(APawn* InPawn)
 
 void ARsAIControllerBase::HandlePlayerControllingPawnChanged(APawn* InOldPawn, APawn* InNewPawn)
 {
-	if (BehaviorTree && InNewPawn)
+	if (BehaviorTree && InNewPawn && GetBlackboardComponent())
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("PlayerControllingPawn"), InNewPawn);
 	}

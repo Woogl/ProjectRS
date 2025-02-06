@@ -73,12 +73,27 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 
 void ARsPlayerCharacter::InitAbilitySystem()
 {
-	AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent == nullptr)
 	{
-		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
-		HealthComponent->Initialize(AbilitySystemComponent);
-		PostInitializeAbilitySystem();
+		// Initialize the ASC once, and don't initialize it again.
+		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
+		if (AbilitySystemComponent)
+		{
+			AbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
+			AbilitySystemComponent->GrantTags(AbilitySet, GetPlayerState(), this);
+			AbilitySystemComponent->GrantAttributes(AbilitySet, GetPlayerState(), this);
+			AbilitySystemComponent->GrantAbilities(AbilitySet, GetPlayerState(), this);
+			AbilitySystemComponent->GrantEffects(AbilitySet, GetPlayerState(), this);
+			
+			HealthComponent->Initialize(AbilitySystemComponent);
+			PostInitializeAbilitySystem();
+		}
+	}
+	else
+	{
+		// Grant abilities again for binding input action.
+		AbilitySystemComponent->ClearAllAbilities();
+		AbilitySystemComponent->GrantAbilities(AbilitySet, GetPlayerState(), this);
 	}
 }
 

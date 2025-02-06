@@ -6,6 +6,7 @@
 #include "CommonPlayerController.h"
 #include "RsPlayerController.generated.h"
 
+class AAIController;
 class UGameplayControlRotationComponent;
 class UGameplayCameraComponent;
 class ARsPlayerCharacter;
@@ -22,7 +23,7 @@ class RS_API ARsPlayerController : public ACommonPlayerController
 	TObjectPtr<URsPartyComponent> PartyComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AController> PrevController;
+	TObjectPtr<AAIController> PrevAIController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
@@ -34,9 +35,8 @@ public:
 	ARsPlayerController();
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
-
-	TObjectPtr<AController> GetPrevController() const;
-	void SetPrevController(AController* Controller);
+	
 	URsPartyComponent* GetPartyComponent() const;
+	AAIController* GetPrevAIController() const;
 };
 

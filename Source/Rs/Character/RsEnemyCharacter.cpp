@@ -23,7 +23,12 @@ void ARsEnemyCharacter::PostInitializeComponents()
 	// The Ability System Component is created in the class constructor, so it should always be valid at this point.
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+		AbilitySystemComponent->GrantTags(AbilitySet, this, this);
+		AbilitySystemComponent->GrantAttributes(AbilitySet, this, this);
+		AbilitySystemComponent->GrantAbilities(AbilitySet, this, this);
+		AbilitySystemComponent->GrantEffects(AbilitySet, this, this);
+		
 		HealthComponent->Initialize(AbilitySystemComponent);
 		PostInitializeAbilitySystem();
 	}
