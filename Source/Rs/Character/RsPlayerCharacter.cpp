@@ -45,7 +45,7 @@ void ARsPlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// Register Party member
-	URsPartyLibrary::AddPartyMember(this);
+	URsPartyLibrary::InsertPartyMember(this, 0);
 }
 
 void ARsPlayerCharacter::PossessedBy(AController* NewController)

@@ -39,6 +39,18 @@ void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 	}
 }
 
+void URsPartyComponent::InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex)
+{
+	if (!PartyMembers.Contains(NewMember))
+	{
+		PartyMembers.Insert(NewMember, MemberIndex);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RsPartyComponent::InsertPartyMember: Already added member"));
+	}
+}
+
 void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 {
 	if (PartyMembers.Contains(MemberToRemove))
@@ -85,13 +97,10 @@ void URsPartyComponent::BeginPlay()
 	{
 		for (TSubclassOf<ARsPlayerCharacter> PartyMemberClass : URsPartySubsystem::Get(LocalPlayer)->GetPartyMemberClasses())
 		{
-			ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform());
-			PartyMembers.Add(SpawnedActor);
+			if (ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform()))
+			{
+				PartyMembers.Add(SpawnedActor);
+			}
 		}
-	}
-	
-	if (!PartyMembers.IsEmpty())
-	{
-		OwningPlayerController->Possess(PartyMembers[0]);
 	}
 }

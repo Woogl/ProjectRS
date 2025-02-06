@@ -20,6 +20,7 @@ public:
 
 	ARsPlayerCharacter* GetPartyMember(int32 MemberIndex) const;
 	void AddPartyMember(ARsPlayerCharacter* NewMember);
+	void InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex);
 	void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
 	void SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	

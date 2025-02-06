@@ -25,6 +25,14 @@ void URsPartyLibrary::AddPartyMember(ARsPlayerCharacter* NewMember)
 	}
 }
 
+void URsPartyLibrary::InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
+	{
+		RsPlayerController->GetPartyComponent()->InsertPartyMember(NewMember, MemberIndex);
+	}
+}
+
 void URsPartyLibrary::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(MemberToRemove, 0)))
