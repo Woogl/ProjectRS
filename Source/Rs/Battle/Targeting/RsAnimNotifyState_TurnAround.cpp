@@ -1,3 +1,5 @@
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 // Copyright 2024 Team BH.
 
 
@@ -25,6 +27,15 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 	if (World == nullptr)
 	{
 		return;
+	}
+
+	if (TObjectPtr<AAIController> Controller = Cast<AAIController>(MeshComp->GetOwner()->GetInstigatorController()))
+	{
+		if (TObjectPtr<AActor> Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject("TargetActor")))
+		{
+			CachedTarget = Target;
+			return;
+		}
 	}
 	
 	CachedMeshComp = MeshComp;
