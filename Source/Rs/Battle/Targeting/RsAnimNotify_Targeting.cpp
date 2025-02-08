@@ -10,7 +10,9 @@
 
 URsAnimNotify_Targeting::URsAnimNotify_Targeting()
 {
+#if WITH_EDITORONLY_DATA
 	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
 }
 
 void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -28,7 +30,6 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		return;
 	}
 	
-	CachedMeshComp = MeshComp;
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
 
@@ -99,6 +100,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		DrawDebugShape(MeshComp, SourceTransform);
 	}
+	CachedMeshComp = MeshComp;
 #endif // WITH_EDITOR
 }
 
@@ -122,6 +124,7 @@ FCollisionShape URsAnimNotify_Targeting::GetCollisionShape() const
 	return FCollisionShape();
 }
 
+#if WITH_EDITOR
 TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
 {
 	if (CachedMeshComp.IsValid())
@@ -131,7 +134,6 @@ TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
 	return TArray<FName>();
 }
 
-#if WITH_EDITOR
 void URsAnimNotify_Targeting::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	const UWorld* World = MeshComp->GetWorld();

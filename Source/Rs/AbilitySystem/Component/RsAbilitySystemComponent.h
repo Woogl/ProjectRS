@@ -19,10 +19,8 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	URsAbilitySystemComponent();
 
-	void GrantTags(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
-	void GrantAttributes(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
-	void GrantAbilities(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
-	void GrantEffects(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
+	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
+	void RefreshAbilityInputBindings();
 
 	FGameplayEventMulticastDelegate OnAnyGameplayEvent;
 	

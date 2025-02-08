@@ -14,11 +14,6 @@ URsPartySubsystem* URsPartySubsystem::Get(ULocalPlayer* LocalPlayer)
 	return nullptr;
 }
 
-TSet<TSubclassOf<ARsPlayerCharacter>> URsPartySubsystem::GetPartyMemberClasses()
-{
-	return PartyMemberClasses;
-}
-
 void URsPartySubsystem::AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewMember)
 {
 	PartyMemberClasses.Add(NewMember);
@@ -27,4 +22,9 @@ void URsPartySubsystem::AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewM
 void URsPartySubsystem::RemovePartyMemberClass(TSubclassOf<ARsPlayerCharacter> MemberToRemove)
 {
 	PartyMemberClasses.Remove(MemberToRemove);
+}
+
+TSet<TSubclassOf<ARsPlayerCharacter>> URsPartySubsystem::GetPartyMemberClasses() const
+{
+	return PartyMemberClasses;
 }

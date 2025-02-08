@@ -35,14 +35,14 @@ void URsGameplayAbility_Combo::ActivateAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (ComboWindowStartTag.IsValid())
+	if (ComboWindowStartTag != FGameplayTag::EmptyTag)
 	{
 		UAbilityTask_WaitGameplayEvent* ComboWindowStartTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowStartTag);
 		ComboWindowStartTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowStarted);
 		ComboWindowStartTask->ReadyForActivation();
 	}
 	
-	if (ComboWindowEndTag.IsValid())
+	if (ComboWindowEndTag != FGameplayTag::EmptyTag)
 	{
 		UAbilityTask_WaitGameplayEvent* ComboWindowEndTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, ComboWindowEndTag);
 		ComboWindowEndTask->EventReceived.AddDynamic(this, &ThisClass::HandleComboWindowEnded);

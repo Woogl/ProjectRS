@@ -56,18 +56,20 @@ private:
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
 	FCollisionShape GetCollisionShape() const;
-	
-	UFUNCTION()
-	TArray<FName> GetSocketNames() const;
-	
-	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
 
-	TWeakObjectPtr<AActor> CachedTarget;
+	TWeakObjectPtr<AActor> FocusTarget;
 
 	UPROPERTY(Transient)
 	bool bTurnComplete = false;
 
 #if WITH_EDITOR
+	UFUNCTION()
+	TArray<FName> GetSocketNames() const;
+	
 	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
 #endif // WITH_EDITOR
+
+#if WITH_EDITORONLY_DATA
+	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+#endif // WITH_EDITORONLY_DATA
 };

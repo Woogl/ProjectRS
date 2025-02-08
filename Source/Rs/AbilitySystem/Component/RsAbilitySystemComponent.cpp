@@ -13,19 +13,20 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	SetIsReplicatedByDefault(true);
 }
 
-void URsAbilitySystemComponent::GrantTags(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
+void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
 {
+	// Set the Owning Actor and Avatar Actor. (Used throughout the Gameplay Ability System to get references etc.)
+	InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	
 	// Apply the Gameplay Tag container as loose Gameplay Tags. (These are not replicated by default and should be applied on both server and client respectively.)
 	AddLooseGameplayTags(AbilitySet->GrantedTags);
-}
 
-void URsAbilitySystemComponent::GrantAttributes(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
-{
+	// Check to see if we have authority. (Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.)
 	if (!GetOwnerActor()->HasAuthority())
 	{
 		return;
 	}
-	
+
 	// Grant attribute sets.
 	TSet<UClass*> AttributeSetClasses;
 	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
@@ -49,25 +50,15 @@ void URsAbilitySystemComponent::GrantAttributes(URsAbilitySet* AbilitySet, AActo
 			SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
 		}
 	}
-}
 
-void URsAbilitySystemComponent::GrantAbilities(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
-{
-	if (!GetOwnerActor()->HasAuthority())
-	{
-		return;
-	}
-	
+	// Grant abilities.
 	for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwnerActor);
 		FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);
 		GrantedAbilityHandles.Add(GrantedAbilityHandle);
 	}
-}
 
-void URsAbilitySystemComponent::GrantEffects(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
-{
 	// Apply Gameplay Effects.
 	for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
 	{
@@ -78,6 +69,20 @@ void URsAbilitySystemComponent::GrantEffects(URsAbilitySet* AbilitySet, AActor* 
 		{
 			FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
 			GrantedEffectHandles.Add(GrantedEffectHandle);
+		}
+	}
+}
+
+void URsAbilitySystemComponent::RefreshAbilityInputBindings()
+{
+	for (FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
+	{
+		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(AbilityHandle))
+		{
+			if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(AbilitySpec->Ability))
+			{
+				RsAbility->RefreshEnhancedInputBindings(AbilityActorInfo.Get(), *AbilitySpec);
+			}
 		}
 	}
 }

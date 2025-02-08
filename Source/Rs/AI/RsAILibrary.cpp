@@ -4,6 +4,8 @@
 #include "RsAILibrary.h"
 
 #include "GenericTeamAgentInterface.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 uint8 URsAILibrary::GetTeamID(AActor* Actor)
 {
@@ -12,4 +14,13 @@ uint8 URsAILibrary::GetTeamID(AActor* Actor)
 		return TeamInterface->GetGenericTeamId().GetId();
 	}
 	return FGenericTeamId::NoTeam.GetId();
+}
+
+UObject* URsAILibrary::GetBlackboardValueAsObject(AActor* Target, FName KeyName)
+{
+	if (UBlackboardComponent* BlackBoard = UAIBlueprintHelperLibrary::GetBlackboard(Target))
+	{
+		return BlackBoard->GetValueAsObject(KeyName);
+	}
+	return nullptr;
 }

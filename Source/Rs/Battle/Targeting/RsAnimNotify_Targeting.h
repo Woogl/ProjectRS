@@ -60,12 +60,14 @@ private:
 
 	FCollisionShape GetCollisionShape() const;
 	
+#if WITH_EDITOR
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const;
 	
-	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
-
-#if WITH_EDITOR
 	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
 #endif // WITH_EDITOR
+
+#if WITH_EDITORONLY_DATA
+	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+#endif // WITH_EDITORONLY_DATA
 };

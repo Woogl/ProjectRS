@@ -1,5 +1,3 @@
-#include "AIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
 // Copyright 2024 Team BH.
 
 
@@ -11,7 +9,9 @@
 
 URsAnimNotifyState_TurnAround::URsAnimNotifyState_TurnAround()
 {
+#if WITH_EDITORONLY_DATA
 	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
 }
 
 void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -29,7 +29,7 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 		return;
 	}
 
-	CachedMeshComp = MeshComp;
+	bTurnComplete = false;
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
 
@@ -71,18 +71,13 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 		ResultActors.AddUnique(OverlapResult.GetActor());
 	}
 
-	if (TObjectPtr<APawn> Pawn = Cast<APawn>(MeshComp->GetOwner()))
+	// When AI blackboard has target actor
+	if (UObject* BBValue = URsAILibrary::GetBlackboardValueAsObject(MeshComp->GetOwner(), FName("TargetActor")))
 	{
-		if (TObjectPtr<AAIController> AIController = Cast<AAIController>(Pawn->GetController()))
+		if (AActor* TargetActor = Cast<AActor>(BBValue))
 		{
-			if (TObjectPtr<UBlackboardComponent> BB = AIController->GetBlackboardComponent())
-			{
-				if (TObjectPtr<AActor> Target = Cast<AActor>(BB->GetValueAsObject("TargetActor")))
-				{
-					ResultActors.Empty();
-					ResultActors.Add(Target);
-				}
-			}
+			ResultActors.Empty();
+			ResultActors.Add(TargetActor);
 		}
 	}
 
@@ -95,8 +90,7 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 	/** Keep nearest actor */
 	if (ResultActors.Num() > 0)
 	{
-		CachedTarget = ResultActors[0];
-		bTurnComplete = false;
+		FocusTarget = ResultActors[0];
 	}
 
 #if WITH_EDITOR
@@ -108,6 +102,7 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 	{
 		DrawDebugShape(MeshComp, SourceTransform);
 	}
+	CachedMeshComp = MeshComp;
 #endif // WITH_EDITOR
 }
 
@@ -115,7 +110,7 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if (bTurnComplete == true || MeshComp == nullptr || CachedTarget == nullptr)
+	if (bTurnComplete == true || MeshComp == nullptr || FocusTarget == nullptr)
 	{
 		return;
 	}
@@ -133,7 +128,7 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 	}
 
 	FRotator CurrentRotation = OwnerActor->GetActorRotation();
-	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(OwnerActor->GetActorLocation(), CachedTarget->GetActorLocation());
+	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(OwnerActor->GetActorLocation(), FocusTarget->GetActorLocation());
 
 	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, MaxTurnAroundSpeed * FrameDeltaTime);
 
@@ -166,6 +161,7 @@ FCollisionShape URsAnimNotifyState_TurnAround::GetCollisionShape() const
 	return FCollisionShape();
 }
 
+#if WITH_EDITOR
 TArray<FName> URsAnimNotifyState_TurnAround::GetSocketNames() const
 {
 	if (CachedMeshComp.IsValid())
@@ -175,7 +171,6 @@ TArray<FName> URsAnimNotifyState_TurnAround::GetSocketNames() const
 	return TArray<FName>();
 }
 
-#if WITH_EDITOR
 void URsAnimNotifyState_TurnAround::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	const UWorld* World = MeshComp->GetWorld();
