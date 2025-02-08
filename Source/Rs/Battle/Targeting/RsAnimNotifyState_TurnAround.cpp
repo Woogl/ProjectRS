@@ -29,15 +29,6 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 		return;
 	}
 
-	if (TObjectPtr<AAIController> Controller = Cast<AAIController>(MeshComp->GetOwner()->GetInstigatorController()))
-	{
-		if (TObjectPtr<AActor> Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject("TargetActor")))
-		{
-			CachedTarget = Target;
-			return;
-		}
-	}
-	
 	CachedMeshComp = MeshComp;
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
@@ -78,6 +69,21 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 			}
 		}
 		ResultActors.AddUnique(OverlapResult.GetActor());
+	}
+
+	if (TObjectPtr<APawn> Pawn = Cast<APawn>(MeshComp->GetOwner()))
+	{
+		if (TObjectPtr<AAIController> AIController = Cast<AAIController>(Pawn->GetController()))
+		{
+			if (TObjectPtr<UBlackboardComponent> BB = AIController->GetBlackboardComponent())
+			{
+				if (TObjectPtr<AActor> Target = Cast<AActor>(BB->GetValueAsObject("TargetActor")))
+				{
+					ResultActors.Empty();
+					ResultActors.Add(Target);
+				}
+			}
+		}
 	}
 
 	/** Sorting */
