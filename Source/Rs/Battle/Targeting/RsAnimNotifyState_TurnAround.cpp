@@ -71,7 +71,7 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 		ResultActors.AddUnique(OverlapResult.GetActor());
 	}
 
-	// When AI blackboard has target actor
+	// When AI blackboard has "TargetActor", use it.
 	if (UObject* BBValue = URsAILibrary::GetBlackboardValueAsObject(MeshComp->GetOwner(), FName("TargetActor")))
 	{
 		if (AActor* TargetActor = Cast<AActor>(BBValue))
