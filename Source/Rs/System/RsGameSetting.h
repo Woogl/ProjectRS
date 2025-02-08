@@ -24,7 +24,10 @@ public:
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
-	FGameplayTag DamageCoefficientTag;
+	FGameplayTag HealthDamageCoefficientTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
+	FGameplayTag StaggerDamageCoefficientTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
 	FGameplayTag HitReactionAbilityTag;

@@ -3,18 +3,21 @@
 
 #include "RsGameSetting.h"
 
-#include "Engine/AssetManager.h"
+#include "RsGameInstance.h"
 
 FPrimaryAssetId URsGameSetting::GetPrimaryAssetId() const
 {
-	return FPrimaryAssetId(TEXT("RsGameSetting"));
+	return FPrimaryAssetId(TEXT("RsGameSetting"), GetFName());
 }
 
 URsGameSetting* URsGameSetting::Get()
 {
-	const FPrimaryAssetId AssetId = FPrimaryAssetId(TEXT("RsGameSetting"));
-	UAssetManager& AssetManager = UAssetManager::Get();
-
-	UObject* AssetObject = AssetManager.GetPrimaryAssetObject(AssetId);	
-	return Cast<URsGameSetting>(AssetObject);
+	if (GWorld)
+	{
+		if (URsGameInstance* RsGameInstance = GWorld->GetGameInstanceChecked<URsGameInstance>())
+		{
+			return RsGameInstance->RsGameSetting;
+		}
+	}
+	return nullptr;
 }

@@ -38,12 +38,12 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 	{
 		if (GetCharacter()->IsBotControlled())
 		{
-			// When AI controlled.
+			// When AI controlled, keep old controller.
 			PrevAIController = Cast<AAIController>(GetCharacter()->GetController());
 		}
 		else
 		{
-			// When player controlled.
+			// When player controlled, spawn an AI controller and keep it.
 			if (PrevAIController == nullptr && GetCharacter()->AIControllerClass)
 			{
 				PrevAIController = GetWorld()->SpawnActor<AAIController>(GetCharacter()->AIControllerClass);

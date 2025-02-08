@@ -8,7 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/System/RsGameplayTags.h"
+#include "Rs/System/RsGameSetting.h"
 
 void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -49,8 +49,8 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, StaggerDamageCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
 	Projectile->OwningAbility = this;

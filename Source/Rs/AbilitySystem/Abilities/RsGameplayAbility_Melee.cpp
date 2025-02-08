@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsGameplayTags.h"
+#include "Rs/System/RsGameSetting.h"
 
 void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -25,8 +26,8 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_HEALTH, HealthDamageCoefficient);
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_COEFFICIENT_DAMAGE_STAGGER, StaggerDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, StaggerDamageCoefficient);
 		URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle);
 		K2_OnAttackHitTarget(EventData.Target);
 	}
