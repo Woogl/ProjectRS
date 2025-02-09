@@ -3,7 +3,6 @@
 
 #include "RsDamageExecCalculation.h"
 
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
@@ -63,8 +62,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	// During perfect dodge, ignore damage effect
 	FGameplayTagContainer PerfectDodgeTags = FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect")).GetSingleTagContainer();
-	FGameplayEffectSpec ActivePerfectDodgeEffect = URsAbilitySystemLibrary::FindActiveGameplayEffectSpec(TargetASC, PerfectDodgeTags);
-	if (ActivePerfectDodgeEffect.Def)
+	if (TargetASC->GetActiveEffectsWithAllTags(PerfectDodgeTags).Num() > 0)
 	{
 		return;
 	}

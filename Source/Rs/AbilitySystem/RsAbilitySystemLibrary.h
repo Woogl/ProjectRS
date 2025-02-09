@@ -6,7 +6,6 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
-class UGameplayEffect;
 class URsGameplayAbility;
 class UAbilitySystemComponent;
 struct FGameplayTagContainer;
@@ -26,7 +25,4 @@ public:
 	// Find the first RS ability that matches tag. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static URsGameplayAbility* FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch = true);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FGameplayEffectSpec FindActiveGameplayEffectSpec(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Effect"))FGameplayTagContainer GrantedTags);
 };
