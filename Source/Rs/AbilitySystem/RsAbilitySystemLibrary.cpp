@@ -39,3 +39,24 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbility
 	}
 	return nullptr;
 }
+
+FGameplayEffectSpec URsAbilitySystemLibrary::FindActiveGameplayEffectSpec(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer GrantedTags)
+{
+	if (AbilitySystemComponent == nullptr)
+	{
+		return FGameplayEffectSpec();
+	}
+	
+	TArray<FGameplayEffectSpec> OutEffectSpec;
+	AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveGameplayEffectSpecs(OutEffectSpec);
+	for (FGameplayEffectSpec& EffectSpec : OutEffectSpec)
+	{
+		if (EffectSpec.Def->GetGrantedTags().HasAll(GrantedTags))
+		{
+			return EffectSpec;
+		}
+	}
+	
+	return FGameplayEffectSpec();
+}
+

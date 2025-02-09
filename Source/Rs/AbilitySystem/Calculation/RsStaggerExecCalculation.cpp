@@ -3,6 +3,7 @@
 
 #include "RsStaggerExecCalculation.h"
 
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
@@ -50,8 +51,10 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	// During Perfect dodge, ignore damage effect
-	if (EvaluationParameters.TargetTags->HasTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect"))))
+	// During perfect dodge, ignore damage effect
+	FGameplayTagContainer PerfectDodgeTags = FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect")).GetSingleTagContainer();
+	FGameplayEffectSpec ActivePerfectDodgeEffect = URsAbilitySystemLibrary::FindActiveGameplayEffectSpec(TargetASC, PerfectDodgeTags);
+	if (ActivePerfectDodgeEffect.Def)
 	{
 		return;
 	}
