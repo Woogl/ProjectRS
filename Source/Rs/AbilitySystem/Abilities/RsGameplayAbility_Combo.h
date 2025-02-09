@@ -62,7 +62,7 @@ protected:
 	
 private:
 	UPROPERTY(Transient)
-	UAbilityTask_WaitInputPress* InputPressTask = nullptr;
+	TObjectPtr<UAbilityTask_WaitInputPress> InputPressTask = nullptr;
 	
 	UPROPERTY(Transient)
 	int32 MaxComboIndex = 0;

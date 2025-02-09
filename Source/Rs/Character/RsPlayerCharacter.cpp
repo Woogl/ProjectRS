@@ -72,7 +72,7 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 
 void ARsPlayerCharacter::InitAbilitySystem()
 {
-	// Initialize the ASC once
+	// Initialize the ASC once.
 	if (AbilitySystemComponent == nullptr)
 	{
 		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
@@ -84,7 +84,8 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		}
 	}
 
-	// Refresh input bindings
+	// Unbind ability input for AI controlled character.
+	// Bind ability input for player controlled character.
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->RefreshAbilityInputBindings();

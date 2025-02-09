@@ -60,6 +60,12 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
+	// Perfect dodge state ignore damage effect
+	if (EvaluationParameters.TargetTags->HasTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect"))))
+	{
+		return;
+	}
+
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
 	// Set in RsGameplayAbility_Attack

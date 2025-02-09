@@ -16,7 +16,7 @@ class RS_API URsGameplayAbility_Attack : public URsGameplayAbility
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	UAnimMontage* MontageToPlay;
+	TObjectPtr<UAnimMontage> MontageToPlay;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
