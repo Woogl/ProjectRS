@@ -18,12 +18,12 @@ class RS_API URsPartySubsystem : public ULocalPlayerSubsystem
 public:
 	static URsPartySubsystem* Get(ULocalPlayer* LocalPlayer);
 	
-	void AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewMemberClass);
-	void RemovePartyMemberClass(TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
+	void JoinPartyMember(TSubclassOf<ARsPlayerCharacter> NewMember);
+	void LeavePartyMember(TSubclassOf<ARsPlayerCharacter> MemberToRemove);
 
-	TSet<TSubclassOf<ARsPlayerCharacter>> GetPartyMemberClasses() const;
+	TArray<TSubclassOf<ARsPlayerCharacter>> GetPartyMemberClasses() const;
 
 private:
 	UPROPERTY()
-	TSet<TSubclassOf<ARsPlayerCharacter>> PartyMemberClasses;
+	TArray<TSubclassOf<ARsPlayerCharacter>> PartyMemberClasses;
 };

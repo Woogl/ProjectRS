@@ -14,17 +14,17 @@ URsPartySubsystem* URsPartySubsystem::Get(ULocalPlayer* LocalPlayer)
 	return nullptr;
 }
 
-void URsPartySubsystem::AddPartyMemberClass(TSubclassOf<ARsPlayerCharacter> NewMember)
+void URsPartySubsystem::JoinPartyMember(TSubclassOf<ARsPlayerCharacter> NewMember)
 {
-	PartyMemberClasses.Add(NewMember);
+	PartyMemberClasses.AddUnique(NewMember);
 }
 
-void URsPartySubsystem::RemovePartyMemberClass(TSubclassOf<ARsPlayerCharacter> MemberToRemove)
+void URsPartySubsystem::LeavePartyMember(TSubclassOf<ARsPlayerCharacter> MemberToRemove)
 {
 	PartyMemberClasses.Remove(MemberToRemove);
 }
 
-TSet<TSubclassOf<ARsPlayerCharacter>> URsPartySubsystem::GetPartyMemberClasses() const
+TArray<TSubclassOf<ARsPlayerCharacter>> URsPartySubsystem::GetPartyMemberClasses() const
 {
 	return PartyMemberClasses;
 }

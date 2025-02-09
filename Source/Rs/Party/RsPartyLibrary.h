@@ -29,8 +29,8 @@ public:
 	static void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
-	static void AddPartyMemberClass(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass);
+	static void JoinPartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass);
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
-	static void RemovePartyMemberClass(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
+	static void LeavePartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
 };

@@ -20,7 +20,7 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ability", DisplayName = "OnPerfectDodgeSuccess")
-	void K2_OnPerfectDodgeSuccess(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
+	void K2_OnPerfectDodgeSuccess(AActor* DamageSource, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	TObjectPtr<UAnimMontage> DashMontage;

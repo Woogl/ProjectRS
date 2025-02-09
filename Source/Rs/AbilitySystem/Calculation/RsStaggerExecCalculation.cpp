@@ -50,7 +50,7 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	// Perfect dodge state ignore damage effect
+	// During Perfect dodge, ignore damage effect
 	if (EvaluationParameters.TargetTags->HasTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect"))))
 	{
 		return;

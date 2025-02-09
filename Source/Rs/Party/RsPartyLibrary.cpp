@@ -41,18 +41,18 @@ void URsPartyLibrary::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 	}
 }
 
-void URsPartyLibrary::AddPartyMemberClass(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass)
+void URsPartyLibrary::JoinPartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass)
 {
 	if (URsPartySubsystem* PartySubsystem = URsPartySubsystem::Get(LocalPlayer))
 	{
-		PartySubsystem->AddPartyMemberClass(NewMemberClass);
+		PartySubsystem->JoinPartyMember(NewMemberClass);
 	}
 }
 
-void URsPartyLibrary::RemovePartyMemberClass(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove)
+void URsPartyLibrary::LeavePartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove)
 {
 	if (URsPartySubsystem* PartySubsystem = URsPartySubsystem::Get(LocalPlayer))
 	{
-		PartySubsystem->RemovePartyMemberClass(MemberClassToRemove);
+		PartySubsystem->LeavePartyMember(MemberClassToRemove);
 	}
 }
