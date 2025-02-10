@@ -29,10 +29,10 @@ protected:
 	TObjectPtr<UAnimMontage> BackstepMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	float InputTurnAroundSpeed = 750.f;
+	float TurnAroundSpeed = 750.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	float InputTurnAroundMaxDuration = 0.15f;
+	float TurnAroundMaxDuration = 0.15f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Perfect Dodge", meta = (Categories = "Event"))
 	FGameplayTag PerfectDodgeStartTag;
@@ -68,7 +68,7 @@ protected:
 	void HandlePerfectDodgeEnded(FGameplayEventData Data);
 
 	UFUNCTION()
-	void HandleDamageEffectApplied(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
+	void HandleDamageEffectApplied(AActor* DamageSource, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
 
 private:
 	UPROPERTY(Transient)

@@ -60,9 +60,8 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	// During perfect dodge, ignore damage effect
-	FGameplayTagContainer PerfectDodgeTags = FGameplayTag::RequestGameplayTag(TEXT("Ability.Dodge.Perfect")).GetSingleTagContainer();
-	if (TargetASC->GetActiveEffectsWithAllTags(PerfectDodgeTags).Num() > 0)
+	// During invincible state, ignore damage effect
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->InvincibleStateTag))
 	{
 		return;
 	}

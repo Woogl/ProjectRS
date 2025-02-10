@@ -20,7 +20,7 @@ void URsGameplayAbility_Dodge::ActivateAbility(const FGameplayAbilitySpecHandle 
 	if (!LastMoveInput.IsNearlyZero())
 	{
 		FVector TargetLocation = GetAvatarCharacter()->GetActorLocation() + LastMoveInput * 100.f;
-		URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, TargetLocation, InputTurnAroundSpeed, InputTurnAroundMaxDuration);
+		URsAbilityTask_TurnToLocation* TurnTask = URsAbilityTask_TurnToLocation::TurnToLocation(this, TargetLocation, TurnAroundSpeed, TurnAroundMaxDuration);
 		// Reserve Dash montage
 		TurnTask->OnFinish.AddDynamic(this, &ThisClass::PlayDashOrBackstepMontage);
 		TurnTask->ReadyForActivation();
@@ -112,7 +112,7 @@ void URsGameplayAbility_Dodge::HandlePerfectDodgeEnded(FGameplayEventData Data)
 	}
 }
 
-void URsGameplayAbility_Dodge::HandleDamageEffectApplied(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle)
+void URsGameplayAbility_Dodge::HandleDamageEffectApplied(AActor* DamageSource, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle)
 {
 	FGameplayTagContainer DamageTags;
 	SpecHandle.Data->GetAllAssetTags(DamageTags);
@@ -122,6 +122,6 @@ void URsGameplayAbility_Dodge::HandleDamageEffectApplied(AActor* Source, FGamepl
 	}
 	else if (DamageTags.HasAll(DamageTagsCanDodge))
 	{
-		K2_OnPerfectDodgeSuccess(Source, SpecHandle, ActiveHandle);
+		K2_OnPerfectDodgeSuccess(DamageSource, SpecHandle, ActiveHandle);
 	}
 }
