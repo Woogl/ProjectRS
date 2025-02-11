@@ -67,8 +67,8 @@ void URsAbilityTask_BulletTime::TickTask(float DeltaTime)
 
 	if (bAffectSelf == false)
 	{
-		// float NewTimeDilation = 1 / TimeDilation;
 		GetAvatarActor()->CustomTimeDilation = 1.f / TimeDilation;
+		GetOwnerActor()->CustomTimeDilation = 1.f / TimeDilation;
 	}
 	
 	if (ElapsedTime >= Duration)
