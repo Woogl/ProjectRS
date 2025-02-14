@@ -3,6 +3,7 @@
 
 #include "RsPartyLibrary.h"
 
+#include "AbilitySystemComponent.h"
 #include "RsPartyComponent.h"
 #include "RsPartySubsystem.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,6 +15,22 @@ void URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMe
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
 	{
 		RsPlayerController->GetPartyComponent()->SwitchPartyMember(RsPlayerController, NewMemberIndex);
+	}
+}
+
+void URsPartyLibrary::ApplyGlobalPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> GlobalEffect)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
+			{
+				UGameplayEffect* GameplayEffect = GlobalEffect->GetDefaultObject<UGameplayEffect>();
+				FGameplayEffectSpec	Spec(GameplayEffect, ASC->MakeEffectContext(), 0);
+				ASC->ApplyGameplayEffectSpecToSelf(Spec);
+			}
+		}
 	}
 }
 

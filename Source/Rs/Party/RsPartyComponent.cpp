@@ -27,6 +27,11 @@ ARsPlayerCharacter* URsPartyComponent::GetPartyMember(int32 MemberIndex) const
 	}
 }
 
+TArray<ARsPlayerCharacter*> URsPartyComponent::GetPartyMembers() const
+{
+	return PartyMembers;
+}
+
 void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 {
 	if (!PartyMembers.Contains(NewMember))
