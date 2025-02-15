@@ -50,8 +50,14 @@ void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor
 	
 	if (SourceASC && TargetASC && GameplayEffectClass)
 	{
-		UGameplayEffect* GameplayEffect = GameplayEffectClass->GetDefaultObject<UGameplayEffect>();
-		SourceASC->ApplyGameplayEffectToTarget(GameplayEffect, TargetASC);
+		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
+		if (DamageEffectContext.IsValid())
+		{
+			DamageEffectContext.AddOrigin(TargetActor->GetActorLocation());
+		
+			FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
+			SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetASC);
+		}
 	}
 }
 
@@ -62,8 +68,12 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 	
 	if (SourceASC && TargetASC)
 	{
-		const FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get();
-		SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
+		{
+			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
+			
+			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+		}
 	}
 }
 

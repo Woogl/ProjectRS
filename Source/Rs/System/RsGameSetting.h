@@ -18,8 +18,6 @@ class RS_API URsGameSetting : public UPrimaryDataAsset
 
 public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-	
-	UFUNCTION(BlueprintCallable, DisplayName = "GetRsGameSetting")
 	static URsGameSetting* Get();
 
 public:
