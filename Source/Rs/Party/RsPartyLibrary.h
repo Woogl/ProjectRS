@@ -18,7 +18,7 @@ class RS_API URsPartyLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static void SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
+	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static void ApplyGlobalPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> GlobalEffect);

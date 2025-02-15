@@ -3,7 +3,7 @@
 
 #include "RsAbilitySystemComponent.h"
 
-#include "Rs/AbilitySystem/Data/RsAbilitySet.h"
+#include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 

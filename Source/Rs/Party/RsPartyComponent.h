@@ -24,7 +24,8 @@ public:
 	void AddPartyMember(ARsPlayerCharacter* NewMember);
 	void InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex);
 	void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
-	void SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
+	
+	bool SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	
 protected:
 	virtual void BeginPlay() override;

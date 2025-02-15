@@ -1,0 +1,14 @@
+// Copyright 2024 Team BH.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Runtime/GameplayTags/Public/NativeGameplayTags.h"
+
+namespace RsGameplayTags
+{
+	RS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_LAYER_GAME);
+	RS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_LAYER_GAMEMENU);
+	RS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_LAYER_MENU);
+	RS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_LAYER_MODAL);
+}

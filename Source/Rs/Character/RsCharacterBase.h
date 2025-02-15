@@ -6,9 +6,9 @@
 #include "AbilitySystemInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
-#include "Rs/AbilitySystem/Data/RsAbilitySet.h"
 #include "RsCharacterBase.generated.h"
 
+class URsAbilitySet;
 class URsAbilitySystemComponent;
 
 UCLASS(Abstract, NotBlueprintable)
