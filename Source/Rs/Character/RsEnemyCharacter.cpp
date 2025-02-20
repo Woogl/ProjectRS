@@ -16,10 +16,8 @@ ARsEnemyCharacter::ARsEnemyCharacter()
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 }
 
-void ARsEnemyCharacter::PostInitializeComponents()
+void ARsEnemyCharacter::BeginPlay()
 {
-	Super::PostInitializeComponents();
-	
 	// The Ability System Component is created in the class constructor, so it should always be valid at this point.
 	if (AbilitySystemComponent)
 	{
@@ -27,10 +25,7 @@ void ARsEnemyCharacter::PostInitializeComponents()
 		HealthComponent->Initialize(AbilitySystemComponent);
 		PostInitializeAbilitySystem();
 	}
-}
-
-void ARsEnemyCharacter::BeginPlay()
-{
+	
 	Super::BeginPlay();
 	
 }

@@ -23,6 +23,5 @@ public:
 	ARsEnemyCharacter();
 
 protected:
-	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 };
