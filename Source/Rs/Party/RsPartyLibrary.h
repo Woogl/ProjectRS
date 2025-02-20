@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsPartyLibrary.generated.h"
 
+struct FGameplayEffectSpec;
 class UGameplayEffect;
 class ARsPlayerCharacter;
 /**
@@ -21,7 +22,10 @@ public:
 	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static void ApplyGlobalPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> GlobalEffect);
+	static void ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void ApplyPartyEffectSpec(UObject* WorldContextObject, UPARAM(ref)FGameplayEffectSpec& EffectSpec);
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void AddPartyMember(ARsPlayerCharacter* NewMember);

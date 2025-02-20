@@ -20,7 +20,7 @@ bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMe
 	return false;
 }
 
-void URsPartyLibrary::ApplyGlobalPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> GlobalEffect)
+void URsPartyLibrary::ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass)
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
 	{
@@ -28,9 +28,23 @@ void URsPartyLibrary::ApplyGlobalPartyEffect(UObject* WorldContextObject, TSubcl
 		{
 			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
 			{
-				UGameplayEffect* GameplayEffect = GlobalEffect->GetDefaultObject<UGameplayEffect>();
+				UGameplayEffect* GameplayEffect = EffectClass->GetDefaultObject<UGameplayEffect>();
 				FGameplayEffectSpec	Spec(GameplayEffect, ASC->MakeEffectContext(), 0);
 				ASC->ApplyGameplayEffectSpecToSelf(Spec);
+			}
+		}
+	}
+}
+
+void URsPartyLibrary::ApplyPartyEffectSpec(UObject* WorldContextObject, FGameplayEffectSpec& EffectSpec)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
+			{
+				ASC->ApplyGameplayEffectSpecToSelf(EffectSpec);
 			}
 		}
 	}

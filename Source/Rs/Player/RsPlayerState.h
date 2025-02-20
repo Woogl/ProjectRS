@@ -20,7 +20,7 @@ public:
 
 	// The Ability System Component for this PlayerState. 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Ability System")
-	UAbilitySystemComponent* AbilitySystemComponent;
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
