@@ -47,19 +47,19 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 	FGameplayEffectSpecHandle SuperArmorBreakEffectSpecHandle = MakeOutgoingGameplayEffectSpec(SuperArmorBreakEffect, GetAbilityLevel());
-	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
-
 	if (SuperArmorBreakEffectSpecHandle.IsValid())
 	{
 		Projectile->SuperArmorBreakSpecHandle = SuperArmorBreakEffectSpecHandle;
 	}
-	
+
+	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, StaggerDamageCoefficient);
 		Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 	}
+	
 	Projectile->OwningAbility = this;
 	
 	if (CachedVictim.IsValid())
