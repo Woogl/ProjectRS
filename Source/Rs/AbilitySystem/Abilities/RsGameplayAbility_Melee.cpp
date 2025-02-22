@@ -22,6 +22,11 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
+	if (SuperArmorBreakEffect)
+	{
+		URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), EventData.Target, SuperArmorBreakEffect);
+	}
+	
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{

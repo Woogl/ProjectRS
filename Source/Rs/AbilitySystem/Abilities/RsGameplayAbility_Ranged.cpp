@@ -46,7 +46,14 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
+	FGameplayEffectSpecHandle SuperArmorBreakEffectSpecHandle = MakeOutgoingGameplayEffectSpec(SuperArmorBreakEffect, GetAbilityLevel());
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
+
+	if (SuperArmorBreakEffectSpecHandle.IsValid())
+	{
+		Projectile->SuperArmorBreakSpecHandle = SuperArmorBreakEffectSpecHandle;
+	}
+	
 	if (DamageEffectSpecHandle.IsValid())
 	{
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);

@@ -27,6 +27,9 @@ public:
 	ARsProjectile();
 
 	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
+
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle SuperArmorBreakSpecHandle;
 	
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageSpecHandle;
