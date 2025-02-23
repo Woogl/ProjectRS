@@ -53,9 +53,7 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 		{
 			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(CachedCooldownEffectHandle))
 			{
-				float Duration = CooldownEffect->GetDuration();
 				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
-				float EndTime = CooldownEffect->GetEndTime();
 				ASC->ModifyActiveEffectStartTime(CachedCooldownEffectHandle, -TimeRemaining + NewRemaining);
 			}
 		}
