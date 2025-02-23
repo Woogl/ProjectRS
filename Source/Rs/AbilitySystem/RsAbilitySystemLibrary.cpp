@@ -39,3 +39,21 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbility
 	}
 	return nullptr;
 }
+
+void URsAbilitySystemLibrary::ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff)
+{
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch);
+	if (FoundRsAbility)
+	{
+		FoundRsAbility->ModifyCooldownRemaining(TimeDiff);
+	}
+}
+
+void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining)
+{
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch);
+	if (FoundRsAbility)
+	{
+		FoundRsAbility->SetCooldownRemaining(NewRemaining);
+	}
+}

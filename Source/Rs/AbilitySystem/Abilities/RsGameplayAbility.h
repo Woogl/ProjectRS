@@ -43,6 +43,12 @@ public:
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
+	void ModifyCooldownRemaining(float TimeDiff);
+
+	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
+	void SetCooldownRemaining(float NewRemaining);
 	
 	void RefreshEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 	
@@ -80,6 +86,9 @@ protected:
 	void K2_OnRemoveAbility();
 
 private:
+	UPROPERTY(Transient)
+	mutable FActiveGameplayEffectHandle CachedCooldownEffectHandle;
+	
 	UPROPERTY(Transient)
 	mutable FGameplayTagContainer CachedCooldownTags;
 };

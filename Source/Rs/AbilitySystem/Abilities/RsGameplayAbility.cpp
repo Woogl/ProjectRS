@@ -30,7 +30,35 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
-		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+		CachedCooldownEffectHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+	}
+}
+
+void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
+{
+	if (CachedCooldownEffectHandle.IsValid())
+	{
+		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+		{
+			ASC->ModifyActiveEffectStartTime(CachedCooldownEffectHandle, TimeDiff);
+		}
+	}
+}
+
+void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
+{
+	if (CachedCooldownEffectHandle.IsValid())
+	{
+		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+		{
+			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(CachedCooldownEffectHandle))
+			{
+				float Duration = CooldownEffect->GetDuration();
+				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
+				float EndTime = CooldownEffect->GetEndTime();
+				ASC->ModifyActiveEffectStartTime(CachedCooldownEffectHandle, -TimeRemaining + NewRemaining);
+			}
+		}
 	}
 }
 
