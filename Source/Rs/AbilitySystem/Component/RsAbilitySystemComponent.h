@@ -22,11 +22,7 @@ public:
 	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
 	void RefreshAbilityInputBindings();
 
-	FGameplayEventMulticastDelegate OnAnyGameplayEvent;
-	
 private:
-	virtual int32 HandleGameplayEvent(FGameplayTag EventTag, const FGameplayEventData* Payload) override;
-
 	// Handles to the granted abilities.
 	UPROPERTY()
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;

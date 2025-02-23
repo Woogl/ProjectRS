@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/Character/RsCharacterBase.h"
 
 URsGameplayAbility::URsGameplayAbility()
@@ -50,11 +49,6 @@ void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 
 	// Set up Bindings for Enhanced Input.
 	SetupEnhancedInputBindings(ActorInfo, Spec);
-	
-	if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(ActorInfo->AbilitySystemComponent))
-	{
-		RsASC->OnAnyGameplayEvent.AddUObject(this, &ThisClass::HandleGameplayEvent);
-	}
 }
 
 void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -194,21 +188,8 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	}
 	
 	TeardownEnhancedInputBindings(ActorInfo, Spec);
-
-	if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(ActorInfo->AbilitySystemComponent))
-	{
-		RsASC->OnAnyGameplayEvent.RemoveAll(this);
-	}
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);
 
 	K2_OnRemoveAbility();
-}
-
-void URsGameplayAbility::HandleGameplayEvent(const FGameplayEventData* EventData)
-{
-	if (IsActive())
-	{
-		K2_OnGameplayEvent(EventData->EventTag);
-	}
 }

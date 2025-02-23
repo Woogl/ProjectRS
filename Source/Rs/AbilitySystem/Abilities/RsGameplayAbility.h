@@ -72,17 +72,12 @@ protected:
 
 	// Override "OnRemoveAbility" to clean up Enhanced Input Bindings.
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-
-	virtual void HandleGameplayEvent(const FGameplayEventData* EventData);
-
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGiveAbility")
 	void K2_OnGiveAbility();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent")
-	void K2_OnGameplayEvent(FGameplayTag EventTag);
 
 private:
 	UPROPERTY(Transient)

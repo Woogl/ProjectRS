@@ -87,12 +87,3 @@ void URsAbilitySystemComponent::RefreshAbilityInputBindings()
 	}
 }
 
-int32 URsAbilitySystemComponent::HandleGameplayEvent(FGameplayTag EventTag, const FGameplayEventData* Payload)
-{
-	FGameplayEventData OutPayload;
-	OutPayload.EventTag = EventTag;
-	OnAnyGameplayEvent.Broadcast(&OutPayload);
-	
-	return Super::HandleGameplayEvent(EventTag, Payload);
-}
-
