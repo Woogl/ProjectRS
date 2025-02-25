@@ -60,12 +60,6 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	// During invincible state, ignore damage effect
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->InvincibleStateTag))
-	{
-		return;
-	}
-
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
 	// Set in RsGameplayAbility_Attack

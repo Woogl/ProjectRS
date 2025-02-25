@@ -6,7 +6,6 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Dodge.generated.h"
 
-class UAbilityTask_WaitGameplayEffectApplied_Self;
 /**
  * 
  */
@@ -34,16 +33,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	float TurnAroundMaxDuration = 0.15f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Perfect Dodge", meta = (Categories = "Event"))
-	FGameplayTag PerfectDodgeStartTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Perfect Dodge", meta = (Categories = "Event"))
-	FGameplayTag PerfectDodgeEndTag;
-	
-	// Gameplay effect that will apply to self during perfect dodge.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Perfect Dodge")
-	TSubclassOf<UGameplayEffect> PerfectDodgeEffectToSelf;
-
 	// Gameplay effect's asset tag that can dodge.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	FGameplayTagContainer DamageTagsCanDodge;
@@ -61,22 +50,16 @@ protected:
 	UFUNCTION()
 	void HandleMontageCancelled();
 
-	UFUNCTION()
-	void HandlePerfectDodgeStarted(FGameplayEventData Data);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Ability", DisplayName = "OnPerfectDodgeDetected")
+	void K2_PerfectDodgeDetected(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void StartPerfectDodgeDetection();
+	UFUNCTION(BlueprintCallable)
+	void EndPerfectDodgeDetection();
 	
-	UFUNCTION()
-	void HandlePerfectDodgeEnded(FGameplayEventData Data);
-
-	UFUNCTION()
-	void HandleDamageEffectApplied(AActor* DamageSource, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
-
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimMontage> MontageToPlay;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UAbilityTask_WaitGameplayEffectApplied_Self> WaitDamageEffectTask;
-
-	UPROPERTY(Transient)
-	FActiveGameplayEffectHandle PerfectDodgeSelfEffectHandle;
 };
