@@ -47,6 +47,11 @@ void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
 
 void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 {
+	if (!MutableCooldownHandle.IsValid() && NewRemaining > 0)
+	{
+		CommitAbilityCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+	}
+
 	if (MutableCooldownHandle.IsValid())
 	{
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
@@ -57,10 +62,6 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 				ASC->ModifyActiveEffectStartTime(MutableCooldownHandle, -TimeRemaining + NewRemaining);
 			}
 		}
-	}
-	else if (NewRemaining > 0)
-	{
-		CommitAbilityCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}
 }
 
