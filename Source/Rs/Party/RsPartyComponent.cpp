@@ -45,7 +45,19 @@ void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 	}
 }
 
-void URsPartyComponent::InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex)
+void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
+{
+	if (PartyMembers.Contains(MemberToRemove))
+	{
+		PartyMembers.Remove(MemberToRemove);
+	}
+	else
+	{
+		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::RemovePartyMember: Can't found Member"));
+	}
+}
+
+void URsPartyComponent::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex)
 {
 	if (!PartyMembers.Contains(NewMember))
 	{
@@ -57,15 +69,15 @@ void URsPartyComponent::InsertPartyMember(ARsPlayerCharacter* NewMember, int32 M
 	}
 }
 
-void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
+void URsPartyComponent::RemovePartyMemberAt(int32 MemberIndex)
 {
-	if (PartyMembers.Contains(MemberToRemove))
+	if (PartyMembers.IsValidIndex(MemberIndex))
 	{
-		PartyMembers.Remove(MemberToRemove);
+		PartyMembers.RemoveAtSwap(MemberIndex);
 	}
 	else
 	{
-		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::RemovePartyMember: Can't found Member"));
+		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::RemovePartyMemberAt: Can't found Member"));
 	}
 }
 

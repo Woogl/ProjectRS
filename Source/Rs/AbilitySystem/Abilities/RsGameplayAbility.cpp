@@ -17,8 +17,8 @@ const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
 	if (CooldownTag.IsValid())
 	{
-		CachedCooldownTags.AddTag(CooldownTag);
-		return &CachedCooldownTags;
+		MutableCooldownTags.AddTag(CooldownTag);
+		return &MutableCooldownTags;
 	}
 	return nullptr;
 }
@@ -30,33 +30,37 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
-		CachedCooldownEffectHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+		MutableCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }
 
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
 {
-	if (CachedCooldownEffectHandle.IsValid())
+	if (MutableCooldownHandle.IsValid())
 	{
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 		{
-			ASC->ModifyActiveEffectStartTime(CachedCooldownEffectHandle, TimeDiff);
+			ASC->ModifyActiveEffectStartTime(MutableCooldownHandle, TimeDiff);
 		}
 	}
 }
 
 void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 {
-	if (CachedCooldownEffectHandle.IsValid())
+	if (MutableCooldownHandle.IsValid())
 	{
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 		{
-			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(CachedCooldownEffectHandle))
+			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(MutableCooldownHandle))
 			{
 				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
-				ASC->ModifyActiveEffectStartTime(CachedCooldownEffectHandle, -TimeRemaining + NewRemaining);
+				ASC->ModifyActiveEffectStartTime(MutableCooldownHandle, -TimeRemaining + NewRemaining);
 			}
 		}
+	}
+	else if (NewRemaining > 0)
+	{
+		CommitAbilityCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}
 }
 
@@ -82,7 +86,7 @@ void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 	Super::OnGiveAbility(ActorInfo, Spec);
 	
 	// Try to Activate immediately if "Activate Ability On Granted" is true.
-	if (ActivateAbilityOnGranted)
+	if (bActivateOnGranted)
 	{
 		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
 	}

@@ -29,12 +29,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void AddPartyMember(ARsPlayerCharacter* NewMember);
-
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
-	static void InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex);
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
+	static void InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void RemovePartyMemberAt(UObject* WorldContextObject, int32 MemberIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void JoinPartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass);

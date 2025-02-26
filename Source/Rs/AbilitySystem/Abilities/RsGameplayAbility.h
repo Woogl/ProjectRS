@@ -21,7 +21,7 @@ public:
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
-	bool ActivateAbilityOnGranted = false;
+	bool bActivateOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
@@ -87,8 +87,8 @@ protected:
 
 private:
 	UPROPERTY(Transient)
-	mutable FActiveGameplayEffectHandle CachedCooldownEffectHandle;
+	mutable FActiveGameplayEffectHandle MutableCooldownHandle;
 	
 	UPROPERTY(Transient)
-	mutable FGameplayTagContainer CachedCooldownTags;
+	mutable FGameplayTagContainer MutableCooldownTags;
 };

@@ -58,19 +58,27 @@ void URsPartyLibrary::AddPartyMember(ARsPlayerCharacter* NewMember)
 	}
 }
 
-void URsPartyLibrary::InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex)
-{
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
-	{
-		RsPlayerController->GetPartyComponent()->InsertPartyMember(NewMember, MemberIndex);
-	}
-}
-
 void URsPartyLibrary::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(MemberToRemove, 0)))
 	{
 		RsPlayerController->GetPartyComponent()->RemovePartyMember(MemberToRemove);
+	}
+}
+
+void URsPartyLibrary::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
+	{
+		RsPlayerController->GetPartyComponent()->InsertPartyMemberAt(NewMember, MemberIndex);
+	}
+}
+
+void URsPartyLibrary::RemovePartyMemberAt(UObject* WorldContextObject, int32 MemberIndex)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		RsPlayerController->GetPartyComponent()->RemovePartyMemberAt(MemberIndex);
 	}
 }
 

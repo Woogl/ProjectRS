@@ -22,8 +22,10 @@ public:
 	TArray<ARsPlayerCharacter*> GetPartyMembers() const;
 	
 	void AddPartyMember(ARsPlayerCharacter* NewMember);
-	void InsertPartyMember(ARsPlayerCharacter* NewMember, int32 MemberIndex);
 	void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
+
+	void InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex);
+	void RemovePartyMemberAt(int32 MemberIndex);
 	
 	bool SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	
