@@ -63,3 +63,8 @@ AAIController* ARsPlayerController::GetPrevAIController() const
 {
 	return PrevAIController;
 }
+
+UGameplayCameraComponent* ARsPlayerController::GetGameplayCameraComponent() const
+{
+	return GameplayCameraComponent;
+}

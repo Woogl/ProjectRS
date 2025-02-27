@@ -38,5 +38,6 @@ public:
 	
 	URsPartyComponent* GetPartyComponent() const;
 	AAIController* GetPrevAIController() const;
+	UGameplayCameraComponent* GetGameplayCameraComponent() const;
 };
 
