@@ -18,7 +18,7 @@ class RS_API URsGameplayAbility_Ranged : public URsGameplayAbility_Attack
 
 protected:
 	// Tag that define fire projectile event
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify"))
 	FGameplayTag FireEventTag;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")

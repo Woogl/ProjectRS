@@ -18,7 +18,7 @@ class RS_API URsGameplayAbility_Melee : public URsGameplayAbility_Attack
 
 protected:
 	// Tag that define hit detect event
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "Event"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify"))
 	FGameplayTag HitDetectEventTag;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
