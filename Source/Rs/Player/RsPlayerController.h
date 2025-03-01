@@ -6,6 +6,7 @@
 #include "CommonPlayerController.h"
 #include "RsPlayerController.generated.h"
 
+class URsTargetingComponent;
 class AAIController;
 class UGameplayControlRotationComponent;
 class UGameplayCameraComponent;
@@ -22,14 +23,17 @@ class RS_API ARsPlayerController : public ACommonPlayerController
 	UPROPERTY(VisibleAnywhere, Category = "Party")
 	TObjectPtr<URsPartyComponent> PartyComponent;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AAIController> PrevAIController;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<URsTargetingComponent> TargetingComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UGameplayControlRotationComponent> GameplayControlRotationComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AAIController> PrevAIController;
 	
 public:
 	ARsPlayerController();

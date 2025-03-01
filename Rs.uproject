@@ -16,7 +16,8 @@
 				"CommonGame",
 				"AIModule",
 				"TargetingSystem",
-				"CoreUObject"
+				"CoreUObject",
+				"GameplayCameras"
 			]
 		}
 	],

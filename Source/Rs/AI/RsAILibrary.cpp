@@ -16,9 +16,9 @@ uint8 URsAILibrary::GetTeamID(AActor* Actor)
 	return FGenericTeamId::NoTeam.GetId();
 }
 
-UObject* URsAILibrary::GetBlackboardValueAsObject(AActor* Target, FName KeyName)
+UObject* URsAILibrary::GetBlackboardValueAsObject(AActor* Actor, FName KeyName)
 {
-	if (UBlackboardComponent* BlackBoard = UAIBlueprintHelperLibrary::GetBlackboard(Target))
+	if (UBlackboardComponent* BlackBoard = UAIBlueprintHelperLibrary::GetBlackboard(Actor))
 	{
 		return BlackBoard->GetValueAsObject(KeyName);
 	}

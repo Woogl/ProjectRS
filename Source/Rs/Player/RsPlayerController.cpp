@@ -8,10 +8,13 @@
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/GameplayControlRotationComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/Targeting/RsTargetingComponent.h"
 
 ARsPlayerController::ARsPlayerController()
 {
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
+
+	TargetingComponent = CreateDefaultSubobject<URsTargetingComponent>(TEXT("TargetingComponent"));
 
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetRootComponent());
