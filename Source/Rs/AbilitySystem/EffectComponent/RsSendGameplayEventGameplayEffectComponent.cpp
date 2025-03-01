@@ -1,14 +1,14 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsSendGameplayEventGEComponent.h"
+#include "RsSendGameplayEventGameplayEffectComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Misc/DataValidation.h"
 
 #define LOCTEXT_NAMESPACE "RsSendGameplayEventGEComponent"
 
-void URsSendGameplayEventGEComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec,FPredictionKey& PredictionKey) const
+void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec,FPredictionKey& PredictionKey) const
 {
 	if (!ensureMsgf(ActiveGEContainer.Owner, TEXT("OnGameplayEffectApplied is passed an ActiveGEContainer which lives within an ASC but that ASC was somehow null")))
 	{
@@ -26,7 +26,7 @@ void URsSendGameplayEventGEComponent::OnGameplayEffectApplied(FActiveGameplayEff
 }
 
 #if WITH_EDITOR
-EDataValidationResult URsSendGameplayEventGEComponent::IsDataValid(class FDataValidationContext& Context) const
+EDataValidationResult URsSendGameplayEventGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
 	if (EventTags.IsEmpty())

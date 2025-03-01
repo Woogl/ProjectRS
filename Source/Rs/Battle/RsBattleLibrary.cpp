@@ -43,7 +43,7 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	return !ResultActors.IsEmpty();
 }
 
-void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, FGameplayTagContainer AdditionalDamageEffectTags)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -56,12 +56,16 @@ void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor
 			DamageEffectContext.AddOrigin(TargetActor->GetActorLocation());
 		
 			FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
+			for (FGameplayTag AdditionalDamageEffectTag : AdditionalDamageEffectTags)
+			{
+				DamageEffectSpecHandle.Data->AddDynamicAssetTag(AdditionalDamageEffectTag);
+			}
 			SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetASC);
 		}
 	}
 }
 
-void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle, FGameplayTagContainer AdditionalDamageEffectTags)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -71,7 +75,10 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
 			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
-			
+			for (FGameplayTag AdditionalDamageEffectTag : AdditionalDamageEffectTags)
+			{
+				EffectSpec->AddDynamicAssetTag(AdditionalDamageEffectTag);
+			}
 			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 		}
 	}

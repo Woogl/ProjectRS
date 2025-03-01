@@ -22,17 +22,12 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
-	if (SuperArmorBreakEffect)
-	{
-		URsBattleLibrary::ApplyDamageEffect(GetAvatarActorFromActorInfo(), EventData.Target, SuperArmorBreakEffect);
-	}
-	
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	if (DamageEffectSpecHandle.IsValid())
 	{
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);
 		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, StaggerDamageCoefficient);
-		URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle);
+		URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle, DamageEffectTags);
 		K2_OnAttackHitTarget(EventData.Target);
 	}
 }

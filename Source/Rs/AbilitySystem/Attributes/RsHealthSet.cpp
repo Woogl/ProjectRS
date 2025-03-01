@@ -103,10 +103,12 @@ void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, floa
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), URsGameSetting::Get()->DeathAbilityTag, FGameplayEventData());
 
 		}
+		/*
 		else if (OldValue > 0.f && OldValue > NewValue)
 		{
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), URsGameSetting::Get()->HitReactionAbilityTag, FGameplayEventData());
 		}
+	*/
 	}
 }
 

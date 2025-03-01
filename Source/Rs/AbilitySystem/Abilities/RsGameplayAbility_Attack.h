@@ -18,9 +18,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	TSubclassOf<UGameplayEffect> SuperArmorBreakEffect;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage")
+	FGameplayTagContainer DamageEffectTags;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
