@@ -30,6 +30,6 @@ public:
 #endif // WITH_EDITOR
 	
 public:
-	UPROPERTY(EditDefaultsOnly, Category = RsAdditionalDamageEffect)
+	UPROPERTY(EditDefaultsOnly, Category = RsAdditionalDamageEffect, meta = (Categories = "Effect.Damage"))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> AdditionalDamageEffectTable;
 };

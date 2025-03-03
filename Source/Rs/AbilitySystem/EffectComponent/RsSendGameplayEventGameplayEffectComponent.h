@@ -32,6 +32,6 @@ public:
 #endif
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = Tags, meta = (DisplayName = "EventTags"))
+	UPROPERTY(EditDefaultsOnly, Category = Tags)
 	FGameplayTagContainer EventTags;
 };

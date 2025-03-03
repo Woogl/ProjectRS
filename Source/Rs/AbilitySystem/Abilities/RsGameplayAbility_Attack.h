@@ -18,7 +18,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage", meta = (Categories = "Effect.Damage"))
 	FGameplayTagContainer DamageEffectTags;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
