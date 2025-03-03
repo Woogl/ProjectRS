@@ -48,8 +48,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
 	bool bIgnoreEnemyTeam = false;
 
+#if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bShowDebugInPIE = false;
+#endif // WITH_EDITORONLY_DATA
 
 private:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

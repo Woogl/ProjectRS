@@ -4,33 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "RsTargetingComponent.generated.h"
+#include "RsLockOnComponent.generated.h"
 
 
 class UWidgetComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class RS_API URsTargetingComponent : public UActorComponent
+class RS_API URsLockOnComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	URsTargetingComponent();
+	URsLockOnComponent();
 
-	UFUNCTION(BlueprintCallable, Category = "RS|Targeting")
-	void LockOn(AActor* InTarget);
+	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
+	void LockOn(AActor* TargetActor);
 
-	UFUNCTION(BlueprintCallable, Category = "RS|Targeting")
+	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	void LockOff();
 
-	UFUNCTION(BlueprintPure, Category = "RS|Targeting")
+	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
 	bool HasLockOnTarget() const;
 
-	UFUNCTION(BlueprintPure, Category = "RS|Targeting")
+	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
 	AActor* GetLockedOnTarget() const;
-
-	UFUNCTION(BlueprintPure, Category = "RS|Targeting", Meta=(DefaultToSelf = "Actor"))
-	static URsTargetingComponent* GetTargetingComponent(AActor* Actor);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
@@ -41,11 +38,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	FName ReticleWidgetSocket = FName("pelvis");
-	
-	virtual void BeginPlay() override;
-
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	TWeakObjectPtr<AActor> LockedOnTarget;

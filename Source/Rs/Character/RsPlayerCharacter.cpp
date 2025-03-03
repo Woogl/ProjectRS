@@ -11,7 +11,6 @@
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/Targeting/RsTargetingComponent.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter()
 {

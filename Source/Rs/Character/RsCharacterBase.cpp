@@ -4,7 +4,9 @@
 #include "RsCharacterBase.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -21,4 +23,13 @@ UAbilitySystemComponent* ARsCharacterBase::GetAbilitySystemComponent() const
 URsAbilitySystemComponent* ARsCharacterBase::GetRsAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+bool ARsCharacterBase::IsLockableTarget_Implementation() const
+{
+	if (URsBattleLibrary::IsDead(this))
+	{
+		return false;
+	}
+	return true;
 }

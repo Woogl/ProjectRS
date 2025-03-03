@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsCameraLibrary.generated.h"
 
+class URsLockOnComponent;
 class UGameplayCameraComponent;
 /**
  * 

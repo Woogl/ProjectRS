@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsBattleLibrary.generated.h"
 
+class ARsCharacterBase;
 struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
@@ -31,4 +32,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta = (DefaultToSelf = "Character"))
+	static bool IsDead(const ARsCharacterBase* Character);
 };

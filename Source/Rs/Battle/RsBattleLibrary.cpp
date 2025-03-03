@@ -3,9 +3,12 @@
 
 #include "RsBattleLibrary.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
+#include "Rs/Character/RsCharacterBase.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -92,6 +95,18 @@ bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectC
 		{
 			FRsGameplayEffectContext RsEffectContext = *static_cast<FRsGameplayEffectContext*>(EffectContextHandle.Get());
 			return RsEffectContext.bIsCriticalHit;
+		}
+	}
+	return false;
+}
+
+bool URsBattleLibrary::IsDead(const ARsCharacterBase* Character)
+{
+	if (const IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Character))
+	{
+		if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
+		{
+			return ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()) <= 0.f;
 		}
 	}
 	return false;

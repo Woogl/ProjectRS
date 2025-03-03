@@ -52,8 +52,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
 	bool bSortByDistance = false;
 
+#if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bShowDebugInPIE = false;
+#endif // WITH_EDITORONLY_DATA
 
 private:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

@@ -6,13 +6,14 @@
 #include "AbilitySystemInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
+#include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
 class URsAbilitySet;
 class URsAbilitySystemComponent;
 
 UCLASS(Abstract, NotBlueprintable)
-class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
+class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IRsLockOnInterface
 {
 	GENERATED_BODY()
 
@@ -29,6 +30,9 @@ public:
 	// IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override { TeamID = InTeamID; }
 	virtual FGenericTeamId GetGenericTeamId() const override { return TeamID; }
+
+	// IRsTargetingInterface
+	virtual bool IsLockableTarget_Implementation() const override;
 
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.

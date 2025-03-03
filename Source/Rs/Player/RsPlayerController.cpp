@@ -7,14 +7,14 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/GameplayControlRotationComponent.h"
+#include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/Targeting/RsTargetingComponent.h"
 
 ARsPlayerController::ARsPlayerController()
 {
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 
-	TargetingComponent = CreateDefaultSubobject<URsTargetingComponent>(TEXT("TargetingComponent"));
+	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
 
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetRootComponent());
@@ -70,4 +70,9 @@ AAIController* ARsPlayerController::GetPrevAIController() const
 UGameplayCameraComponent* ARsPlayerController::GetGameplayCameraComponent() const
 {
 	return GameplayCameraComponent;
+}
+
+URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
+{
+	return LockOnComponent;
 }
