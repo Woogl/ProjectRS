@@ -48,10 +48,8 @@ void URsGameplayAbility_Dodge::PlayDashOrBackstepMontage()
 			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->ReadyForActivation();
 		}
-		FGameplayTagRequirements SourceTagRequirements;
-		FGameplayTagRequirements TargetTagRequirements;
 	
-		if (UAbilityTask_WaitGameplayEffectBlockedImmunity* PerfectDodgeDetectionTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(this,SourceTagRequirements, TargetTagRequirements))
+		if (UAbilityTask_WaitGameplayEffectBlockedImmunity* PerfectDodgeDetectionTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(this, FGameplayTagRequirements(), FGameplayTagRequirements()))
 		{
 			PerfectDodgeDetectionTask->Blocked.AddDynamic(this, &ThisClass::K2_PerfectDodgeDetected);
 			PerfectDodgeDetectionTask->ReadyForActivation();

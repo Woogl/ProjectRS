@@ -12,22 +12,31 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	if (HitDetectEventTag != FGameplayTag::EmptyTag)
+	TArray<FGameplayTag> EventTags;
+	DamageEvents.GetKeys(EventTags);
+	if (EventTags.Num() > 0)
 	{
-		UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, HitDetectEventTag);
-		HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
-		HitDetectTask->ReadyForActivation();
+		for (const FGameplayTag& EventTag : EventTags)
+		{
+			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EventTag);
+			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
+			HitDetectTask->ReadyForActivation();
+		}
 	}
 }
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
-	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
-	if (DamageEffectSpecHandle.IsValid())
+	FRsDamageEventContext DamageEffectContext = DamageEvents.FindRef(EventData.EventTag);
+	if (DamageEffectContext.DamageEffectClass != nullptr)
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, HealthDamageCoefficient);
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, StaggerDamageCoefficient);
-		URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle, DamageEffectTags);
-		K2_OnAttackHitTarget(EventData.Target);
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectContext.DamageEffectClass, GetAbilityLevel());
+		if (DamageEffectSpecHandle.IsValid())
+		{
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
+			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
+			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle, DamageEffectContext.DamageEffectTags);
+			K2_OnAttackHitTarget(EventData.Target);
+		}
 	}
 }

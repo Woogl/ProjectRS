@@ -28,7 +28,7 @@ protected:
 	TObjectPtr<UAnimMontage> BackstepMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	float TurnAroundSpeed = 750.f;
+	float TurnAroundSpeed = 800.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	float TurnAroundMaxDuration = 0.15f;

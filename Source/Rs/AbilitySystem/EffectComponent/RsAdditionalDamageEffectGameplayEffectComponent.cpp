@@ -18,11 +18,14 @@ void URsAdditionalDamageEffectGameplayEffectComponent::OnGameplayEffectApplied(F
 	{
 		for (FGameplayTag AdditionalEffectTag : AdditionalEffectTagContainer)
 		{
-			if (const UGameplayEffect* EffectCDO = AdditionalDamageEffectTable.Find(AdditionalEffectTag)->GetDefaultObject())
+			if (TSubclassOf<UGameplayEffect> AdditionalEffectClass = AdditionalDamageEffectTable.FindRef(AdditionalEffectTag))
 			{
-				FGameplayEffectSpec NewSpec;
-				NewSpec.InitializeFromLinkedSpec(EffectCDO,GESpec);
-				ActiveGEContainer.Owner->ApplyGameplayEffectSpecToSelf(NewSpec);
+				if (UGameplayEffect* EffectCDO = AdditionalEffectClass.GetDefaultObject())
+				{
+					FGameplayEffectSpec NewSpec;
+					NewSpec.InitializeFromLinkedSpec(EffectCDO, GESpec);
+					ActiveGEContainer.Owner->ApplyGameplayEffectSpecToSelf(NewSpec);
+				}
 			}
 		}
 	}

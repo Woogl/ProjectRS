@@ -6,6 +6,24 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
+USTRUCT(BlueprintType)
+struct FRsDamageEventContext
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage", meta = (Categories = "Effect.Damage"))
+	FGameplayTagContainer DamageEffectTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
+	float HealthDamageCoefficient = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
+	float StaggerDamageCoefficient = 1.f;
+};
+
 /**
  * 
  */
@@ -18,17 +36,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage", meta = (Categories = "Effect.Damage"))
-	FGameplayTagContainer DamageEffectTags;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float HealthDamageCoefficient = 1.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float StaggerDamageCoefficient = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "AnimNotify", ForceInlineRow))
+	TMap<FGameplayTag, FRsDamageEventContext> DamageEvents;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
@@ -39,6 +48,6 @@ protected:
 	void HandleMontageCancelled();
 
 public:
-	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAttackHitTarget")
+	UFUNCTION(BlueprintImplementableEvent, Category = "RS|Damage", DisplayName = "OnAttackHitTarget")
 	void K2_OnAttackHitTarget(const AActor* Target);
 };

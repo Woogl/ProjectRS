@@ -39,15 +39,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotifyState"))
 	FGameplayTag ComboWindowEndTag;
 	
-	UPROPERTY()
-	TArray<FGameplayAbilitySpec> InnerSpecs;
-	
-	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> InnerHandles;
-
-	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> InnerHandlesActivating;
-	
 	UFUNCTION()
 	void HandleComboWindowStarted(FGameplayEventData Data);
 
@@ -69,4 +60,13 @@ private:
 
 	UPROPERTY(Transient)
 	int32 CurrentComboIndex = 0;
+
+	UPROPERTY()
+	TArray<FGameplayAbilitySpec> InnerSpecs;
+	
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> InnerHandles;
+
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> InnerHandlesActivating;
 };
