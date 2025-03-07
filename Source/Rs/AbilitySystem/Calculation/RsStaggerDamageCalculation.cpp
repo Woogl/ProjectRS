@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsStaggerExecCalculation.h"
+#include "RsStaggerDamageCalculation.h"
 
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
@@ -30,7 +30,7 @@ struct RsStaggerStatics
 	}
 };
 
-URsStaggerExecCalculation::URsStaggerExecCalculation()
+URsStaggerDamageCalculation::URsStaggerDamageCalculation()
 {
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 	
@@ -38,7 +38,7 @@ URsStaggerExecCalculation::URsStaggerExecCalculation()
 	RelevantAttributesToCapture.Add(DamageStatics->CurrentStaggerDef);
 }
 
-void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void URsStaggerDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (TargetASC == nullptr)
@@ -63,8 +63,6 @@ void URsStaggerExecCalculation::Execute_Implementation(const FGameplayEffectCust
 
 	float Impact = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ImpactDef, EvaluationParameters, Impact);
-	// Impact shouldn't be minus value
-	Impact = FMath::Max(Impact, 0.f);
 	
 	// Stagger Calculation
 	float FinalStaggerDamage = Impact * StaggerCoefficient;

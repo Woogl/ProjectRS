@@ -1,11 +1,11 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsCostModCalculation.h"
+#include "RsCostAmountCalculation.h"
 
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 
-float URsCostModCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
+float URsCostAmountCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
 	const URsGameplayAbility* Ability = Cast<URsGameplayAbility>(Spec.GetContext().GetAbilityInstance_NotReplicated());
 

@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsDamageExecCalculation.h"
+#include "RsHealthDamageCalculation.h"
 
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
@@ -37,7 +37,7 @@ struct RsDamageStatics
 	}
 };
 
-URsDamageExecCalculation::URsDamageExecCalculation()
+URsHealthDamageCalculation::URsHealthDamageCalculation()
 {
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 	
@@ -48,7 +48,7 @@ URsDamageExecCalculation::URsDamageExecCalculation()
 	RelevantAttributesToCapture.Add(DamageStatics->CurrentHealthDef);
 }
 
-void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (TargetASC == nullptr)
@@ -67,8 +67,6 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	float Attack = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->AttackDef, EvaluationParameters, Attack);
-	// Attack shouldn't be minus value
-	Attack = FMath::Max(Attack, 0.f);
 
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
@@ -103,7 +101,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 		return;
 	}
 
-	// Stun has 160 % damage bonus
+	// Groggy has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
 	{
 		FinalHealthDamage *= 1.6f;

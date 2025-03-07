@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "RsCooldownModCalculation.generated.h"
+#include "RsCooldownDurationCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsCooldownModCalculation : public UGameplayModMagnitudeCalculation
+class RS_API URsCooldownDurationCalculation : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 

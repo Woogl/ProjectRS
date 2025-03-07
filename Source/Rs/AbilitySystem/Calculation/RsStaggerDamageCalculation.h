@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "RsDamageExecCalculation.generated.h"
+#include "RsStaggerDamageCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsDamageExecCalculation : public UGameplayEffectExecutionCalculation
+class RS_API URsStaggerDamageCalculation : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	URsDamageExecCalculation();
+	URsStaggerDamageCalculation();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };
