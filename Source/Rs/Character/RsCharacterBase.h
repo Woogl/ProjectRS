@@ -9,6 +9,8 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsStaggerComponent;
+class URsHealthComponent;
 class URsAbilitySet;
 class URsAbilitySystemComponent;
 
@@ -18,6 +20,8 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 	GENERATED_BODY()
 
 public:
+	ARsCharacterBase();
+	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -40,6 +44,12 @@ protected:
 	// Non Player Characters will set this in its constructor.
 	UPROPERTY()
 	TObjectPtr<URsAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsHealthComponent> HealthComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsStaggerComponent> StaggerComponent;
 
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")

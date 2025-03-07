@@ -4,7 +4,9 @@
 #include "RsHealthComponent.h"
 
 #include "GameplayEffectExtension.h"
+#include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/System/RsGameSetting.h"
 
 URsHealthComponent::URsHealthComponent()
 {
@@ -14,6 +16,13 @@ URsHealthComponent::URsHealthComponent()
 	SetIsReplicatedByDefault(true);
 }
 
+void URsHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(URsHealthComponent, bIsDead);
+}
+
 void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemComponent)
 {
 	if (AbilitySystemComponent == nullptr)
@@ -21,11 +30,11 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 		return;
 	}
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChange);
 	HealthSet = AbilitySystemComponent->GetSet<URsHealthSet>();
 	if (HealthSet)
 	{
-		OnHealthChanged.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
+		OnHealthChange.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
 	}
 }
 
@@ -47,7 +56,7 @@ float URsHealthComponent::GetMaxHealth()
 	return 0.f;
 }
 
-void URsHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
+void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& ChangeData)
 {
 	AActor* Instigator = nullptr;
 	if (const FGameplayEffectModCallbackData* EffectModData = ChangeData.GEModData)
@@ -58,6 +67,25 @@ void URsHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& Chang
 			Instigator = EffectContext.GetOriginalInstigator();
 		}
 	}
-	
-	OnHealthChanged.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
+	OnHealthChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
+
+	if (ChangeData.NewValue <= 0.f && bIsDead == false)
+	{
+		bIsDead = true;
+		OnRep_bIsDead(false);
+		GetOwner()->ForceNetUpdate();
+	}
+}
+
+void URsHealthComponent::OnRep_bIsDead(bool OldbIsDead)
+{
+	if (OldbIsDead == false && bIsDead == true)
+	{
+		if (UAbilitySystemComponent* ASC = HealthSet->GetOwningAbilitySystemComponent())
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = URsGameSetting::Get()->DeathAbilityTag;
+			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
+		}
+	}
 }

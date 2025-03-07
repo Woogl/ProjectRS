@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 #include "RsHealthComponent.generated.h"
 
 class UAbilitySystemComponent;
 class URsHealthSet;
 struct FOnAttributeChangeData;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FHealthAttributeChanged, float, OldValue, float, NewValue, AActor*, Instigator);
 
 UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
 class RS_API URsHealthComponent : public UActorComponent
@@ -23,7 +22,7 @@ public:
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
 	UPROPERTY(BlueprintAssignable)
-	FHealthAttributeChanged OnHealthChanged;
+	FOnAttributeChange OnHealthChange;
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentHealth();
@@ -32,8 +31,14 @@ public:
 	float GetMaxHealth();
 
 protected:
-	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+	void HandleHealthChange(const FOnAttributeChangeData& ChangeData);
 
 	UPROPERTY()
 	TObjectPtr<const URsHealthSet> HealthSet;
+
+	UPROPERTY(ReplicatedUsing = OnRep_bIsDead)
+	bool bIsDead = false;
+
+	UFUNCTION()
+	void OnRep_bIsDead(bool OldbIsDead);
 };

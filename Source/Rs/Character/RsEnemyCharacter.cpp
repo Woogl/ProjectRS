@@ -5,6 +5,7 @@
 
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 
 ARsEnemyCharacter::ARsEnemyCharacter()
 {
@@ -12,8 +13,6 @@ ARsEnemyCharacter::ARsEnemyCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	// Minimal Mode means that no GameplayEffects will replicate. They will only live on the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-
-	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 }
 
 void ARsEnemyCharacter::BeginPlay()
@@ -23,9 +22,9 @@ void ARsEnemyCharacter::BeginPlay()
 	{
 		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
 		HealthComponent->Initialize(AbilitySystemComponent);
+		StaggerComponent->Initialize(AbilitySystemComponent);
 		PostInitializeAbilitySystem();
 	}
 	
 	Super::BeginPlay();
-	
 }

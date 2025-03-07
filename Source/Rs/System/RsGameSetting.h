@@ -34,8 +34,8 @@ public:
 	FGameplayTag DeathAbilityTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
-	FGameplayTag StunAbilityTag;
+	FGameplayTag GroggyAbilityTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")
-	FGameplayTag InvincibleStateTag;
+	FGameplayTag InvincibleEffectTag;
 };

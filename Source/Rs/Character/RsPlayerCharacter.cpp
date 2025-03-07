@@ -10,12 +10,11 @@
 #include "GameFramework/PlayerState.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter()
 {
-	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
-
 	// Team ID "0" is for player.
 	TeamID = 0;
 }
@@ -80,6 +79,7 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		{
 			AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
 			HealthComponent->Initialize(AbilitySystemComponent);
+			StaggerComponent->Initialize(AbilitySystemComponent);
 			PostInitializeAbilitySystem();
 		}
 	}

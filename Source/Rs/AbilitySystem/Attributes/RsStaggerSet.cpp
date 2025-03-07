@@ -3,7 +3,6 @@
 
 #include "RsStaggerSet.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
@@ -56,17 +55,6 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 	else if (Data.EvaluatedData.Attribute == GetStaggerRegenAttribute())
 	{
 		SetStaggerRegen(FMath::Clamp(GetStaggerRegen(), 0.0f, GetMaxStagger()));
-	}
-}
-
-void URsStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
-{
-	Super::PostAttributeChange(Attribute, OldValue, NewValue);
-
-	if (CurrentStagger.GetCurrentValue() >= MaxStagger.GetCurrentValue())
-	{
-		FGameplayTag StunTag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Stun"));
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), StunTag, FGameplayEventData());
 	}
 }
 

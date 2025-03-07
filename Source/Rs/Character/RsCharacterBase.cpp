@@ -4,9 +4,16 @@
 #include "RsCharacterBase.h"
 
 #include "Net/UnrealNetwork.h"
-#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+
+ARsCharacterBase::ARsCharacterBase()
+{
+	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
+	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
+}
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {

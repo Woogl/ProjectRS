@@ -3,10 +3,8 @@
 
 #include "RsHealthSet.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
-#include "Rs/System/RsGameSetting.h"
 
 URsHealthSet::URsHealthSet()
 {
@@ -89,26 +87,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenAttribute())
 	{
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), 0.0f, GetMaxHealth()));
-	}
-}
-
-void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
-{
-	Super::PostAttributeChange(Attribute, OldValue, NewValue);
-	
-	if (Attribute == GetCurrentHealthAttribute())
-	{
-		if (NewValue <= 0.f && OldValue > 0.f)
-		{
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), URsGameSetting::Get()->DeathAbilityTag, FGameplayEventData());
-
-		}
-		/*
-		else if (OldValue > 0.f && OldValue > NewValue)
-		{
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningActor(), URsGameSetting::Get()->HitReactionAbilityTag, FGameplayEventData());
-		}
-	*/
 	}
 }
 

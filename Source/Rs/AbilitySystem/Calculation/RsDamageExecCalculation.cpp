@@ -104,7 +104,7 @@ void URsDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	}
 
 	// Stun has 160 % damage bonus
-	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->StunAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
 	{
 		FinalHealthDamage *= 1.6f;
 	}

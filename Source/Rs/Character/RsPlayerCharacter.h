@@ -6,12 +6,9 @@
 #include "RsCharacterBase.h"
 #include "RsPlayerCharacter.generated.h"
 
-class URsHealthComponent;
 class UInputAction;
 struct FInputActionValue;
 class UInputMappingContext;
-class UCameraComponent;
-class USpringArmComponent;
 /**
  * 
  */
@@ -19,9 +16,6 @@ UCLASS(Blueprintable)
 class RS_API ARsPlayerCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<URsHealthComponent> HealthComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
