@@ -49,22 +49,13 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, FGameplayTagContainer AdditionalDamageEffectTags)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
 	
-	if (SourceASC && TargetASC && GameplayEffectClass)
+	if (SourceASC && GameplayEffectClass)
 	{
 		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
-		if (DamageEffectContext.IsValid())
-		{
-			DamageEffectContext.AddOrigin(TargetActor->GetActorLocation());
-		
-			FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
-			for (FGameplayTag AdditionalDamageEffectTag : AdditionalDamageEffectTags)
-			{
-				DamageEffectSpecHandle.Data->AddDynamicAssetTag(AdditionalDamageEffectTag);
-			}
-			SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetASC);
-		}
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
+		DamageEffectSpecHandle.Data->AppendDynamicAssetTags(AdditionalDamageEffectTags);
+		ApplyDamageEffectSpec(SourceActor, TargetActor, DamageEffectSpecHandle);
 	}
 }
 
@@ -78,10 +69,7 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
 			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
-			for (FGameplayTag AdditionalDamageEffectTag : AdditionalDamageEffectTags)
-			{
-				EffectSpec->AddDynamicAssetTag(AdditionalDamageEffectTag);
-			}
+			EffectSpec->AppendDynamicAssetTags(AdditionalDamageEffectTags);
 			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 		}
 	}
@@ -102,12 +90,9 @@ bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectC
 
 bool URsBattleLibrary::IsDead(const ARsCharacterBase* Character)
 {
-	if (const IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Character))
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 	{
-		if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
-		{
-			return ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()) <= 0.f;
-		}
+		return ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()) <= 0.f;
 	}
 	return false;
 }
