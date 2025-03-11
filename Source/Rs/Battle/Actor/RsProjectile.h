@@ -28,17 +28,20 @@ public:
 
 	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
 	
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageSpecHandle;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FGameplayTag EventTag;
+
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	float MaxRange = 1000.f;
 
 	// Default 0 or Minus value means infinite hit
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	int32 MaxHitCount = 1;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	bool bCannotHitFriend = true;
 
 protected:

@@ -54,8 +54,7 @@ void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor
 	{
 		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
-		DamageEffectSpecHandle.Data->AppendDynamicAssetTags(AdditionalDamageEffectTags);
-		ApplyDamageEffectSpec(SourceActor, TargetActor, DamageEffectSpecHandle);
+		ApplyDamageEffectSpec(SourceActor, TargetActor, DamageEffectSpecHandle, AdditionalDamageEffectTags);
 	}
 }
 

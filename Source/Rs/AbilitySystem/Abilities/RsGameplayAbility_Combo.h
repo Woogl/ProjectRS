@@ -33,10 +33,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TArray<TSubclassOf<URsGameplayAbility>> InnerAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotifyState"))
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "AnimNotifyState"))
 	FGameplayTag ComboWindowStartTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotifyState"))
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "AnimNotifyState"))
 	FGameplayTag ComboWindowEndTag;
 	
 	UFUNCTION()

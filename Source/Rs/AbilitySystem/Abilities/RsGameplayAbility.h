@@ -20,7 +20,7 @@ public:
 	URsGameplayAbility();
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	bool bActivateOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
@@ -36,6 +36,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
 	FScalableFloat CostAmount;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	FScalableFloat CostRecoveryAmount;
+
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -43,7 +49,8 @@ public:
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-
+	void ApplyCostRecovery();
+	
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void ModifyCooldownRemaining(float TimeDiff);
 

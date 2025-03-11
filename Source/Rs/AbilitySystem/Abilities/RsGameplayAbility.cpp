@@ -34,6 +34,15 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	}
 }
 
+void URsGameplayAbility::ApplyCostRecovery()
+{
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	{
+		FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
+		ASC->BP_ApplyGameplayEffectToSelf(CostRecoveryEffectClass, GetAbilityLevel(), EffectContextHandle);
+	}
+}
+
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
 {
 	if (MutableCooldownHandle.IsValid())
