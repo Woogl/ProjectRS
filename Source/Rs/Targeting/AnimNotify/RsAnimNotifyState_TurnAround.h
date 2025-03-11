@@ -54,6 +54,9 @@ public:
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bShowDebugInPIE = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
+	float DebugLifeTime = 0.5f;
 #endif // WITH_EDITORONLY_DATA
 
 private:

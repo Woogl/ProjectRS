@@ -178,7 +178,6 @@ void URsAnimNotifyState_TurnAround::DrawDebugShape(USkeletalMeshComponent* MeshC
 	const FCollisionShape CollisionShape = GetCollisionShape();
 
 	const bool bPersistentLines = false;
-	const float LifeTime = 0.5f;
 	const uint8 DepthPriority = 0;
 	const float Thickness = 1.0f;
 	const FColor Color = FColor::Red;
@@ -186,20 +185,20 @@ void URsAnimNotifyState_TurnAround::DrawDebugShape(USkeletalMeshComponent* MeshC
 	switch (ShapeType)
 	{
 	case ERsTargetingShape::Box:
-		DrawDebugBox(World, SourceTransform.GetLocation(), CollisionShape.GetExtent(), SourceTransform.GetRotation(), Color, bPersistentLines, LifeTime, DepthPriority, Thickness);
+		DrawDebugBox(World, SourceTransform.GetLocation(), CollisionShape.GetExtent(), SourceTransform.GetRotation(), Color, bPersistentLines, DebugLifeTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Sphere:
-		DrawDebugCapsule(World, SourceTransform.GetLocation(), CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), SourceTransform.GetRotation(), Color, bPersistentLines, LifeTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, SourceTransform.GetLocation(), CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), SourceTransform.GetRotation(), Color, bPersistentLines, DebugLifeTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Capsule:
-		DrawDebugCapsule(World, SourceTransform.GetLocation(), CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), SourceTransform.GetRotation(), Color, bPersistentLines, LifeTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, SourceTransform.GetLocation(), CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), SourceTransform.GetRotation(), Color, bPersistentLines, DebugLifeTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Cylinder:
 		const FVector RotatedExtent = SourceTransform.GetRotation() * CollisionShape.GetExtent();
-		DrawDebugCylinder(World, SourceTransform.GetLocation() - RotatedExtent, SourceTransform.GetLocation() + RotatedExtent, CollisionShape.GetExtent().X, 16, Color, bPersistentLines, LifeTime, DepthPriority, Thickness);
+		DrawDebugCylinder(World, SourceTransform.GetLocation() - RotatedExtent, SourceTransform.GetLocation() + RotatedExtent, CollisionShape.GetExtent().X, 16, Color, bPersistentLines, DebugLifeTime, DepthPriority, Thickness);
 		break;
 	}
 }
