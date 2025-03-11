@@ -22,11 +22,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gameplay Event")
 	FGameplayTag EventTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location", meta = (GetOptions="GetSocketNames"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source", meta = (GetOptions="GetSocketNames"))
 	FName SocketName = NAME_None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
-	FVector Offset = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	FVector PositionOffset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	FRotator RotationOffset = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
 	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;

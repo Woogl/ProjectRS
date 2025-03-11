@@ -31,7 +31,8 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	}
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(Offset));
+	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
+	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion() * SourceTransform.GetRotation());
 
 	/** Overlapping */
 	TArray<FOverlapResult> OverlapResults;

@@ -18,13 +18,16 @@ class RS_API URsAnimNotifyState_TurnAround : public UAnimNotifyState
 public:
 	URsAnimNotifyState_TurnAround();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location", meta = (GetOptions="GetSocketNames"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source", meta = (GetOptions="GetSocketNames"))
 	FName SocketName = FName("pelvis");
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Location")
-	FVector Offset = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	FVector PositionOffset = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Rotation")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	FRotator RotationOffset = FRotator::ZeroRotator;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxTurnAroundSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
