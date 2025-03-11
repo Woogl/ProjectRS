@@ -54,6 +54,10 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 		{
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
 			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
+			for (const FGameplayTag& DamageEffectTag : DamageEffectContext.DamageEffectTags)
+			{
+				DamageEffectSpecHandle.Data->AddDynamicAssetTag(DamageEffectTag);
+			}
 			Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 		}
 	}
