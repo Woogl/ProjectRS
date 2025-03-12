@@ -93,9 +93,6 @@ protected:
 	void K2_OnRemoveAbility();
 
 private:
-	UPROPERTY(Transient)
-	mutable FActiveGameplayEffectHandle MutableCooldownHandle;
-	
-	UPROPERTY(Transient)
-	mutable FGameplayTagContainer MutableCooldownTags;
+	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
+	mutable FGameplayTagContainer CurrentCooldownTags;
 };

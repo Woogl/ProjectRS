@@ -17,8 +17,8 @@ const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
 	if (CooldownTag.IsValid())
 	{
-		MutableCooldownTags.AddTag(CooldownTag);
-		return &MutableCooldownTags;
+		CurrentCooldownTags.AddTag(CooldownTag);
+		return &CurrentCooldownTags;
 	}
 	return nullptr;
 }
@@ -30,7 +30,7 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
-		MutableCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+		CurrentCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }
 
@@ -42,30 +42,30 @@ void URsGameplayAbility::ApplyCostRecovery()
 
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
 {
-	if (MutableCooldownHandle.IsValid())
+	if (CurrentCooldownHandle.IsValid())
 	{
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 		{
-			ASC->ModifyActiveEffectStartTime(MutableCooldownHandle, TimeDiff);
+			ASC->ModifyActiveEffectStartTime(CurrentCooldownHandle, TimeDiff);
 		}
 	}
 }
 
 void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 {
-	if (!MutableCooldownHandle.IsValid() && NewRemaining > 0)
+	if (!CurrentCooldownHandle.IsValid() && NewRemaining > 0)
 	{
 		CommitAbilityCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}
 
-	if (MutableCooldownHandle.IsValid())
+	if (CurrentCooldownHandle.IsValid())
 	{
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 		{
-			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(MutableCooldownHandle))
+			if (const FActiveGameplayEffect* CooldownEffect = ASC->GetActiveGameplayEffect(CurrentCooldownHandle))
 			{
 				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
-				ASC->ModifyActiveEffectStartTime(MutableCooldownHandle, -TimeRemaining + NewRemaining);
+				ASC->ModifyActiveEffectStartTime(CurrentCooldownHandle, -TimeRemaining + NewRemaining);
 			}
 		}
 	}
