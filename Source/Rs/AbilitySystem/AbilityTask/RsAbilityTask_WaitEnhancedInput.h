@@ -9,7 +9,7 @@
 
 class UInputAction;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnhancedInputEventDelegate, FInputActionValue, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnhancedInputEventDelegate, const FInputActionValue&, Value);
 
 /**
  * 
