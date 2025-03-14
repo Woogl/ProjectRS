@@ -27,6 +27,11 @@ void URsAbilityTask_HitStop::Activate()
 			if (UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance())
 			{
 				AnimInstance->Montage_Pause();
+				UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent());
+				if (CharMoveComp)
+				{
+					CharMoveComp->DisableMovement();
+				}
 				AvatarActor->GetWorldTimerManager().SetTimer(Timer, this, &ThisClass::HandleEndTimer, Duration, false);
 			}
 		}
@@ -56,18 +61,6 @@ void URsAbilityTask_HitStop::OnDestroy(bool AbilityIsEnding)
 
 void URsAbilityTask_HitStop::HandleEndTimer()
 {
-	if (AActor* AvatarActor = GetAvatarActor())
-	{
-		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
-		{
-			UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent());
-			if (CharMoveComp)
-			{
-				CharMoveComp->DisableMovement();
-			}
-		}
-	}
-	
 	OnFinished.Broadcast();
 	EndTask();
 }
