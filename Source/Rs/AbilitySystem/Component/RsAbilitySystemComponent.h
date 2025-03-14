@@ -8,6 +8,8 @@
 
 class URsAbilitySet;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDealDamage, UAbilitySystemComponent*, TargetASC, FGameplayEffectSpecHandle, DamageEffectHandle);
+
 /**
  * 
  */
@@ -18,6 +20,8 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	URsAbilitySystemComponent();
+	
+	FOnDealDamage OnDealDamage;
 
 	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
 	void RefreshAbilityInputBindings();

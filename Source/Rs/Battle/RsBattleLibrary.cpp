@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "TargetingSystem/TargetingSubsystem.h"
@@ -70,6 +71,11 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
 			EffectSpec->AppendDynamicAssetTags(AdditionalDamageEffectTags);
 			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+
+			if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(SourceASC))
+			{
+				RsASC->OnDealDamage.Broadcast(TargetASC, EffectHandle);
+			}
 		}
 	}
 }

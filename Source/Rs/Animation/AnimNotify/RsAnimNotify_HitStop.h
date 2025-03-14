@@ -6,6 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "RsAnimNotify_HitStop.generated.h"
 
+class URsAbilitySystemComponent;
+struct FGameplayEffectSpecHandle;
 /**
  * 
  */
@@ -19,13 +21,18 @@ public:
 	float Duration = 0.2f;
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Advanced")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bEnableInEditorPreview = false;
 #endif // WITH_EDITORONLY_DATA
 	
 private:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
+	UFUNCTION()
+	void HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle);
+
+	TWeakObjectPtr<URsAbilitySystemComponent> RsAbilitySystemComponent;
+	
 #if WITH_EDITOR
 	void ResumePlay();
 #endif // WITH_EDITOR

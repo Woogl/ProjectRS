@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_HitStop.h"
+#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 
 void URsAnimNotify_HitStop::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
@@ -15,10 +16,10 @@ void URsAnimNotify_HitStop::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
-			if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
+			RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(ASC);
+			if (RsAbilitySystemComponent.IsValid())
 			{
-				URsAbilityTask_HitStop* HitStopTask = URsAbilityTask_HitStop::StartHitStop(CurrentAbility, Duration);
-				HitStopTask->ReadyForActivation();
+				RsAbilitySystemComponent->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
 			}
 		}
 	}
@@ -32,6 +33,15 @@ void URsAnimNotify_HitStop::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 		World->GetTimerManager().SetTimer(Timer, this, &ThisClass::ResumePlay, Duration, false);
 	}
 #endif // WITH_EDITOR
+}
+
+void URsAnimNotify_HitStop::HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle)
+{
+	if (UGameplayAbility* CurrentAbility = RsAbilitySystemComponent->GetAnimatingAbility())
+	{
+		URsAbilityTask_HitStop* HitStopTask = URsAbilityTask_HitStop::StartHitStop(CurrentAbility, Duration);
+		HitStopTask->ReadyForActivation();
+	}
 }
 
 #if WITH_EDITOR
