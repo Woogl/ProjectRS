@@ -8,11 +8,6 @@
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 
-FString URsAnimNotifyState_HitStop::GetNotifyName_Implementation() const
-{
-	return FString(TEXT("ANS_HitStop"));
-}
-
 void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
