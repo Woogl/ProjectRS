@@ -9,17 +9,29 @@
 /**
  * 
  */
-UCLASS(const, meta=(DisplayName="AN_HitStop"))
+UCLASS()
 class RS_API URsAnimNotify_HitStop : public UAnimNotify
 {
 	GENERATED_BODY()
 
 public:
-	virtual FString GetNotifyName_Implementation() const override;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	float Duration = 0.2f;
+
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Advanced")
+	bool bEnableInEditorPreview = false;
+#endif // WITH_EDITORONLY_DATA
 	
 private:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+#if WITH_EDITOR
+	void ResumePlay();
+#endif // WITH_EDITOR
+
+#if WITH_EDITORONLY_DATA
+	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+	FTimerHandle Timer;
+#endif // WITH_EDITORONLY_DATA
 };

@@ -20,6 +20,12 @@ URsAbilityTask_HitStop* URsAbilityTask_HitStop::StartHitStop(UGameplayAbility* O
 
 void URsAbilityTask_HitStop::Activate()
 {
+	if (Duration <= 0.f)
+	{
+		EndTask();
+		return;
+	}
+	
 	if (AActor* AvatarActor = GetAvatarActor())
 	{
 		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))

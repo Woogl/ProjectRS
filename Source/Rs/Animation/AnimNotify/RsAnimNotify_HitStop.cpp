@@ -7,11 +7,6 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_HitStop.h"
 
-FString URsAnimNotify_HitStop::GetNotifyName_Implementation() const
-{
-	return FString(TEXT("AN_HitStop"));
-}
-
 void URsAnimNotify_HitStop::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
@@ -27,4 +22,21 @@ void URsAnimNotify_HitStop::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 			}
 		}
 	}
+
+#if WITH_EDITOR
+	UWorld* World = MeshComp->GetWorld();
+	if (Duration > 0.f && bEnableInEditorPreview && World->WorldType == EWorldType::EditorPreview)
+	{
+		CachedMeshComp = MeshComp;
+		CachedMeshComp->Stop();
+		World->GetTimerManager().SetTimer(Timer, this, &ThisClass::ResumePlay, Duration, false);
+	}
+#endif // WITH_EDITOR
 }
+
+#if WITH_EDITOR
+void URsAnimNotify_HitStop::ResumePlay()
+{
+	CachedMeshComp->Play(true);
+}
+#endif // WITH_EDITOR
