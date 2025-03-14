@@ -8,10 +8,7 @@
 
 URsAbilityTask_HitStop::URsAbilityTask_HitStop()
 {
-	bTickingTask = true;
-	
 	Duration = 0.f;
-	ElapsedTime = 0.f;
 }
 
 URsAbilityTask_HitStop* URsAbilityTask_HitStop::StartHitStop(UGameplayAbility* OwningAbility, float Duration)
@@ -30,30 +27,9 @@ void URsAbilityTask_HitStop::Activate()
 			if (UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance())
 			{
 				AnimInstance->Montage_Pause();
+				AvatarActor->GetWorldTimerManager().SetTimer(Timer, this, &ThisClass::HandleEndTimer, Duration, false);
 			}
 		}
-	}
-}
-
-void URsAbilityTask_HitStop::TickTask(float DeltaTime)
-{
-	if (AActor* AvatarActor = GetAvatarActor())
-	{
-		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
-		{
-			UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent());
-			if (CharMoveComp)
-			{
-				CharMoveComp->DisableMovement();
-			}
-		}
-	}
-	
-	ElapsedTime += DeltaTime;
-	if (ElapsedTime >= Duration)
-	{
-		OnFinished.Broadcast();
-		EndTask();
 	}
 }
 
@@ -76,4 +52,22 @@ void URsAbilityTask_HitStop::OnDestroy(bool AbilityIsEnding)
 	}
 
 	Super::OnDestroy(AbilityIsEnding);
+}
+
+void URsAbilityTask_HitStop::HandleEndTimer()
+{
+	if (AActor* AvatarActor = GetAvatarActor())
+	{
+		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
+		{
+			UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent());
+			if (CharMoveComp)
+			{
+				CharMoveComp->DisableMovement();
+			}
+		}
+	}
+	
+	OnFinished.Broadcast();
+	EndTask();
 }

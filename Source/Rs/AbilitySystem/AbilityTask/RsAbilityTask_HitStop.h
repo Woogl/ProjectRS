@@ -27,10 +27,11 @@ public:
 
 protected:
 	virtual void Activate() override;
-	virtual void TickTask(float DeltaTime) override;
 	virtual void OnDestroy(bool AbilityIsEnding) override;
 	
+	void HandleEndTimer();
+	
 private:
+	FTimerHandle Timer;
 	float Duration;
-	float ElapsedTime;
 };
