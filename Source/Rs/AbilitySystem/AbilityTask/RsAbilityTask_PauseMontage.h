@@ -4,26 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "RsAbilityTask_HitStop.generated.h"
+#include "RsAbilityTask_PauseMontage.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHitStopFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseMontageFinished);
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsAbilityTask_HitStop : public UAbilityTask
+class RS_API URsAbilityTask_PauseMontage : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	URsAbilityTask_HitStop();
+	URsAbilityTask_PauseMontage();
 
 	UPROPERTY(BlueprintAssignable)
-	FOnHitStopFinished OnFinished;
+	FOnPauseMontageFinished OnFinished;
 
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_HitStop* StartHitStop(UGameplayAbility* OwningAbility, float Duration = 0.2f);
+	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration = 0.25f);
 
 protected:
 	virtual void Activate() override;

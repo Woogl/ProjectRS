@@ -1,24 +1,24 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsAbilityTask_HitStop.h"
+#include "RsAbilityTask_PauseMontage.h"
 
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-URsAbilityTask_HitStop::URsAbilityTask_HitStop()
+URsAbilityTask_PauseMontage::URsAbilityTask_PauseMontage()
 {
 	Duration = 0.f;
 }
 
-URsAbilityTask_HitStop* URsAbilityTask_HitStop::StartHitStop(UGameplayAbility* OwningAbility, float Duration)
+URsAbilityTask_PauseMontage* URsAbilityTask_PauseMontage::PauseMontage(UGameplayAbility* OwningAbility, float Duration)
 {
-	URsAbilityTask_HitStop* Task = NewAbilityTask<URsAbilityTask_HitStop>(OwningAbility);
+	URsAbilityTask_PauseMontage* Task = NewAbilityTask<URsAbilityTask_PauseMontage>(OwningAbility);
 	Task->Duration = Duration;
 	return Task;
 }
 
-void URsAbilityTask_HitStop::Activate()
+void URsAbilityTask_PauseMontage::Activate()
 {
 	if (Duration <= 0.f)
 	{
@@ -44,7 +44,7 @@ void URsAbilityTask_HitStop::Activate()
 	}
 }
 
-void URsAbilityTask_HitStop::OnDestroy(bool AbilityIsEnding)
+void URsAbilityTask_PauseMontage::OnDestroy(bool AbilityIsEnding)
 {
 	if (AActor* AvatarActor = GetAvatarActor())
 	{
@@ -65,7 +65,7 @@ void URsAbilityTask_HitStop::OnDestroy(bool AbilityIsEnding)
 	Super::OnDestroy(AbilityIsEnding);
 }
 
-void URsAbilityTask_HitStop::HandleEndTimer()
+void URsAbilityTask_PauseMontage::HandleEndTimer()
 {
 	OnFinished.Broadcast();
 	EndTask();

@@ -7,11 +7,6 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitEnhancedInput.h"
 
-FString URsAnimNotifyState_ComboAbility::GetNotifyName_Implementation() const
-{
-	return FString(TEXT("ANS_ComboAbility"));
-}
-
 void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
