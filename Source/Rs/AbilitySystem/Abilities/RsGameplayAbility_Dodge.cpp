@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectBlockedImmunity.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
 #include "Rs/Character/RsCharacterBase.h"
 
@@ -48,12 +47,6 @@ void URsGameplayAbility_Dodge::PlayDashOrBackstepMontage()
 			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->ReadyForActivation();
 		}
-	
-		if (UAbilityTask_WaitGameplayEffectBlockedImmunity* PerfectDodgeDetectionTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(this, FGameplayTagRequirements(), FGameplayTagRequirements()))
-		{
-			PerfectDodgeDetectionTask->Blocked.AddDynamic(this, &ThisClass::K2_PerfectDodgeDetected);
-			PerfectDodgeDetectionTask->ReadyForActivation();
-		}
 	}
 	else
 	{
@@ -69,13 +62,4 @@ void URsGameplayAbility_Dodge::HandleMontageCompleted()
 void URsGameplayAbility_Dodge::HandleMontageCancelled()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-}
-
-void URsGameplayAbility_Dodge::StartPerfectDodgeDetection()
-{
-
-}
-
-void URsGameplayAbility_Dodge::EndPerfectDodgeDetection()
-{
 }
