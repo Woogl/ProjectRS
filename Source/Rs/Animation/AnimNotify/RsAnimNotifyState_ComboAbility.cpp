@@ -19,7 +19,7 @@ void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshCo
 			CurrentAbility = OwnerASC->GetAnimatingAbility();
 			if (CurrentAbility.IsValid())
 			{
-				WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bShouldTriggerOnce);
+				WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
 				WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
 				WaitInputTask->ReadyForActivation();
 			}

@@ -21,6 +21,6 @@ class RS_API IRsLockOnInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RS Lock On")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RS|Lock On")
 	bool IsLockableTarget() const;
 };

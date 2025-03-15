@@ -28,7 +28,7 @@ public:
 	FGameplayTag AbilityTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
-	bool bShouldTriggerOnce = true;
+	bool bTriggerOnce = true;
 
 private:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
@@ -39,5 +39,6 @@ private:
 
 	TWeakObjectPtr<UAbilitySystemComponent> OwnerASC;
 	TWeakObjectPtr<UGameplayAbility> CurrentAbility;
+	
 	TWeakObjectPtr<URsAbilityTask_WaitEnhancedInput> WaitInputTask;
 };
