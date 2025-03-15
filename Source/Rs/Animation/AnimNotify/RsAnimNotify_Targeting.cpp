@@ -48,7 +48,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	}
 
 	/** Filtering */
-	TArray<AActor*> ResultActors;
+	ResultActors.Reset();
 	for (FOverlapResult& OverlapResult : OverlapResults)
 	{
 		if (bPreventSelfDamage)

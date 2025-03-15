@@ -63,8 +63,11 @@ public:
 	float DebugLifeTime = 0.5f;
 #endif // WITH_EDITORONLY_DATA
 
-private:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+	
+protected:
+	UPROPERTY()
+	TArray<AActor*> ResultActors;
 
 	FCollisionShape GetCollisionShape() const;
 	
