@@ -9,11 +9,11 @@ void URsAnimNotify_MeleeAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	 if (MeshComp->GetOwner())
-	 {
-	 	for (AActor* Victim : ResultActors)
+	if (MeshComp->GetOwner())
+	{
+		for (AActor* Victim : ResultActors)
 	 	{
 	 		URsBattleLibrary::ApplyDamageEffect(MeshComp->GetOwner(), Victim, DamageContext.DamageEffectClass, DamageContext.DamageEffectTags);
 	 	}
-	 }
+	}
 }
