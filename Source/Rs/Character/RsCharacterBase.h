@@ -53,7 +53,7 @@ protected:
 
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")
-	TObjectPtr<URsAbilitySet> AbilitySet;
+	TArray<URsAbilitySet*> AbilitySets;
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
 	FGenericTeamId TeamID = FGenericTeamId::NoTeam;

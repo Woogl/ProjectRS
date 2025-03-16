@@ -20,7 +20,10 @@ void ARsEnemyCharacter::BeginPlay()
 	// The Ability System Component is created in the class constructor, so it should always be valid at this point.
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+		for (URsAbilitySet* AbilitySet : AbilitySets)
+		{
+			AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+		}
 		HealthComponent->Initialize(AbilitySystemComponent);
 		StaggerComponent->Initialize(AbilitySystemComponent);
 		PostInitializeAbilitySystem();

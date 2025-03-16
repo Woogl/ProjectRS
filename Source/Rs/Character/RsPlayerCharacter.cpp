@@ -77,7 +77,10 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
 		if (AbilitySystemComponent)
 		{
-			AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
+			for (URsAbilitySet* AbilitySet : AbilitySets)
+			{
+				AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+			}
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
 			PostInitializeAbilitySystem();
