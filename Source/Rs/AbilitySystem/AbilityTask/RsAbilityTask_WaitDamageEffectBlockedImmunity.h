@@ -20,9 +20,16 @@ class RS_API URsAbilityTask_WaitDamageEffectBlockedImmunity : public UAbilityTas
 	UPROPERTY()
 	FGameplayTagContainer DamageTags;
 
+	UPROPERTY()
+	bool bEnablePerfectDodgeCapsule = false;
+
+	virtual void Activate() override;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_WaitDamageEffectBlockedImmunity* WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool bTriggerOnce = false);
-	
+	static URsAbilityTask_WaitDamageEffectBlockedImmunity* WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool bInEnablePerfectDodgeCapsule, bool bTriggerOnce = false);
+
+protected:
 	virtual void ImmunityCallback(const FGameplayEffectSpec& BlockedSpec, const FActiveGameplayEffect* ImmunityGE) override;
+	virtual void OnDestroy(bool AbilityEnded) override;
 };

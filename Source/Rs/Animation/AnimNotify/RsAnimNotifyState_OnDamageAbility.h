@@ -32,6 +32,9 @@ public:
 	bool bTriggerOnDamageImmunity = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
+	bool bEnablePerfectDodgeCapsuleCollision = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	bool bTriggerOnce = true;
 
 private:

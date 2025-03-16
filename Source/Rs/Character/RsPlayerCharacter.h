@@ -25,6 +25,9 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UCapsuleComponent> PerfectDodgeCapsuleComponent;
 	
 public:
 	ARsPlayerCharacter();
@@ -45,4 +48,7 @@ protected:
 private:
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
+
+public:
+	FORCEINLINE UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const { return PerfectDodgeCapsuleComponent; }
 };

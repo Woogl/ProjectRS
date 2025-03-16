@@ -18,18 +18,24 @@ class RS_API URsAbilityTask_WaitDamageEffectApplied : public UAbilityTask_WaitGa
 
 	UPROPERTY()
 	FGameplayTagContainer DamageTags;
+
+	UPROPERTY()
+	bool bEnablePerfectDodgeCapsule = false;
+
+	virtual void Activate() override;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
 	FWaitDamageEffectDelegate OnApplied;
 
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_WaitDamageEffectApplied* WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool TriggerOnce = false);
+	static URsAbilityTask_WaitDamageEffectApplied* WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool bInEnablePerfectDodgeCapsule, bool TriggerOnce = false);
 
 protected:
 	virtual void BroadcastDelegate(AActor* Avatar, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle) override;
 	virtual void RegisterDelegate() override;
 	virtual void RemoveDelegate() override;
+	virtual void OnDestroy(bool AbilityEnded) override;
 
 	UFUNCTION()
 	void OnApplyDamageEffectCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);

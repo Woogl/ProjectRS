@@ -3,11 +3,28 @@
 
 #include "RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 
-URsAbilityTask_WaitDamageEffectBlockedImmunity* URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool TriggerOnce)
+#include "Components/CapsuleComponent.h"
+#include "Rs/Character/RsPlayerCharacter.h"
+
+void URsAbilityTask_WaitDamageEffectBlockedImmunity::Activate()
+{
+	Super::Activate();
+
+	if (bEnablePerfectDodgeCapsule == true)
+	{
+		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
+		{
+			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		}
+	}
+}
+
+URsAbilityTask_WaitDamageEffectBlockedImmunity* URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool bEnablePerfectDodgeCapsule, bool TriggerOnce)
 {
 	URsAbilityTask_WaitDamageEffectBlockedImmunity* MyObj = NewAbilityTask<URsAbilityTask_WaitDamageEffectBlockedImmunity>(OwningAbility);
 	MyObj->TriggerOnce = TriggerOnce;
 	MyObj->DamageTags = DamageTags;
+	MyObj->bEnablePerfectDodgeCapsule = bEnablePerfectDodgeCapsule;
 	return MyObj;
 }
 
@@ -34,4 +51,17 @@ void URsAbilityTask_WaitDamageEffectBlockedImmunity::ImmunityCallback(const FGam
 	{
 		EndTask();
 	}
+}
+
+void URsAbilityTask_WaitDamageEffectBlockedImmunity::OnDestroy(bool AbilityEnded)
+{
+	if (bEnablePerfectDodgeCapsule == true)
+	{
+		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
+		{
+			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	
+	Super::OnDestroy(AbilityEnded);
 }

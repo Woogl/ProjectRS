@@ -24,14 +24,14 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 				// Handle damage received.
 				FGameplayTargetDataFilterHandle FilterHandle;
 				FGameplayTagRequirements Requirements;
-				WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(OwingAbility, ReceivedDamageTags, bTriggerOnce);
+				WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(OwingAbility, ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
 				WaitAppliedTask->OnApplied.AddDynamic(this, &ThisClass::HandleReceiveDamage);
 				WaitAppliedTask->ReadyForActivation();
 
 				// Damage can be blocked by other immnune effects.
 				if (bTriggerOnDamageImmunity == true)
 				{
-					WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(OwingAbility,ReceivedDamageTags, bTriggerOnce);
+					WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(OwingAbility,ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
 					WaitBlockedTask->Blocked.AddDynamic(this, &ThisClass::HandleBlockDamage);
 					WaitBlockedTask->ReadyForActivation();
 				}
