@@ -17,11 +17,11 @@
 ARsPlayerCharacter::ARsPlayerCharacter()
 {
 	PerfectDodgeCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PerfectDodgeCapsuleComponent"));
+	PerfectDodgeCapsuleComponent->SetupAttachment(RootComponent);
 	PerfectDodgeCapsuleComponent->InitCapsuleSize(100.0f, 100.0f);
 	PerfectDodgeCapsuleComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	PerfectDodgeCapsuleComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	PerfectDodgeCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	PerfectDodgeCapsuleComponent->CanCharacterStepUpOn = ECB_No;
 	
 	// Team ID "0" is for player.
 	TeamID = 0;
