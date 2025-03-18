@@ -15,7 +15,7 @@ void URsGameInstance::Init()
 	TArray<FPrimaryAssetId> OutAssets;
 	AssetManager.GetPrimaryAssetIdList(TEXT("RsGameSetting"), OutAssets);
 	
-	if (OutAssets.IsEmpty())
+	if (OutAssets.Num() == 0)
 	{
 		FText Message = FText::FromString(TEXT("Can't find RsGameSetting data asset!"));
 		FMessageDialog::Open(EAppMsgType::Ok, Message);
