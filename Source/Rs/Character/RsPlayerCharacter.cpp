@@ -22,6 +22,13 @@ ARsPlayerCharacter::ARsPlayerCharacter()
 	PerfectDodgeCapsuleComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	PerfectDodgeCapsuleComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	PerfectDodgeCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	//GetMesh()->SetVisibility(false);
+	
+	CharacterAppearance = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterAppearance"));
+	CharacterAppearance->SetupAttachment(GetMesh());
+	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
 	
 	TeamId = ERsTeamId::Player;
 }

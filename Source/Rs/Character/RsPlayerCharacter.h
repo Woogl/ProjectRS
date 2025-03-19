@@ -28,6 +28,9 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UCapsuleComponent> PerfectDodgeCapsuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
 	
 public:
 	ARsPlayerCharacter();
