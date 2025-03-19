@@ -87,5 +87,6 @@ void URsHealthComponent::OnRep_bIsDead(bool OldbIsDead)
 			Payload.EventTag = URsGameSetting::Get()->DeathAbilityTag;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
+		OnDeathStarted.Broadcast(GetOwner());
 	}
 }

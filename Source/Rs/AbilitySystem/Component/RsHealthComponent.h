@@ -7,9 +7,9 @@
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 #include "RsHealthComponent.generated.h"
 
-class UAbilitySystemComponent;
 class URsHealthSet;
-struct FOnAttributeChangeData;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathEvent, AActor*, OwningActor);
 
 UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
 class RS_API URsHealthComponent : public UActorComponent
@@ -23,6 +23,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChange OnHealthChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDeathEvent OnDeathStarted;
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentHealth();

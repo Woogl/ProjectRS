@@ -7,8 +7,9 @@
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 #include "RsStaggerComponent.generated.h"
 
-
 class URsStaggerSet;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGroggyEvent, AActor*, OwningActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RS_API URsStaggerComponent : public UActorComponent
@@ -22,6 +23,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChange OnStaggerChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGroggyEvent OnGroggyEvent;
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentStagger();

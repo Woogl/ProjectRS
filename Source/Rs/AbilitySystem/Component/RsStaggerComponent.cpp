@@ -87,5 +87,6 @@ void URsStaggerComponent::OnRep_bIsGroggy(bool OldbIsGroggy)
 			Payload.EventTag = URsGameSetting::Get()->GroggyAbilityTag;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
+		OnGroggyEvent.Broadcast(GetOwner());
 	}
 }

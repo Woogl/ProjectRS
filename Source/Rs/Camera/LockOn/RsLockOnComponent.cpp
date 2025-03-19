@@ -3,13 +3,15 @@
 
 #include "RsLockOnComponent.h"
 
+#include "AbilitySystemGlobals.h"
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
+#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/System/RsGameSetting.h"
 
 URsLockOnComponent::URsLockOnComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void URsLockOnComponent::LockOn(AActor* TargetActor)
@@ -24,34 +26,52 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 	
 	LockedOnTarget = TargetActor;
 
-	if (LockedOnTarget.IsValid() && ReticleWidget != nullptr)
+	if (ReticleComponent.IsValid())
 	{
-		if (ReticleComponent == nullptr)
+		// Destroy old reticle widdget.
+		ReticleComponent.Get()->DestroyComponent();
+	}
+
+	if (LockedOnTarget.IsValid())
+	{
+		// Create new reticle widget.
+		ReticleComponent = NewObject<UWidgetComponent>(TargetActor);
+		if (ReticleComponent.IsValid())
 		{
-			// Create new reticle widget.
-			ReticleComponent = NewObject<UWidgetComponent>(TargetActor);
-			ReticleComponent->SetWidgetClass(ReticleWidget);
+			if (ReticleWidget)
+			{
+				ReticleComponent->SetWidgetClass(ReticleWidget);
+			}
 			ReticleComponent->SetWidgetSpace(EWidgetSpace::Screen);
 			ReticleComponent->SetDrawSize(ReticleDrawSize);
+			UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
+			USceneComponent* ParentComponent = (MeshComponent && ReticleWidgetSocket != NAME_None) ? MeshComponent : TargetActor->GetRootComponent();
+			FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, true);
+			ReticleComponent->AttachToComponent(ParentComponent, AttachmentRule, ReticleWidgetSocket);
+			ReticleComponent->SetVisibility(true);
+			ReticleComponent->RegisterComponent();
 		}
-		// Reuse old reticle widget if possible.
-		UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
-		USceneComponent* ParentComponent = (MeshComponent && ReticleWidgetSocket != NAME_None) ? MeshComponent : TargetActor->GetRootComponent();
-		FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, true);
-		ReticleComponent->AttachToComponent(ParentComponent, AttachmentRule, ReticleWidgetSocket);
-		ReticleComponent->SetVisibility(true);
-		ReticleComponent->RegisterComponent();
+
+		if (URsHealthComponent* HealthComponent = LockedOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
+		{
+			HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::HandleDeathStarted);
+		}
 	}
 }
 
 void URsLockOnComponent::LockOff()
 {
-	LockedOnTarget.Reset();
-
-	if (ReticleComponent)
+	if (LockedOnTarget.IsValid())
 	{
-		ReticleComponent->DestroyComponent();
-		ReticleComponent = nullptr;
+		if (URsHealthComponent* HealthComponent = LockedOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
+		{
+			HealthComponent->OnDeathStarted.RemoveAll(this);
+		}
+	}
+
+	if (ReticleComponent.IsValid())
+	{
+		ReticleComponent.Get()->DestroyComponent();
 	}
 }
 
@@ -64,3 +84,18 @@ AActor* URsLockOnComponent::GetLockedOnTarget() const
 {
 	return LockedOnTarget.Get();
 }
+
+void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
+{
+	LockOff();
+	
+	// ReActivate Lock on ability.
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		//ASC->TryActivateAbilitiesByTag(URsGameSetting::Get()->LockOnAbilityTag.GetSingleTagContainer());
+		FGameplayEventData Payload;
+		Payload.EventTag = URsGameSetting::Get()->LockOnAbilityTag;
+		ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
+	}
+}
+

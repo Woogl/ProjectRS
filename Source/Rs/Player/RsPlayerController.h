@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "CommonPlayerController.h"
 #include "RsPlayerController.generated.h"
 
@@ -16,7 +17,7 @@ class URsPartyComponent;
  * 
  */
 UCLASS()
-class RS_API ARsPlayerController : public ACommonPlayerController
+class RS_API ARsPlayerController : public ACommonPlayerController, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -39,6 +40,9 @@ public:
 	ARsPlayerController();
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+
+	// IAbilitySystemInterface
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	AAIController* GetPrevAIController() const;
 	

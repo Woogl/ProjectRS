@@ -39,9 +39,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	FName ReticleWidgetSocket = FName("pelvis");
 
+	UFUNCTION()
+	void HandleDeathStarted(AActor* DeadActor);
+
 private:
 	TWeakObjectPtr<AActor> LockedOnTarget;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Widget")
-	TObjectPtr<UWidgetComponent> ReticleComponent;
+	TWeakObjectPtr<UWidgetComponent> ReticleComponent;
 };

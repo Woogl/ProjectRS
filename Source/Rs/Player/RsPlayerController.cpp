@@ -3,10 +3,12 @@
 
 #include "RsPlayerController.h"
 
+#include "AbilitySystemGlobals.h"
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/GameplayControlRotationComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
 
@@ -60,6 +62,15 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 	{
 		GameplayCameraComponent->ActivateCameraForPlayerIndex(0);
 	}
+}
+
+UAbilitySystemComponent* ARsPlayerController::GetAbilitySystemComponent() const
+{
+	if (APlayerState* MyPlayerState = GetPlayerState<APlayerState>())
+	{
+		return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MyPlayerState);
+	}
+	return nullptr;
 }
 
 AAIController* ARsPlayerController::GetPrevAIController() const
