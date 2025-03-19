@@ -29,7 +29,9 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 		return;
 	}
 
+	FocusTarget.Reset();
 	bTurnComplete = false;
+	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
 	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion() * SourceTransform.GetRotation());
