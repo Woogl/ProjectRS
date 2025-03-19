@@ -19,7 +19,7 @@ void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, TeamID);
+	DOREPLIFETIME(ThisClass, TeamId);
 }
 
 UAbilitySystemComponent* ARsCharacterBase::GetAbilitySystemComponent() const
@@ -30,6 +30,17 @@ UAbilitySystemComponent* ARsCharacterBase::GetAbilitySystemComponent() const
 URsAbilitySystemComponent* ARsCharacterBase::GetRsAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ARsCharacterBase::SetGenericTeamId(const FGenericTeamId& InTeamID)
+{
+	uint8 Id = InTeamID;
+	TeamId = static_cast<ERsTeamId>(Id);
+}
+
+FGenericTeamId ARsCharacterBase::GetGenericTeamId() const
+{
+	return static_cast<uint8>(TeamId);
 }
 
 bool ARsCharacterBase::IsLockableTarget_Implementation() const

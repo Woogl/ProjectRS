@@ -23,8 +23,7 @@ ARsPlayerCharacter::ARsPlayerCharacter()
 	PerfectDodgeCapsuleComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	PerfectDodgeCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	// Team ID "0" is for player.
-	TeamID = 0;
+	TeamId = ERsTeamId::Player;
 }
 
 void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

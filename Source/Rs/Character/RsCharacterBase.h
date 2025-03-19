@@ -14,6 +14,14 @@ class URsHealthComponent;
 class URsAbilitySet;
 class URsAbilitySystemComponent;
 
+UENUM()
+enum class ERsTeamId : uint8
+{
+	Player	= 0,
+	Enemy	= 1,
+	Neutral	= 255,
+};
+
 UCLASS(Abstract, NotBlueprintable)
 class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IRsLockOnInterface
 {
@@ -32,8 +40,8 @@ public:
 	void PostInitializeAbilitySystem();
 
 	// IGenericTeamAgentInterface
-	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override { TeamID = InTeamID; }
-	virtual FGenericTeamId GetGenericTeamId() const override { return TeamID; }
+	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	// IRsTargetingInterface
 	virtual bool IsLockableTarget_Implementation() const override;
@@ -54,7 +62,7 @@ protected:
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")
 	TArray<URsAbilitySet*> AbilitySets;
-
+	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
-	FGenericTeamId TeamID = FGenericTeamId::NoTeam;
+	ERsTeamId TeamId = ERsTeamId::Neutral;
 };

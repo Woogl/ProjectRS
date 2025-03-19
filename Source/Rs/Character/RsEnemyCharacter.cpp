@@ -13,6 +13,8 @@ ARsEnemyCharacter::ARsEnemyCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	// Minimal Mode means that no GameplayEffects will replicate. They will only live on the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	TeamId = ERsTeamId::Enemy;
 }
 
 void ARsEnemyCharacter::BeginPlay()
