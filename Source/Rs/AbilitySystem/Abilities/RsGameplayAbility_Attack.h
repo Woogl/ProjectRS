@@ -4,19 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "RsGameplayAbility.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
 USTRUCT(BlueprintType)
 struct FRsDamageEventContext
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage", meta = (Categories = "Effect.Damage"))
-	FGameplayTagContainer DamageEffectTags;
-
+	TArray<FRsDamageEffectParams> DamageEffectParams;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
 	float HealthDamageCoefficient = 1.f;
 

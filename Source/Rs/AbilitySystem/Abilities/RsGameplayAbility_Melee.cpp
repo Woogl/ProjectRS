@@ -4,6 +4,7 @@
 #include "RsGameplayAbility_Melee.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsGameSetting.h"
@@ -28,16 +29,19 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
 	FRsDamageEventContext DamageEffectContext = DamageEvents.FindRef(EventData.EventTag);
-	if (DamageEffectContext.DamageEffectClass != nullptr)
+	if (!DamageEffectContext.DamageEffectParams.IsEmpty())
 	{
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectContext.DamageEffectClass, GetAbilityLevel());
-		if (DamageEffectSpecHandle.IsValid())
+		TArray<FGameplayEffectSpecHandle> DamageEffectHandles = URsBattleLibrary::MakeDamageEffectSpecs(GetAvatarActorFromActorInfo(), DamageEffectContext.DamageEffectParams);
+
+		// Todo : Set Magnitude only for Damage GE (may need CoefficientRequired GE, LevelRequired GE Class)
+		for (const FGameplayEffectSpecHandle& DamageEffectHandle : DamageEffectHandles)
 		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
-			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle, DamageEffectContext.DamageEffectTags);
-			ApplyCostRecovery();
-			K2_OnAttackHitTarget(EventData.Target, EventData.EventTag);
+			DamageEffectHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag,DamageEffectContext.HealthDamageCoefficient);
+			DamageEffectHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag,DamageEffectContext.StaggerDamageCoefficient);
+			
+			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageEffectHandle.Data, UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target));
 		}
+		ApplyCostRecovery();
+		K2_OnAttackHitTarget(EventData.Target, EventData.EventTag);
 	}
 }

@@ -47,19 +47,21 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	
 	FRsDamageEventContext DamageEffectContext = DamageEvents.FindRef(EventData.EventTag);
-	if (DamageEffectContext.DamageEffectClass)
+	if (!DamageEffectContext.DamageEffectParams.IsEmpty())
 	{
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectContext.DamageEffectClass, GetAbilityLevel());
-		if (DamageEffectSpecHandle.IsValid())
+		TArray<FGameplayEffectSpecHandle> DamageEffectSpecHandles = URsBattleLibrary::MakeDamageEffectSpecs(GetAvatarActorFromActorInfo(),DamageEffectContext.DamageEffectParams);
+
+		// Todo : only for Damage GE
+		for (FGameplayEffectSpecHandle Handle : DamageEffectSpecHandles)
 		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
-			DamageEffectSpecHandle.Data->AppendDynamicAssetTags(DamageEffectContext.DamageEffectTags);
-			Projectile->DamageSpecHandle = DamageEffectSpecHandle;
-			Projectile->EventTag = EventData.EventTag;
+			Handle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
+			Handle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag,DamageEffectContext.StaggerDamageCoefficient);
+			Projectile->DamageSpecHandles.Add(Handle);
 		}
+		Projectile->EventTag = EventData.EventTag;
 	}
 	
+
 	Projectile->OwningAbility = this;
 	
 	if (CachedVictim.IsValid())
