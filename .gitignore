@@ -73,6 +73,5 @@ Plugins/**/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-# RS custom
+# IDE setting
 *.user
-!Plugins/VRM4U/ThirdParty/assimp/bin/x64/assimp-vc141-mt.dll
