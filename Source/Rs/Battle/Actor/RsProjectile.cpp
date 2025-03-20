@@ -5,6 +5,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AI/RsAILibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
@@ -35,7 +36,7 @@ void ARsProjectile::BeginPlay()
 
 void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DamageSpecHandles.IsEmpty())
+	if (!DamageSpecHandle.IsValid())
 	{
 		return;
 	}
@@ -56,7 +57,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && OtherActor)
 	{
-		URsBattleLibrary::ApplyDamageEffectSpecs(GetInstigator(), OtherActor, DamageSpecHandles);
+		URsBattleLibrary::ApplyDamageEffectSpec(GetInstigator(), OtherActor, DamageSpecHandle);
 		
 		MaxHitCount--;
 		if (MaxHitCount == 0)

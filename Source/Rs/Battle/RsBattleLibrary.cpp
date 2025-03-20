@@ -3,17 +3,13 @@
 
 #include "RsBattleLibrary.h"
 
-#include <ThirdParty/OpenSubdiv/Deploy/OpenSubdiv-3.6.0/include/opensubdiv/vtr/types.h>
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Net/RepLayout.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/System/RsGameSetting.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -51,66 +47,37 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	return !ResultActors.IsEmpty();
 }
 
-TArray<FGameplayEffectSpecHandle> URsBattleLibrary::MakeDamageEffectSpecs(const AActor* SourceActor, const TArray<FRsDamageEffectParams>& Params)
+void URsBattleLibrary::ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, FGameplayTagContainer AdditionalDamageEffectTags)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
-
-	TArray<FGameplayEffectSpecHandle> OutResult;
-	if (SourceASC)
+	
+	if (SourceASC && GameplayEffectClass)
 	{
-		TArray<FRsDamageEffectData> DamageEffectList = GetEffectDataList(Params);
-		for (const FRsDamageEffectData& Data : DamageEffectList)
-		{
-			FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
-			OutResult.Add(SourceASC->MakeOutgoingSpec(Data.EffectClass,Data.EffectLevel,ContextHandle));
-		}
+		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffectClass, 0, DamageEffectContext);
+		ApplyDamageEffectSpec(SourceActor, TargetActor, DamageEffectSpecHandle, AdditionalDamageEffectTags);
 	}
-	return OutResult;
 }
 
-bool URsBattleLibrary::ApplyDamageEffectSpecs(const AActor* SourceActor, const AActor* TargetActor,	const TArray<FGameplayEffectSpecHandle>& Handles)
+void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle, FGameplayTagContainer AdditionalDamageEffectTags)
 {
-	if (Handles.IsEmpty())
-	{
-		return false;
-	}
-
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
-
+	
 	if (SourceASC && TargetASC)
 	{
-		for (const FGameplayEffectSpecHandle& Handle : Handles)
+		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
-			Handle.Data->GetContext().AddOrigin(TargetActor->GetActorLocation());
-			SourceASC->ApplyGameplayEffectSpecToTarget(*Handle.Data,TargetASC);
-		}
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(SourceASC))
-		{
-			RsASC->OnDealDamage.Broadcast(TargetASC, Handles[0]);
-		}
-		return true;
-	}
-	return false;
-}
+			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
+			EffectSpec->AppendDynamicAssetTags(AdditionalDamageEffectTags);
+			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 
-TArray<FRsDamageEffectData> URsBattleLibrary::GetEffectDataList(const TArray<FRsDamageEffectParams>& Params)
-{
-	TArray<FRsDamageEffectData> OutResult;
-
-	for (const FRsDamageEffectParams& Param : Params)
-	{
-		if (URsGameSetting::Get()->DamageEffectTagTable.Find(Param.EffectTag) != INDEX_NONE)
-		{
-			int32 Index = URsGameSetting::Get()->DamageEffectTagTable.Find(Param.EffectTag);
-			FRsEffectTagData* EffectTagData = &URsGameSetting::Get()->DamageEffectTagTable[Index];
-			
-			FRsDamageEffectData DamageEffectData(Index, EffectTagData->EffectClass,Param.EffectLevel);
-			OutResult.Add(DamageEffectData);
+			if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(SourceASC))
+			{
+				RsASC->OnDealDamage.Broadcast(TargetASC, EffectHandle);
+			}
 		}
 	}
-	OutResult.Sort([](const FRsDamageEffectData& Data1, const FRsDamageEffectData& Data2)->bool { return Data1.Order < Data2.Order; });
-	return OutResult;
 }
 
 bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectContextHandle)

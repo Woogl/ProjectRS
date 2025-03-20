@@ -29,7 +29,7 @@ public:
 	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	TArray<FGameplayEffectSpecHandle> DamageSpecHandles;
+	FGameplayEffectSpecHandle DamageSpecHandle;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayTag EventTag;
