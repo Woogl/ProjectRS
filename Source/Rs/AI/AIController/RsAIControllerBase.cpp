@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Rs/Character/RsCharacterBase.h"
 
 ARsAIControllerBase::ARsAIControllerBase()
 {
@@ -43,10 +44,14 @@ void ARsAIControllerBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (BehaviorTree)
+	if (ARsCharacterBase* RsAvatarCharacter = Cast<ARsCharacterBase>(InPawn))
 	{
-		RunBehaviorTree(BehaviorTree);
-		GetBlackboardComponent()->SetValueAsObject(TEXT("SelfActor"), InPawn);
+		if (RsAvatarCharacter->BehaviorTree)
+		{
+			BehaviorTree = RsAvatarCharacter->BehaviorTree;
+			RunBehaviorTree(BehaviorTree);
+			GetBlackboardComponent()->SetValueAsObject(TEXT("SelfActor"), InPawn);
+		}
 	}
 }
 

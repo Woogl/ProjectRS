@@ -13,6 +13,7 @@ class URsStaggerComponent;
 class URsHealthComponent;
 class URsAbilitySet;
 class URsAbilitySystemComponent;
+class UBehaviorTree;
 
 UENUM()
 enum class ERsTeamId : uint8
@@ -65,4 +66,9 @@ protected:
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
 	ERsTeamId TeamId = ERsTeamId::Neutral;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
 };

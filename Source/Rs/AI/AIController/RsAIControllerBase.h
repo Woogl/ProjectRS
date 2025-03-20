@@ -13,7 +13,7 @@ UCLASS()
 class RS_API ARsAIControllerBase : public AAIController
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAIPerceptionComponent> AIPerception;
 
@@ -31,6 +31,6 @@ protected:
 	void HandlePlayerControllingPawnChanged(APawn* OldPawn, APawn* NewPawn);
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY()
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 };
