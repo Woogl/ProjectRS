@@ -16,7 +16,9 @@ void URsAdditionalDamageEffectGameplayEffectComponent::OnGameplayEffectApplied(F
 	FGameplayTagContainer AdditionalEffectTagContainer = GESpec.GetDynamicAssetTags();
 	if (!AdditionalEffectTagContainer.IsEmpty())
 	{
-		for (FGameplayTag AdditionalEffectTag : AdditionalEffectTagContainer)
+		TArray<FGameplayTag> AdditionalEffectTagArray = AdditionalEffectTagContainer.GetGameplayTagArray();
+		AdditionalEffectTagArray.Sort([](FGameplayTag a, FGameplayTag b)->bool { return a.GetTagName().Compare(b.GetTagName()) <= 0; });
+		for (FGameplayTag AdditionalEffectTag : AdditionalEffectTagArray)
 		{
 			if (TSubclassOf<UGameplayEffect> AdditionalEffectClass = AdditionalDamageEffectTable.FindRef(AdditionalEffectTag))
 			{
