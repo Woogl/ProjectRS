@@ -73,6 +73,5 @@ Plugins/**/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-# RS custom
+# IDE setting
 *.user
-!Plugins/**/bin/*.dll
