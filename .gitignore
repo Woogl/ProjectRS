@@ -75,4 +75,4 @@ DerivedDataCache/*
 
 # RS custom
 *.user
-!Plugins/**/bin/*.dll
+!Plugins/VRM4U/ThirdParty/assimp/bin/x64/assimp-vc141-mt.dll
