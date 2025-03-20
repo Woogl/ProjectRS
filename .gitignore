@@ -75,3 +75,4 @@ DerivedDataCache/*
 
 # IDE setting
 *.user
+!Plugins/VRM4U/*
