@@ -6,8 +6,8 @@
 #include "AbilitySystemGlobals.h"
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/System/RsGameSetting.h"
 
 URsLockOnComponent::URsLockOnComponent()
 {
@@ -67,11 +67,18 @@ void URsLockOnComponent::LockOff()
 		{
 			HealthComponent->OnDeathStarted.RemoveAll(this);
 		}
+		LockedOnTarget.Reset();
 	}
 
 	if (ReticleComponent.IsValid())
 	{
 		ReticleComponent.Get()->DestroyComponent();
+	}
+
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		UGameplayAbility* LockOnAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LockOnAbilityTag.GetSingleTagContainer(), false);
+		ASC->CancelAbility(LockOnAbility);
 	}
 }
 
@@ -87,15 +94,15 @@ AActor* URsLockOnComponent::GetLockedOnTarget() const
 
 void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 {
-	LockOff();
-	
 	// ReActivate Lock on ability.
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		//ASC->TryActivateAbilitiesByTag(URsGameSetting::Get()->LockOnAbilityTag.GetSingleTagContainer());
-		FGameplayEventData Payload;
-		Payload.EventTag = URsGameSetting::Get()->LockOnAbilityTag;
-		ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
+		FGameplayTagContainer LockOnAbilityTags = LockOnAbilityTag.GetSingleTagContainer();
+		ASC->CancelAbilities(&LockOnAbilityTags);
+
+		LockOff();
+		
+		ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
 	}
 }
 

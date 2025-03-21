@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "RsLockOnComponent.generated.h"
 
@@ -30,6 +31,9 @@ public:
 	AActor* GetLockedOnTarget() const;
 	
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	FGameplayTag LockOnAbilityTag;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<UUserWidget> ReticleWidget;
 
