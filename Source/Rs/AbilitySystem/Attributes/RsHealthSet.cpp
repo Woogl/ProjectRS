@@ -45,6 +45,11 @@ void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
+
+	else if (Attribute == GetShieldAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+	}
 }
 
 void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -76,7 +81,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	{
 		// Store a local copy of the amount of Healing done and clear the Healing attribute.
 		const float LocalHealingDone = GetHealing();
-
 		SetHealing(0.f);
 	
 		if (LocalHealingDone > 0.0f)
@@ -84,6 +88,18 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			// Apply the Health change and then clamp it.
 			const float NewHealth = GetCurrentHealth() + LocalHealingDone;
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+		}
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetShieldGainAttribute())
+	{
+		const float LocalShieldGain = GetShieldGain();
+		SetShieldGain(0.f);
+
+		if (LocalShieldGain > 0.f)
+		{
+			const float NewShield = GetShield() + LocalShieldGain;
+			SetShield(FMath::Max(NewShield, 0.f));
 		}
 	}
 	

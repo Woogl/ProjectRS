@@ -33,6 +33,11 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
+
+	// Used to create a local copy of Shield which is then added by buff.
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData ShieldGain;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, ShieldGain)
 	
 	// Holds the current value for Health.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentHealth)
