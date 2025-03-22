@@ -36,7 +36,7 @@ public:
 	bool IsOnCooldown() const;
 
 	// FTickableGameObject
-	// NOTE: Ability class can't tick by default, but I want to display ability's info updated every frame.
+	// NOTE: Ability class can't tick by default, but I want to display cooldown updated every frame.
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 	

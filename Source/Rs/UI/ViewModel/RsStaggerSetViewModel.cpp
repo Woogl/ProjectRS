@@ -18,14 +18,13 @@ void URsStaggerSetViewModel::Initialize()
 	const AActor* Model = Cast<AActor>(GetOuter());
 	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 	{
+		SetMaxStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
+		SetCurrentStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
+		SetStaggerRegen(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetStaggerRegenAttribute()));
+		
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
-
-		bool bFound;
-		SetMaxStagger(AbilitySystemComponent->GetGameplayAttributeValue(URsStaggerSet::GetMaxStaggerAttribute(), bFound));
-		SetCurrentStagger(AbilitySystemComponent->GetGameplayAttributeValue(URsStaggerSet::GetCurrentStaggerAttribute(), bFound));
-		SetStaggerRegen(AbilitySystemComponent->GetGameplayAttributeValue(URsStaggerSet::GetStaggerRegenAttribute(), bFound));
 	}
 }
 

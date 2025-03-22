@@ -18,14 +18,13 @@ void URsEnergySetViewModel::Initialize()
 	const AActor* Model = Cast<AActor>(GetOuter());
 	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 	{
+		SetMaxEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
+		SetCurrentEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
+		SetEnergyRegen(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetEnergyRegenAttribute()));
+		
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).AddUObject(this, &ThisClass::EnergyRegenChanged);
-
-		bool bFound;
-		SetMaxEnergy(AbilitySystemComponent->GetGameplayAttributeValue(URsEnergySet::GetMaxEnergyAttribute(), bFound));
-		SetCurrentEnergy(AbilitySystemComponent->GetGameplayAttributeValue(URsEnergySet::GetCurrentEnergyAttribute(), bFound));
-		SetEnergyRegen(AbilitySystemComponent->GetGameplayAttributeValue(URsEnergySet::GetEnergyRegenAttribute(), bFound));
 	}
 }
 

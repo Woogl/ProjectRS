@@ -25,13 +25,18 @@ public:
 	float GetCurrentHealth() const;
 	float GetMaxHealth() const;
 	float GetHealthRegen() const;
+	float GetShield() const;
 	
 	void SetCurrentHealth(float NewCurrentHealth);
 	void SetMaxHealth(float NewMaxHealth);
 	void SetHealthRegen(float NewHealthRegen);
+	void SetShield(float NewShield);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetHealthPercent() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	float GetShieldPercent() const;
 	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
@@ -43,7 +48,11 @@ private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	float HealthRegen;
 
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	float Shield;
+
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void CurrentHealthChanged(const FOnAttributeChangeData& Data);
 	void HealthRegenChanged(const FOnAttributeChangeData& Data);
+	void ShieldChanged(const FOnAttributeChangeData& Data);
 };

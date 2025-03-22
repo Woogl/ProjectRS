@@ -11,6 +11,7 @@ URsHealthSet::URsHealthSet()
 	MaxHealth = 0.0f;
 	CurrentHealth = 0.0f;
 	HealthRegen = 0.0f;
+	Shield = 0.0f;
 }
 
 void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -24,6 +25,7 @@ void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	// Replicated to all
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, CurrentHealth, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, MaxHealth, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, Shield, Params);
 
 	// Only Owner
 	Params.Condition = COND_OwnerOnly;
@@ -52,12 +54,18 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	if (Data.EvaluatedData.Attribute == GetHealthDamageAttribute())
 	{
 		// Store a local copy of the amount of Damage done and clear the Damage attribute.
-		const float LocalDamageDone = GetHealthDamage();
-
+		float LocalDamageDone = GetHealthDamage();
 		SetHealthDamage(0.f);
 	
 		if (LocalDamageDone > 0.0f)
 		{
+			if (GetShield() > 0.f)
+			{
+				float Absorbed = FMath::Min(LocalDamageDone, GetShield());
+				SetShield(GetShield() - Absorbed);
+				LocalDamageDone -= Absorbed;
+			}
+			
 			// Apply the Health change and then clamp it.
 			const float NewHealth = GetCurrentHealth() - LocalDamageDone;
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
@@ -103,4 +111,9 @@ void URsHealthSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 void URsHealthSet::OnRep_HealthRegen(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, HealthRegen, OldValue);
+}
+
+void URsHealthSet::OnRep_Shield(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, Shield, OldValue);
 }

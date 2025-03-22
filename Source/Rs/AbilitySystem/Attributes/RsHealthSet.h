@@ -49,6 +49,11 @@ public:
 	FGameplayAttributeData HealthRegen;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthRegen)
 
+	// Holds the current value for Shield.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Shield)
+	FGameplayAttributeData Shield;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, Shield)
+
 protected:
 	UFUNCTION()
 	virtual void OnRep_CurrentHealth(const FGameplayAttributeData& OldValue);
@@ -58,4 +63,7 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_HealthRegen(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_Shield(const FGameplayAttributeData& OldValue);
 };
