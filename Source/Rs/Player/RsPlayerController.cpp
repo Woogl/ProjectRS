@@ -7,8 +7,6 @@
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
-#include "GameFramework/GameplayControlRotationComponent.h"
-#include "GameFramework/PlayerState.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
 
@@ -20,8 +18,8 @@ ARsPlayerController::ARsPlayerController()
 
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetRootComponent());
-
-	GameplayControlRotationComponent = CreateDefaultSubobject<UGameplayControlRotationComponent>(TEXT("GameplayControlRotationComponent"));
+	GameplayCameraComponent->AutoActivateForPlayer = EAutoReceiveInput::Player0;
+	GameplayCameraComponent->bAutoActivate = true;
 }
 
 void ARsPlayerController::BeginPlay()

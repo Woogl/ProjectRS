@@ -11,9 +11,9 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerCameraComponent(const UObje
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		if (ARsPlayerController* DwPlayerController = Cast<ARsPlayerController>(PlayerController))
+		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
 		{
-			return DwPlayerController->GetGameplayCameraComponent();
+			return RsPlayerController->GetGameplayCameraComponent();
 		}
 	}
 

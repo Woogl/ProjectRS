@@ -6,7 +6,6 @@
 #include "MVVMViewModelBase.h"
 #include "RsAbilityViewModel.generated.h"
 
-struct FActiveGameplayEffect;
 class URsGameplayAbility;
 
 /**

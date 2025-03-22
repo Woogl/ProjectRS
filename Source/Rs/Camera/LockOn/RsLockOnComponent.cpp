@@ -95,7 +95,7 @@ void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 {
 	LockOff();
 	
-	// ReActivate Lock on ability.
+	// Enemy will be dead in next tick, so activate lock in next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
 		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());

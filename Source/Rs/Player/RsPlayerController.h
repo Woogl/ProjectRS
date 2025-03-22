@@ -13,6 +13,15 @@ class UGameplayControlRotationComponent;
 class UGameplayCameraComponent;
 class ARsPlayerCharacter;
 class URsPartyComponent;
+
+UENUM(BlueprintType)
+enum class ERsCameraMode : uint8
+{
+	ThirdPerson,
+	LockOn,
+	LinkSkill,
+};
+
 /**
  * 
  */
@@ -30,9 +39,6 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	TObjectPtr<UGameplayControlRotationComponent> GameplayControlRotationComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AAIController> PrevAIController;
 	
@@ -43,6 +49,9 @@ public:
 
 	// IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	ERsCameraMode CameraMode = ERsCameraMode::ThirdPerson;
 
 	AAIController* GetPrevAIController() const;
 	
