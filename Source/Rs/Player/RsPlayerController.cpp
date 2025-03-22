@@ -66,11 +66,7 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 
 UAbilitySystemComponent* ARsPlayerController::GetAbilitySystemComponent() const
 {
-	if (APawn* MyPawn = GetPawn())
-	{
-		return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MyPawn);
-	}
-	return nullptr;
+	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
 }
 
 AAIController* ARsPlayerController::GetPrevAIController() const

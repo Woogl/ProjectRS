@@ -182,8 +182,8 @@ void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo
 	AbilitySystemComponent->AbilitySpecInputPressed(*Spec);
 
 	// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-	TArray<UGameplayAbility*> Instances = Spec->GetAbilityInstances();
-	const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
+	UGameplayAbility* PrimaryInstance = Spec->GetPrimaryInstance();
+	const FGameplayAbilityActivationInfo& ActivationInfo = PrimaryInstance->GetCurrentActivationInfoRef();
 	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec->Handle, ActivationInfo.GetActivationPredictionKey());
 }
 
@@ -211,8 +211,8 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 	AbilitySystemComponent->AbilitySpecInputReleased(*Spec);
 
 	// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-	TArray<UGameplayAbility*> Instances = Spec->GetAbilityInstances();
-	const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
+	UGameplayAbility* PrimaryInstance = Spec->GetPrimaryInstance();
+	const FGameplayAbilityActivationInfo& ActivationInfo = PrimaryInstance->GetCurrentActivationInfoRef();
 	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec->Handle, ActivationInfo.GetActivationPredictionKey());
 }
 
