@@ -7,6 +7,7 @@
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/Player/RsPlayerController.h"
 
 URsLockOnComponent::URsLockOnComponent()
 {
@@ -56,6 +57,11 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 			HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::HandleDeathStarted);
 		}
 	}
+
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
+	{
+		RsPlayerController->CameraMode = ERsCameraMode::LockOn;
+	}
 }
 
 void URsLockOnComponent::LockOff()
@@ -79,6 +85,11 @@ void URsLockOnComponent::LockOff()
 		FGameplayTagContainer LockOnAbilityTags = LockOnAbilityTag.GetSingleTagContainer();
 		ASC->CancelAbilities(&LockOnAbilityTags, nullptr);
 	}
+
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
+	{
+		RsPlayerController->CameraMode = ERsCameraMode::ThirdPerson;
+	}
 }
 
 bool URsLockOnComponent::HasLockOnTarget() const
@@ -95,7 +106,7 @@ void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 {
 	LockOff();
 	
-	// Enemy will be dead in next tick, so activate lock in next tick.
+	// Enemy will dead in next tick, so activate GA_LockOn next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
 		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
