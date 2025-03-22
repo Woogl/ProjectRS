@@ -6,7 +6,6 @@
 #include "AbilitySystemGlobals.h"
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 
 URsLockOnComponent::URsLockOnComponent()
@@ -77,8 +76,8 @@ void URsLockOnComponent::LockOff()
 
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		UGameplayAbility* LockOnAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LockOnAbilityTag.GetSingleTagContainer(), false);
-		ASC->CancelAbility(LockOnAbility);
+		FGameplayTagContainer LockOnAbilityTags = LockOnAbilityTag.GetSingleTagContainer();
+		ASC->CancelAbilities(&LockOnAbilityTags, nullptr);
 	}
 }
 
@@ -94,14 +93,11 @@ AActor* URsLockOnComponent::GetLockedOnTarget() const
 
 void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 {
+	LockOff();
+	
 	// ReActivate Lock on ability.
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		FGameplayTagContainer LockOnAbilityTags = LockOnAbilityTag.GetSingleTagContainer();
-		ASC->CancelAbilities(&LockOnAbilityTags);
-
-		LockOff();
-		
 		ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
 	}
 }
