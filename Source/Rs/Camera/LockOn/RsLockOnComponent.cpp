@@ -96,9 +96,10 @@ void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 	LockOff();
 	
 	// ReActivate Lock on ability.
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
+		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
 		ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
-	}
+	});
 }
 
