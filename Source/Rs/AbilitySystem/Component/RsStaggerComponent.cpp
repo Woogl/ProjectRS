@@ -77,9 +77,9 @@ void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& Chan
 	}
 }
 
-void URsStaggerComponent::OnRep_bIsGroggy(bool OldbIsGroggy)
+void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (OldbIsGroggy == false && bIsGroggy == true)
+	if (OldValue == false && bIsGroggy == true)
 	{
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{

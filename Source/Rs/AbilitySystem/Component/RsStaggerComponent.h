@@ -43,5 +43,5 @@ protected:
 	bool bIsGroggy = false;
 
 	UFUNCTION()
-	void OnRep_bIsGroggy(bool OldbIsGroggy);
+	void OnRep_bIsGroggy(bool OldValue);
 };

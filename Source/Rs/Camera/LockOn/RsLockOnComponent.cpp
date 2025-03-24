@@ -7,6 +7,7 @@
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/Player/RsPlayerController.h"
 
 URsLockOnComponent::URsLockOnComponent()
@@ -79,12 +80,8 @@ void URsLockOnComponent::LockOff()
 	{
 		ReticleComponent.Get()->DestroyComponent();
 	}
-
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
-	{
-		FGameplayTagContainer LockOnAbilityTags = LockOnAbilityTag.GetSingleTagContainer();
-		ASC->CancelAbilities(&LockOnAbilityTags, nullptr);
-	}
+	
+	URsPartyLibrary::CancelPartyAbility(GetWorld(), LockOnAbilityTag);
 
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
@@ -109,8 +106,10 @@ void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 	// Enemy will dead in next tick, so activate GA_LockOn next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
-		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
-		ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+		{
+			ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
+		}
 	});
 }
 

@@ -18,14 +18,11 @@ class RS_API URsPartyLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
+	
+	/** Party member change */
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static void ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass);
-
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static void ApplyPartyEffectSpec(UObject* WorldContextObject, UPARAM(ref)FGameplayEffectSpec& EffectSpec);
+	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void AddPartyMember(ARsPlayerCharacter* NewMember);
@@ -44,4 +41,20 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static void LeavePartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
+
+	/** Global party member effect */
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void ApplyPartyEffectSpec(UObject* WorldContextObject, FGameplayEffectSpec EffectSpec);
+
+	/** Global party member ability */
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void ActivatePartyAbility(UObject* WorldContextObject, FGameplayTag AbilityTag);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	static void CancelPartyAbility(UObject* WorldContextObject, FGameplayTag AbilityTag);
 };

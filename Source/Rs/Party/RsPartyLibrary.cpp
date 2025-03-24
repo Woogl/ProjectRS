@@ -20,36 +20,6 @@ bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMe
 	return false;
 }
 
-void URsPartyLibrary::ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass)
-{
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
-	{
-		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
-		{
-			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
-			{
-				UGameplayEffect* GameplayEffect = EffectClass->GetDefaultObject<UGameplayEffect>();
-				FGameplayEffectSpec	Spec(GameplayEffect, ASC->MakeEffectContext(), 0);
-				ASC->ApplyGameplayEffectSpecToSelf(Spec);
-			}
-		}
-	}
-}
-
-void URsPartyLibrary::ApplyPartyEffectSpec(UObject* WorldContextObject, FGameplayEffectSpec& EffectSpec)
-{
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
-	{
-		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
-		{
-			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
-			{
-				ASC->ApplyGameplayEffectSpecToSelf(EffectSpec);
-			}
-		}
-	}
-}
-
 void URsPartyLibrary::AddPartyMember(ARsPlayerCharacter* NewMember)
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
@@ -95,5 +65,58 @@ void URsPartyLibrary::LeavePartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<AR
 	if (URsPartySubsystem* PartySubsystem = URsPartySubsystem::Get(LocalPlayer))
 	{
 		PartySubsystem->LeavePartyMember(MemberClassToRemove);
+	}
+}
+
+void URsPartyLibrary::ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
+			{
+				UGameplayEffect* GameplayEffect = EffectClass->GetDefaultObject<UGameplayEffect>();
+				FGameplayEffectSpec	Spec(GameplayEffect, ASC->MakeEffectContext(), 0);
+				ASC->ApplyGameplayEffectSpecToSelf(Spec);
+			}
+		}
+	}
+}
+
+void URsPartyLibrary::ApplyPartyEffectSpec(UObject* WorldContextObject, FGameplayEffectSpec EffectSpec)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			if (UAbilitySystemComponent* ASC = PartyMember->GetAbilitySystemComponent())
+			{
+				ASC->ApplyGameplayEffectSpecToSelf(EffectSpec);
+			}
+		}
+	}
+}
+
+void URsPartyLibrary::ActivatePartyAbility(UObject* WorldContextObject, FGameplayTag AbilityTag)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			PartyMember->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+		}
+	}
+}
+
+void URsPartyLibrary::CancelPartyAbility(UObject* WorldContextObject, FGameplayTag AbilityTag)
+{
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	{
+		for (ARsPlayerCharacter* PartyMember : RsPlayerController->GetPartyComponent()->GetPartyMembers())
+		{
+			FGameplayTagContainer AbilityTags = AbilityTag.GetSingleTagContainer();
+			PartyMember->GetAbilitySystemComponent()->CancelAbilities(&AbilityTags);
+		}
 	}
 }

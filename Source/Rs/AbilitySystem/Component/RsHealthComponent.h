@@ -43,5 +43,5 @@ protected:
 	bool bIsDead = false;
 
 	UFUNCTION()
-	void OnRep_bIsDead(bool OldbIsDead);
+	void OnRep_bIsDead(bool OldValue);
 };

@@ -77,9 +77,9 @@ void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Change
 	}
 }
 
-void URsHealthComponent::OnRep_bIsDead(bool OldbIsDead)
+void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 {
-	if (OldbIsDead == false && bIsDead == true)
+	if (OldValue == false && bIsDead == true)
 	{
 		if (UAbilitySystemComponent* ASC = HealthSet->GetOwningAbilitySystemComponent())
 		{
