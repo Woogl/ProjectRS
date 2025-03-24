@@ -9,6 +9,7 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsNameplateComponent;
 class URsStaggerComponent;
 class URsHealthComponent;
 class URsAbilitySet;
@@ -59,6 +60,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsStaggerComponent> StaggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsNameplateComponent> NameplateComponent;
 
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")

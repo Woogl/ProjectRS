@@ -17,7 +17,8 @@
 				"AIModule",
 				"TargetingSystem",
 				"CoreUObject",
-				"GameplayCameras"
+				"GameplayCameras",
+				"UMG"
 			]
 		}
 	],

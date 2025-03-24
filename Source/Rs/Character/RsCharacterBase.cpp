@@ -8,11 +8,16 @@
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/UI/Component/RsNameplateComponent.h"
 
 ARsCharacterBase::ARsCharacterBase()
 {
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
+	
+	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
+	NameplateComponent->SetupAttachment(RootComponent);
+	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
