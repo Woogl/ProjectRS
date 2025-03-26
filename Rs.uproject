@@ -18,7 +18,8 @@
 				"TargetingSystem",
 				"CoreUObject",
 				"GameplayCameras",
-				"UMG"
+				"UMG",
+				"DeveloperSettings"
 			]
 		}
 	],
