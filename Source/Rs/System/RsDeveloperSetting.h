@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DeveloperSettings.h"
 #include "RsDeveloperSetting.generated.h"
@@ -11,7 +12,7 @@ class UAttributeSet;
 /**
  * 
  */
-UCLASS()
+UCLASS(Config=Game)
 class URsDeveloperSetting : public UDeveloperSettings
 {
 	GENERATED_BODY()
@@ -21,4 +22,7 @@ public:
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
+
+	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient", ForceInlineRow))
+	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
 };
