@@ -96,7 +96,7 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 	// Defense rate calc
 	FinalHealthDamage *= (190.f / (Defense + 190.f));
 	
-	if (FinalHealthDamage <= 0.f || Attack <= 0.f)
+	if (FinalHealthDamage <= 0.f)
 	{
 		return;
 	}
@@ -107,5 +107,6 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 		FinalHealthDamage *= 1.6f;
 	}
 
+	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Additive, FinalHealthDamage));
 }

@@ -1,0 +1,63 @@
+// Copyright 2024 Team BH.
+
+
+#include "RsCoefficientCalculation.h"
+
+#include "Rs/RsLogChannels.h"
+#include "Rs/System/RsDeveloperSetting.h"
+
+URsCoefficientCalculation::URsCoefficientCalculation()
+{
+	// Capture every attribute of source and target
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
+	{
+		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, false);
+		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+	}
+}
+
+void URsCoefficientCalculation::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
+{
+	FGameplayEffectAttributeCaptureDefinition Definition;
+	Definition.AttributeToCapture = Attribute;
+	Definition.AttributeSource = SourceOrTarget;
+	Definition.bSnapshot = bSnapShot;
+	RelevantAttributesToCapture.Add(Definition);
+	CapturedAttributeDefinitions.Add(Key, Definition);
+}
+
+float URsCoefficientCalculation::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
+{
+	float OutMagnitude = 0.f;
+	if (CapturedAttributeDefinitions.Contains(Key))
+	{
+		GetCapturedAttributeMagnitude(CapturedAttributeDefinitions[Key], Spec, EvaluationParameters, OutMagnitude);
+	}
+	else
+	{
+		UE_LOG(RsLog, Warning, TEXT("Cannot find {%s} attribute"), *Key.ToString());
+	}
+	return OutMagnitude;
+}
+
+float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
+{
+	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+
+	FAggregatorEvaluateParameters EvaluationParameters;
+	EvaluationParameters.SourceTags = SourceTags;
+	EvaluationParameters.TargetTags = TargetTags;
+
+	float FinalMagnitude = 0.f;
+
+	// Accumulate every "Coefficient * Attribute"
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
+	{
+		float Coefficient = Spec.GetSetByCallerMagnitude(CoefficientTag.Key);
+		float Attribute = FindAttributeMagnitude(CoefficientTag.Key, Spec, EvaluationParameters);
+		FinalMagnitude += Coefficient * Attribute;
+	}
+	
+	return FinalMagnitude;
+}

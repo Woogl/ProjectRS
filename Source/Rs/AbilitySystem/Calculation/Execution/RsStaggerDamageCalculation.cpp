@@ -61,10 +61,11 @@ void URsStaggerDamageCalculation::Execute_Implementation(const FGameplayEffectCu
 	// Stagger Calculation
 	float FinalStaggerDamage = Impact * StaggerCoefficient;
 
-	if (FinalStaggerDamage <= 0.f || Impact < 0.f)
+	if (FinalStaggerDamage <= 0.f)
 	{
 		return;
 	}
 
+	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Additive, FinalStaggerDamage));
 }
