@@ -54,7 +54,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	// Accumulate every "Coefficient * Attribute"
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
 	{
-		float Coefficient = Spec.GetSetByCallerMagnitude(CoefficientTag.Key);
+		float Coefficient = Spec.GetSetByCallerMagnitude(CoefficientTag.Key, false);
 		float Attribute = FindAttributeMagnitude(CoefficientTag.Key, Spec, EvaluationParameters);
 		FinalMagnitude += Coefficient * Attribute;
 	}

@@ -80,6 +80,37 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 	}
 }
 
+void URsBattleLibrary::ApplyBuffEffect(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	
+	if (SourceASC && EffectCoefficient.EffectClass)
+	{
+		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
+		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
+		{
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+		}
+		ApplyBuffEffectSpec(SourceActor, TargetActor, EffectSpecHandle);
+	}
+}
+
+void URsBattleLibrary::ApplyBuffEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	
+	if (SourceASC && TargetASC)
+	{
+		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
+		{
+			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
+			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+		}
+	}
+}
+
 bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())

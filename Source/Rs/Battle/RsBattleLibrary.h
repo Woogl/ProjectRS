@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsBattleLibrary.generated.h"
 
 class ARsCharacterBase;
@@ -30,6 +31,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static void ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle, FGameplayTagContainer AdditionalDamageEffectTags = FGameplayTagContainer());
 
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static void ApplyBuffEffect(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static void ApplyBuffEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+	
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);
 

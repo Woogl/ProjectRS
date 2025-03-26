@@ -23,6 +23,6 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 
-	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient, Manual", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
 };

@@ -16,7 +16,7 @@ struct FRsEffectCoefficient
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> EffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient, Manual", ForceInlineRow))
