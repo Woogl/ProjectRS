@@ -21,8 +21,11 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 		if (ASC->TryActivateAbilitiesByTag(AbilityTags))
 		{
 			UGameplayAbility* ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, AbilityTags,false);
-			ActivatedAbility->OnGameplayAbilityEnded.AddLambda([this](UGameplayAbility* ActivatedAbility)->void { this->FinishLatentTask(*(this->MyOwnerComp),EBTNodeResult::Succeeded);});
-			Result = EBTNodeResult::InProgress;
+			if (ActivatedAbility->IsActive())
+			{
+				ActivatedAbility->OnGameplayAbilityEnded.AddLambda([this](UGameplayAbility* ActivatedAbility)->void { this->FinishLatentTask(*(this->MyOwnerComp),EBTNodeResult::Succeeded);});
+				Result = EBTNodeResult::InProgress;
+			}
 		}
 	}
 	return Result;
