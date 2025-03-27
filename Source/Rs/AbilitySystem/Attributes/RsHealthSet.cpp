@@ -90,18 +90,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
 		}
 	}
-
-	else if (Data.EvaluatedData.Attribute == GetShieldGainAttribute())
-	{
-		const float LocalShieldGain = GetShieldGain();
-		SetShieldGain(0.f);
-
-		if (LocalShieldGain > 0.f)
-		{
-			const float NewShield = GetShield() + LocalShieldGain;
-			SetShield(FMath::Max(NewShield, 0.f));
-		}
-	}
 	
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{

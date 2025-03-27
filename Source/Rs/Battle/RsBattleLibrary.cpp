@@ -9,7 +9,6 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
-#include "Rs/Character/RsCharacterBase.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -80,7 +79,7 @@ void URsBattleLibrary::ApplyDamageEffectSpec(const AActor* SourceActor, const AA
 	}
 }
 
-void URsBattleLibrary::ApplyBuffEffect(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
+void URsBattleLibrary::ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	
@@ -92,11 +91,11 @@ void URsBattleLibrary::ApplyBuffEffect(const AActor* SourceActor, const AActor* 
 		{
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
 		}
-		ApplyBuffEffectSpec(SourceActor, TargetActor, EffectSpecHandle);
+		ApplyEffectSpecCoefficient(SourceActor, TargetActor, EffectSpecHandle);
 	}
 }
 
-void URsBattleLibrary::ApplyBuffEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+void URsBattleLibrary::ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);

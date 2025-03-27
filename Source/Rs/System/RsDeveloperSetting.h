@@ -23,6 +23,15 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 
-	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
+	FGameplayTag ManualMagnitudeTag;
+	
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
+	FGameplayTag ManualDurationTag;
+	
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
+	FGameplayTag ManualLevelTag; 
 };

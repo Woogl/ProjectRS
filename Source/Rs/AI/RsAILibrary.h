@@ -6,7 +6,6 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsAILibrary.generated.h"
 
-struct FGenericTeamId;
 /**
  * 
  */

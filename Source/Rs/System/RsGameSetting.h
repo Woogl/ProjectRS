@@ -18,7 +18,7 @@ class RS_API URsGameSetting : public UPrimaryDataAsset
 
 public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-	static URsGameSetting* Get();
+	static const URsGameSetting* Get();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Battle")

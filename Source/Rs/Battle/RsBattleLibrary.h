@@ -32,10 +32,10 @@ public:
 	static void ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle, FGameplayTagContainer AdditionalDamageEffectTags = FGameplayTagContainer());
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyBuffEffect(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
+	static void ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyBuffEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+	static void ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
 	
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);

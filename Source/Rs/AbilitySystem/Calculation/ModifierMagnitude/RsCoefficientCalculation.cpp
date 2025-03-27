@@ -60,6 +60,9 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 			FinalMagnitude += Coefficient * Attribute;
 		}
 	}
+
+	// Add "Manual" magnitude
+	FinalMagnitude += Spec.GetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualMagnitudeTag, false);
 	
 	return FinalMagnitude;
 }

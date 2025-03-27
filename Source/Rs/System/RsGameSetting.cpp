@@ -10,7 +10,7 @@ FPrimaryAssetId URsGameSetting::GetPrimaryAssetId() const
 	return FPrimaryAssetId(TEXT("RsGameSetting"), GetFName());
 }
 
-URsGameSetting* URsGameSetting::Get()
+const URsGameSetting* URsGameSetting::Get()
 {
 	if (GWorld)
 	{

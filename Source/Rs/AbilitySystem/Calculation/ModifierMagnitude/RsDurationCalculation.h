@@ -4,16 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "RsCooldownDurationCalculation.generated.h"
+#include "RsDurationCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsCooldownDurationCalculation : public UGameplayModMagnitudeCalculation
+class RS_API URsDurationCalculation : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 
 public:
+	URsDurationCalculation();
+	
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 };

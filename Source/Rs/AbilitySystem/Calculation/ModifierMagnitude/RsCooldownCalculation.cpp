@@ -1,11 +1,11 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsCooldownDurationCalculation.h"
+#include "RsCooldownCalculation.h"
 
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 
-float URsCooldownDurationCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
+float URsCooldownCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
 	const URsGameplayAbility* Ability = Cast<URsGameplayAbility>(Spec.GetContext().GetAbilityInstance_NotReplicated());
 
