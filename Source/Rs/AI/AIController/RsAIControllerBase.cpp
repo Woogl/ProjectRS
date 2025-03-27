@@ -3,6 +3,7 @@
 
 #include "RsAIControllerBase.h"
 
+#include "AbilitySystemGlobals.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -15,7 +16,7 @@ ARsAIControllerBase::ARsAIControllerBase()
 
 UAbilitySystemComponent* ARsAIControllerBase::GetAbilitySystemComponent() const
 {
-	return Cast<ARsCharacterBase>(GetPawn())->GetAbilitySystemComponent();
+	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());;
 }
 
 ETeamAttitude::Type ARsAIControllerBase::GetTeamAttitudeTowards(const AActor& Other) const

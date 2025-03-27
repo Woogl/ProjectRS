@@ -17,9 +17,10 @@ class RS_API UBTTask_ActivateAbility : public UBTTaskNode
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (Categories = "Ability"))
 	FGameplayTagContainer AbilityTags;
-
-	UPROPERTY()
-	TObjectPtr<UBehaviorTreeComponent> MyOwnerComp;
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UBehaviorTreeComponent> MyOwnerComp;
 };
