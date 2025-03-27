@@ -51,7 +51,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	
 	// Accumulate every "Coefficient * Attribute"
 	float FinalMagnitude = 0.f;
-	for (const TTuple<FGameplayTag, float> SetByCaller : Spec.SetByCallerTagMagnitudes)
+	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
 	{
 		if (URsDeveloperSetting::Get()->CoefficientTags.Contains(SetByCaller.Key))
 		{
