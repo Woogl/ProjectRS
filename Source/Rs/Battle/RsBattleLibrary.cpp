@@ -124,9 +124,9 @@ bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectC
 	return false;
 }
 
-bool URsBattleLibrary::IsDead(const ARsCharacterBase* Character)
+bool URsBattleLibrary::IsDead(const AActor* Target)
 {
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
 	{
 		return ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()) <= 0.f;
 	}
