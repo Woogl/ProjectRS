@@ -110,7 +110,7 @@ void URsBattleLibrary::ApplyEffectSpecCoefficient(const AActor* SourceActor, con
 	}
 }
 
-bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle& EffectContextHandle)
+bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle EffectContextHandle)
 {
 	if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())
 	{

@@ -55,7 +55,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	{
 		if (URsDeveloperSetting::Get()->CoefficientTags.Contains(SetByCaller.Key))
 		{
-			float Coefficient = Spec.GetSetByCallerMagnitude(SetByCaller.Key, false);
+			float Coefficient = SetByCaller.Value;
 			if (FMath::IsNearlyZero(Coefficient) == false)
 			{
 				float Attribute = FindAttributeMagnitude(SetByCaller.Key, Spec, EvaluationParameters);

@@ -8,7 +8,6 @@
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsBattleLibrary.generated.h"
 
-class ARsCharacterBase;
 struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
@@ -38,7 +37,7 @@ public:
 	static void ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
 	
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
-	static bool IsCriticalHitEffect(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle);
+	static bool IsCriticalHitEffect(FGameplayEffectContextHandle EffectContextHandle);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta = (DefaultToSelf = "Target"))
 	static bool IsDead(const AActor* Target);
