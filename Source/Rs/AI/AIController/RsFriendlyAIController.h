@@ -10,14 +10,12 @@
  * 
  */
 UCLASS()
-class RS_API ARsFriendlyAIController : public ARsAIControllerBase, public IAbilitySystemInterface
+class RS_API ARsFriendlyAIController : public ARsAIControllerBase
 {
 	GENERATED_BODY()
 
 public:
 	ARsFriendlyAIController();
-	
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 protected:
 	virtual void BeginPlay() override;
