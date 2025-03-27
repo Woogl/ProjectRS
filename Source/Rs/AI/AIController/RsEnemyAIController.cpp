@@ -7,6 +7,11 @@ ARsEnemyAIController::ARsEnemyAIController()
 {
 }
 
+UAbilitySystemComponent* ARsEnemyAIController::GetAbilitySystemComponent() const
+{
+	return Super::GetAbilitySystemComponent();
+}
+
 void ARsEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();

@@ -9,6 +9,11 @@ ARsFriendlyAIController::ARsFriendlyAIController()
 	bWantsPlayerState = true;
 }
 
+UAbilitySystemComponent* ARsFriendlyAIController::GetAbilitySystemComponent() const
+{
+	return Super::GetAbilitySystemComponent();
+}
+
 void ARsFriendlyAIController::BeginPlay()
 {
 	Super::BeginPlay();

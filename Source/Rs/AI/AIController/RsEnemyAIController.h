@@ -10,13 +10,15 @@
  * 
  */
 UCLASS()
-class RS_API ARsEnemyAIController : public ARsAIControllerBase
+class RS_API ARsEnemyAIController : public ARsAIControllerBase, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
 public:
 	ARsEnemyAIController();
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;

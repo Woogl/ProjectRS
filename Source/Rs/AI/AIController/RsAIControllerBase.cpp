@@ -13,6 +13,11 @@ ARsAIControllerBase::ARsAIControllerBase()
 	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 }
 
+UAbilitySystemComponent* ARsAIControllerBase::GetAbilitySystemComponent() const
+{
+	return Cast<ARsCharacterBase>(GetPawn())->GetAbilitySystemComponent();
+}
+
 ETeamAttitude::Type ARsAIControllerBase::GetTeamAttitudeTowards(const AActor& Other) const
 {
 	if (const IGenericTeamAgentInterface* TeamInterface = Cast<IGenericTeamAgentInterface>(&Other))

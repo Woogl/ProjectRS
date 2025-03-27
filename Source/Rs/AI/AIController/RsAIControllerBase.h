@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "AIController.h"
 #include "RsAIControllerBase.generated.h"
 
@@ -10,7 +11,7 @@
  * 
  */
 UCLASS()
-class RS_API ARsAIControllerBase : public AAIController
+class RS_API ARsAIControllerBase : public AAIController, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -20,6 +21,8 @@ class RS_API ARsAIControllerBase : public AAIController
 public:
 	ARsAIControllerBase();
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 	// IGenericTeamAgentInterface
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
