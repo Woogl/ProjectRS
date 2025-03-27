@@ -5,11 +5,7 @@
 
 #include "Rs/System/RsDeveloperSetting.h"
 
-URsDurationCalculation::URsDurationCalculation()
-{
-}
-
 float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	return Spec.GetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualDurationTag, false);
+	return Spec.GetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualDurationTag, true);
 }
