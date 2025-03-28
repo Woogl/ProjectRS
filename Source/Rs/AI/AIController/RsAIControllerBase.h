@@ -15,8 +15,8 @@ class RS_API ARsAIControllerBase : public AAIController, public IAbilitySystemIn
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAIPerceptionComponent> AIPerception;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAIPerceptionComponent> AIPerception;*/
 
 public:
 	ARsAIControllerBase();

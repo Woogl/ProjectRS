@@ -11,7 +11,7 @@
 
 ARsAIControllerBase::ARsAIControllerBase()
 {
-	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
+//	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 }
 
 UAbilitySystemComponent* ARsAIControllerBase::GetAbilitySystemComponent() const
