@@ -83,12 +83,9 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		const float LocalHealingDone = GetHealing();
 		SetHealing(0.f);
 	
-		if (LocalHealingDone > 0.0f)
-		{
-			// Apply the Health change and then clamp it.
-			const float NewHealth = GetCurrentHealth() + LocalHealingDone;
-			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
-		}
+		// Apply the Health change and then clamp it.
+		const float NewHealth = GetCurrentHealth() + LocalHealingDone;
+		SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
@@ -98,7 +95,7 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenAttribute())
 	{
-		SetHealthRegen(FMath::Clamp(GetHealthRegen(), 0.0f, GetMaxHealth()));
+		SetHealthRegen(FMath::Clamp(GetHealthRegen(), -GetMaxHealth(), GetMaxHealth()));
 	}
 }
 
