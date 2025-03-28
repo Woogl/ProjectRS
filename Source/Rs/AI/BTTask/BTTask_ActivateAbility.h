@@ -15,6 +15,8 @@ class RS_API UBTTask_ActivateAbility : public UBTTaskNode
 	GENERATED_BODY()
 
 public:
+	UBTTask_ActivateAbility();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability", meta = (Categories = "Ability"))
 	FGameplayTagContainer AbilityTags;
 	
