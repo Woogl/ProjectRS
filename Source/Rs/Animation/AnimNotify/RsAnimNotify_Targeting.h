@@ -66,7 +66,7 @@ public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<AActor*> ResultActors;
 
 	FCollisionShape GetCollisionShape() const;

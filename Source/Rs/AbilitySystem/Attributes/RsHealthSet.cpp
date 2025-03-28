@@ -82,10 +82,13 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		// Store a local copy of the amount of Healing done and clear the Healing attribute.
 		const float LocalHealingDone = GetHealing();
 		SetHealing(0.f);
-	
-		// Apply the Health change and then clamp it.
-		const float NewHealth = GetCurrentHealth() + LocalHealingDone;
-		SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+		if (FMath::IsNearlyZero(LocalHealingDone) == false)
+		{
+			// Apply the Health change and then clamp it.
+			const float NewHealth = GetCurrentHealth() + LocalHealingDone;
+			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+		}
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
