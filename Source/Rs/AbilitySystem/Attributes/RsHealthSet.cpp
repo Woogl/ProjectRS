@@ -5,6 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsLogChannels.h"
 
 URsHealthSet::URsHealthSet()
 {
@@ -64,16 +65,20 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	
 		if (LocalDamageDone > 0.0f)
 		{
+			// Apply the Health change and then clamp it.
 			if (GetShield() > 0.f)
 			{
-				float Absorbed = FMath::Min(LocalDamageDone, GetShield());
-				SetShield(GetShield() - Absorbed);
+				const float LocalShield = GetShield();
+				float Absorbed = FMath::Min(LocalDamageDone, LocalShield);
+				SetShield(LocalShield - Absorbed);
 				LocalDamageDone -= Absorbed;
 			}
-			
-			// Apply the Health change and then clamp it.
-			const float NewHealth = GetCurrentHealth() - LocalDamageDone;
-			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+			if (LocalDamageDone > 0.f)
+			{
+				const float NewHealth = GetCurrentHealth() - LocalDamageDone;
+				SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+			}
 		}
 	}
 
@@ -99,6 +104,11 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	else if (Data.EvaluatedData.Attribute == GetHealthRegenAttribute())
 	{
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), -GetMaxHealth(), GetMaxHealth()));
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetShieldAttribute())
+	{
+		SetShield(FMath::Max(0.f, GetShield()));
 	}
 }
 

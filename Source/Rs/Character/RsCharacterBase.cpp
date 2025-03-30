@@ -37,6 +37,16 @@ URsAbilitySystemComponent* ARsCharacterBase::GetRsAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void ARsCharacterBase::GetOwnedGameplayTags(FGameplayTagContainer& OutTagContainer) const
+{
+	if (AbilitySystemComponent)
+	{
+		FGameplayTagContainer OwnedTags;
+		AbilitySystemComponent->GetOwnedGameplayTags(OwnedTags);
+		OutTagContainer = MoveTemp(OwnedTags);
+	}
+}
+
 void ARsCharacterBase::SetGenericTeamId(const FGenericTeamId& InTeamID)
 {
 	uint8 Id = InTeamID;

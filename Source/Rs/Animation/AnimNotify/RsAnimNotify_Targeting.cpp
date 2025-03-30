@@ -51,21 +51,40 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	ResultActors.Reset();
 	for (FOverlapResult& OverlapResult : OverlapResults)
 	{
-		if (bPreventSelfDamage)
+		if (AActor* ResultActor = OverlapResult.GetActor())
 		{
-			if (OverlapResult.GetActor() == MeshComp->GetOwner())
+			if (bIncludeSelf == false)
 			{
-				continue;
+				if (ResultActor == MeshComp->GetOwner())
+				{
+					continue;
+				}
 			}
-		}
-		if (bPreventTeamDamage)
-		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+			if (bIncludeFriendlyTeam == false)
 			{
-				continue;
+				if (URsAILibrary::GetTeamID(ResultActor) == URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+				{
+					continue;
+				}
 			}
+			if (bIncludeHostileTeam == false)
+			{
+				if (URsAILibrary::GetTeamID(ResultActor) != URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+				{
+					continue;
+				}
+			}
+			if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(ResultActor))
+			{
+				FGameplayTagContainer OutTags;
+				TagInterface->GetOwnedGameplayTags(OutTags);
+				if (TargetRequirements.RequirementsMet(OutTags) == false)
+				{
+					continue;
+				}
+			}
+			ResultActors.AddUnique(ResultActor);
 		}
-		ResultActors.AddUnique(OverlapResult.GetActor());
 	}
 
 	/** Sorting */
@@ -75,6 +94,11 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		{
 			return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
 		});
+	}
+	
+	if (MaxTargetCount >= 1)
+	{
+		ResultActors.SetNum(MaxTargetCount);
 	}
 
 	/** Perform event for each result actor */

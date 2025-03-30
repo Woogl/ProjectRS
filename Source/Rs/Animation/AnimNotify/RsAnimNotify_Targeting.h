@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "RsTargetingTypes.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
@@ -19,11 +20,11 @@ class RS_API URsAnimNotify_Targeting : public UAnimNotify
 public:
 	URsAnimNotify_Targeting();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gameplay Event")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	FGameplayTag EventTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source", meta = (GetOptions="GetSocketNames"))
-	FName SocketName = NAME_None;
+	FName SocketName = FName("root");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
 	FVector PositionOffset = FVector::ZeroVector;
@@ -47,10 +48,19 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bPreventSelfDamage = true;
+	bool bIncludeSelf = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bPreventTeamDamage = true;
+	bool bIncludeFriendlyTeam = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	bool bIncludeHostileTeam = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	int32 MaxTargetCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	FGameplayTagRequirements TargetRequirements;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
 	bool bSortByDistance = false;

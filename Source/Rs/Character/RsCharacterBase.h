@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagAssetInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
@@ -25,7 +26,7 @@ enum class ERsTeamId : uint8
 };
 
 UCLASS(Abstract, NotBlueprintable)
-class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IRsLockOnInterface
+class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGenericTeamAgentInterface, public IRsLockOnInterface
 {
 	GENERATED_BODY()
 
@@ -36,6 +37,9 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	URsAbilitySystemComponent* GetRsAbilitySystemComponent() const;
+
+	//~ IGameplayTagAssetInterface
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& OutTagContainer) const override;
 
 	// This event is fired after Ability System Component initialization is finished.
 	UFUNCTION(BlueprintImplementableEvent)
