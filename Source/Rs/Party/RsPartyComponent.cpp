@@ -6,6 +6,7 @@
 #include "RsPartySubsystem.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AI/AIController/RsFriendlyAIController.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 
@@ -87,6 +88,11 @@ bool URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController,
 	{
 		if (PlayerController->GetPawn() != NewPartyMember)
 		{
+			if (URsBattleLibrary::IsDead(NewPartyMember) == true)
+			{
+				UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::SwitchPartyMember: Can't switch to dead character"));
+				return false;
+			}
 			if (PlayerController->GetPrevAIController())
 			{
 				PlayerController->GetPrevAIController()->Possess(PlayerController->GetPawn());

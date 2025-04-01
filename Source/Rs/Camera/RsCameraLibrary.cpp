@@ -17,6 +17,16 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerCameraComponent(const UObje
 		}
 	}
 
-	UE_LOG(RsLog, Error, TEXT("RsPlayerController not found"));
 	return nullptr;
+}
+
+void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraMode NewCameraMode)
+{
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
+		{
+			RsPlayerController->CameraMode = NewCameraMode;
+		}
+	}
 }

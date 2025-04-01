@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/RsGameplayAbility.h"
+#include "Rs/RsLogChannels.h"
 
 UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
@@ -17,6 +18,7 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySyst
 	AbilitySystemComponent->FindAllAbilitiesWithTags(OutHandles, AbilityTags, bExactMatch);
 	if (OutHandles.IsEmpty())
 	{
+		UE_LOG(RsLog, Warning, TEXT("Cannot find Ability: %s"), *AbilityTags.ToString());
 		return nullptr;
 	}
 
@@ -32,11 +34,18 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySyst
 
 URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
-	UGameplayAbility* FoundAbility = FindAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch);
-	if (FoundAbility)
+	if (UGameplayAbility* FoundAbility = FindAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch))
 	{
-		return Cast<URsGameplayAbility>(FoundAbility);
+		if (URsGameplayAbility* FoundRsAbility = Cast<URsGameplayAbility>(FoundAbility))
+		{
+			return FoundRsAbility;
+		}
+		else
+		{
+			UE_LOG(RsLog, Warning, TEXT("Cannot find Ability: %s"), *AbilityTags.ToString());
+		}
 	}
+	
 	return nullptr;
 }
 

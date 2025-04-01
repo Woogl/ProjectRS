@@ -55,9 +55,11 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 
 		if (URsHealthComponent* HealthComponent = LockedOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
 		{
-			HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::HandleDeathStarted);
+			HealthComponent->OnDeathStarted.AddUniqueDynamic(this, &ThisClass::HandleDeathStarted);
 		}
 	}
+	
+	URsPartyLibrary::ActivatePartyAbility(GetWorld(), LockOnAbilityTag);
 
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{

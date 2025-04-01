@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsCameraLibrary.generated.h"
 
+enum class ERsCameraMode : uint8;
 class URsLockOnComponent;
 class UGameplayCameraComponent;
 /**
@@ -19,4 +20,7 @@ class RS_API URsCameraLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	static UGameplayCameraComponent* GetPlayerCameraComponent(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
+	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraMode NewCameraMode);
 };
