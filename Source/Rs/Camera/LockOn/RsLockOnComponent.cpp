@@ -24,8 +24,6 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 			return;
 		}
 	}
-	
-	LockedOnTarget = TargetActor;
 
 	if (ReticleComponent.IsValid())
 	{
@@ -33,6 +31,7 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 		ReticleComponent.Get()->DestroyComponent();
 	}
 
+	LockedOnTarget = TargetActor;
 	if (LockedOnTarget.IsValid())
 	{
 		// Create new reticle widget.

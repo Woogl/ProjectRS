@@ -58,7 +58,7 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 
 	if (GameplayCameraComponent)
 	{
-		GameplayCameraComponent->ActivateCameraForPlayerIndex(0);
+		GameplayCameraComponent->ActivateCameraForPlayerController(this);
 	}
 }
 
