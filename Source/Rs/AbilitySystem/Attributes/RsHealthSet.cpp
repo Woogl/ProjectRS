@@ -6,6 +6,8 @@
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 
 URsHealthSet::URsHealthSet()
 {
@@ -53,6 +55,13 @@ void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	}
 }
 
+bool URsHealthSet::PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data)
+{
+	bool Result = Super::PreGameplayEffectExecute(Data);
+
+	return Result;
+}
+
 void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -62,7 +71,7 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		// Store a local copy of the amount of Damage done and clear the Damage attribute.
 		float LocalDamageDone = GetHealthDamage();
 		SetHealthDamage(0.f);
-	
+
 		if (LocalDamageDone > 0.0f)
 		{
 			// Apply the Health change and then clamp it.
@@ -70,8 +79,21 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			{
 				const float LocalShield = GetShield();
 				float Absorbed = FMath::Min(LocalDamageDone, LocalShield);
-				SetShield(LocalShield - Absorbed);
+
+				// Subtract Damage amount from Shield
+				GetOwningAbilitySystemComponent()->ApplyModToAttribute(GetShieldAttribute(),EGameplayModOp::Additive,-Absorbed);
 				LocalDamageDone -= Absorbed;
+			}
+
+			if (FMath::IsNearlyZero(GetShield()))
+			{
+				// Break Shield
+				FGameplayTagContainer EffectTags(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield")));
+				FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(EffectTags);
+				GetOwningAbilitySystemComponent()->RemoveActiveEffects(EffectQuery);
+
+				// Reset shield
+				SetShield(0.f);
 			}
 
 			if (LocalDamageDone > 0.f)
@@ -79,6 +101,7 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 				const float NewHealth = GetCurrentHealth() - LocalDamageDone;
 				SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
 			}
+
 		}
 	}
 
