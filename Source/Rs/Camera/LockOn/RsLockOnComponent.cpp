@@ -7,7 +7,6 @@
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/Player/RsPlayerController.h"
 
 URsLockOnComponent::URsLockOnComponent()
@@ -58,8 +57,6 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 		}
 	}
 	
-	URsPartyLibrary::ActivatePartyAbility(GetWorld(), LockOnAbilityTag);
-
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
 		RsPlayerController->CameraMode = ERsCameraMode::LockOn;
@@ -82,8 +79,6 @@ void URsLockOnComponent::LockOff()
 		ReticleComponent.Get()->DestroyComponent();
 	}
 	
-	URsPartyLibrary::CancelPartyAbility(GetWorld(), LockOnAbilityTag);
-
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
 		RsPlayerController->CameraMode = ERsCameraMode::ThirdPerson;

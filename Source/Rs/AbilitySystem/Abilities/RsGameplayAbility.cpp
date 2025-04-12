@@ -71,44 +71,6 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 	}
 }
 
-void URsGameplayAbility::RefreshEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
-{
-	TeardownEnhancedInputBindings(ActorInfo, Spec);
-	SetupEnhancedInputBindings(ActorInfo, Spec);
-}
-
-void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
-{
-	Super::OnAvatarSet(ActorInfo, Spec);
-
-	// Set the "Avatar Character" reference.
-	AvatarCharacter = Cast<ARsCharacterBase>(ActorInfo->AvatarActor);
-
-	// Set up Bindings for Enhanced Input.
-	SetupEnhancedInputBindings(ActorInfo, Spec);
-}
-
-void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
-{
-	Super::OnGiveAbility(ActorInfo, Spec);
-	
-	// Try to Activate immediately if "Activate Ability On Granted" is true.
-	if (bActivateOnGranted)
-	{
-		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
-	}
-	
-	K2_OnGiveAbility();
-}
-
-void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
-{
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	// Apply cooldowns and costs
-	CommitAbility(Handle, ActorInfo, ActivationInfo);
-}
-
 void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	// Check to see if the "Activation Input Action" is valid.
@@ -141,6 +103,11 @@ void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorI
 void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
+	if (!AvatarPawn || !Spec.Ability)
+	{
+		return;
+	}
+	
 	if (const AController* const PawnController = AvatarPawn->GetController())
 	{
 		if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PawnController->InputComponent.Get()))
@@ -148,6 +115,38 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 			EnhancedInputComponent->ClearBindingsForObject(Spec.Ability.Get());
 		}
 	}
+}
+
+void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnAvatarSet(ActorInfo, Spec);
+
+	// Set the "Avatar Character" reference.
+	AvatarCharacter = Cast<ARsCharacterBase>(ActorInfo->AvatarActor);
+
+	// Set up Bindings for Enhanced Input.
+	SetupEnhancedInputBindings(ActorInfo, Spec);
+}
+
+void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+	
+	// Try to Activate immediately if "Activate Ability On Granted" is true.
+	if (bActivateOnGranted)
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
+	}
+	
+	K2_OnGiveAbility();
+}
+
+void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	// Apply cooldowns and costs
+	CommitAbility(Handle, ActorInfo, ActivationInfo);
 }
 
 void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)
@@ -218,12 +217,6 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 
 void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
-	if (!AvatarPawn || !Spec.Ability)
-	{
-		return;
-	}
-	
 	TeardownEnhancedInputBindings(ActorInfo, Spec);
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);

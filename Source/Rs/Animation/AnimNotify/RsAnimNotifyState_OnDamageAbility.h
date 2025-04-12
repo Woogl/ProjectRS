@@ -4,20 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "RsAnimNotifyState_AbilityBase.h"
 #include "RsAnimNotifyState_OnDamageAbility.generated.h"
 
 class URsAbilityTask_WaitDamageEffectBlockedImmunity;
 class URsAbilityTask_WaitDamageEffectApplied;
-class UGameplayAbility;
-class UAbilitySystemComponent;
 struct FActiveGameplayEffectHandle;
 struct FGameplayEffectSpecHandle;
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_OnDamageAbility : public UAnimNotifyState
+class RS_API URsAnimNotifyState_OnDamageAbility : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
 
@@ -46,9 +44,6 @@ private:
 
 	UFUNCTION()
 	void HandleBlockDamage(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
-
-	TWeakObjectPtr<UAbilitySystemComponent> OwnerASC;
-	TWeakObjectPtr<UGameplayAbility> CurrentAbility;
 	
 	TWeakObjectPtr<URsAbilityTask_WaitDamageEffectApplied> WaitAppliedTask;
 	TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> WaitBlockedTask;
