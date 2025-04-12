@@ -3,7 +3,6 @@
 
 #include "RsAnimNotifyState_HitStop.h"
 
-#include "AbilitySystemGlobals.h"
 #include "GameplayEffectTypes.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
@@ -11,16 +10,12 @@
 void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-	
-	if (AActor* Owner = MeshComp->GetOwner())
+
+	if (OwnerASC.IsValid())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
 		{
-			RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(ASC);
-			if (RsAbilitySystemComponent.IsValid())
-			{
-				RsAbilitySystemComponent->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
-			}
+			RsASC->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
 		}
 	}
 }
@@ -29,17 +24,20 @@ void URsAnimNotifyState_HitStop::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (RsAbilitySystemComponent.IsValid())
+	if (OwnerASC.IsValid())
 	{
-		RsAbilitySystemComponent->OnDealDamage.RemoveDynamic(this, &ThisClass::HandleDealDamage);
+		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
+		{
+			RsASC->OnDealDamage.RemoveDynamic(this, &ThisClass::HandleDealDamage);
+		}
 	}
 }
 
 void URsAnimNotifyState_HitStop::HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle)
 {
-	if (UGameplayAbility* CurrentAbility = RsAbilitySystemComponent->GetAnimatingAbility())
+	if (CurrentAbility.IsValid())
 	{
-		PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(CurrentAbility, Duration);
+		PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(CurrentAbility.Get(), Duration);
 		PauseMontageTask->ReadyForActivation();
 	}
 }

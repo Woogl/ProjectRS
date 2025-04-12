@@ -73,7 +73,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	}
 }
 
-void URsAbilitySystemComponent::RefreshAbilityInputBindings()
+void URsAbilitySystemComponent::SetupAbilityInputBindings()
 {
 	for (FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
 	{
@@ -81,7 +81,21 @@ void URsAbilitySystemComponent::RefreshAbilityInputBindings()
 		{
 			if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(AbilitySpec->Ability))
 			{
-				RsAbility->RefreshEnhancedInputBindings(AbilityActorInfo.Get(), *AbilitySpec);
+				RsAbility->SetupEnhancedInputBindings(AbilityActorInfo.Get(), *AbilitySpec);
+			}
+		}
+	}
+}
+
+void URsAbilitySystemComponent::TearDownAbilityInputBindings()
+{
+	for (FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
+	{
+		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(AbilityHandle))
+		{
+			if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(AbilitySpec->Ability))
+			{
+				RsAbility->TeardownEnhancedInputBindings(AbilityActorInfo.Get(), *AbilitySpec);
 			}
 		}
 	}

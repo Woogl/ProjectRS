@@ -3,18 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "RsAnimNotifyState_AbilityBase.h"
 #include "RsAnimNotifyState_HitStop.generated.h"
 
 struct FGameplayEffectSpecHandle;
-class UAbilitySystemComponent;
 class URsAbilityTask_PauseMontage;
 class URsAbilitySystemComponent;
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_HitStop : public UAnimNotifyState
+class RS_API URsAnimNotifyState_HitStop : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
 
@@ -29,6 +28,5 @@ private:
 	UFUNCTION()
 	void HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle);
 
-	TWeakObjectPtr<URsAbilitySystemComponent> RsAbilitySystemComponent;
 	TWeakObjectPtr<URsAbilityTask_PauseMontage> PauseMontageTask;
 };
