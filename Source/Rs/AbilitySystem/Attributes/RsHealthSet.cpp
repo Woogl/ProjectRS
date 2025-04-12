@@ -74,7 +74,7 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		if (GetShield() > 0.f)
 		{
 			UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
-			FGameplayTagContainer ShieldGETags(URsDeveloperSetting::Get()->ShieldEffectTag);
+			FGameplayTagContainer ShieldGETags(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield")));
 			FGameplayEffectQuery ShieldGEQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(ShieldGETags);
 			TArray<FActiveGameplayEffectHandle> ShieldGEHandles = ASC->GetActiveEffects(ShieldGEQuery);
 			TArray<const FActiveGameplayEffect*> ShieldGEs;
