@@ -40,8 +40,7 @@ protected:
 	TMap<FGameplayTag, FRsDamageEventContext> DamageEvents;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
+	
 	UFUNCTION()
 	void HandleMontageCompleted();
 
@@ -49,11 +48,6 @@ protected:
 	void HandleMontageCancelled();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bHasHitTarget = false;
-	
-	void OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
-	
 	UFUNCTION(BlueprintImplementableEvent, Category = "RS|Damage", DisplayName = "OnAttackHitTarget")
 	void K2_OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
 };

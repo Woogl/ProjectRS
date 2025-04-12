@@ -70,12 +70,6 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 
 void ARsPlayerCharacter::UnPossessed()
 {
-	// Unbind old ability inputs.
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->TearDownAbilityInputBindings();
-	}
-	
 	Super::UnPossessed();
 
 	GetMovementComponent()->StopMovementImmediately();
@@ -107,10 +101,11 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		}
 	}
 
+	// Unbind ability input for AI controlled character.
 	// Bind ability input for player controlled character.
-	if (AbilitySystemComponent && IsPlayerControlled() && IsLocallyControlled())
+	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->SetupAbilityInputBindings();
+		AbilitySystemComponent->RefreshAbilityInputBindings();
 	}
 }
 

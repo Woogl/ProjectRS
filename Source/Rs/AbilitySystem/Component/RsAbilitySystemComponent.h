@@ -24,9 +24,7 @@ public:
 	FOnDealDamage OnDealDamage;
 
 	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
-	
-	void SetupAbilityInputBindings();
-	void TearDownAbilityInputBindings();
+	void RefreshAbilityInputBindings();
 
 private:
 	// Handles to the granted abilities.

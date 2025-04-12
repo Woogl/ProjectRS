@@ -18,14 +18,8 @@ class RS_API URsPartyLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	/** Party member getter */
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static ARsPlayerCharacter* GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static TArray<ARsPlayerCharacter*> GetPartyMembers(UObject* WorldContextObject);
 	
-	/** Party member setter */
+	/** Party member change */
 	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);

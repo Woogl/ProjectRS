@@ -71,50 +71,10 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 	}
 }
 
-void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+void URsGameplayAbility::RefreshEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	// Check to see if the "Activation Input Action" is valid.
-	URsGameplayAbility* const AbilityInstance = Cast<URsGameplayAbility>(Spec.Ability.Get());
-	if (!AbilityInstance || !AbilityInstance->ActivationInputAction)
-	{
-		return;
-	}
-	
-	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
-	if (!AvatarPawn || !Spec.Ability)
-	{
-		return;
-	}
-	
-	const AController* const PawnController = AvatarPawn->GetController();
-	UEnhancedInputComponent* const EnhancedInputComponent = PawnController ? Cast<UEnhancedInputComponent>(PawnController->InputComponent.Get()) : nullptr;
-	if (!EnhancedInputComponent)
-	{
-		return;
-	}
-	
-	// Input pressed event.
-	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Triggered, AbilityInstance, &ThisClass::HandleInputPressedEvent, ActorInfo, Spec.Handle);
-	
-	// Input released event.
-	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Completed, AbilityInstance, &ThisClass::HandleInputReleasedEvent, ActorInfo, Spec.Handle);
-}
-
-void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
-{
-	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
-	if (!AvatarPawn || !Spec.Ability)
-	{
-		return;
-	}
-	
-	if (const AController* const PawnController = AvatarPawn->GetController())
-	{
-		if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PawnController->InputComponent.Get()))
-		{
-			EnhancedInputComponent->ClearBindingsForObject(Spec.Ability.Get());
-		}
-	}
+	TeardownEnhancedInputBindings(ActorInfo, Spec);
+	SetupEnhancedInputBindings(ActorInfo, Spec);
 }
 
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -147,6 +107,47 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 	// Apply cooldowns and costs
 	CommitAbility(Handle, ActorInfo, ActivationInfo);
+}
+
+void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	// Check to see if the "Activation Input Action" is valid.
+	URsGameplayAbility* const AbilityInstance = Cast<URsGameplayAbility>(Spec.Ability.Get());
+	if (!AbilityInstance || !AbilityInstance->ActivationInputAction)
+	{
+		return;
+	}
+	
+	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
+	if (!AvatarPawn || !Spec.Ability)
+	{
+		return;
+	}
+	
+	const AController* const PawnController = AvatarPawn->GetController();
+	UEnhancedInputComponent* const EnhancedInputComponent = PawnController ? Cast<UEnhancedInputComponent>(PawnController->InputComponent.Get()) : nullptr;
+	if (!EnhancedInputComponent)
+	{
+		return;
+	}
+	
+	// Input pressed event.
+	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Triggered, AbilityInstance, &ThisClass::HandleInputPressedEvent, ActorInfo, Spec.Handle);
+	
+	// Input released event.
+	EnhancedInputComponent->BindAction(AbilityInstance->ActivationInputAction, ETriggerEvent::Completed, AbilityInstance, &ThisClass::HandleInputReleasedEvent, ActorInfo, Spec.Handle);
+}
+
+void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
+	if (const AController* const PawnController = AvatarPawn->GetController())
+	{
+		if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PawnController->InputComponent.Get()))
+		{
+			EnhancedInputComponent->ClearBindingsForObject(Spec.Ability.Get());
+		}
+	}
 }
 
 void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)
@@ -217,6 +218,12 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 
 void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
+	const APawn* const AvatarPawn = Cast<APawn>(ActorInfo->AvatarActor.Get());
+	if (!AvatarPawn || !Spec.Ability)
+	{
+		return;
+	}
+	
 	TeardownEnhancedInputBindings(ActorInfo, Spec);
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);

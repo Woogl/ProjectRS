@@ -3,6 +3,7 @@
 
 #include "RsAnimNotifyState_HitStop.h"
 
+#include "AbilitySystemGlobals.h"
 #include "GameplayEffectTypes.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
@@ -10,12 +11,16 @@
 void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-
-	if (OwnerASC.IsValid())
+	
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
-			RsASC->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
+			RsAbilitySystemComponent = Cast<URsAbilitySystemComponent>(ASC);
+			if (RsAbilitySystemComponent.IsValid())
+			{
+				RsAbilitySystemComponent->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
+			}
 		}
 	}
 }
@@ -24,20 +29,17 @@ void URsAnimNotifyState_HitStop::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (OwnerASC.IsValid())
+	if (RsAbilitySystemComponent.IsValid())
 	{
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
-		{
-			RsASC->OnDealDamage.RemoveDynamic(this, &ThisClass::HandleDealDamage);
-		}
+		RsAbilitySystemComponent->OnDealDamage.RemoveDynamic(this, &ThisClass::HandleDealDamage);
 	}
 }
 
 void URsAnimNotifyState_HitStop::HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle)
 {
-	if (CurrentAbility.IsValid())
+	if (UGameplayAbility* CurrentAbility = RsAbilitySystemComponent->GetAnimatingAbility())
 	{
-		PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(CurrentAbility.Get(), Duration);
+		PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(CurrentAbility, Duration);
 		PauseMontageTask->ReadyForActivation();
 	}
 }

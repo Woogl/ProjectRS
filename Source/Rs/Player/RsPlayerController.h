@@ -18,7 +18,6 @@ UENUM(BlueprintType)
 enum class ERsCameraMode : uint8
 {
 	ThirdPerson,
-	ShoulderView,
 	LockOn,
 	LinkSkill,
 };
@@ -34,7 +33,7 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	UPROPERTY(VisibleAnywhere, Category = "Party")
 	TObjectPtr<URsPartyComponent> PartyComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsLockOnComponent> LockOnComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
