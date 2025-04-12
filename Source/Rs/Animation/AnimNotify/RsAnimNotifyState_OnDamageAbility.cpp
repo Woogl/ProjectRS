@@ -4,8 +4,6 @@
 #include "RsAnimNotifyState_OnDamageAbility.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectBlockedImmunity.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectApplied.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 
@@ -13,31 +11,24 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (AActor* Owner = MeshComp->GetOwner())
+	if (CurrentAbility.IsValid())
 	{
-		OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-		if (UAbilitySystemComponent* ASC = OwnerASC.Get())
-		{
-			CurrentAbility = ASC->GetAnimatingAbility();
-			if (UGameplayAbility* OwingAbility = CurrentAbility.Get())
-			{
-				// Handle damage received.
-				FGameplayTargetDataFilterHandle FilterHandle;
-				FGameplayTagRequirements Requirements;
-				WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(OwingAbility, ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
-				WaitAppliedTask->OnApplied.AddDynamic(this, &ThisClass::HandleReceiveDamage);
-				WaitAppliedTask->ReadyForActivation();
+		// Handle damage received.
+		FGameplayTargetDataFilterHandle FilterHandle;
+		FGameplayTagRequirements Requirements;
+		WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(CurrentAbility.Get(), ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
+		WaitAppliedTask->OnApplied.AddDynamic(this, &ThisClass::HandleReceiveDamage);
+		WaitAppliedTask->ReadyForActivation();
 
-				// Damage can be blocked by other immnune effects.
-				if (bTriggerOnDamageImmunity == true)
-				{
-					WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(OwingAbility,ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
-					WaitBlockedTask->Blocked.AddDynamic(this, &ThisClass::HandleBlockDamage);
-					WaitBlockedTask->ReadyForActivation();
-				}
-			}
+		// Damage can be blocked by other immnune effects.
+		if (bTriggerOnDamageImmunity == true)
+		{
+			WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(CurrentAbility.Get(),ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
+			WaitBlockedTask->Blocked.AddDynamic(this, &ThisClass::HandleBlockDamage);
+			WaitBlockedTask->ReadyForActivation();
 		}
 	}
+	
 }
 
 void URsAnimNotifyState_OnDamageAbility::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
