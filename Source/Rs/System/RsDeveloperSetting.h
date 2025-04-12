@@ -33,5 +33,8 @@ public:
 	FGameplayTag ManualDurationTag;
 	
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
-	FGameplayTag ManualLevelTag; 
+	FGameplayTag ManualLevelTag;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Shield"))
+	FGameplayTag ShieldEffectTag;
 };
