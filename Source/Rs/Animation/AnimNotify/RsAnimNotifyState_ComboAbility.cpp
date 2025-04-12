@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitEnhancedInput.h"
 
 void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -19,9 +20,18 @@ void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshCo
 			CurrentAbility = OwnerASC->GetAnimatingAbility();
 			if (CurrentAbility.IsValid())
 			{
-				WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
-				WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
-				WaitInputTask->ReadyForActivation();
+				if (WaitEventTag.IsValid())
+				{
+					WaitEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(CurrentAbility.Get(), WaitEventTag);
+					WaitEventTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
+					WaitEventTask->ReadyForActivation();
+				}
+				else
+				{
+					WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
+					WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
+					WaitInputTask->ReadyForActivation();
+				}
 			}
 		}
 	}
@@ -31,10 +41,22 @@ void URsAnimNotifyState_ComboAbility::NotifyEnd(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
+	if (WaitEventTask.IsValid())
+	{
+		WaitEventTask->EndTask();
+	}
+	
 	if (WaitInputTask.IsValid())
 	{
 		WaitInputTask->EndTask();
 	}
+}
+
+void URsAnimNotifyState_ComboAbility::HandleGameplayEvent(FGameplayEventData Payload)
+{
+	WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
+	WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
+	WaitInputTask->ReadyForActivation();
 }
 
 void URsAnimNotifyState_ComboAbility::HandleInputAction(const FInputActionValue& Value)
