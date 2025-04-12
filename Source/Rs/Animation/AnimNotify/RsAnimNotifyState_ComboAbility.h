@@ -4,13 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "RsAnimNotifyState_AbilityBase.h"
 #include "Abilities/GameplayAbilityTypes.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "RsAnimNotifyState_ComboAbility.generated.h"
 
 class UAbilityTask_WaitGameplayEvent;
-class UGameplayAbility;
-class UAbilitySystemComponent;
 class URsAbilityTask_WaitEnhancedInput;
 struct FInputActionValue;
 class UInputAction;
@@ -18,7 +16,7 @@ class UInputAction;
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_ComboAbility : public UAnimNotifyState
+class RS_API URsAnimNotifyState_ComboAbility : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
 
@@ -44,9 +42,6 @@ private:
 	
 	UFUNCTION()
 	void HandleInputAction(const FInputActionValue& Value);
-
-	TWeakObjectPtr<UAbilitySystemComponent> OwnerASC;
-	TWeakObjectPtr<UGameplayAbility> CurrentAbility;
 
 	TWeakObjectPtr<UAbilityTask_WaitGameplayEvent> WaitEventTask;
 	TWeakObjectPtr<URsAbilityTask_WaitEnhancedInput> WaitInputTask;
