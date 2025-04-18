@@ -56,6 +56,17 @@ public:
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Shield)
 
 protected:
+	TArray<FActiveGameplayEffect> AppliedShields;
+
+	TArray<FActiveGameplayEffect> RemovePendingShields;
+public:
+	void AddNewShield(const FActiveGameplayEffect& NewShieldEffect);
+
+	void RemoveBrokenShield(const FActiveGameplayEffect& ShieldEffect);
+
+	void RemoveExpiredShield(const FActiveGameplayEffect& ShieldEffect);
+	
+protected:
 	UFUNCTION()
 	virtual void OnRep_CurrentHealth(const FGameplayAttributeData& OldValue);
 
