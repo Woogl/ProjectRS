@@ -5,7 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
+#include "Rs/System/RsGenericContainer.h"
 
 void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
@@ -19,9 +20,9 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 			{
 				if (bHasHitTarget == true)
 				{
-					if (URsGameplayAbility_Attack* AttackAbility = Cast<URsGameplayAbility_Attack>(CurrentAbility))
+					if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(CurrentAbility))
 					{
-						if (AttackAbility->bHasHitTarget != true)
+						if (RsAbility->StatesContainer->GetBoolValue(FName("HasHitTarget")) == false)
 						{
 							return;
 						}

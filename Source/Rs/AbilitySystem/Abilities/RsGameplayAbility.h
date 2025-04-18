@@ -7,6 +7,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
+class URsGenericContainer;
 class ARsCharacterBase;
 /**
  * 
@@ -62,6 +63,10 @@ public:
 
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
+
+	// Contains state values. Useful for storing data between anim notifies.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<URsGenericContainer> StatesContainer;
 	
 protected:
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
@@ -70,11 +75,11 @@ protected:
 	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	
 	// Called when the "Activation Input Action" is triggered.
 	void HandleInputPressedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle);
 

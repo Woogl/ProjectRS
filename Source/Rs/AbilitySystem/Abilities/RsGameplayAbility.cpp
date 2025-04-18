@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Rs/Character/RsCharacterBase.h"
+#include "Rs/System/RsGenericContainer.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -147,6 +148,21 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 	// Apply cooldowns and costs
 	CommitAbility(Handle, ActorInfo, ActivationInfo);
+
+	if (StatesContainer == nullptr)
+	{
+		StatesContainer = NewObject<URsGenericContainer>(this);
+	}
+}
+
+void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if (StatesContainer)
+	{
+		StatesContainer->Reset();
+	}
 }
 
 void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle)

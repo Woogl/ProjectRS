@@ -5,6 +5,7 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
+#include "Rs/System/RsGenericContainer.h"
 
 void URsGameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -23,13 +24,6 @@ void URsGameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 	}
 }
 
-void URsGameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	bHasHitTarget = false;
-	
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
 void URsGameplayAbility_Attack::HandleMontageCompleted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -42,6 +36,6 @@ void URsGameplayAbility_Attack::HandleMontageCancelled()
 
 void URsGameplayAbility_Attack::OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent)
 {
-	bHasHitTarget = true;
+	StatesContainer->SetBoolValue(FName("HasHitTarget"), true);
 	K2_OnAttackHitTarget(Target, DamageEvent);
 }

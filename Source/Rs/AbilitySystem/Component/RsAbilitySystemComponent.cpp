@@ -75,6 +75,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 
 void URsAbilitySystemComponent::SetupAbilityInputBindings()
 {
+	ABILITYLIST_SCOPE_LOCK();
 	for (FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(AbilityHandle))
@@ -89,6 +90,7 @@ void URsAbilitySystemComponent::SetupAbilityInputBindings()
 
 void URsAbilitySystemComponent::TearDownAbilityInputBindings()
 {
+	ABILITYLIST_SCOPE_LOCK();
 	for (FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(AbilityHandle))
