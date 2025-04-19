@@ -53,6 +53,16 @@ void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	}
 }
 
+void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	if (Attribute == GetMaxHealthAttribute())
+	{
+		AdjustAttributeForMaxChange(GetCurrentHealthAttribute(), OldValue, NewValue);
+	}
+}
+
 void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);

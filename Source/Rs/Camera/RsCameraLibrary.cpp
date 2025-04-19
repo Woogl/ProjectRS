@@ -68,13 +68,3 @@ void URsCameraLibrary::SwitchCharacterRotationMode(ACharacter* Character, ERsCha
 		break;
 	}
 }
-
-FBlueprintCameraVariableTable URsCameraLibrary::GetCameraVariableTable(const UObject* WorldContextObject)
-{
-	if (UGameplayCameraComponent* CameraComponent = GetPlayerCameraComponent(WorldContextObject))
-	{
-		return CameraComponent->GetInitialVariableTable();
-	}
-	
-	return FBlueprintCameraVariableTable();
-}

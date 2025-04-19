@@ -28,6 +28,16 @@ void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, floa
 	}
 }
 
+void URsStaggerSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	
+	if (Attribute == GetMaxStaggerAttribute())
+	{
+		AdjustAttributeForMaxChange(GetCurrentStaggerAttribute(), OldValue, NewValue);
+	}
+}
+
 void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);

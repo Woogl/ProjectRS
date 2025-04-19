@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/BlueprintCameraVariableTable.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsCameraLibrary.generated.h"
 
@@ -35,7 +34,4 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Character Library")
 	static void SwitchCharacterRotationMode(ACharacter* Character, ERsCharacterRotationMode Mode);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
-	FBlueprintCameraVariableTable GetCameraVariableTable(const UObject* WorldContextObject);
 };
