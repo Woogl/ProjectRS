@@ -50,7 +50,7 @@ void URsShieldComponent::ApplyDamageToShields(float DamageAmount)
 	}
 	for (FActiveGameplayEffectHandle PendingRemoveShield : PendingRemoveShields)
 	{
-		AbilitySystemComponent->RemoveActiveGameplayEffect(PendingRemoveShield, 1);
+		AbilitySystemComponent->RemoveActiveGameplayEffect(PendingRemoveShield);
 	}
 }
 
@@ -78,9 +78,6 @@ void URsShieldComponent::HandleShieldRemoved(const FGameplayEffectRemovalInfo& R
 {
 	ActiveShieldHandles.Remove(RemovalInfo.ActiveEffect->Handle);
 	ActiveShieldAmounts.Remove(RemovalInfo.ActiveEffect->Handle);
-	if (ActiveShieldHandles.IsEmpty())
-	{
-		AbilitySystemComponent->SetNumericAttributeBase(URsHealthSet::GetShieldAttribute(), 0.f);
-	}
+	AbilitySystemComponent->SetNumericAttributeBase(URsHealthSet::GetShieldAttribute(), 0.f);
 }
 
