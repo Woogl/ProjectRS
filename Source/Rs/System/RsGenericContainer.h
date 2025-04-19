@@ -39,9 +39,12 @@ public:
 	T GetValue(FName Key) const
 	{
 		const FGenericTypes* Found = Values.Find(Key);
-		if (const T* Result = Found->TryGet<T>())
+		if (Found != nullptr)
 		{
-			return *Result;
+			if (const T* Result = Found->TryGet<T>())
+			{
+				return *Result;
+			}
 		}
 		else
 		{
