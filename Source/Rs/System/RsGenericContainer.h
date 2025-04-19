@@ -6,7 +6,7 @@
 #include "Rs/RsLogChannels.h"
 #include "RsGenericContainer.generated.h"
 
-using FGenericTypes = TVariant<bool, int32, float, FVector, FRotator>;
+using FGenericTypes = TVariant<bool, int32, float, FVector, FRotator, UObject*>;
 
 /**
  * 
@@ -39,11 +39,14 @@ public:
 	T GetValue(FName Key) const
 	{
 		const FGenericTypes* Found = Values.Find(Key);
-		if (Found && Found->IsType<T>())
+		if (const T* Result = Found->TryGet<T>())
 		{
-			return Found->Get<T>();
+			return *Result;
 		}
-		UE_LOG(RsLog, Warning, TEXT("Cannot find %s value in %s"), *Key.ToString(), *this->GetName());
+		else
+		{
+			UE_LOG(RsLog, Warning, TEXT("Cannot find for key '%s' in '%s'."), *Key.ToString(), *this->GetName());
+		}
 		return T{};
 	}
 };
