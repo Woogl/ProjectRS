@@ -73,11 +73,27 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 
 		if (GetShield() > 0.f)
 		{
-			for (FActiveGameplayEffect AppliedShield : AppliedShields)
+			UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
+			FGameplayTagContainer ShieldGETags(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield")));
+			FGameplayEffectQuery ShieldGEQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(ShieldGETags);
+			TArray<FActiveGameplayEffectHandle> ShieldGEHandles = ASC->GetActiveEffects(ShieldGEQuery);
+			TArray<const FActiveGameplayEffect*> ShieldGEs;
+			// get shield GE
+			for (FActiveGameplayEffectHandle ShieldGEHandle : ShieldGEHandles)
 			{
-				UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
+				ShieldGEs.Add(ASC->GetActiveGameplayEffect(ShieldGEHandle));
+			}
+			// sort shields with endtime
+			if (ShieldGEs.Num() > 1)
+			{
+				ShieldGEs.Sort([](const FActiveGameplayEffect& A, const FActiveGameplayEffect& B)->bool{return A.GetEndTime() < B.GetEndTime();});				
+			}
+			
+			int32 ShieldIndex = 0;
+			for (; ShieldIndex < ShieldGEs.Num(); ShieldIndex++)
+			{
 				// current shield's shield amount
-				const float ShieldAmount = AppliedShield.Spec.GetModifierMagnitude(0,false);
+				const float ShieldAmount = ShieldGEs[ShieldIndex]->Spec.GetModifierMagnitude(0,false);
 				// current shield's accumulated Damage amount (Saved in BaseValue as negative float, convert to absolute value for use)
 				const float CurDamage = FMath::Abs(GetShieldAttribute().GetGameplayAttributeData(this)->GetBaseValue());
 				// current shield-acceptable Damage amount
@@ -90,8 +106,12 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 				const bool bIsShieldBroken = FMath::IsNearlyEqual(CurDamage + Absorbed,ShieldAmount);
 				if (bIsShieldBroken)
 				{
+					// reset damage amount to 0
+					SetShield(0.f);
 					// remove shield
-					RemoveBrokenShield(AppliedShield);
+					ASC->RemoveActiveGameplayEffect(ShieldGEs[ShieldIndex]->Handle);
+					ShieldGEs.RemoveAt(ShieldIndex);
+					ShieldIndex--;
 				}
 				// break loop when Damage is handled completely through shield
 				if (FMath::IsNearlyZero(LocalDamageDone))
@@ -99,14 +119,8 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 					break;
 				}
 			}
-			if (RemovePendingShields.Num() > 0)
-			{
-				for (FActiveGameplayEffect BrokenShield : RemovePendingShields)
-				{
-					AppliedShields.Remove(BrokenShield);
-				}
-			}
 		}
+		
 		if (LocalDamageDone > 0.0f)
 		{
 			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalDamageDone, 0.0f, GetMaxHealth()));
@@ -133,27 +147,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	{
 		SetHealthRegen(FMath::Clamp(GetHealthRegen(), -GetMaxHealth(), GetMaxHealth()));
 	}
-}
-
-void URsHealthSet::AddNewShield(const FActiveGameplayEffect& NewShieldEffect)
-{
-	AppliedShields.Add(NewShieldEffect);
-	if (AppliedShields.Num() > 1)
-	{
-		AppliedShields.Sort([](const FActiveGameplayEffect& A, const FActiveGameplayEffect& B)->bool{return A.GetEndTime() < B.GetEndTime();});
-	}
-}
-void URsHealthSet::RemoveBrokenShield(const FActiveGameplayEffect& ShieldEffect)
-{
-	GetOwningAbilitySystemComponent()->RemoveActiveGameplayEffect(ShieldEffect.Handle);
-	RemovePendingShields.Add(ShieldEffect);
-	SetShield(0.f);
-}
-
-void URsHealthSet::RemoveExpiredShield(const FActiveGameplayEffect& ShieldEffect)
-{
-	AppliedShields.Remove(ShieldEffect);
-	SetShield(0.f);
 }
 
 void URsHealthSet::OnRep_CurrentHealth(const FGameplayAttributeData& OldValue)
