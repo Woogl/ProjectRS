@@ -10,6 +10,14 @@
 enum class ERsCameraMode : uint8;
 class URsLockOnComponent;
 class UGameplayCameraComponent;
+
+UENUM(BlueprintType)
+enum class ERsCharacterRotationMode : uint8
+{
+	MovementDirection,
+	CameraDirection,
+};
+
 /**
  * 
  */
@@ -24,6 +32,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraMode NewCameraMode);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Character Library")
+	static void SwitchCharacterRotationMode(ACharacter* Character, ERsCharacterRotationMode Mode);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	FBlueprintCameraVariableTable GetCameraVariableTable(const UObject* WorldContextObject);

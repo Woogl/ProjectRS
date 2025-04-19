@@ -3,6 +3,7 @@
 
 #include "RsCharacterBase.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
@@ -13,6 +14,9 @@
 
 ARsCharacterBase::ARsCharacterBase()
 {
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
 	ShieldComponent = CreateDefaultSubobject<URsShieldComponent>(TEXT("ShieldComponent"));
