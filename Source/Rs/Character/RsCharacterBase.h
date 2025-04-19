@@ -10,6 +10,7 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsShieldComponent;
 class URsNameplateComponent;
 class URsStaggerComponent;
 class URsHealthComponent;
@@ -64,6 +65,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsStaggerComponent> StaggerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsShieldComponent> ShieldComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsNameplateComponent> NameplateComponent;

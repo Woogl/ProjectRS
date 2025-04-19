@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/AbilitySystem/Component/RsShieldComponent.h"
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
@@ -14,6 +15,7 @@ ARsCharacterBase::ARsCharacterBase()
 {
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
+	ShieldComponent = CreateDefaultSubobject<URsShieldComponent>(TEXT("ShieldComponent"));
 	
 	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
 	NameplateComponent->SetupAttachment(RootComponent);

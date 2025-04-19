@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/AbilitySystem/Component/RsShieldComponent.h"
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
@@ -103,6 +104,7 @@ void ARsPlayerCharacter::InitAbilitySystem()
 			}
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
+			ShieldComponent->Initialize(AbilitySystemComponent);
 			PostInitializeAbilitySystem();
 		}
 	}
