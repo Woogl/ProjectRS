@@ -11,7 +11,9 @@
 URsGameplayAbility::URsGameplayAbility()
 {
 	// Sets the ability to default to Instanced Per Actor.
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;	
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	StatesContainer = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
 }
 
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
@@ -148,11 +150,6 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 	// Apply cooldowns and costs
 	CommitAbility(Handle, ActorInfo, ActivationInfo);
-
-	if (StatesContainer == nullptr)
-	{
-		StatesContainer = NewObject<URsGenericContainer>(this);
-	}
 }
 
 void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)

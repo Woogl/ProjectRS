@@ -48,9 +48,6 @@ protected:
 	void HandleMontageCancelled();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bHasHitTarget = false;
-	
 	void OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "RS|Damage", DisplayName = "OnAttackHitTarget")
