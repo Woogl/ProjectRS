@@ -22,13 +22,16 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 				{
 					if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(CurrentAbility))
 					{
-						if (RsAbility->StatesContainer->GetBoolValue(FName("HasHitTarget")) == false)
+						if (RsAbility->StatesContainer->GetValue<bool>(FName("HasHitTarget")) == false)
 						{
 							return;
 						}
 					}
 				}
-				CurrentAbility->K2_CancelAbility();
+				if (bCancelCurrentAbility == true)
+				{
+					CurrentAbility->K2_CancelAbility();
+				}
 				OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 			}
 		}

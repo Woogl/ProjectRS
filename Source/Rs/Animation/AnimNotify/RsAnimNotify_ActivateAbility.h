@@ -21,6 +21,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Condition")
 	bool bHasHitTarget = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Condition")
+	bool bCancelCurrentAbility = true;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };
