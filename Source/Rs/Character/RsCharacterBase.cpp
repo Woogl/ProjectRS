@@ -24,6 +24,13 @@ ARsCharacterBase::ARsCharacterBase()
 	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
 	NameplateComponent->SetupAttachment(RootComponent);
 	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
+
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	//GetMesh()->SetVisibility(false);
+	
+	CharacterAppearance = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterAppearance"));
+	CharacterAppearance->SetupAttachment(GetMesh());
+	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
