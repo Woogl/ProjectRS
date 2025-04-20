@@ -59,7 +59,7 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 	
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
-		RsPlayerController->CameraMode = ERsCameraMode::LockOn;
+		RsPlayerController->CameraRig = ERsCameraRig::LockOn;
 	}
 }
 
@@ -81,7 +81,7 @@ void URsLockOnComponent::LockOff()
 	
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
-		RsPlayerController->CameraMode = ERsCameraMode::ThirdPerson;
+		RsPlayerController->CameraRig = ERsCameraRig::ThirdPerson;
 	}
 }
 

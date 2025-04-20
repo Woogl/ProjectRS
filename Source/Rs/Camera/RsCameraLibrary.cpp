@@ -3,8 +3,8 @@
 
 #include "RsCameraLibrary.h"
 
+#include "Core/CameraAsset.h"
 #include "GameFramework/GameplayCameraComponent.h"
-#include "GameFramework/BlueprintCameraVariableTable.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,48 +23,27 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerCameraComponent(const UObje
 	return nullptr;
 }
 
-void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraMode NewCameraMode)
+void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode)
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
 		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
 		{
-			RsPlayerController->CameraMode = NewCameraMode;
+			RsPlayerController->CameraRig = CameraRig;
 
-			switch (NewCameraMode)
+			if (ACharacter* Character = RsPlayerController->GetCharacter())
 			{
-			case ERsCameraMode::ShoulderView:
-				SwitchCharacterRotationMode(RsPlayerController->GetCharacter(), ERsCharacterRotationMode::CameraDirection);
-				break;
-
-			default:
-				SwitchCharacterRotationMode(RsPlayerController->GetCharacter(), ERsCharacterRotationMode::MovementDirection);
-				break;
+				if (FacingMode == ERsCharacterFacingMode::MovementDirection)
+				{
+					Character->bUseControllerRotationYaw = false;
+					Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+				}
+				else if (FacingMode == ERsCharacterFacingMode::CameraDirection)
+				{
+					Character->bUseControllerRotationYaw = true;
+					Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+				}
 			}
 		}
-	}
-}
-
-void URsCameraLibrary::SwitchCharacterRotationMode(ACharacter* Character, ERsCharacterRotationMode Mode)
-{
-	if (Character == nullptr)
-	{
-		return;
-	}
-	
-	switch (Mode)
-	{
-	case ERsCharacterRotationMode::MovementDirection:
-		Character->bUseControllerRotationYaw = false;
-		Character->GetCharacterMovement()->bOrientRotationToMovement = true;
-		break;
-		
-	case ERsCharacterRotationMode::CameraDirection:
-		Character->bUseControllerRotationYaw = true;
-		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-		break;
-		
-	default:
-		break;
 	}
 }

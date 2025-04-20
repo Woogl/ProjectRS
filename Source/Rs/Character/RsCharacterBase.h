@@ -72,7 +72,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsNameplateComponent> NameplateComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
 
 	// Data used to initialize the Ability System Component.

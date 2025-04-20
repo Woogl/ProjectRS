@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "CommonPlayerController.h"
+#include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
 class URsLockOnComponent;
@@ -13,15 +14,6 @@ class UGameplayControlRotationComponent;
 class UGameplayCameraComponent;
 class ARsPlayerCharacter;
 class URsPartyComponent;
-
-UENUM(BlueprintType)
-enum class ERsCameraMode : uint8
-{
-	ThirdPerson,
-	ShoulderView,
-	LockOn,
-	LinkSkill,
-};
 
 /**
  * 
@@ -52,7 +44,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	ERsCameraMode CameraMode = ERsCameraMode::ThirdPerson;
+	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
 
 	AAIController* GetPrevAIController() const;
 	

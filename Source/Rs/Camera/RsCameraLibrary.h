@@ -3,19 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RsCameraTypes.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsCameraLibrary.generated.h"
 
-enum class ERsCameraMode : uint8;
 class URsLockOnComponent;
 class UGameplayCameraComponent;
-
-UENUM(BlueprintType)
-enum class ERsCharacterRotationMode : uint8
-{
-	MovementDirection,
-	CameraDirection,
-};
 
 /**
  * 
@@ -30,8 +23,5 @@ public:
 	static UGameplayCameraComponent* GetPlayerCameraComponent(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
-	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraMode NewCameraMode);
-	
-	UFUNCTION(BlueprintCallable, Category = "RS Character Library")
-	static void SwitchCharacterRotationMode(ACharacter* Character, ERsCharacterRotationMode Mode);
+	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode);
 };
