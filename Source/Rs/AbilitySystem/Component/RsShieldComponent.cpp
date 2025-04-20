@@ -2,7 +2,6 @@
 
 
 #include "RsShieldComponent.h"
-
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 
 URsShieldComponent::URsShieldComponent()
@@ -10,74 +9,80 @@ URsShieldComponent::URsShieldComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void URsShieldComponent::Initialize(UAbilitySystemComponent* ASC)
+void URsShieldComponent::Initialize(UAbilitySystemComponent* AbilitySystemComponent)
 {
-	if (ASC == nullptr)
+	if (AbilitySystemComponent == nullptr)
 	{
 		return;
 	}
 
-	AbilitySystemComponent = ASC;
-	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleShieldAdded);
+	ASC = AbilitySystemComponent;
+	ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleShieldAdded);
+	ShieldAttribute = URsHealthSet::GetShieldAttribute();
 }
 
 void URsShieldComponent::ApplyDamageToShields(float DamageAmount)
 {
-	float LocalDamageAmount = DamageAmount;
-	for (const FActiveGameplayEffectHandle& Shield : ActiveShieldHandles)
+	// DamageAmount == value between Input Damage ~ Max Shield (Clamp already done in HealthSet)
+	for (const FActiveGameplayEffectHandle& ShieldHandle : ActiveShieldHandles)
 	{
-		float ShieldAmount = ActiveShieldAmounts.FindRef(Shield);
-		float ShieldDamage = FMath::Clamp(LocalDamageAmount, 0.0f, ShieldAmount);
-		ShieldAmount = FMath::Max(0.f, ShieldAmount - ShieldDamage);
-		
-		AbilitySystemComponent->ApplyModToAttribute(URsHealthSet::GetShieldAttribute(), EGameplayModOp::Additive, -ShieldDamage);
-		ActiveShieldAmounts[Shield] = ShieldAmount;
-		
-		LocalDamageAmount -= ShieldDamage;
-		if (LocalDamageAmount <= 0)
+		float ShieldAmount = ASC->GetGameplayEffectMagnitude(ShieldHandle,ShieldAttribute);
+		float AccumulatedDamage = FMath::Abs(ASC->GetNumericAttributeBase(ShieldAttribute));
+		float ShieldDamage = FMath::Min(DamageAmount,ShieldAmount - AccumulatedDamage);
+
+		// Accumulate current handled Damage amount in BaseValue of Shield Attribute
+		ASC->ApplyModToAttribute(ShieldAttribute, EGameplayModOp::Additive, -ShieldDamage);
+		DamageAmount -= ShieldDamage;
+
+		// if Sum of Damage(for this shield) reached To ShieldAmount, it's broken
+		const bool bIsShieldBroken = FMath::IsNearlyEqual(AccumulatedDamage + ShieldDamage,ShieldAmount);
+		if (bIsShieldBroken)
+		{
+			HandleShieldBroke(ShieldHandle);
+		}
+		// break loop when Damage is handled completely through shield
+		if (FMath::IsNearlyZero(DamageAmount))
 		{
 			break;
 		}
 	}
-
-	TArray<FActiveGameplayEffectHandle> PendingRemoveShields;
-	for	(TTuple<FActiveGameplayEffectHandle, float>& ActiveShield : ActiveShieldAmounts)
+	for (const FActiveGameplayEffectHandle& RemovePendingShieldHandle : RemovePendingShieldHandles)
 	{
-		if (ActiveShield.Value <= 0.f)
-		{
-			PendingRemoveShields.Add(ActiveShield.Key);
-		}
+		ActiveShieldHandles.Remove(RemovePendingShieldHandle);	
 	}
-	for (FActiveGameplayEffectHandle PendingRemoveShield : PendingRemoveShields)
-	{
-		AbilitySystemComponent->RemoveActiveGameplayEffect(PendingRemoveShield);
-	}
+	RemovePendingShieldHandles.Empty();
 }
 
-void URsShieldComponent::HandleShieldAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveHandle)
+void URsShieldComponent::HandleShieldAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer OutTags;
 	GESpec.GetAllGrantedTags(OutTags);
 	if (OutTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield"))))
 	{
-		ASC->OnGameplayEffectRemoved_InfoDelegate(ActiveHandle)->AddUObject(this, &ThisClass::HandleShieldRemoved);
+		AbilitySystemComponent->OnGameplayEffectRemoved_InfoDelegate(ActiveEffectHandle)->AddUObject(this, &ThisClass::HandleShieldRemove);
 
-		float ShieldAmount = AbilitySystemComponent->GetGameplayEffectMagnitude(ActiveHandle, URsHealthSet::GetShieldAttribute());
-		ActiveShieldAmounts.Add(ActiveHandle, ShieldAmount);
-		ActiveShieldHandles.Add(ActiveHandle);
-		ActiveShieldHandles.Sort([&ASC](const FActiveGameplayEffectHandle& A, const FActiveGameplayEffectHandle& B)
+		ActiveShieldHandles.Add(ActiveEffectHandle);
+		ActiveShieldHandles.Sort([&AbilitySystemComponent](const FActiveGameplayEffectHandle& A, const FActiveGameplayEffectHandle& B)
 		{
-			const FActiveGameplayEffect* AShield = ASC->GetActiveGameplayEffect(A);
-			const FActiveGameplayEffect* BShield = ASC->GetActiveGameplayEffect(B);
+			const FActiveGameplayEffect* AShield = AbilitySystemComponent->GetActiveGameplayEffect(A);
+			const FActiveGameplayEffect* BShield = AbilitySystemComponent->GetActiveGameplayEffect(B);
 			return AShield->GetEndTime() < BShield->GetEndTime();
 		});
 	}
 }
 
-void URsShieldComponent::HandleShieldRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
+void URsShieldComponent::HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo)
 {
-	ActiveShieldHandles.Remove(RemovalInfo.ActiveEffect->Handle);
-	ActiveShieldAmounts.Remove(RemovalInfo.ActiveEffect->Handle);
-	AbilitySystemComponent->SetNumericAttributeBase(URsHealthSet::GetShieldAttribute(), 0.f);
+	if (!RemovePendingShieldHandles.Contains(RemovalInfo.ActiveEffect->Handle))
+	{
+		ActiveShieldHandles.Remove(RemovalInfo.ActiveEffect->Handle);
+	}
+	ASC->SetNumericAttributeBase(ShieldAttribute,0.f);
 }
 
+void URsShieldComponent::HandleShieldBroke(const FActiveGameplayEffectHandle& BrokenShieldHandle)
+{
+	// order of these tasks must be observed.
+	RemovePendingShieldHandles.Add(BrokenShieldHandle);
+	ASC->RemoveActiveGameplayEffect(BrokenShieldHandle);
+}

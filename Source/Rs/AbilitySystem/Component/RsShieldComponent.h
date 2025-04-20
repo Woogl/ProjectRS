@@ -17,20 +17,24 @@ class RS_API URsShieldComponent : public UActorComponent
 public:	
 	URsShieldComponent();
 
-	void Initialize(UAbilitySystemComponent* ASC);
+	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
 	// Apply damage to each shield. The shield with shortest reamining time will hit first.
 	void ApplyDamageToShields(float DamageAmount);
 
 protected:
-	void HandleShieldAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveHandle);
-	void HandleShieldRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
+	void HandleShieldAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);
+	void HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo);
+	void HandleShieldBroke(const FActiveGameplayEffectHandle& BrokenShieldHandle);
 
-	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TWeakObjectPtr<UAbilitySystemComponent> ASC;
 
+	UPROPERTY()
+	FGameplayAttribute ShieldAttribute;
+	
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> ActiveShieldHandles;
 
 	UPROPERTY()
-	TMap<FActiveGameplayEffectHandle, float> ActiveShieldAmounts;
+	TArray<FActiveGameplayEffectHandle> RemovePendingShieldHandles;
 };
