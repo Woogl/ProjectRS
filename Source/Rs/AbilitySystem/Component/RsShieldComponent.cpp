@@ -59,7 +59,7 @@ void URsShieldComponent::HandleShieldAdded(UAbilitySystemComponent* AbilitySyste
 	GESpec.GetAllGrantedTags(OutTags);
 	if (OutTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield"))))
 	{
-		AbilitySystemComponent->OnGameplayEffectRemoved_InfoDelegate(ActiveEffectHandle)->AddUObject(this, &ThisClass::HandleShieldRemove);
+		AbilitySystemComponent->OnGameplayEffectRemoved_InfoDelegate(ActiveEffectHandle)->AddUObject(this, &ThisClass::HandleShieldRemove,AbilitySystemComponent->GetGameplayEffectMagnitude(ActiveEffectHandle,ShieldAttribute));
 
 		ActiveShieldHandles.Add(ActiveEffectHandle);
 		ActiveShieldHandles.Sort([&AbilitySystemComponent](const FActiveGameplayEffectHandle& A, const FActiveGameplayEffectHandle& B)
@@ -71,13 +71,13 @@ void URsShieldComponent::HandleShieldAdded(UAbilitySystemComponent* AbilitySyste
 	}
 }
 
-void URsShieldComponent::HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo)
+void URsShieldComponent::HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo,float Magnitude)
 {
 	if (!RemovePendingShieldHandles.Contains(RemovalInfo.ActiveEffect->Handle))
 	{
 		ActiveShieldHandles.Remove(RemovalInfo.ActiveEffect->Handle);
 	}
-	ASC->SetNumericAttributeBase(ShieldAttribute,0.f);
+	ASC->ApplyModToAttribute(ShieldAttribute,EGameplayModOp::Additive,Magnitude);
 }
 
 void URsShieldComponent::HandleShieldBroke(const FActiveGameplayEffectHandle& BrokenShieldHandle)

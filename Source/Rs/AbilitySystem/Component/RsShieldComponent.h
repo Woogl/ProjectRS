@@ -24,7 +24,7 @@ public:
 
 protected:
 	void HandleShieldAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);
-	void HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo);
+	void HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo,float Magnitude);
 	void HandleShieldBroke(const FActiveGameplayEffectHandle& BrokenShieldHandle);
 
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
