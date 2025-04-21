@@ -9,10 +9,9 @@
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Character/RsPlayerCharacter.h"
+#include "Rs/System/RsGameSetting.h"
 #include "Rs/UI/ViewModel/RsPlayerCharacterViewModel.h"
 #include "View/MVVMView.h"
-
-class UMVVMView;
 
 void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 {
@@ -23,15 +22,22 @@ void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 
 void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
 {
-	if (GameHUDClass == nullptr)
+	if (LocalPlayer == nullptr || Pawn == nullptr)
 	{
-		UE_LOG(RsLog, Error, TEXT("Game HUD Class is null! See DefaultGame.ini file!"));
+		return;
+	}
+	
+	if (URsGameSetting::Get()->GameHUDClass == nullptr)
+	{
+		UE_LOG(RsLog, Error, TEXT("Game HUD Class is null! See DA_GameSetting!"));
+		//UE_LOG(RsLog, Error, TEXT("Game HUD Class is null! See DefaultGame.ini!"));
+		return;
 	}
 
 	// Create Game HUD instance first only.
 	if (GameHUDInstance == nullptr)
 	{
-		GameHUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::TAG_UI_LAYER_GAME, GameHUDClass);
+		GameHUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::TAG_UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
 	}
 
 	// Set the view model to Game HUD instance.

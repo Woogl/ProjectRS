@@ -20,9 +20,10 @@ public:
 
 private:
 	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
-	
-	UPROPERTY(config, EditAnywhere)
-	TSubclassOf<UCommonActivatableWidget> GameHUDClass;
+
+	// NOTE: MVVM settings are not saved when this file is set in DefaultGame.ini
+	// UPROPERTY(config, EditAnywhere)
+	// TSubclassOf<UCommonActivatableWidget> GameHUDClass;
 
 	UPROPERTY(Transient)
 	UCommonActivatableWidget* GameHUDInstance = nullptr;
