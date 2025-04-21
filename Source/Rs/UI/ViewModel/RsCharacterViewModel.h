@@ -21,8 +21,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Model);
 
-	void Initialize();
+protected:
+	virtual void Initialize();
 
+public:
 	FText GetCharacterName() const;
 	void SetCharacterName(FText NewCharacterName);
 	

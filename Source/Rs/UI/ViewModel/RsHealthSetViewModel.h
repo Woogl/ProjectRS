@@ -20,8 +20,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
 
+protected:
 	void Initialize();
 
+public:
 	float GetCurrentHealth() const;
 	float GetMaxHealth() const;
 	float GetHealthRegen() const;

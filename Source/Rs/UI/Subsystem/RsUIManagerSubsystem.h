@@ -6,6 +6,7 @@
 #include "GameUIManagerSubsystem.h"
 #include "RsUIManagerSubsystem.generated.h"
 
+class UCommonActivatableWidget;
 /**
  * 
  */
@@ -13,5 +14,16 @@ UCLASS()
 class RS_API URsUIManagerSubsystem : public UGameUIManagerSubsystem
 {
 	GENERATED_BODY()
+
+public:
+	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer) override;
+
+private:
+	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
 	
+	UPROPERTY(config, EditAnywhere)
+	TSubclassOf<UCommonActivatableWidget> GameHUDClass;
+
+	UPROPERTY(Transient)
+	UCommonActivatableWidget* GameHUDInstance = nullptr;
 };

@@ -19,8 +19,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsEnergySetViewModel* CreateEnergySetViewModel(AActor* Model);
 
+protected:
 	void Initialize();
 
+public:
 	float GetCurrentEnergy() const;
 	float GetMaxEnergy() const;
 	float GetEnergyRegen() const;

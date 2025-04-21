@@ -20,8 +20,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsStaggerSetViewModel* CreateStaggerSetViewModel(AActor* Model);
 
+protected:
 	void Initialize();
 
+public:
 	float GetCurrentStagger() const;
 	float GetMaxStagger() const;
 	float GetStaggerRegen() const;

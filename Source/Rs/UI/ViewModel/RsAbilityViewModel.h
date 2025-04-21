@@ -20,8 +20,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Model);
 
+protected:
 	void Initialize();
 
+public:
 	float GetCooldownDuration() const;
 	float GetCooldownRemaining() const;
 
