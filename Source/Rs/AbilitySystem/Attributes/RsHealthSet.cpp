@@ -5,7 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
-#include "Rs/AbilitySystem/Component/RsShieldComponent.h"
+#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 
 URsHealthSet::URsHealthSet()
 {
@@ -76,11 +76,11 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		{
 			if (GetShield() > 0.f)
 			{
-				if (URsShieldComponent* ShieldComponent = GetActorInfo()->AvatarActor->FindComponentByClass<URsShieldComponent>())
+				if (URsHealthComponent* HealthComponent = GetActorInfo()->AvatarActor->FindComponentByClass<URsHealthComponent>())
 				{
 					float Absorbed = FMath::Min(GetShield(), LocalHealthDamage);
 					LocalHealthDamage -= Absorbed;
-					ShieldComponent->ApplyDamageToShields(Absorbed);
+					HealthComponent->ApplyDamageToShields(GetOwningAbilitySystemComponent(), Absorbed);
 				}
 			}
 			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.0f, GetMaxHealth()));

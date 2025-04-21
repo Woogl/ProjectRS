@@ -5,7 +5,6 @@
 
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/AbilitySystem/Component/RsShieldComponent.h"
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 
 ARsEnemyCharacter::ARsEnemyCharacter()
@@ -29,7 +28,6 @@ void ARsEnemyCharacter::BeginPlay()
 		}
 		HealthComponent->Initialize(AbilitySystemComponent);
 		StaggerComponent->Initialize(AbilitySystemComponent);
-		ShieldComponent->Initialize(AbilitySystemComponent);
 		PostInitializeAbilitySystem();
 	}
 	
