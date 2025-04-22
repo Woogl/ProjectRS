@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RsGameplayAbility.h"
+#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
 USTRUCT(BlueprintType)
@@ -11,17 +12,14 @@ struct FRsDamageEventContext
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "Damage Event", Categories = "Animnotify.HitScan"))
+	FGameplayTag DamageEventTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Damage", meta = (Categories = "Effect.Damage"))
-	FGameplayTagContainer DamageEffectTags;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "Additional Effects / Coefficients"))
+	TArray<FRsEffectCoefficient> AdditionalEffectCoefficients;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float HealthDamageCoefficient = 1.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage")
-	float StaggerDamageCoefficient = 1.f;
+	bool operator==(const FRsDamageEventContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
+	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
 };
 
 /**
@@ -37,8 +35,8 @@ protected:
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "AnimNotify", ForceInlineRow))
-	TMap<FGameplayTag, FRsDamageEventContext> DamageEvents;
-
+	TArray<FRsDamageEventContext> DamageEvents;
+	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()

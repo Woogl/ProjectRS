@@ -46,15 +46,18 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	
-	FRsDamageEventContext DamageEffectContext = DamageEvents.FindRef(EventData.EventTag);
-	if (DamageEffectContext.DamageEffectClass)
+	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
+	if (!DamageEffectContext->AdditionalEffectCoefficients.IsEmpty())
 	{
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectContext.DamageEffectClass, GetAbilityLevel());
-		if (DamageEffectSpecHandle.IsValid())
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->AdditionalEffectCoefficients)
 		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
-			DamageEffectSpecHandle.Data->AppendDynamicAssetTags(DamageEffectContext.DamageEffectTags);
+			FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(EffectCoefficient.EffectClass, GetAbilityLevel());
+			for (TPair<FGameplayTag, float> Coefficient : EffectCoefficient.Coefficients)
+			{
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+			}
+			ApplyCostRecovery();
+			OnAttackHitTarget(EventData.Target, EventData.EventTag);
 			Projectile->DamageSpecHandle = DamageEffectSpecHandle;
 			Projectile->EventTag = EventData.EventTag;
 		}

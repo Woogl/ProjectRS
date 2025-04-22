@@ -12,13 +12,11 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	TArray<FGameplayTag> EventTags;
-	DamageEvents.GetKeys(EventTags);
-	if (EventTags.Num() > 0)
+	if (DamageEvents.Num() > 0)
 	{
-		for (const FGameplayTag& EventTag : EventTags)
+		for (const FRsDamageEventContext& Event : DamageEvents)
 		{
-			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EventTag);
+			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.DamageEventTag);
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
 			HitDetectTask->ReadyForActivation();
 		}
@@ -27,15 +25,12 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
-	FRsDamageEventContext DamageEffectContext = DamageEvents.FindRef(EventData.EventTag);
-	if (DamageEffectContext.DamageEffectClass != nullptr)
+	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
+	if (!DamageEffectContext->AdditionalEffectCoefficients.IsEmpty())
 	{
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectContext.DamageEffectClass, GetAbilityLevel());
-		if (DamageEffectSpecHandle.IsValid())
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->AdditionalEffectCoefficients)
 		{
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, DamageEffectContext.HealthDamageCoefficient);
-			DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(URsGameSetting::Get()->StaggerDamageCoefficientTag, DamageEffectContext.StaggerDamageCoefficient);
-			URsBattleLibrary::ApplyDamageEffectSpec(GetAvatarActorFromActorInfo(), EventData.Target, DamageEffectSpecHandle, DamageEffectContext.DamageEffectTags);
+			URsBattleLibrary::ApplyEffectCoefficient(GetAvatarActorFromActorInfo(), EventData.Target, EffectCoefficient);
 			ApplyCostRecovery();
 			OnAttackHitTarget(EventData.Target, EventData.EventTag);
 		}
