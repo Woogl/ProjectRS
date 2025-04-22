@@ -10,9 +10,7 @@
 
 class URsLockOnComponent;
 class AAIController;
-class UGameplayControlRotationComponent;
 class UGameplayCameraComponent;
-class ARsPlayerCharacter;
 class URsPartyComponent;
 
 /**
