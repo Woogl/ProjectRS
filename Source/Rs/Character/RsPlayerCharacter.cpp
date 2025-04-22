@@ -14,7 +14,8 @@
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
-ARsPlayerCharacter::ARsPlayerCharacter()
+ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	PerfectDodgeCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PerfectDodgeCapsuleComponent"));
 	PerfectDodgeCapsuleComponent->SetupAttachment(RootComponent);

@@ -32,7 +32,7 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 	GENERATED_BODY()
 
 public:
-	ARsCharacterBase();
+	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;

@@ -16,7 +16,7 @@ class RS_API ARsEnemyCharacter : public ARsCharacterBase
 	GENERATED_BODY()
 	
 public:
-	ARsEnemyCharacter();
+	ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;

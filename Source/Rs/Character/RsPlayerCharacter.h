@@ -30,7 +30,7 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 	TObjectPtr<UCapsuleComponent> PerfectDodgeCapsuleComponent;
 	
 public:
-	ARsPlayerCharacter();
+	ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

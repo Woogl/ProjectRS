@@ -7,7 +7,8 @@
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
 #include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
 
-ARsEnemyCharacter::ARsEnemyCharacter()
+ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set the pointer from Character Base to the Ability System Component sub-object.
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));

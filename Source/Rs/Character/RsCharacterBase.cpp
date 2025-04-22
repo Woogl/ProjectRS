@@ -3,7 +3,7 @@
 
 #include "RsCharacterBase.h"
 
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Component/RsCharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Component/RsHealthComponent.h"
@@ -11,7 +11,8 @@
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
 
-ARsCharacterBase::ARsCharacterBase()
+ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<URsCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
