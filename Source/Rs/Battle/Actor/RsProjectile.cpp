@@ -36,7 +36,7 @@ void ARsProjectile::BeginPlay()
 
 void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!DamageSpecHandle.IsValid())
+	if (DamageEffectContext.AdditionalEffectCoefficients.IsEmpty())
 	{
 		return;
 	}
@@ -57,7 +57,10 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && OtherActor)
 	{
-		URsBattleLibrary::ApplyDamageEffectSpec(GetInstigator(), OtherActor, DamageSpecHandle);
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext.AdditionalEffectCoefficients)
+		{
+			URsBattleLibrary::ApplyEffectCoefficient(GetInstigator(),OtherActor,EffectCoefficient);
+		}
 		
 		MaxHitCount--;
 		if (MaxHitCount == 0)

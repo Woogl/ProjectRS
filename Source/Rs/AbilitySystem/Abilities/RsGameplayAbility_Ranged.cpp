@@ -47,22 +47,8 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	
 	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
-	if (!DamageEffectContext->AdditionalEffectCoefficients.IsEmpty())
-	{
-		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->AdditionalEffectCoefficients)
-		{
-			FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(EffectCoefficient.EffectClass, GetAbilityLevel());
-			for (TPair<FGameplayTag, float> Coefficient : EffectCoefficient.Coefficients)
-			{
-				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-			}
-			ApplyCostRecovery();
-			OnAttackHitTarget(EventData.Target, EventData.EventTag);
-			Projectile->DamageSpecHandle = DamageEffectSpecHandle;
-			Projectile->EventTag = EventData.EventTag;
-		}
-	}
-	
+	Projectile->DamageEffectContext = *DamageEffectContext;
+	Projectile->EventTag = EventData.EventTag;
 	Projectile->OwningAbility = this;
 	
 	if (CachedVictim.IsValid())

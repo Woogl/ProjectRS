@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
@@ -25,16 +26,10 @@ public:
 	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageEffect(const AActor* SourceActor, const AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, FGameplayTagContainer AdditionalDamageEffectTags = FGameplayTagContainer());
+	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageEffectSpec(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle, FGameplayTagContainer AdditionalDamageEffectTags = FGameplayTagContainer());
-
-	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
+	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle);
 	
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(FGameplayEffectContextHandle EffectContextHandle);

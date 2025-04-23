@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "RsProjectile.generated.h"
 
 class URsGameplayAbility_Attack;
@@ -29,7 +30,7 @@ public:
 	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle DamageSpecHandle;
+	FRsDamageEventContext DamageEffectContext;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayTag EventTag;
