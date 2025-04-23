@@ -38,8 +38,6 @@ public:
 	FGameplayAttributeData Shield;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Shield)
 	
-	/** Meta attributes */
-
 	// Reduces shield first, then reduces current health by any excess amount.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData HealthDamage;
@@ -48,6 +46,11 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
+
+	// Meta attribute for RsHealthDamageCalculation
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData BaseDamage;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, BaseDamage)
 
 protected:
 	UFUNCTION()

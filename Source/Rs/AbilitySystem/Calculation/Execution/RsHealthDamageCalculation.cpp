@@ -12,22 +12,20 @@
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
 {
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentHealth);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 
 	RsDamageStatics()
 	{
 		// Capture optional attribute set
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, Attack, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, CurrentHealth, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 	}
 
 	static const RsDamageStatics& Get()
@@ -41,11 +39,10 @@ URsHealthDamageCalculation::URsHealthDamageCalculation()
 {
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 	
-	RelevantAttributesToCapture.Add(DamageStatics->AttackDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalDmgBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
-	RelevantAttributesToCapture.Add(DamageStatics->CurrentHealthDef);
+	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 }
 
 void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -62,11 +59,8 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
-	// Set in RsGameplayAbility_Attack
-	float DamageCoefficient = FMath::Max<float>(Spec.GetSetByCallerMagnitude(URsGameSetting::Get()->HealthDamageCoefficientTag, true, 1.f), 0.f);
-
-	float Attack = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->AttackDef, EvaluationParameters, Attack);
+	float BaseDamage = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
 
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
@@ -90,7 +84,7 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 	}
 	
 	// Damage calculation start
-	float FinalHealthDamage = (Attack * DamageCoefficient);
+	float FinalHealthDamage = BaseDamage;
 	// Critical calc
 	FinalHealthDamage *= (bCriticalHit ? (CriticalDmgBonus * 0.01f) : 1.f);
 	// Defense rate calc
