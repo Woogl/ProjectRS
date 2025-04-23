@@ -65,7 +65,7 @@ public:
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
 	// Contains state values. Useful for storing data between anim notifies.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<URsGenericContainer> StatesContainer;
 	
 protected:

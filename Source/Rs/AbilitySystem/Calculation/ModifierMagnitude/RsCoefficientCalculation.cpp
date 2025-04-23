@@ -11,8 +11,14 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 	// Capture every attribute of source and target
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
 	{
-		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, false);
-		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+		if (CoefficientTag.Key.ToString().Contains(TEXT("Source")))
+		{
+			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, false);
+		}
+		else if (CoefficientTag.Key.ToString().Contains(TEXT("Target")))
+		{
+			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+		}
 	}
 }
 
