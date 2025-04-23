@@ -12,20 +12,20 @@
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
 {
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 
 	RsDamageStatics()
 	{
 		// Capture optional attribute set
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 	}
 
 	static const RsDamageStatics& Get()
@@ -38,11 +38,11 @@ struct RsDamageStatics
 URsHealthDamageCalculation::URsHealthDamageCalculation()
 {
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
-	
+
+	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalDmgBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
-	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 }
 
 void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -59,6 +59,7 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
+	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
 
@@ -70,8 +71,8 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 	// Critical Rate should be 0 ~ 100 range.
 	CriticalRate = FMath::Clamp(CriticalRate, 0.f, 100.f);
 	
-	float CriticalDmgBonus = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalDmgBonus);
+	float CriticalBonus = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalBonus);
 
 	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
@@ -84,13 +85,13 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 	}
 	
 	// Damage calculation start
-	float FinalHealthDamage = BaseDamage;
+	float FinalDamage = BaseDamage;
 	// Critical calc
-	FinalHealthDamage *= (bCriticalHit ? (CriticalDmgBonus * 0.01f) : 1.f);
+	FinalDamage *= (bCriticalHit ? (CriticalBonus * 0.01f) : 1.f);
 	// Defense rate calc
-	FinalHealthDamage *= (190.f / (Defense + 190.f));
+	FinalDamage *= (190.f / (Defense + 190.f));
 	
-	if (FinalHealthDamage <= 0.f)
+	if (FinalDamage <= 0.f)
 	{
 		return;
 	}
@@ -98,9 +99,9 @@ void URsHealthDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 	// Groggy has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
 	{
-		FinalHealthDamage *= 1.6f;
+		FinalDamage *= 1.6f;
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Additive, FinalHealthDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Additive, FinalDamage));
 }
