@@ -26,33 +26,36 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	{
 		return;
 	}
-
-	// Grant attribute sets.
-	TSet<UClass*> AttributeSetClasses;
-	for	(TTuple<FGameplayAttribute, FScalableFloat> GrantedAttribute : AbilitySet->GrantedAttributes)
+	
+	// Grant attribute sets from data table.
+	if (AbilitySet->GrantedAttributeTable)
+	{
+		TArray<FRsAttributeMetaData*> OutAttributeDatas;
+		AbilitySet->GrantedAttributeTable->GetAllRows<FRsAttributeMetaData>(FString(), OutAttributeDatas);
+		for (FRsAttributeMetaData* AttributeData : OutAttributeDatas)
+		{
+			if (UClass* AttributeSetClass = AttributeData->Attribute.GetAttributeSetClass())
+			{
+				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+				SetNumericAttributeBase(AttributeData->Attribute, AttributeData->BaseValue);
+				GrantedAttributeSets.Add(GrantedAttributeSet);
+			}
+		}
+	}
+	
+	// Grant attribute sets from ABS's properties.
+	for	(const TTuple<FGameplayAttribute, FScalableFloat>& GrantedAttribute : AbilitySet->GrantedAttributes)
 	{
 		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
 		{
-			AttributeSetClasses.Add(AttributeSetClass);
-		}
-	}
-	for (UClass* AttributeSetClass : AttributeSetClasses)
-	{
-		const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
-		GrantedAttributeSets.Add(GrantedAttributeSet);
-	}
-		
-	// Set base attribute values.
-	for (const TTuple<FGameplayAttribute, FScalableFloat>& AttributeBaseValue : AbilitySet->GrantedAttributes)
-	{
-		if (HasAttributeSetForAttribute(AttributeBaseValue.Key))
-		{
-			SetNumericAttributeBase(AttributeBaseValue.Key, AttributeBaseValue.Value.GetValueAtLevel(0.f));
+			const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+			SetNumericAttributeBase(GrantedAttribute.Key, GrantedAttribute.Value.GetValueAtLevel(0.f));
+			GrantedAttributeSets.Add(GrantedAttributeSet);
 		}
 	}
 
 	// Grant abilities.
-	for (const TSubclassOf<URsGameplayAbility> GameplayAbility : AbilitySet->GrantedAbilities)
+	for (const TSubclassOf<URsGameplayAbility>& GameplayAbility : AbilitySet->GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwnerActor);
 		FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);

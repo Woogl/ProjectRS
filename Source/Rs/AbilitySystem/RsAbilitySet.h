@@ -19,6 +19,9 @@ class URsAbilitySet : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RequiredAssetDataTags = "RowStructure=/Script/Rs.RsAttributeMetaData"))
+	TObjectPtr<const UDataTable> GrantedAttributeTable;
+	
 	// Attributes / float used to set base values.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute")
 	TMap<FGameplayAttribute, FScalableFloat> GrantedAttributes;

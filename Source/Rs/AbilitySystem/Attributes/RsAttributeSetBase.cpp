@@ -3,6 +3,12 @@
 
 #include "RsAttributeSetBase.h"
 
+FRsAttributeMetaData::FRsAttributeMetaData()
+	: BaseValue(0.0f), DevComment(TEXT(""))
+{
+	
+}
+
 void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const
 {
 	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
