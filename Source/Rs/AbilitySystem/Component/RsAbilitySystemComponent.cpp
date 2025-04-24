@@ -27,7 +27,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		return;
 	}
 	
-	// Grant attribute sets from data table.
+	// Grant attributes from data table.
 	if (AbilitySet->GrantedAttributeTable)
 	{
 		TArray<FRsAttributeMetaData*> OutAttributeDatas;
@@ -43,7 +43,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		}
 	}
 	
-	// Grant attribute sets from ABS's properties.
+	// Grant attributes from ABS's properties.
 	for	(const TTuple<FGameplayAttribute, FScalableFloat>& GrantedAttribute : AbilitySet->GrantedAttributes)
 	{
 		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
@@ -62,12 +62,11 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		GrantedAbilityHandles.Add(GrantedAbilityHandle);
 	}
 
-	// Apply Gameplay Effects.
+	// Apply gameplay effects.
 	for (const TSubclassOf<UGameplayEffect>& GameplayEffect : AbilitySet->GrantedEffects)
 	{
 		FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
 		EffectContextHandle.AddSourceObject(this);
-
 		if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(GameplayEffect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
 		{
 			FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
