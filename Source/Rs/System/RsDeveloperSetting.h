@@ -8,6 +8,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "RsDeveloperSetting.generated.h"
 
+class UGameplayEffect;
 class UAttributeSet;
 /**
  * 
@@ -23,15 +24,18 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Coefficient", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
 	FGameplayTag ManualMagnitudeTag;
 	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
 	FGameplayTag ManualDurationTag;
 	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Manual"))
-	FGameplayTag ManualLevelTag; 
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
+	FGameplayTag ManualLevelTag;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	TArray<TSubclassOf<UGameplayEffect>> DamageEffectApplicationOrder;
 };

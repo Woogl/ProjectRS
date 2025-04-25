@@ -6,8 +6,10 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
+#include "Rs/System/RsDeveloperSetting.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -43,6 +45,26 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	TargetingSubsystem->ReleaseTargetRequestHandle(Handle);
 	
 	return !ResultActors.IsEmpty();
+}
+
+void URsBattleLibrary::SortDamageEffectsByOrder(FRsDamageEventContext& DamageContexts)
+{
+	for (const FRsEffectCoefficient& Context : DamageContexts.AdditionalEffectCoefficients)
+	{
+		if (URsDeveloperSetting::Get()->DamageEffectApplicationOrder.Find(Context.EffectClass) != INDEX_NONE)
+		{
+			DamageContexts.AdditionalEffectCoefficients.Sort([Order = URsDeveloperSetting::Get()->DamageEffectApplicationOrder](const FRsEffectCoefficient& A, const FRsEffectCoefficient& B)
+			{
+				TArray<FRsEffectCoefficient>::SizeType OrderA = Order.Find(A.EffectClass);
+				TArray<FRsEffectCoefficient>::SizeType OrderB = Order.Find(B.EffectClass);
+
+				if (OrderA == INDEX_NONE){ return false; }
+				if (OrderB == INDEX_NONE){ return true; }
+				return OrderA < OrderB;
+			});
+			return;
+		}
+	}
 }
 
 FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)

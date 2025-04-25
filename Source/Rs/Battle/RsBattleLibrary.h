@@ -26,6 +26,9 @@ public:
 	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static void SortDamageEffectsByOrder(FRsDamageEventContext& DamageContexts);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")

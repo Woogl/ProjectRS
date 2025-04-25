@@ -57,6 +57,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && OtherActor)
 	{
+		URsBattleLibrary::SortDamageEffectsByOrder(DamageEffectContext);
 		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext.AdditionalEffectCoefficients)
 		{
 			URsBattleLibrary::ApplyEffectCoefficient(GetInstigator(),OtherActor,EffectCoefficient);

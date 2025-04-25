@@ -27,6 +27,7 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
 	if (!DamageEffectContext->AdditionalEffectCoefficients.IsEmpty())
 	{
+		URsBattleLibrary::SortDamageEffectsByOrder(*DamageEffectContext);
 		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->AdditionalEffectCoefficients)
 		{
 			URsBattleLibrary::ApplyEffectCoefficient(GetAvatarActorFromActorInfo(), EventData.Target, EffectCoefficient);
