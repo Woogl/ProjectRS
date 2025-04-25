@@ -20,7 +20,8 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	URsAbilitySystemComponent();
-	
+
+	// TODO: Refactor this
 	FOnDealDamage OnDealDamage;
 
 	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
@@ -36,8 +37,4 @@ private:
 	// Handles to the granted gameplay effects.
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
-
-	// Pointers to the granted attribute sets.
-	UPROPERTY()
-	TArray<const UAttributeSet*> GrantedAttributeSets;
 };
