@@ -49,11 +49,11 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 
 void URsBattleLibrary::SortDamageEffectsByOrder(FRsDamageEventContext& DamageContexts)
 {
-	for (const FRsEffectCoefficient& Context : DamageContexts.AdditionalEffectCoefficients)
+	for (const FRsEffectCoefficient& Context : DamageContexts.EffectCoefficients)
 	{
 		if (URsDeveloperSetting::Get()->DamageEffectApplicationOrder.Find(Context.EffectClass) != INDEX_NONE)
 		{
-			DamageContexts.AdditionalEffectCoefficients.Sort([Order = URsDeveloperSetting::Get()->DamageEffectApplicationOrder](const FRsEffectCoefficient& A, const FRsEffectCoefficient& B)
+			DamageContexts.EffectCoefficients.Sort([Order = URsDeveloperSetting::Get()->DamageEffectApplicationOrder](const FRsEffectCoefficient& A, const FRsEffectCoefficient& B)
 			{
 				TArray<FRsEffectCoefficient>::SizeType OrderA = Order.Find(A.EffectClass);
 				TArray<FRsEffectCoefficient>::SizeType OrderB = Order.Find(B.EffectClass);

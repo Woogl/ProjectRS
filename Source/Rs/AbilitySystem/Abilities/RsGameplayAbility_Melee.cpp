@@ -25,10 +25,10 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
 	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
-	if (!DamageEffectContext->AdditionalEffectCoefficients.IsEmpty())
+	if (!DamageEffectContext->EffectCoefficients.IsEmpty())
 	{
 		URsBattleLibrary::SortDamageEffectsByOrder(*DamageEffectContext);
-		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->AdditionalEffectCoefficients)
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->EffectCoefficients)
 		{
 			URsBattleLibrary::ApplyEffectCoefficient(GetAvatarActorFromActorInfo(), EventData.Target, EffectCoefficient);
 			ApplyCostRecovery();

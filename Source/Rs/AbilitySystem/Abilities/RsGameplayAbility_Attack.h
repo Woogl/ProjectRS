@@ -15,8 +15,8 @@ struct FRsDamageEventContext
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "Damage Event", Categories = "Animnotify.HitScan"))
 	FGameplayTag DamageEventTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "Additional Effects / Coefficients"))
-	TArray<FRsEffectCoefficient> AdditionalEffectCoefficients;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FRsEffectCoefficient> EffectCoefficients;
 
 	bool operator==(const FRsDamageEventContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }

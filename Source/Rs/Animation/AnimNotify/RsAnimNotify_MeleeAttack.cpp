@@ -11,7 +11,7 @@ void URsAnimNotify_MeleeAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 
 	for (AActor* Victim : ResultActors)
 	{
-		for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.AdditionalEffectCoefficients)
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
 		{
 			URsBattleLibrary::ApplyEffectCoefficient(MeshComp->GetOwner(), Victim, EffectCoefficient);
 		}
