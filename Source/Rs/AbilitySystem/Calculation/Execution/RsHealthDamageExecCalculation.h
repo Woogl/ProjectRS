@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "RsHealthDamageCalculation.generated.h"
+#include "RsHealthDamageExecCalculation.generated.h"
 
 /**
- * 
+ * DEPRECATED: It needs RsHealthSet::BaseDamage.
  */
-UCLASS()
-class RS_API URsHealthDamageCalculation : public UGameplayEffectExecutionCalculation
+UCLASS(Deprecated)
+class RS_API UDEPRECATED_RsHealthDamageExecCalculation : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	URsHealthDamageCalculation();
+	UDEPRECATED_RsHealthDamageExecCalculation();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

@@ -38,7 +38,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 			{
 				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
 				SetNumericAttributeBase(AttributeData->Attribute, AttributeData->BaseValue);
-				GrantedAttributeSets.Add(GrantedAttributeSet);
+				GrantedAttributeSets.AddUnique(GrantedAttributeSet);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		{
 			const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
 			SetNumericAttributeBase(GrantedAttribute.Key, GrantedAttribute.Value.GetValueAtLevel(0.f));
-			GrantedAttributeSets.Add(GrantedAttributeSet);
+			GrantedAttributeSets.AddUnique(GrantedAttributeSet);
 		}
 	}
 

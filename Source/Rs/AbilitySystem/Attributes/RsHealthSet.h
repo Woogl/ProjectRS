@@ -47,11 +47,6 @@ public:
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
 
-	// Meta attribute for RsHealthDamageCalculation
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData BaseDamage;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, BaseDamage)
-
 protected:
 	UFUNCTION()
 	virtual void OnRep_CurrentHealth(const FGameplayAttributeData& OldValue);

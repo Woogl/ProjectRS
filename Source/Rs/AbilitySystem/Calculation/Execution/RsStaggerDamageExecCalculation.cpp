@@ -1,20 +1,20 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsStaggerDamageCalculation.h"
+#include "RsStaggerDamageExecCalculation.h"
 
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsStaggerStatics
 {
-	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
+	//DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerDamage);
 
 	RsStaggerStatics()
 	{
 		// Capture optional attribute set
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, BaseDamage, Target, false);
+		//DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerDamage, Target, false);
 	}
 
@@ -25,14 +25,14 @@ struct RsStaggerStatics
 	}
 };
 
-URsStaggerDamageCalculation::URsStaggerDamageCalculation()
+UDEPRECATED_RsStaggerDamageExecCalculation::UDEPRECATED_RsStaggerDamageExecCalculation()
 {
 	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
 
-	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
+	//RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 }
 
-void URsStaggerDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UDEPRECATED_RsStaggerDamageExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (TargetASC == nullptr)
@@ -48,7 +48,7 @@ void URsStaggerDamageCalculation::Execute_Implementation(const FGameplayEffectCu
 
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
+	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
 	
 	// Stagger Calculation
 	float FinalDamage = BaseDamage;
