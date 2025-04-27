@@ -4,10 +4,11 @@
 #include "RsCharacterBase.h"
 
 #include "Component/RsCharacterMovementComponent.h"
+#include "Component/RsHealthComponent.h"
+#include "Component/RsStaggerComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
 

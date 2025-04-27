@@ -6,7 +6,7 @@
 #include "AbilitySystemGlobals.h"
 #include "RsLockOnInterface.h"
 #include "Components/WidgetComponent.h"
-#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Player/RsPlayerController.h"
 
 URsLockOnComponent::URsLockOnComponent()

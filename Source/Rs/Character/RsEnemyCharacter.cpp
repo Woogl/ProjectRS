@@ -3,9 +3,10 @@
 
 #include "RsEnemyCharacter.h"
 
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
+#include "Component/RsHealthComponent.h"
+#include "Component/RsStaggerComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+
 
 ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

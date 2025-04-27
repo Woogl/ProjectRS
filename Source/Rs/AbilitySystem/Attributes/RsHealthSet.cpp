@@ -5,7 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
-#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
+#include "Rs/Character/Component/RsHealthComponent.h"
 
 URsHealthSet::URsHealthSet()
 {

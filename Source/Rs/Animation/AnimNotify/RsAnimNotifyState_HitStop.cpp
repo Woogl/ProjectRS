@@ -4,8 +4,8 @@
 #include "RsAnimNotifyState_HitStop.h"
 
 #include "GameplayEffectTypes.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
 
 void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {

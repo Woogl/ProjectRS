@@ -6,12 +6,12 @@
 #include "AbilitySystemGlobals.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Component/RsHealthComponent.h"
+#include "Component/RsStaggerComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/PlayerState.h"
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/Component/RsHealthComponent.h"
-#include "Rs/AbilitySystem/Component/RsStaggerComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)

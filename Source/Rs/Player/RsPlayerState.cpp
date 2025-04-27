@@ -3,7 +3,8 @@
 
 #include "RsPlayerState.h"
 
-#include "Rs/AbilitySystem/Component/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+
 
 ARsPlayerState::ARsPlayerState()
 {
