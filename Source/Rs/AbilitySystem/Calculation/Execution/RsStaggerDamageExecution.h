@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "RsStaggerDamageExecCalculation.generated.h"
+#include "RsStaggerDamageExecution.generated.h"
 
 /**
- * DEPRECATED: It needs RsStaggerSet::BaseDamage.
+ * 
  */
-UCLASS(Deprecated)
-class RS_API UDEPRECATED_RsStaggerDamageExecCalculation : public UGameplayEffectExecutionCalculation
+UCLASS()
+class RS_API URsStaggerDamageExecution : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	UDEPRECATED_RsStaggerDamageExecCalculation();
+	URsStaggerDamageExecution();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

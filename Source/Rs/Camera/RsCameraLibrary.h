@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsCameraLibrary.generated.h"
 
+class UVector3dCameraVariable;
 class URsLockOnComponent;
 class UGameplayCameraComponent;
 
@@ -30,4 +31,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Camera Library")
+	static void SetCameraVariableAsVector(const UObject* WorldContextObject, UVector3dCameraVariable* Variable, FVector Value);
 };

@@ -38,6 +38,11 @@ public:
 	FGameplayAttributeData StaggerRegen;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerRegen)
 
+	// Meta attribute for RsStaggerDamageCalculation
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData BaseDamage;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, BaseDamage)
+
 protected:
 	UFUNCTION()
 	virtual void OnRep_CurrentStagger(const FGameplayAttributeData& OldValue);

@@ -34,10 +34,13 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		AbilitySet->GrantedAttributeTable->GetAllRows<FRsAttributeMetaData>(FString(), OutAttributeDatas);
 		for (FRsAttributeMetaData* AttributeData : OutAttributeDatas)
 		{
-			if (UClass* AttributeSetClass = AttributeData->Attribute.GetAttributeSetClass())
+			if (AttributeData->Attribute.IsValid())
 			{
-				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
-				SetNumericAttributeBase(AttributeData->Attribute, AttributeData->BaseValue);
+				if (UClass* AttributeSetClass = AttributeData->Attribute.GetAttributeSetClass())
+				{
+					const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+					SetNumericAttributeBase(AttributeData->Attribute, AttributeData->BaseValue);
+				}
 			}
 		}
 	}
@@ -45,10 +48,13 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	// Grant attributes from ABS's properties.
 	for	(const TTuple<FGameplayAttribute, FScalableFloat>& GrantedAttribute : AbilitySet->GrantedAttributes)
 	{
-		if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
+		if (GrantedAttribute.Key.IsValid())
 		{
-			const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
-			SetNumericAttributeBase(GrantedAttribute.Key, GrantedAttribute.Value.GetValueAtLevel(0.f));
+			if (UClass* AttributeSetClass = GrantedAttribute.Key.GetAttributeSetClass())
+			{
+				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+				SetNumericAttributeBase(GrantedAttribute.Key, GrantedAttribute.Value.GetValueAtLevel(0.f));
+			}
 		}
 	}
 

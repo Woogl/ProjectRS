@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsHealthDamageExecCalculation.h"
+#include "RsHealthDamageExecution.h"
 
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
@@ -12,7 +12,7 @@
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDamageStatics
 {
-	//DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
@@ -21,7 +21,7 @@ struct RsDamageStatics
 	RsDamageStatics()
 	{
 		// Capture optional attribute set
-		//DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
@@ -35,17 +35,17 @@ struct RsDamageStatics
 	}
 };
 
-UDEPRECATED_RsHealthDamageExecCalculation::UDEPRECATED_RsHealthDamageExecCalculation()
+URsHealthDamageExecution::URsHealthDamageExecution()
 {
 	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
 
-	//RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalDmgBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
 }
 
-void UDEPRECATED_RsHealthDamageExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (TargetASC == nullptr)
@@ -61,7 +61,7 @@ void UDEPRECATED_RsHealthDamageExecCalculation::Execute_Implementation(const FGa
 
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
-	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
 
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);

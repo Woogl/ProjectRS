@@ -3,6 +3,7 @@
 
 #include "RsCameraLibrary.h"
 
+#include "Core/CameraVariableAssets.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -58,3 +59,12 @@ void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCa
 	SwitchCameraRig(WorldContextObject, CameraRig);
 	SwitchCharacterFacingMode(WorldContextObject, FacingMode);
 }
+
+void URsCameraLibrary::SetCameraVariableAsVector(const UObject* WorldContextObject, UVector3dCameraVariable* Variable, FVector Value)
+{
+	if (UGameplayCameraComponent* PlayerCameraComponent = GetPlayerCameraComponent(WorldContextObject))
+	{
+		PlayerCameraComponent->GetInitialVariableTable().GetVariableTable()->SetValue<FVector>(Variable->GetVariableID(), Value);
+	}
+}
+
