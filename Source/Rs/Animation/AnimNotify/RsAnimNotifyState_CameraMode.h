@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "RsAnimNotifyState_AbilityBase.h"
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsAnimNotifyState_CameraMode.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_CameraMode : public UAnimNotifyState
+class RS_API URsAnimNotifyState_CameraMode : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
 

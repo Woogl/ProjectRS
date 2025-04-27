@@ -23,5 +23,11 @@ public:
 	static UGameplayCameraComponent* GetPlayerCameraComponent(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
+	static void SwitchCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
+	static void SwitchCharacterFacingMode(const UObject* WorldContextObject, ERsCharacterFacingMode FacingMode);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	static void SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode);
 };

@@ -3,7 +3,6 @@
 
 #include "RsCameraLibrary.h"
 
-#include "Core/CameraAsset.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -23,27 +22,39 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerCameraComponent(const UObje
 	return nullptr;
 }
 
-void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode)
+void URsCameraLibrary::SwitchCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
 		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
 		{
 			RsPlayerController->CameraRig = CameraRig;
+		}
+	}
+}
 
-			if (ACharacter* Character = RsPlayerController->GetCharacter())
+void URsCameraLibrary::SwitchCharacterFacingMode(const UObject* WorldContextObject, ERsCharacterFacingMode FacingMode)
+{
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		if (ACharacter* Character = PlayerController->GetCharacter())
+		{
+			if (FacingMode == ERsCharacterFacingMode::MovementDirection)
 			{
-				if (FacingMode == ERsCharacterFacingMode::MovementDirection)
-				{
-					Character->bUseControllerRotationYaw = false;
-					Character->GetCharacterMovement()->bOrientRotationToMovement = true;
-				}
-				else if (FacingMode == ERsCharacterFacingMode::CameraDirection)
-				{
-					Character->bUseControllerRotationYaw = true;
-					Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-				}
+				Character->bUseControllerRotationYaw = false;
+				Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+			}
+			else if (FacingMode == ERsCharacterFacingMode::CameraDirection)
+			{
+				Character->bUseControllerRotationYaw = true;
+				Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 			}
 		}
 	}
+}
+
+void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode)
+{
+	SwitchCameraRig(WorldContextObject, CameraRig);
+	SwitchCharacterFacingMode(WorldContextObject, FacingMode);
 }
