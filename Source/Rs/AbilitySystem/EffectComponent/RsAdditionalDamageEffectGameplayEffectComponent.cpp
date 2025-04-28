@@ -12,40 +12,11 @@
 void URsAdditionalDamageEffectGameplayEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
 	Super::OnGameplayEffectApplied(ActiveGEContainer, GESpec, PredictionKey);
-
-	FGameplayTagContainer AdditionalEffectTagContainer = GESpec.GetDynamicAssetTags();
-	if (!AdditionalEffectTagContainer.IsEmpty())
+	for (FGameplayEffectSpecHandle AdditionalEffectSpec : GESpec.TargetEffectSpecs)
 	{
-		TArray<FGameplayTag> AdditionalEffectTagArray = AdditionalEffectTagContainer.GetGameplayTagArray();
-		AdditionalEffectTagArray.Sort([](FGameplayTag a, FGameplayTag b)->bool { return a.GetTagName().Compare(b.GetTagName()) <= 0; });
-		for (FGameplayTag AdditionalEffectTag : AdditionalEffectTagArray)
-		{
-			if (TSubclassOf<UGameplayEffect> AdditionalEffectClass = AdditionalDamageEffectTable.FindRef(AdditionalEffectTag))
-			{
-				if (UGameplayEffect* EffectCDO = AdditionalEffectClass.GetDefaultObject())
-				{
-					FGameplayEffectSpec NewSpec;
-					NewSpec.InitializeFromLinkedSpec(EffectCDO, GESpec);
-					ActiveGEContainer.Owner->ApplyGameplayEffectSpecToSelf(NewSpec);
-				}
-			}
-		}
+		ActiveGEContainer.Owner->ApplyGameplayEffectSpecToSelf(*AdditionalEffectSpec.Data);
 	}
 }
-
-#if WITH_EDITOR
-EDataValidationResult URsAdditionalDamageEffectGameplayEffectComponent::IsDataValid(FDataValidationContext& Context) const
-{
-	EDataValidationResult Result = Super::IsDataValid(Context);
-	
-	if (AdditionalDamageEffectTable.IsEmpty())
-	{
-		Result = EDataValidationResult::Invalid;
-		Context.AddWarning(LOCTEXT("EmptyAdditionalEffectTable", "No Elements In Additional Damage Effect Table"));
-	}
-	return Result;
-}
-#endif // WITH_EDITOR
 
 #undef LOCTEXT_NAMESPACE
 

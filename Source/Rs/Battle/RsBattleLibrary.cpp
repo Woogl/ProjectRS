@@ -8,6 +8,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Effect/RsDamageEffect.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/System/RsDeveloperSetting.h"
 #include "TargetingSystem/TargetingSubsystem.h"
@@ -47,7 +48,46 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	return !ResultActors.IsEmpty();
 }
 
-void URsBattleLibrary::SortDamageEffectsByOrder(FRsDamageEventContext& DamageContexts)
+FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	
+	if (SourceASC && EffectCoefficient.EffectClass)
+	{
+		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
+		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
+		{
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+		}
+		return EffectSpecHandle;
+	}
+	return FGameplayEffectSpecHandle();
+}
+
+FActiveGameplayEffectHandle URsBattleLibrary::ApplyDamageContext(const AActor* SourceActor, const AActor* TargetActor, FRsDamageContext& DamageContext)
+{
+	InternalSortDamageEffectsByOrder(DamageContext);
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	if (SourceASC && TargetASC)
+	{
+		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle DamageEffectHandle = SourceASC->MakeOutgoingSpec(URsDamageEffect::StaticClass(), 0, DamageEffectContext);
+		DamageEffectHandle.Data->SetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualLevelTag, DamageContext.InvinciblePenetrationLevel);
+
+		TArray<FGameplayEffectSpecHandle> AdditionalEffects;
+		for (FRsEffectCoefficient EffectCoefficient : DamageContext.EffectCoefficients)
+		{
+			AdditionalEffects.Add(MakeEffectSpecCoefficient(SourceActor,TargetActor,EffectCoefficient));
+		}
+		DamageEffectHandle.Data->TargetEffectSpecs = AdditionalEffects;
+		return SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectHandle.Data,TargetASC);
+	}
+	return FActiveGameplayEffectHandle();
+}
+
+void URsBattleLibrary::InternalSortDamageEffectsByOrder(FRsDamageContext& DamageContexts)
 {
 	for (const FRsEffectCoefficient& Context : DamageContexts.EffectCoefficients)
 	{

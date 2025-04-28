@@ -6,6 +6,7 @@
 #include "ActiveGameplayEffectHandle.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsBattleLibrary.generated.h"
 
@@ -26,7 +27,10 @@ public:
 	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void SortDamageEffectsByOrder(FRsDamageEventContext& DamageContexts);
+	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static FActiveGameplayEffectHandle ApplyDamageContext(const AActor* SourceActor, const AActor* TargetActor, FRsDamageContext& DamageContext);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
@@ -39,4 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta = (DefaultToSelf = "Target"))
 	static bool IsDead(const AActor* Target);
+
+protected:
+	static void InternalSortDamageEffectsByOrder(FRsDamageContext& DamageContexts);
 };

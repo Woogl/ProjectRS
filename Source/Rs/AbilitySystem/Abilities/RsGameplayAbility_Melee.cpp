@@ -13,7 +13,7 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 	
 	if (DamageEvents.Num() > 0)
 	{
-		for (const FRsDamageEventContext& Event : DamageEvents)
+		for (const FRsDamageContext& Event : DamageEvents)
 		{
 			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.DamageEventTag);
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
@@ -24,15 +24,11 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
-	FRsDamageEventContext* DamageEffectContext = DamageEvents.FindByKey(EventData.EventTag);
-	if (!DamageEffectContext->EffectCoefficients.IsEmpty())
+	FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag);
+	if (!DamageContext->EffectCoefficients.IsEmpty())
 	{
-		URsBattleLibrary::SortDamageEffectsByOrder(*DamageEffectContext);
-		for (const FRsEffectCoefficient& EffectCoefficient : DamageEffectContext->EffectCoefficients)
-		{
-			URsBattleLibrary::ApplyEffectCoefficient(GetAvatarActorFromActorInfo(), EventData.Target, EffectCoefficient);
-			ApplyCostRecovery();
-			OnAttackHitTarget(EventData.Target, EventData.EventTag);
-		}
+		URsBattleLibrary::ApplyDamageContext(GetAvatarActorFromActorInfo(), EventData.Target, *DamageContext);
+		ApplyCostRecovery();
+		OnAttackHitTarget(EventData.Target, EventData.EventTag);
 	}
 }

@@ -17,7 +17,7 @@ class RS_API URsAnimNotify_HitScan : public URsAnimNotify_Targeting
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
-	FRsDamageEventContext DamageContext;
+	FRsDamageContext DamageContext;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

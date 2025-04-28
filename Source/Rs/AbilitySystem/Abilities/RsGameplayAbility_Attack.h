@@ -8,7 +8,7 @@
 #include "RsGameplayAbility_Attack.generated.h"
 
 USTRUCT(BlueprintType)
-struct FRsDamageEventContext
+struct FRsDamageContext
 {
 	GENERATED_BODY()
 
@@ -16,9 +16,12 @@ struct FRsDamageEventContext
 	FGameplayTag DamageEventTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float InvinciblePenetrationLevel;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FRsEffectCoefficient> EffectCoefficients;
 
-	bool operator==(const FRsDamageEventContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
+	bool operator==(const FRsDamageContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
 };
 
@@ -35,7 +38,7 @@ protected:
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "AnimNotify", ForceInlineRow))
-	TArray<FRsDamageEventContext> DamageEvents;
+	TArray<FRsDamageContext> DamageEvents;
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
