@@ -9,10 +9,11 @@
 /**
  * 
  */
-UCLASS(NotBlueprintable)
+UCLASS(NotBlueprintable, Abstract)
 class RS_API URsDamageEffect : public UGameplayEffect
 {
 	GENERATED_BODY()
-	
+
+public:
 	virtual void PostInitProperties() override;
 };
