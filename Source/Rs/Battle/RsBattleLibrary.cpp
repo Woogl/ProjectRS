@@ -59,6 +59,7 @@ FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(const AAct
 		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
 		{
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+			EffectSpecHandle.Data->GetContext().AddOrigin(TargetActor->GetActorLocation());
 		}
 		return EffectSpecHandle;
 	}
@@ -77,12 +78,12 @@ FActiveGameplayEffectHandle URsBattleLibrary::ApplyDamageContext(const AActor* S
 		DamageEffectHandle.Data->SetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualLevelTag, DamageContext.InvinciblePenetrationLevel);
 
 		TArray<FGameplayEffectSpecHandle> AdditionalEffects;
-		for (FRsEffectCoefficient EffectCoefficient : DamageContext.EffectCoefficients)
+		for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
 		{
-			AdditionalEffects.Add(MakeEffectSpecCoefficient(SourceActor,TargetActor,EffectCoefficient));
+			AdditionalEffects.Add(MakeEffectSpecCoefficient(SourceActor, TargetActor, EffectCoefficient));
 		}
 		DamageEffectHandle.Data->TargetEffectSpecs = AdditionalEffects;
-		return SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectHandle.Data,TargetASC);
+		return SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectHandle.Data, TargetASC);
 	}
 	return FActiveGameplayEffectHandle();
 }
