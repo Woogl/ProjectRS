@@ -6,28 +6,28 @@
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
-struct RsStaggerStatics
+struct RsStaggerDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerDamage);
 
-	RsStaggerStatics()
+	RsStaggerDamageStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerDamage, Target, false);
 	}
 
-	static const RsStaggerStatics& Get()
+	static const RsStaggerDamageStatics& Get()
 	{
-		static RsStaggerStatics StaggerStatics;
+		static RsStaggerDamageStatics StaggerStatics;
 		return StaggerStatics;
 	}
 };
 
 URsStaggerDamageExecution::URsStaggerDamageExecution()
 {
-	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
+	const RsStaggerDamageStatics* DamageStatics = &RsStaggerDamageStatics::Get();
 
 	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 }
@@ -44,7 +44,7 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	const RsStaggerStatics* DamageStatics = &RsStaggerStatics::Get();
+	const RsStaggerDamageStatics* DamageStatics = &RsStaggerDamageStatics::Get();
 
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;

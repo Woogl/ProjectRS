@@ -10,7 +10,7 @@
 #include "Rs/System/RsGameSetting.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
-struct RsDamageStatics
+struct RsHealthDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
@@ -18,7 +18,7 @@ struct RsDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
 
-	RsDamageStatics()
+	RsHealthDamageStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
@@ -28,16 +28,16 @@ struct RsDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
 	}
 
-	static const RsDamageStatics& Get()
+	static const RsHealthDamageStatics& Get()
 	{
-		static RsDamageStatics DamageStatics;
+		static RsHealthDamageStatics DamageStatics;
 		return DamageStatics;
 	}
 };
 
 URsHealthDamageExecution::URsHealthDamageExecution()
 {
-	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
+	const RsHealthDamageStatics* DamageStatics = &RsHealthDamageStatics::Get();
 
 	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
@@ -57,7 +57,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	const RsDamageStatics* DamageStatics = &RsDamageStatics::Get();
+	const RsHealthDamageStatics* DamageStatics = &RsHealthDamageStatics::Get();
 
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
