@@ -19,6 +19,10 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 
 	Targets.Reset();
 	PerformTargeting(MeshComp);
+
+#if WITH_EDITOR
+	SocketNames = MeshComp->GetAllSocketNames();
+#endif // WITH_EDITOR
 }
 
 void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -27,17 +31,18 @@ void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	
 }
 
-void URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
+bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
 {
+	bool bSuccess = false;
 	if (MeshComp == nullptr)
 	{
-		return;
+		return bSuccess;
 	}
 	
 	UWorld* World = MeshComp->GetWorld();
 	if (World == nullptr)
 	{
-		return;
+		return bSuccess;
 	}
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
@@ -93,15 +98,19 @@ void URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	}
 
 	/** Sorting */
-	ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
+	if (bSortByDistance == true)
 	{
-		return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
-	});
+		ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
+		{
+			return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
+		});
+	}
 	
 	/** Keep nearest actor */
 	if (ResultActors.Num() > 0)
 	{
 		Targets.AddUnique(ResultActors[0]);
+		bSuccess = true;
 	}
 
 #if WITH_EDITOR
@@ -113,8 +122,9 @@ void URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	{
 		DrawDebugShape(MeshComp, SourceTransform);
 	}
-	CachedMeshComp = MeshComp;
 #endif // WITH_EDITOR
+
+	return bSuccess;
 }
 
 FCollisionShape URsAnimNotifyState_Targeting::GetCollisionShape() const
@@ -138,15 +148,6 @@ FCollisionShape URsAnimNotifyState_Targeting::GetCollisionShape() const
 }
 
 #if WITH_EDITOR
-TArray<FName> URsAnimNotifyState_Targeting::GetSocketNames() const
-{
-	if (CachedMeshComp.IsValid())
-	{
-		return CachedMeshComp->GetAllSocketNames();
-	}
-	return TArray<FName>();
-}
-
 void URsAnimNotifyState_Targeting::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	const UWorld* World = MeshComp->GetWorld();

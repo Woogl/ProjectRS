@@ -16,6 +16,9 @@ class RS_API URsAnimNotifyState_TurnAround : public URsAnimNotifyState_Targeting
 
 public:
 	URsAnimNotifyState_TurnAround();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxTurnAroundSpeed = 300.f;
 	
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

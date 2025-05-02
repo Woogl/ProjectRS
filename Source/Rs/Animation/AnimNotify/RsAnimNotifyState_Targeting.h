@@ -27,9 +27,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
 	FRotator RotationOffset = FRotator::ZeroRotator;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxTurnAroundSpeed = 300.f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
 	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;
 
@@ -51,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
 	bool bIgnoreEnemyTeam = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
+	bool bSortByDistance = true;
+
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool bShowDebugInPIE = false;
@@ -63,19 +63,20 @@ protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 	
-	void PerformTargeting(USkeletalMeshComponent* MeshComp);
+	bool PerformTargeting(USkeletalMeshComponent* MeshComp);
 	TArray<TWeakObjectPtr<AActor>> Targets;
 	
 	FCollisionShape GetCollisionShape() const;
 
 #if WITH_EDITOR
 	UFUNCTION()
-	TArray<FName> GetSocketNames() const;
+	TArray<FName> GetSocketNames() const { return SocketNames; }
 	
 	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA
-	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+	UPROPERTY()
+	TArray<FName> SocketNames;
 #endif // WITH_EDITORONLY_DATA
 };
