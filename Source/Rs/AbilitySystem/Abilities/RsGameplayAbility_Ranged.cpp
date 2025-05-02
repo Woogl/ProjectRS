@@ -45,11 +45,13 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 	}
 
 	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	
-	FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag);
-	Projectile->DamageContext = *DamageContext;
-	Projectile->EventTag = EventData.EventTag;
-	Projectile->OwningAbility = this;
+
+	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
+	{
+		Projectile->DamageContext = *DamageContext;
+		Projectile->EventTag = EventData.EventTag;
+		Projectile->OwningAbility = this;
+	}
 	
 	if (CachedVictim.IsValid())
 	{
