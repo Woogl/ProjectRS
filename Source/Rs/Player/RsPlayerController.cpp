@@ -7,6 +7,7 @@
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Party/RsPartyComponent.h"
 
@@ -49,7 +50,14 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 			// When player controlled, spawn an AI controller and keep it.
 			if (PrevAIController == nullptr && GetCharacter()->AIControllerClass)
 			{
-				PrevAIController = GetWorld()->SpawnActor<AAIController>(GetCharacter()->AIControllerClass);
+				if (GetCharacter()->AIControllerClass->IsChildOf(AAIController::StaticClass()))
+				{
+					PrevAIController = GetWorld()->SpawnActor<AAIController>(GetCharacter()->AIControllerClass);
+				}
+				else
+				{
+					UE_LOG(RsLog, Error, TEXT("%s has Invalid AIController. Please use 'BP_FriendlyAIController' instead."), *GetCharacter()->GetName());
+				}
 			}
 		}
 	}
