@@ -125,7 +125,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		DrawDebugShape(World, SourceTransform);
 	}
-	CachedMeshComp = MeshComp;
+	SocketNames = MeshComp->GetAllSocketNames();
 #endif // WITH_EDITOR
 }
 
@@ -150,15 +150,6 @@ FCollisionShape URsAnimNotify_Targeting::GetCollisionShape() const
 }
 
 #if WITH_EDITOR
-TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
-{
-	if (CachedMeshComp.IsValid())
-	{
-		return CachedMeshComp->GetAllSocketNames();
-	}
-	return TArray<FName>();
-}
-
 void URsAnimNotify_Targeting::DrawDebugShape(const UWorld* World, FTransform SourceTransform)
 {
 	const FCollisionShape CollisionShape = GetCollisionShape();

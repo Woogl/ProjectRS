@@ -83,12 +83,13 @@ protected:
 	
 #if WITH_EDITOR
 	UFUNCTION()
-	TArray<FName> GetSocketNames() const;
+	TArray<FName> GetSocketNames() const { return SocketNames; }
 	
 	void DrawDebugShape(const UWorld* World, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA
-	TWeakObjectPtr<USkeletalMeshComponent> CachedMeshComp;
+	UPROPERTY()
+	TArray<FName> SocketNames;
 #endif // WITH_EDITORONLY_DATA
 };
