@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RsAnimNotifyState_Targeting.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "RsAnimNotifyState_HitTrace.generated.h"
 
 /**
@@ -16,6 +17,9 @@ class RS_API URsAnimNotifyState_HitTrace : public URsAnimNotifyState_Targeting
 
 public:
 	URsAnimNotifyState_HitTrace();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
+	FRsDamageContext DamageContext;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bStopTraceWhenFirstHit = false;
@@ -32,9 +36,9 @@ protected:
 	UPROPERTY()
 	TArray<AActor*> HitTargets;
 	
-	UPROPERTY(VisibleAnywhere)
-	TOptional<FTransform> PreviousSocketTransform;
+	UPROPERTY()
+	TOptional<FTransform> LastSocketTransform;
 
-	// UPROPERTY()
-	// TArray<USkeletalMeshComponent*> SubstepMeshes;
+	UPROPERTY()
+	bool bStopTrace = false;
 };

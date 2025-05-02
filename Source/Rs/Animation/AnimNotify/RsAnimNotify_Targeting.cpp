@@ -32,7 +32,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
-	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion() * SourceTransform.GetRotation());
+	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion());
 
 	/** Overlapping */
 	TArray<FOverlapResult> OverlapResults;
@@ -119,11 +119,11 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 #if WITH_EDITOR
 	if (World->WorldType == EWorldType::PIE && bShowDebugInPIE)
 	{
-		DrawDebugShape(MeshComp, SourceTransform);
+		DrawDebugShape(World, SourceTransform);
 	}
 	else if (World->WorldType == EWorldType::EditorPreview)
 	{
-		DrawDebugShape(MeshComp, SourceTransform);
+		DrawDebugShape(World, SourceTransform);
 	}
 	CachedMeshComp = MeshComp;
 #endif // WITH_EDITOR
@@ -159,9 +159,8 @@ TArray<FName> URsAnimNotify_Targeting::GetSocketNames() const
 	return TArray<FName>();
 }
 
-void URsAnimNotify_Targeting::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
+void URsAnimNotify_Targeting::DrawDebugShape(const UWorld* World, FTransform SourceTransform)
 {
-	const UWorld* World = MeshComp->GetWorld();
 	const FCollisionShape CollisionShape = GetCollisionShape();
 
 	const bool bPersistentLines = false;

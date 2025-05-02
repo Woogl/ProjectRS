@@ -85,7 +85,7 @@ protected:
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const;
 	
-	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
+	void DrawDebugShape(const UWorld* World, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA

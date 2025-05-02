@@ -63,7 +63,7 @@ protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 	
-	bool PerformTargeting(USkeletalMeshComponent* MeshComp);
+	bool PerformTargeting(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
 	TArray<TWeakObjectPtr<AActor>> Targets;
 	
 	FCollisionShape GetCollisionShape() const;
@@ -72,7 +72,7 @@ protected:
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const { return SocketNames; }
 	
-	void DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
+	void DrawDebugShape(const UWorld* World, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA

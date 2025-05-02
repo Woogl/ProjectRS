@@ -18,7 +18,7 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	Targets.Reset();
-	PerformTargeting(MeshComp);
+	PerformTargeting(MeshComp, MeshComp->GetSocketTransform(SocketName));
 
 #if WITH_EDITOR
 	SocketNames = MeshComp->GetAllSocketNames();
@@ -31,23 +31,28 @@ void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	
 }
 
-bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
+bool URsAnimNotifyState_Targeting::PerformTargeting(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	bool bSuccess = false;
 	if (MeshComp == nullptr)
 	{
 		return bSuccess;
 	}
+
+	AActor* Owner = MeshComp->GetOwner();
+	if (Owner == nullptr)
+	{
+		return bSuccess;
+	}
 	
-	UWorld* World = MeshComp->GetWorld();
+	UWorld* World = Owner->GetWorld();
 	if (World == nullptr)
 	{
 		return bSuccess;
 	}
 	
-	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
-	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion() * SourceTransform.GetRotation());
+	SourceTransform.SetRotation(SourceTransform.GetRotation() * RotationOffset.Quaternion());
 
 	/** Overlapping */
 	TArray<FOverlapResult> OverlapResults;
@@ -66,20 +71,20 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	TArray<AActor*> ResultActors;
 	for (FOverlapResult& OverlapResult : OverlapResults)
 	{
-		if (OverlapResult.GetActor() == MeshComp->GetOwner())
+		if (OverlapResult.GetActor() == Owner)
 		{
 			continue;
 		}
 		if (bIgnoreFriendlyTeam)
 		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(Owner))
 			{
 				continue;
 			}
 		}
 		if (bIgnoreEnemyTeam)
 		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) != URsAILibrary::GetTeamID(MeshComp->GetOwner()))
+			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) != URsAILibrary::GetTeamID(Owner))
 			{
 				continue;
 			}
@@ -88,7 +93,7 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	}
 
 	// When AI blackboard has "TargetActor", use it.
-	if (UObject* BBValue = URsAILibrary::GetBlackboardValueAsObject(MeshComp->GetOwner(), TEXT("TargetActor")))
+	if (UObject* BBValue = URsAILibrary::GetBlackboardValueAsObject(Owner, TEXT("TargetActor")))
 	{
 		if (AActor* TargetActor = Cast<AActor>(BBValue))
 		{
@@ -100,9 +105,9 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	/** Sorting */
 	if (bSortByDistance == true)
 	{
-		ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
+		ResultActors.Sort([&Owner](const AActor& A, const AActor& B)
 		{
-			return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
+			return FVector::Dist(A.GetActorLocation(), Owner->GetActorLocation()) < FVector::Dist(B.GetActorLocation(), Owner->GetActorLocation());
 		});
 	}
 	
@@ -116,11 +121,11 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 #if WITH_EDITOR
 	if (World->WorldType == EWorldType::PIE && bShowDebugInPIE)
 	{
-		DrawDebugShape(MeshComp, SourceTransform);
+		DrawDebugShape(World, SourceTransform);
 	}
 	else if (World->WorldType == EWorldType::EditorPreview)
 	{
-		DrawDebugShape(MeshComp, SourceTransform);
+		DrawDebugShape(World, SourceTransform);
 	}
 #endif // WITH_EDITOR
 
@@ -148,9 +153,8 @@ FCollisionShape URsAnimNotifyState_Targeting::GetCollisionShape() const
 }
 
 #if WITH_EDITOR
-void URsAnimNotifyState_Targeting::DrawDebugShape(USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
+void URsAnimNotifyState_Targeting::DrawDebugShape(const UWorld* World, FTransform SourceTransform)
 {
-	const UWorld* World = MeshComp->GetWorld();
 	const FCollisionShape CollisionShape = GetCollisionShape();
 
 	const bool bPersistentLines = false;
