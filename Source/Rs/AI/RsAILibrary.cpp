@@ -7,9 +7,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
-uint8 URsAILibrary::GetTeamID(AActor* Actor)
+uint8 URsAILibrary::GetTeamID(const AActor* Actor)
 {
-	if (IGenericTeamAgentInterface* TeamInterface = Cast<IGenericTeamAgentInterface>(Actor))
+	if (const IGenericTeamAgentInterface* TeamInterface = Cast<IGenericTeamAgentInterface>(Actor))
 	{
 		return TeamInterface->GetGenericTeamId().GetId();
 	}

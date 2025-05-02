@@ -3,6 +3,7 @@
 
 #include "RsAnimNotifyState_Targeting.h"
 
+#include "GameplayTagAssetInterface.h"
 #include "Engine/OverlapResult.h"
 #include "Rs/AI/RsAILibrary.h"
 
@@ -18,7 +19,9 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	Targets.Reset();
-	PerformTargeting(MeshComp, MeshComp->GetSocketTransform(SocketName));
+	PerformOverlapping(MeshComp, MeshComp->GetSocketTransform(SocketName));
+	PerformFiltering(MeshComp->GetOwner());
+	PerformSorting(MeshComp->GetOwner());
 
 #if WITH_EDITOR
 	SocketNames = MeshComp->GetAllSocketNames();
@@ -31,7 +34,7 @@ void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	
 }
 
-bool URsAnimNotifyState_Targeting::PerformTargeting(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
+bool URsAnimNotifyState_Targeting::PerformOverlapping(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform)
 {
 	bool bSuccess = false;
 	if (MeshComp == nullptr)
@@ -66,55 +69,14 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(const USkeletalMeshComponent
 		}
 		World->OverlapMultiByObjectType(OverlapResults, SourceTransform.GetLocation(), SourceTransform.GetRotation(), ObjectParams, GetCollisionShape());
 	}
-
-	/** Filtering */
-	TArray<AActor*> ResultActors;
-	for (FOverlapResult& OverlapResult : OverlapResults)
+	
+	for (const FOverlapResult& OverlapResult : OverlapResults)
 	{
-		if (OverlapResult.GetActor() == Owner)
-		{
-			continue;
-		}
-		if (bIgnoreFriendlyTeam)
-		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) == URsAILibrary::GetTeamID(Owner))
-			{
-				continue;
-			}
-		}
-		if (bIgnoreEnemyTeam)
-		{
-			if (URsAILibrary::GetTeamID(OverlapResult.GetActor()) != URsAILibrary::GetTeamID(Owner))
-			{
-				continue;
-			}
-		}
-		ResultActors.AddUnique(OverlapResult.GetActor());
-	}
-
-	// When AI blackboard has "TargetActor", use it.
-	if (UObject* BBValue = URsAILibrary::GetBlackboardValueAsObject(Owner, TEXT("TargetActor")))
-	{
-		if (AActor* TargetActor = Cast<AActor>(BBValue))
-		{
-			ResultActors.Empty();
-			ResultActors.Add(TargetActor);
-		}
-	}
-
-	/** Sorting */
-	if (bSortByDistance == true)
-	{
-		ResultActors.Sort([&Owner](const AActor& A, const AActor& B)
-		{
-			return FVector::Dist(A.GetActorLocation(), Owner->GetActorLocation()) < FVector::Dist(B.GetActorLocation(), Owner->GetActorLocation());
-		});
+		Targets.AddUnique(OverlapResult.GetActor());
 	}
 	
-	/** Keep nearest actor */
-	if (ResultActors.Num() > 0)
+	if (Targets.Num() > 0)
 	{
-		Targets.AddUnique(ResultActors[0]);
 		bSuccess = true;
 	}
 
@@ -130,6 +92,74 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(const USkeletalMeshComponent
 #endif // WITH_EDITOR
 
 	return bSuccess;
+}
+
+void URsAnimNotifyState_Targeting::PerformFiltering(const AActor* Owner)
+{
+	for (int32 i = Targets.Num() - 1; i >= 0; --i)
+	{
+		if (AActor* Target = Targets[i].Get())
+		{
+			const bool bSelfCheck = Target == Owner;
+			const bool bSameTeam = URsAILibrary::GetTeamID(Target) == URsAILibrary::GetTeamID(Owner);
+			
+			if (!bIncludeSelf && bSelfCheck)
+			{
+				Targets.RemoveAt(i);
+				continue;
+			}
+			
+			if (!bIncludeFriendlyTeam && bSameTeam && !bSelfCheck)
+			{
+				Targets.RemoveAt(i);
+				continue;
+			}
+			
+			if (!bIncludeHostileTeam && !bSameTeam && !bSelfCheck)
+			{
+				Targets.RemoveAt(i);
+				continue;
+			}
+			
+			if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(Target))
+			{
+				FGameplayTagContainer OutTags;
+				TagInterface->GetOwnedGameplayTags(OutTags);
+				if (TargetRequirements.RequirementsMet(OutTags) == false)
+				{
+					Targets.RemoveAt(i);
+					continue;
+				}
+			}
+		}
+	}
+
+	if ((MaxTargetCount > 0) && (Targets.Num() > MaxTargetCount))
+	{
+		Targets.SetNum(MaxTargetCount);
+	}
+}
+
+void URsAnimNotifyState_Targeting::PerformSorting(const AActor* Owner)
+{
+	/** Sorting */
+	if (bSortByDistance == true)
+	{
+		Targets.Sort([&Owner](const TWeakObjectPtr<AActor>& A, const TWeakObjectPtr<AActor>& B)
+		{
+			AActor* TargetA = A.Get();
+			AActor* TargetB = B.Get();
+			if (!IsValid(TargetA))
+			{
+				return false;
+			}
+			if (!IsValid(TargetB))
+			{
+				return true;
+			}
+			return FVector::DistSquared(TargetA->GetActorLocation(), Owner->GetActorLocation()) < FVector::DistSquared(TargetB->GetActorLocation(), Owner->GetActorLocation());
+		});
+	}
 }
 
 FCollisionShape URsAnimNotifyState_Targeting::GetCollisionShape() const

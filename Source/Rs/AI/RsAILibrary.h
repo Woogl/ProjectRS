@@ -16,7 +16,7 @@ class RS_API URsAILibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintPure, Category = "RS AI Library", Meta=(DefaultToSelf = "Actor"))
-	static uint8 GetTeamID(AActor* Actor);
+	static uint8 GetTeamID(const AActor* Actor);
 
 	UFUNCTION(BlueprintPure, Category = "RS AI Library", Meta=(DefaultToSelf = "Actor"))
 	static UObject* GetBlackboardValueAsObject(AActor* Actor, FName KeyName);

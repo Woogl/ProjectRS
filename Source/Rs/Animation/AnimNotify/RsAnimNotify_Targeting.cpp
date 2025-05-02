@@ -92,11 +92,11 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		ResultActors.Sort([&MeshComp](const AActor& A, const AActor& B)
 		{
-			return FVector::Dist(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::Dist(B.GetActorLocation(), MeshComp->GetComponentLocation());
+			return FVector::DistSquared(A.GetActorLocation(), MeshComp->GetComponentLocation()) < FVector::DistSquared(B.GetActorLocation(), MeshComp->GetComponentLocation());
 		});
 	}
 	
-	if (MaxTargetCount >= 1)
+	if ((MaxTargetCount > 0) && (ResultActors.Num() > MaxTargetCount))
 	{
 		ResultActors.SetNum(MaxTargetCount);
 	}

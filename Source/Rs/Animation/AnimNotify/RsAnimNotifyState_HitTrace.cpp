@@ -44,14 +44,16 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	SubstepNum = FMath::Min(SubstepNum, MaxSubstep);
 
 	// Perform targeting from last transform to current transform without leaving any gaps.
-	PerformTargeting(MeshComp, MeshComp->GetSocketTransform(SocketName));
+	PerformOverlapping(MeshComp, MeshComp->GetSocketTransform(SocketName));
 	for (int32 i = 1; i <= SubstepNum; ++i)
 	{
 		float Alpha = static_cast<float>(i) / SubstepNum;
 		FTransform SubstepTransform;
 		SubstepTransform.Blend(LastSocketTransform.GetValue(), MeshComp->GetSocketTransform(SocketName), Alpha);
-		PerformTargeting(MeshComp, SubstepTransform);
+		PerformOverlapping(MeshComp, SubstepTransform);
 	}
+	PerformFiltering(MeshComp->GetOwner());
+	PerformSorting(MeshComp->GetOwner());
 
 	// Deal damage to each target
 	for (TWeakObjectPtr<AActor> Target : Targets)

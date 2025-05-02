@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "RsTargetingTypes.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "RsAnimNotifyState_Targeting.generated.h"
@@ -43,10 +44,19 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bIgnoreFriendlyTeam = true;
+	bool bIncludeSelf = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	bool bIncludeFriendlyTeam = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bIgnoreEnemyTeam = false;
+	bool bIncludeHostileTeam = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	int32 MaxTargetCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
+	FGameplayTagRequirements TargetRequirements;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
 	bool bSortByDistance = true;
@@ -62,9 +72,12 @@ public:
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
-	
-	bool PerformTargeting(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
+
 	TArray<TWeakObjectPtr<AActor>> Targets;
+	
+	bool PerformOverlapping(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
+	void PerformFiltering(const AActor* Owner);
+	void PerformSorting(const AActor* Owner);
 	
 	FCollisionShape GetCollisionShape() const;
 
