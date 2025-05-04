@@ -50,7 +50,7 @@ void ARsPlayerController::OnUnPossess()
 	
 	Super::OnUnPossess();
 
-	// Reuse the cached SpawnedAIController.
+	// Reuse the cached Friendly AI Controller.
 	if (ARsPlayerCharacter* RsCharacter = Cast<ARsPlayerCharacter>(ReleasedPawn))
 	{
 		if (TObjectPtr<AAIController> SpawnedAIController = RsCharacter->FriendlyAIController)
