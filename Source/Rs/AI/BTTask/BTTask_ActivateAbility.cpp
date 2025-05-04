@@ -21,22 +21,30 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 	{
 		if (ASC->TryActivateAbilitiesByTag(AbilityTags))
 		{
-			if (UGameplayAbility* ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, AbilityTags, true))
+			ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, AbilityTags, true);
+			if (ActivatedAbility.IsValid())
 			{
 				if (ActivatedAbility->IsActive())
 				{
 					MyOwnerComp = &OwnerComp;
-					ActivatedAbility->OnGameplayAbilityEnded.AddWeakLambda(this, [this](UGameplayAbility* Ability)
-					{
-						if (this && MyOwnerComp.IsValid())
-						{
-							FinishLatentTask(*MyOwnerComp, EBTNodeResult::Succeeded);
-						}
-					});
+					ActivatedAbility->OnGameplayAbilityEnded.AddUObject(this, &ThisClass::HandleAbilityEnded);
 					Result = EBTNodeResult::InProgress;
 				}
 			}
 		}
 	}
 	return Result;
+}
+
+void UBTTask_ActivateAbility::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
+{
+	if (ActivatedAbility.IsValid())
+	{
+		ActivatedAbility->OnGameplayAbilityEnded.RemoveAll(this);
+	}
+}
+
+void UBTTask_ActivateAbility::HandleAbilityEnded(UGameplayAbility* Ability)
+{
+	FinishLatentTask(*MyOwnerComp, EBTNodeResult::Succeeded);
 }
