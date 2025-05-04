@@ -46,5 +46,8 @@ void UBTTask_ActivateAbility::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, 
 
 void UBTTask_ActivateAbility::HandleAbilityEnded(UGameplayAbility* Ability)
 {
-	FinishLatentTask(*MyOwnerComp, EBTNodeResult::Succeeded);
+	if (MyOwnerComp.IsValid())
+	{
+		FinishLatentTask(*MyOwnerComp, EBTNodeResult::Succeeded);
+	}
 }
