@@ -53,7 +53,7 @@ bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	// Don’t apply the cooldown when recharging.
+	// Don’t apply cooldown during recharge.
 	if (CooldownGE && (MaxRechargeStacks == 0 || CurrentRechargeStacks < MaxRechargeStacks))
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
