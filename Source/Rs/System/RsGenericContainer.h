@@ -20,7 +20,7 @@ private:
 	TMap<FName, FGenericTypes> Values;
 
 public:
-	UFUNCTION(Blueprintable)
+	UFUNCTION(BlueprintCallable)
 	void Reset();
 
 	UFUNCTION(BlueprintCallable)
