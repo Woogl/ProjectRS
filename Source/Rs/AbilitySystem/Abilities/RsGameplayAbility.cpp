@@ -29,11 +29,35 @@ const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	if (CooldownGE)
+	if (!CooldownGE)
+	{
+		return;
+	}
+
+	// Do not apply cooldown again while recharging.
+	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
 		CurrentCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+	}
+
+	if (MaxRechargeStacks > 0)
+	{
+		CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks - 1, 0, MaxRechargeStacks);
+		OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
+	}
+}
+
+bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (CurrentRechargeStacks > 0)
+	{
+		return true;
+	}
+	else
+	{
+		return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
 	}
 }
 
@@ -129,6 +153,10 @@ void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
 
 	// Set up Bindings for Enhanced Input.
 	SetupEnhancedInputBindings(ActorInfo, Spec);
+
+	// Set up Cooldowns stacks for recharge.
+	CurrentRechargeStacks = MaxRechargeStacks;
+	RechargeDelegateHandle = ActorInfo->AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::AnyCountChange).AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
 }
 
 void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -228,9 +256,21 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 	AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec->Handle, ActivationInfo.GetActivationPredictionKey());
 }
 
+void URsGameplayAbility::HandleRechargeStacksChanged(FGameplayTag GameplayTag, int NewStacks)
+{
+	CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks + 1, 0, MaxRechargeStacks);
+	OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
+	
+	if (CurrentRechargeStacks < MaxRechargeStacks && GetCooldownTimeRemaining() <= 0.f)
+	{
+		ApplyCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+	}
+}
+
 void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	TeardownEnhancedInputBindings(ActorInfo, Spec);
+	ActorInfo->AbilitySystemComponent->UnregisterGameplayTagEvent(RechargeDelegateHandle, CooldownTag, EGameplayTagEventType::AnyCountChange);
 	
 	Super::OnRemoveAbility(ActorInfo, Spec);
 

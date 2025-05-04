@@ -20,6 +20,13 @@ URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAb
 void URsAbilityViewModel::Initialize()
 {
 	CachedModel = Cast<URsGameplayAbility>(GetOuter());
+	if (CachedModel.IsValid())
+	{
+		SetCurrentRechargeStacks(CachedModel->GetCurrentRechargeStacks());
+		SetMaxRechargeStacks(CachedModel->MaxRechargeStacks);
+		
+		CachedModel->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
+	}
 }
 
 float URsAbilityViewModel::GetCooldownDuration() const
@@ -30,6 +37,16 @@ float URsAbilityViewModel::GetCooldownDuration() const
 float URsAbilityViewModel::GetCooldownRemaining() const
 {
 	return CooldownRemaining;
+}
+
+int32 URsAbilityViewModel::GetCurrentRechargeStacks() const
+{
+	return CurrentRechargeStacks;
+}
+
+int32 URsAbilityViewModel::GetMaxRechargeStacks() const
+{
+	return MaxRechargeStacks;
 }
 
 void URsAbilityViewModel::SetCooldownDuration(float NewCooldownDuration)
@@ -50,6 +67,24 @@ void URsAbilityViewModel::SetCooldownRemaining(float NewCooldownRemaining)
 	}
 }
 
+void URsAbilityViewModel::SetCurrentRechargeStacks(int32 NewStacks)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentRechargeStacks, NewStacks))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
+	}
+}
+
+void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(MaxRechargeStacks, NewStacks))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
+	}
+}
+
 float URsAbilityViewModel::GetCooldownPercent() const
 {
 	if (CooldownDuration == 0.f)
@@ -62,6 +97,20 @@ float URsAbilityViewModel::GetCooldownPercent() const
 bool URsAbilityViewModel::IsOnCooldown() const
 {
 	return CooldownRemaining > 0.f;
+}
+
+bool URsAbilityViewModel::IsRechargeable() const
+{
+	if (CachedModel.IsValid())
+	{
+		return CachedModel->MaxRechargeStacks > 0;
+	}
+	return false;
+}
+
+void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
+{
+	SetCurrentRechargeStacks(CurrentStacks);
 }
 
 void URsAbilityViewModel::Tick(float DeltaTime)

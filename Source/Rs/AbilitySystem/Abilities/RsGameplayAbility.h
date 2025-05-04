@@ -9,6 +9,7 @@
 
 class URsGenericContainer;
 class ARsCharacterBase;
+
 /**
  * 
  */
@@ -34,6 +35,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
 	FScalableFloat CooldownDuration;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns", meta = (ClampMin = "0"))
+	int32 MaxRechargeStacks = 0;
+
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRechargeStacksChanged, int32 NewStacks);
+	FOnRechargeStacksChanged OnRechargeStacksChanged;
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
 	FScalableFloat CostAmount;
 
@@ -50,6 +57,7 @@ public:
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	void ApplyCostRecovery();
 	
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
@@ -57,6 +65,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void SetCooldownRemaining(float NewRemaining);
+
+	UFUNCTION(BlueprintPure, Category = "Cooldowns")
+	int32 GetCurrentRechargeStacks() const { return CurrentRechargeStacks; };
 	
 	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable. 
 	void SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
@@ -86,6 +97,9 @@ protected:
 	// Called when the "Activation Input Action" is completed.
 	void HandleInputReleasedEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpecHandle SpecHandle);
 
+	// Called when cooldown stacks changed.
+	void HandleRechargeStacksChanged(FGameplayTag GameplayTag, int NewStacks);
+
 	// Override "OnRemoveAbility" to clean up Enhanced Input Bindings.
 	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	
@@ -98,4 +112,6 @@ protected:
 private:
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
+	mutable int32 CurrentRechargeStacks = 0;
+	FDelegateHandle RechargeDelegateHandle;
 };
