@@ -7,6 +7,11 @@
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectApplied.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 
+URsAnimNotifyState_OnDamageAbility::URsAnimNotifyState_OnDamageAbility()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);

@@ -16,6 +16,8 @@ class RS_API URsAnimNotify_ActivateAbility : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_ActivateAbility();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(Categories="Ability"))
 	FGameplayTag AbilityTag;
 	

@@ -8,6 +8,11 @@
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/System/RsGenericContainer.h"
 
+URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

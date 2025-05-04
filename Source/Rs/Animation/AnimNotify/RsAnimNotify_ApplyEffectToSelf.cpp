@@ -5,6 +5,11 @@
 
 #include "Rs/Battle/RsBattleLibrary.h"
 
+URsAnimNotify_ApplyEffectToSelf::URsAnimNotify_ApplyEffectToSelf()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotify_ApplyEffectToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

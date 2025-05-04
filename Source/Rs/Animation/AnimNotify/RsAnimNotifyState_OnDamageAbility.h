@@ -20,6 +20,8 @@ class RS_API URsAnimNotifyState_OnDamageAbility : public URsAnimNotifyState_Abil
 	GENERATED_BODY()
 
 public:
+	URsAnimNotifyState_OnDamageAbility();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer ReceivedDamageTags;
 	

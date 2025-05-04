@@ -16,6 +16,8 @@ class RS_API URsAnimNotify_ApplyEffectToSelf : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_ApplyEffectToSelf();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effect")
 	FRsEffectCoefficient EffectCoefficient;
 	
