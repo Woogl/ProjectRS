@@ -29,22 +29,18 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AAIController> PrevAIController;
 	
 public:
 	ARsPlayerController();
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
 
 	// IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
-
-	AAIController* GetPrevAIController() const;
 	
 	URsPartyComponent* GetPartyComponent() const;
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;

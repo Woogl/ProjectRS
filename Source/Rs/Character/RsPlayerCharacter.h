@@ -6,6 +6,7 @@
 #include "RsCharacterBase.h"
 #include "RsPlayerCharacter.generated.h"
 
+class AAIController;
 class UInputAction;
 struct FInputActionValue;
 class UInputMappingContext;
@@ -50,5 +51,9 @@ private:
 	void HandleLook(const FInputActionValue& Value);
 
 public:
+	// Reference of the previous possessed friendly ai controller.
+	UPROPERTY()
+	TObjectPtr<AAIController> FriendlyAIController = nullptr;
+	
 	FORCEINLINE UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const { return PerfectDodgeCapsuleComponent; }
 };
