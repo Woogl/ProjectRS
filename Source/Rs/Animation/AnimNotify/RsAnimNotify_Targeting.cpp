@@ -10,6 +10,8 @@
 
 URsAnimNotify_Targeting::URsAnimNotify_Targeting()
 {
+	bIsNativeBranchingPoint = true;
+	
 #if WITH_EDITORONLY_DATA
 	bShouldFireInEditor = true;
 #endif // WITH_EDITORONLY_DATA
