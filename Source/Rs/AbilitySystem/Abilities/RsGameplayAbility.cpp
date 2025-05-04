@@ -18,12 +18,26 @@ URsGameplayAbility::URsGameplayAbility()
 
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
-	if (CooldownTag.IsValid())
+	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
+	CurrentCooldownTags.Reset();
+	if (ParentTags)
 	{
-		CurrentCooldownTags.AddTag(CooldownTag);
-		return &CurrentCooldownTags;
+		CurrentCooldownTags.AppendTags(*ParentTags);
 	}
-	return nullptr;
+	CurrentCooldownTags.AddTag(CooldownTag);
+	return &CurrentCooldownTags;
+}
+
+bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (CurrentRechargeStacks > 0)
+	{
+		return true;
+	}
+	else
+	{
+		return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
+	}
 }
 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
@@ -46,18 +60,6 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks - 1, 0, MaxRechargeStacks);
 		OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
-	}
-}
-
-bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
-{
-	if (CurrentRechargeStacks > 0)
-	{
-		return true;
-	}
-	else
-	{
-		return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
 	}
 }
 
