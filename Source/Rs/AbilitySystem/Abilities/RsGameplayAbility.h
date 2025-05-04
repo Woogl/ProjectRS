@@ -56,6 +56,7 @@ public:
 	ARsCharacterBase* GetAvatarCharacter() const { return AvatarCharacter.Get(); }
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
+	virtual bool CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags = nullptr) override;
 	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
@@ -69,6 +70,12 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Cooldowns")
 	int32 GetCurrentRechargeStacks() const { return CurrentRechargeStacks; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
+	void ModifyCurrentRechargeStacks(int32 Diff);
+
+	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
+	void SetCurrentRechargeStacks(int32 NewStacks);
 	
 	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable. 
 	void SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
@@ -113,6 +120,6 @@ protected:
 private:
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
-	mutable int32 CurrentRechargeStacks = 0;
+	int32 CurrentRechargeStacks = 0;
 	FDelegateHandle RechargeDelegateHandle;
 };

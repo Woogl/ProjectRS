@@ -28,6 +28,16 @@ const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 	return &CurrentCooldownTags;
 }
 
+bool URsGameplayAbility::CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags)
+{
+	if (MaxRechargeStacks > 0)
+	{
+		ModifyCurrentRechargeStacks(-1);
+	}
+	
+	return Super::CommitAbility(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
+}
+
 bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (CurrentRechargeStacks > 0)
@@ -43,23 +53,11 @@ bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	if (!CooldownGE)
-	{
-		return;
-	}
-
-	// Do not apply cooldown again while recharging.
-	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
+	if (CooldownGE && (MaxRechargeStacks == 0 || CurrentRechargeStacks < MaxRechargeStacks))
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
 		CurrentCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
-	}
-
-	if (MaxRechargeStacks > 0)
-	{
-		CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks - 1, 0, MaxRechargeStacks);
-		OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
 	}
 }
 
@@ -98,6 +96,18 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 			}
 		}
 	}
+}
+
+void URsGameplayAbility::ModifyCurrentRechargeStacks(int32 Diff)
+{
+	CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks + Diff, 0, MaxRechargeStacks);
+	OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
+}
+
+void URsGameplayAbility::SetCurrentRechargeStacks(int32 NewStacks)
+{
+	CurrentRechargeStacks = FMath::Clamp(NewStacks, 0, MaxRechargeStacks);
+	OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
 }
 
 void URsGameplayAbility::SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -260,11 +270,9 @@ void URsGameplayAbility::HandleInputReleasedEvent(const FGameplayAbilityActorInf
 
 void URsGameplayAbility::HandleRechargeStacksChanged(FGameplayTag GameplayTag, int NewStacks)
 {
-	CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks + 1, 0, MaxRechargeStacks);
-	OnRechargeStacksChanged.Broadcast(CurrentRechargeStacks);
-	
 	if (CurrentRechargeStacks < MaxRechargeStacks && GetCooldownTimeRemaining() <= 0.f)
 	{
+		ModifyCurrentRechargeStacks(+1);
 		ApplyCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
 	}
 }
