@@ -16,6 +16,22 @@ URsGameplayAbility::URsGameplayAbility()
 	StatesContainer = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
 }
 
+void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	// Don't apply cooldown while recharging.
+	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
+	{
+		ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+	}
+
+	ApplyCost(Handle, ActorInfo, ActivationInfo);
+
+	if (MaxRechargeStacks > 0)
+	{
+		ModifyCurrentRechargeStacks(-1);
+	}
+}
+
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
 	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
@@ -26,16 +42,6 @@ const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 	}
 	CurrentCooldownTags.AddTag(CooldownTag);
 	return &CurrentCooldownTags;
-}
-
-bool URsGameplayAbility::CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags)
-{
-	if (MaxRechargeStacks > 0)
-	{
-		ModifyCurrentRechargeStacks(-1);
-	}
-	
-	return Super::CommitAbility(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
 }
 
 bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
@@ -53,8 +59,7 @@ bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	// Don’t apply cooldown during recharge.
-	if (CooldownGE && (MaxRechargeStacks == 0 || CurrentRechargeStacks < MaxRechargeStacks) && GetCooldownTimeRemaining() <= 0.f)
+	if (CooldownGE)
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
@@ -187,10 +192,15 @@ void URsGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 
 void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	// Native child classes should override ActivateAbility and call CommitAbility.
+	// CommitAbility is used to do one last check for spending resources.
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	// Apply cooldowns and costs
-	CommitAbility(Handle, ActorInfo, ActivationInfo);
 }
 
 void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -273,9 +283,13 @@ void URsGameplayAbility::HandleRechargeStacksChanged(FGameplayTag GameplayTag, i
 {
 	if (CurrentRechargeStacks < MaxRechargeStacks && GetCooldownTimeRemaining() <= 0.f)
 	{
-		// Apply cooldown again to recharge stacks.
 		ModifyCurrentRechargeStacks(+1);
-		ApplyCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		
+		if (CurrentRechargeStacks < MaxRechargeStacks)
+		{
+			// Apply cooldown again for recharging.
+			ApplyCooldown(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		}
 	}
 }
 
