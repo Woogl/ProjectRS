@@ -37,8 +37,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Shield)
 	FGameplayAttributeData Shield;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Shield)
-	
-	// Reduces shield first, then reduces current health by any excess amount.
+
+	// Applied to reduce the "CurrentHealth" value.
+	// Reduces "Shield" first, then reduces "CurrentHealth" by any excess amount.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData HealthDamage;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthDamage)
@@ -47,7 +48,7 @@ public:
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
 
-	// Meta attribute for RsHealthDamageCalculation
+	// Used in the RsHealthDamageCalculation to calculate final health damage.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, BaseDamage)

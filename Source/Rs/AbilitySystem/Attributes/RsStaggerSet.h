@@ -22,10 +22,6 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData StaggerDamage;
-	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerDamage)
-	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentStagger)
 	FGameplayAttributeData CurrentStagger;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, CurrentStagger)
@@ -38,7 +34,12 @@ public:
 	FGameplayAttributeData StaggerRegen;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerRegen)
 
-	// Meta attribute for RsStaggerDamageCalculation
+	// Applied to reduce the "CurrentStagger" value.
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData StaggerDamage;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerDamage)
+
+	// Used in the RsStaggerDamageCalculation to calculate final stagger damage.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, BaseDamage)
