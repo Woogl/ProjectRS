@@ -54,7 +54,7 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
 	// Don’t apply cooldown during recharge.
-	if (CooldownGE && (MaxRechargeStacks == 0 || CurrentRechargeStacks < MaxRechargeStacks))
+	if (CooldownGE && (MaxRechargeStacks == 0 || CurrentRechargeStacks < MaxRechargeStacks) && GetCooldownTimeRemaining() <= 0.f)
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
