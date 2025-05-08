@@ -68,6 +68,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1000"))
 	float Period = 0.5f;
+
+public:
+	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
 };
 
 /**
@@ -82,6 +85,9 @@ class RS_API URsDamageDefinition_DotBurst : public URsDamageDefinition
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageMultiplierPerDotStacks;
+
+public:
+	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
 };
 
 /**
@@ -95,4 +101,7 @@ class RS_API URsDamageDefinition_Custom : public URsDamageDefinition
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FRsEffectCoefficient CustomEffect;
+
+public:
+	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
 };
