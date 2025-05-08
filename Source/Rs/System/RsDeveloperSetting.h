@@ -44,4 +44,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
 	TSubclassOf<UGameplayEffect> StaggerDamageEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	TSubclassOf<UGameplayEffect> DotDamageEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	TSubclassOf<UGameplayEffect> DotBurstDamageEffectClass;
 };
