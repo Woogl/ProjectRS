@@ -20,10 +20,36 @@ void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	
 	// Replicated to all
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Defense, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Invincible, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, SuperArmor, Params);
+}
+
+void URsDefenseSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetInvincibleAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+	}
+	
+	else if (Attribute == GetSuperArmorAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+	}
 }
 
 void URsDefenseSet::OnRep_Defense(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Defense, OldValue);
+}
 
+void URsDefenseSet::OnRep_Invincible(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Invincible, OldValue);
+}
+
+void URsDefenseSet::OnRep_SuperArmor(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, SuperArmor, OldValue);
 }

@@ -38,4 +38,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
 	TArray<TSubclassOf<UGameplayEffect>> DamageEffectApplicationOrder;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	TSubclassOf<UGameplayEffect> HealthDamageEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	TSubclassOf<UGameplayEffect> StaggerDamageEffectClass;
 };
