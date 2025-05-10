@@ -49,16 +49,16 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
-	
-	// Stagger Calculation
-	float FinalDamage = BaseDamage;
 
-	if (FinalDamage <= 0.f)
+	if (BaseDamage <= 0.f)
 	{
 		return;
 	}
-
-	// DoT damage's tick conversion
+	
+	// Stagger calculation start
+	float FinalDamage = BaseDamage;
+	
+	// Chceck DoT damage
 	float Duration = Spec.GetDuration();
 	float Period = Spec.GetPeriod();
 	bool bDotDamage = Duration > 0.f && Period > 0.f;
