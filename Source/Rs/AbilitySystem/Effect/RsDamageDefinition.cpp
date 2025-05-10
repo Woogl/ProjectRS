@@ -45,13 +45,13 @@ void URsDamageDefinition_Instant::ApplyDamageDefinition(UAbilitySystemComponent*
 	
 	// Health damage
 	FRsEffectCoefficient RsHealthCoefficient(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
-	FGameplayEffectSpecHandle HealthDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthCoefficient);
+	FGameplayEffectSpecHandle HealthDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthCoefficient, EffectContext);
 	SET_BY_CALLER_PROPERTY(HealthDamageSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*HealthDamageSpec.Data, TargetASC);
 
 	// Stagger damage
 	FRsEffectCoefficient RsStaggerCoefficient(DeveloperSetting->StaggerDamageEffectClass, StaggerDamageCoefficients);
-	FGameplayEffectSpecHandle StaggerDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerCoefficient);
+	FGameplayEffectSpecHandle StaggerDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerCoefficient, EffectContext);
 	SET_BY_CALLER_PROPERTY(StaggerDamageSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDamageSpec.Data, TargetASC);
 }
@@ -67,7 +67,7 @@ void URsDamageDefinition_Dot::ApplyDamageDefinition(UAbilitySystemComponent* Sou
 	
 	// Health DoT damage
 	FRsEffectCoefficient RsHealthDotCoefficient(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
-	FGameplayEffectSpecHandle HealthDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthDotCoefficient);
+	FGameplayEffectSpecHandle HealthDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthDotCoefficient, EffectContext);
 	HealthDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
 	HealthDotDamageSpec.Data->Period = Period;
 	SET_BY_CALLER_PROPERTY(HealthDotDamageSpec, InvinciblePierce);
@@ -75,7 +75,7 @@ void URsDamageDefinition_Dot::ApplyDamageDefinition(UAbilitySystemComponent* Sou
 	
 	// Stagger damage
 	FRsEffectCoefficient RsStaggerDotCoefficient(DeveloperSetting->StaggerDotDamageEffectClass, StaggerDamageCoefficients);
-	FGameplayEffectSpecHandle StaggerDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerDotCoefficient);
+	FGameplayEffectSpecHandle StaggerDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerDotCoefficient, EffectContext);
 	StaggerDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
 	StaggerDotDamageSpec.Data->Period = Period;
 	SET_BY_CALLER_PROPERTY(StaggerDotDamageSpec, InvinciblePierce);
@@ -109,7 +109,8 @@ void URsDamageDefinition_Custom::ApplyDamageDefinition(UAbilitySystemComponent* 
 	}
 
 	FRsEffectCoefficient RsCustomCoefficient(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectSpecHandle CustomEffectSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoefficient);
+	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+	FGameplayEffectSpecHandle CustomEffectSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoefficient, EffectContext);
 	SET_BY_CALLER_PROPERTY(CustomEffectSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*CustomEffectSpec.Data, TargetASC);
 }

@@ -48,11 +48,11 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	return !ResultActors.IsEmpty();
 }
 
-FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient)
+FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
 	if (SourceASC && EffectCoefficient.EffectClass)
 	{
-		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectContextHandle EffectContext = InEffectContext.IsValid() ? InEffectContext : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
 		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
 		{

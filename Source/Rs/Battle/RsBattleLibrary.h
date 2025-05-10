@@ -26,7 +26,7 @@ public:
 	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient);
+	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static void ApplyDamageContext(const AActor* Source, const AActor* Target, FRsDamageContext& DamageContext);

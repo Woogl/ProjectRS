@@ -20,7 +20,7 @@ public:
 	URsAnimNotifyState_Targeting();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source", meta = (GetOptions="GetSocketNames"))
-	FName SocketName = FName("pelvis");
+	FName SocketName = FName("root");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
 	FVector PositionOffset = FVector::ZeroVector;
