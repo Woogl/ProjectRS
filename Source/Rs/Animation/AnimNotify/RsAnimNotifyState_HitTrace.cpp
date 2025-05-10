@@ -60,10 +60,10 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	{
 		if (Target.IsValid() && !HitTargets.Contains(Target))
 		{
-			for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
-			{
-				URsBattleLibrary::ApplyEffectCoefficient(MeshComp->GetOwner(), Target.Get(), EffectCoefficient);
-			}
+			// for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
+			// {
+			// 	URsBattleLibrary::ApplyEffectCoefficient(MeshComp->GetOwner(), Target.Get(), EffectCoefficient);
+			// }
 			HitTargets.Emplace(Target.Get());
 			
 			if (bStopTraceWhenFirstHit)

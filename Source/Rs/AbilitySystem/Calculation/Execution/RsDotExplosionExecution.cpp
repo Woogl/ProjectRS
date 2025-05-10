@@ -3,6 +3,7 @@
 
 #include "RsDotExplosionExecution.h"
 #include "AbilitySystemComponent.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 
@@ -58,7 +59,7 @@ void URsDotExplosionExecution::Execute_Implementation(const FGameplayEffectCusto
 		}
 		int32 TotalTick = DotDuration / DotPeriod;
 
-		float DotTotalDamage = TargetASC->GetGameplayEffectMagnitude(DotEffectHandle,URsHealthSet::GetBaseDamageAttribute());
+		float DotTotalDamage = TargetASC->GetGameplayEffectMagnitude(DotEffectHandle, URsHealthSet::GetBaseDamageAttribute());
 		float DotTickDamage = DotTotalDamage / TotalTick;
 		
 		float LastTime = DotEffect->GetEndTime() - TargetASC->GetWorld()->GetTimeSeconds();
@@ -74,10 +75,8 @@ void URsDotExplosionExecution::Execute_Implementation(const FGameplayEffectCusto
 	const RsDotExplosionDamageStatics* DamageStatics = &RsDotExplosionDamageStatics::Get();
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
-
 	
-	// 10% damage increase for per stack (will be updated to use DataTable)
-	TotalDamage *= (1 + DotStack * 0.1);
+	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(TEXT("DamageMultiplierPerDotStacks")));
 	TotalDamage *= (190.f / (Defense + 190.f));
 
 	if (TotalDamage > 0)

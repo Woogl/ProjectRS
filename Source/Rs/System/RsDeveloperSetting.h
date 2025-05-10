@@ -32,22 +32,22 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
 	FGameplayTag ManualDurationTag;
-	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
-	FGameplayTag ManualLevelTag;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
-	TArray<TSubclassOf<UGameplayEffect>> DamageEffectApplicationOrder;
-
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Instant")
 	TSubclassOf<UGameplayEffect> HealthDamageEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Instant")
 	TSubclassOf<UGameplayEffect> StaggerDamageEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
-	TSubclassOf<UGameplayEffect> DotDamageEffectClass;
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | DoT")
+	TSubclassOf<UGameplayEffect> HealthDotDamageEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage")
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | DoT")
+	TSubclassOf<UGameplayEffect> StaggerDotDamageEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | DoT Burst")
 	TSubclassOf<UGameplayEffect> DotBurstDamageEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Hit Reaction")
+	TSubclassOf<UGameplayEffect> TriggerHitReactionEffectClass;
 };

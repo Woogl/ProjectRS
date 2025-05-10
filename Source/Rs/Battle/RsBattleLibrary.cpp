@@ -6,9 +6,10 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/AbilitySystem/Effect/RsDamageEffect.h"
+#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/System/RsDeveloperSetting.h"
 #include "TargetingSystem/TargetingSubsystem.h"
@@ -59,52 +60,37 @@ FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(const AAct
 		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
 		{
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-			EffectSpecHandle.Data->GetContext().AddOrigin(TargetActor->GetActorLocation());
 		}
 		return EffectSpecHandle;
 	}
 	return FGameplayEffectSpecHandle();
 }
 
-FActiveGameplayEffectHandle URsBattleLibrary::ApplyDamageContext(const AActor* SourceActor, const AActor* TargetActor, FRsDamageContext& DamageContext)
+void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Target, FRsDamageContext& DamageContext)
 {
-	InternalSortDamageEffectsByOrder(DamageContext);
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
-	if (SourceASC && TargetASC)
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target);
+	if (!SourceASC || !TargetASC)
 	{
-		FGameplayEffectContextHandle DamageEffectContext = SourceASC->MakeEffectContext();
-		FGameplayEffectSpecHandle DamageEffectHandle = SourceASC->MakeOutgoingSpec(URsDamageEffect::StaticClass(), 0, DamageEffectContext);
-		DamageEffectHandle.Data->SetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualLevelTag, DamageContext.InvinciblePenetrationLevel);
-
-		TArray<FGameplayEffectSpecHandle> AdditionalEffects;
-		for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
-		{
-			AdditionalEffects.Add(MakeEffectSpecCoefficient(SourceActor, TargetActor, EffectCoefficient));
-		}
-		DamageEffectHandle.Data->TargetEffectSpecs = AdditionalEffects;
-		return SourceASC->ApplyGameplayEffectSpecToTarget(*DamageEffectHandle.Data, TargetASC);
+		return;
 	}
-	return FActiveGameplayEffectHandle();
-}
 
-void URsBattleLibrary::InternalSortDamageEffectsByOrder(FRsDamageContext& DamageContexts)
-{
-	for (const FRsEffectCoefficient& Context : DamageContexts.EffectCoefficients)
+	// Apply instant, DoT, DoT burst type damages.
+	// Can be Immuned by GE_Invincible.
+	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
-		if (URsDeveloperSetting::Get()->DamageEffectApplicationOrder.Find(Context.EffectClass) != INDEX_NONE)
-		{
-			DamageContexts.EffectCoefficients.Sort([Order = URsDeveloperSetting::Get()->DamageEffectApplicationOrder](const FRsEffectCoefficient& A, const FRsEffectCoefficient& B)
-			{
-				TArray<FRsEffectCoefficient>::SizeType OrderA = Order.Find(A.EffectClass);
-				TArray<FRsEffectCoefficient>::SizeType OrderB = Order.Find(B.EffectClass);
+		DamageDefinition->SetInvinciblePierce(DamageContext.InvinciblePierce);
+		DamageDefinition->ApplyDamageDefinition(SourceASC, TargetASC);
+	}
 
-				if (OrderA == INDEX_NONE){ return false; }
-				if (OrderB == INDEX_NONE){ return true; }
-				return OrderA < OrderB;
-			});
-			return;
-		}
+	// Trigger hit reaction.
+	// Can be Immuned by GE_SuperArmor.
+	if (DamageContext.HitReaction.IsValid())
+	{
+		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(URsDeveloperSetting::Get()->TriggerHitReactionEffectClass, 0.f, EffectContext);
+		HitReactionSpec.Data->SetSetByCallerMagnitude(TEXT("SuperArmorPierce"), DamageContext.SuperArmorPierce);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*HitReactionSpec.Data, TargetASC);
 	}
 }
 

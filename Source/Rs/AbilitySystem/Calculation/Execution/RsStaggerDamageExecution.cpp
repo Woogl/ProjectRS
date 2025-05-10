@@ -58,6 +58,16 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 		return;
 	}
 
+	// DoT damage's tick conversion
+	float Duration = Spec.GetDuration();
+	float Period = Spec.GetPeriod();
+	bool bDotDamage = Duration > 0.f && Period > 0.f;
+	if (bDotDamage)
+	{
+		float Tick = FMath::RoundToFloat(Duration / Period);
+		FinalDamage /= Tick;
+	}
+
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Additive, FinalDamage));
 }

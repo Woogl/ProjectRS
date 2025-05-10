@@ -74,20 +74,32 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	float CriticalBonus = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalBonus);
 
+	// Damage calculation start
+	float FinalDamage = BaseDamage;
+	
+	// Chceck DoT damage
+	float Duration = Spec.GetDuration();
+	float Period = Spec.GetPeriod();
+	bool bDotDamage = Duration > 0.f && Period > 0.f;
+	if (bDotDamage)
+	{
+		float Tick = FMath::RoundToFloat(Duration / Period);
+		FinalDamage /= Tick;
+	}
+
 	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
 	bool bCriticalHit = CriticalRate >= RandomValue;
-	if (bCriticalHit)
+	// Disable critical when DoT damage
+	if (bCriticalHit && !bDotDamage)
 	{
 		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
 		FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
 		ContextHandle->bIsCriticalHit = true;
 	}
 	
-	// Damage calculation start
-	float FinalDamage = BaseDamage;
 	// Critical calc
-	FinalDamage *= (bCriticalHit ? (1 + CriticalBonus * 0.01f) : 1.f);
+	FinalDamage *= ((bCriticalHit && !bDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
 	// Defense rate calc
 	FinalDamage *= (190.f / (Defense + 190.f));
 	

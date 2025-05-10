@@ -22,11 +22,15 @@ class RS_API URsDamageDefinition : public UObject
 public:
 	URsDamageDefinition();
 
-	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const;
+	void SetInvinciblePierce(int32 InvinciblePierce);
+	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
 
 protected:
 	UPROPERTY()
 	const URsDeveloperSetting* DeveloperSetting;
+
+	UPROPERTY()
+	int32 InvinciblePierce = 0;
 };
 
 /**
@@ -46,7 +50,7 @@ public:
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 public:
-	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
+	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -63,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
 	TMap<FGameplayTag, float> HealthDamageCoefficients;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> StaggerDamageCoefficients;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 1.f;
 
@@ -70,7 +77,7 @@ public:
 	float Period = 0.5f;
 
 public:
-	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
+	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -87,7 +94,7 @@ public:
 	float DamageMultiplierPerDotStacks;
 
 public:
-	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
+	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -103,5 +110,5 @@ public:
 	FRsEffectCoefficient CustomEffect;
 
 public:
-	virtual void ApplyDamageDefinition(const AActor* Source, const AActor* Target, int32 InvinciblePierce) const override;
+	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };

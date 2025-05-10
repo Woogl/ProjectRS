@@ -30,7 +30,7 @@ public:
 	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static FActiveGameplayEffectHandle ApplyDamageContext(const AActor* SourceActor, const AActor* TargetActor, FRsDamageContext& DamageContext);
+	static void ApplyDamageContext(const AActor* Source, const AActor* Target, FRsDamageContext& DamageContext);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient);
@@ -43,7 +43,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta = (DefaultToSelf = "Target"))
 	static bool IsDead(const AActor* Target);
-
-protected:
-	static void InternalSortDamageEffectsByOrder(FRsDamageContext& DamageContexts);
 };

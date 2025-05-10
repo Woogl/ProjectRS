@@ -7,19 +7,27 @@
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
+class URsDamageDefinition;
+
 USTRUCT(BlueprintType)
 struct FRsDamageContext
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "Damage Event", Categories = "Animnotify.HitScan"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Animnotify.HitScan"))
 	FGameplayTag DamageEventTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float InvinciblePenetrationLevel;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<FRsEffectCoefficient> EffectCoefficients;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TArray<TObjectPtr<URsDamageDefinition>> DamageDefinitions;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
+	int32 InvinciblePierce;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
+	int32 SuperArmorPierce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
+	FGameplayTag HitReaction;
 
 	bool operator==(const FRsDamageContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
@@ -37,7 +45,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "AnimNotify", ForceInlineRow))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Damage", meta = (Categories = "AnimNotify", ForceInlineRow, TitleProperty="DamageEventTag"))
 	TArray<FRsDamageContext> DamageEvents;
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

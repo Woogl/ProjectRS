@@ -24,10 +24,9 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
-	FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag);
-	if (!DamageContext->EffectCoefficients.IsEmpty())
+	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
 	{
-		URsBattleLibrary::ApplyDamageContext(GetAvatarActorFromActorInfo(), EventData.Target, *DamageContext);
+		URsBattleLibrary::ApplyDamageContext(EventData.Instigator, EventData.Target, *DamageContext);
 		ApplyCostRecovery();
 		OnAttackHitTarget(EventData.Target, EventData.EventTag);
 	}

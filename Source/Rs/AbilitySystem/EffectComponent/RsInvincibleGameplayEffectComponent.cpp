@@ -7,6 +7,7 @@
 #include "Misc/DataValidation.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
+#include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
 #define LOCTEXT_NAMESPACE "RsInvincibleGameplayEffectComponent"
 
@@ -63,8 +64,12 @@ bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const 
 		return true;
 	}
 
+	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(TEXT("InvinciblePierce"), false, INDEX_NONE);
+	if (InvinciblePierceTier == INDEX_NONE)
+	{
+		return true;
+	}
 	float InvincibleTier = ASC->GetNumericAttribute(URsDefenseSet::GetInvincibleAttribute());
-	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(RsGameplayTags::TAG_INVINCIBLEPIERCE_TIER, false);
 
 	// Pierce penetrates same-tier immunity.
 	if (InvincibleTier > InvinciblePierceTier)

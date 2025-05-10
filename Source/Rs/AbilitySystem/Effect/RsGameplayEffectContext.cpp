@@ -38,11 +38,11 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 		}
 		if (bIsCriticalHit)
 		{
-			RepBits |= 1 << 8;
+			RepBits |= 1 << 7;
 		}
 	}
 
-	Ar.SerializeBits(&RepBits, 9);
+	Ar.SerializeBits(&RepBits, 8); // Using total 8 Bits
 
 	if (RepBits & (1 << 0))
 	{
@@ -84,7 +84,7 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 	{
 		bHasWorldOrigin = false;
 	}
-	if (RepBits & (1 << 8))
+	if (RepBits & (1 << 7))
 	{
 		Ar << bIsCriticalHit;
 	}
