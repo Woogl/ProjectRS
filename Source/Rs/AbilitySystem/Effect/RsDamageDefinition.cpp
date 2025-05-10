@@ -29,12 +29,12 @@ FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbili
 	return EffectContext;
 }
 
-void URsDamageDefinition::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	unimplemented();
 }
 
-void URsDamageDefinition_Instant::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_Instant::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -56,7 +56,7 @@ void URsDamageDefinition_Instant::ApplyDamageDefinition(UAbilitySystemComponent*
 	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDamageSpec.Data, TargetASC);
 }
 
-void URsDamageDefinition_Dot::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_Dot::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -82,7 +82,7 @@ void URsDamageDefinition_Dot::ApplyDamageDefinition(UAbilitySystemComponent* Sou
 	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDotDamageSpec.Data, TargetASC);
 }
 
-void URsDamageDefinition_DotBurst::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -96,7 +96,7 @@ void URsDamageDefinition_DotBurst::ApplyDamageDefinition(UAbilitySystemComponent
 	SourceASC->ApplyGameplayEffectSpecToTarget(*DotBurstDamageSpec.Data, TargetASC);
 }
 
-void URsDamageDefinition_Custom::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{

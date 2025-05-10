@@ -77,7 +77,7 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
 		DamageDefinition->SetInvinciblePierce(DamageContext.InvinciblePierce);
-		DamageDefinition->ApplyDamageDefinition(SourceASC, TargetASC);
+		DamageDefinition->ApplyDamage(SourceASC, TargetASC);
 	}
 
 	// Trigger hit reaction.
@@ -87,6 +87,7 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(URsDeveloperSetting::Get()->TriggerHitReactionEffectClass, 0.f, EffectContext);
 		HitReactionSpec.Data->SetSetByCallerMagnitude(TEXT("SuperArmorPierce"), DamageContext.SuperArmorPierce);
+		HitReactionSpec.Data->SetSetByCallerMagnitude(TEXT("InvinciblePierce"), DamageContext.InvinciblePierce);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*HitReactionSpec.Data, TargetASC);
 	}
 }

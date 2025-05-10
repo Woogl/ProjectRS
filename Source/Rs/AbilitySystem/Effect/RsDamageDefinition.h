@@ -26,7 +26,7 @@ public:
 	void SetInvinciblePierce(int32 InvinciblePierce);
 
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
-	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
+	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
 
 	UPROPERTY()
 	int32 InvinciblePierce = 0;
@@ -53,7 +53,7 @@ public:
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 public:
-	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -80,7 +80,7 @@ public:
 	float Period = 0.5f;
 
 public:
-	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -97,7 +97,7 @@ public:
 	float DamageMultiplierPerDotStacks;
 
 public:
-	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -113,5 +113,5 @@ public:
 	FRsEffectCoefficient CustomEffect;
 
 public:
-	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
