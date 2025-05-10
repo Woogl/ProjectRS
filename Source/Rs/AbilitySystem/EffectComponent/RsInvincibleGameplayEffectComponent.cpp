@@ -5,8 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "Misc/DataValidation.h"
-#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
+#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
 #define LOCTEXT_NAMESPACE "RsInvincibleGameplayEffectComponent"
@@ -64,15 +64,12 @@ bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const 
 		return true;
 	}
 
-	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(TEXT("InvinciblePierce"), false, INDEX_NONE);
-	if (InvinciblePierceTier == INDEX_NONE)
-	{
-		return true;
-	}
-	float InvincibleTier = ASC->GetNumericAttribute(URsDefenseSet::GetInvincibleAttribute());
+	FName InvinciblePierceName = GET_MEMBER_NAME_CHECKED(URsDamageDefinition, InvinciblePierce);
+	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(InvinciblePierceName, false, INDEX_NONE);
+	float InvincibleTier = ASC->GetNumericAttribute(URsDefenseSet::GetInvincibleTierAttribute());
 
 	// Pierce penetrates same-tier immunity.
-	if (InvincibleTier > InvinciblePierceTier)
+	if (InvinciblePierceTier != INDEX_NONE && InvincibleTier > InvinciblePierceTier)
 	{
 		ASC->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpecToConsider, ActiveGE);
 		return false;

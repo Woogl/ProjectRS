@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
@@ -49,10 +48,8 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 	return !ResultActors.IsEmpty();
 }
 
-FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
+FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
-	
 	if (SourceASC && EffectCoefficient.EffectClass)
 	{
 		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
@@ -94,9 +91,9 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 	}
 }
 
-FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActor* SourceActor, const AActor* TargetActor, FRsEffectCoefficient EffectCoefficient)
+FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
 	
 	if (SourceASC && EffectCoefficient.EffectClass)
 	{
@@ -106,21 +103,21 @@ FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActo
 		{
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
 		}
-		return ApplyEffectSpecCoefficient(SourceActor, TargetActor, EffectSpecHandle);
+		return ApplyEffectSpecCoefficient(Source, Target, EffectSpecHandle);
 	}
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectSpecCoefficient(const AActor* SourceActor, const AActor* TargetActor, const FGameplayEffectSpecHandle& EffectHandle)
+FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectSpecCoefficient(const AActor* Source, const AActor* Target, const FGameplayEffectSpecHandle& EffectHandle)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target);
 	
 	if (SourceASC && TargetASC)
 	{
 		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
-			EffectSpec->GetContext().AddOrigin(TargetActor->GetActorLocation());
+			EffectSpec->GetContext().AddOrigin(Target->GetActorLocation());
 			return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 		}
 	}

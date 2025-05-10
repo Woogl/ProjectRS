@@ -3,11 +3,7 @@
 
 #include "RsAnimNotify_HitScan.h"
 
-#include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/System/RsDeveloperSetting.h"
 
 void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {

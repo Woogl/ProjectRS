@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "Misc/DataValidation.h"
-#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
@@ -65,14 +64,10 @@ bool URsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const 
 	}
 	
 	float SuperArmorPierceTier = GESpecToConsider.GetSetByCallerMagnitude(TEXT("SuperArmorPierce"), false, INDEX_NONE);
-	if (SuperArmorPierceTier == INDEX_NONE)
-	{
-		return true;
-	}
-	float SuperArmorTier = ASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorAttribute());
+	float SuperArmorTier = ASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorTierAttribute());
 
 	// Pierce penetrates same-tier immunity.
-	if (SuperArmorTier > SuperArmorPierceTier)
+	if (SuperArmorPierceTier != INDEX_NONE && SuperArmorTier > SuperArmorPierceTier)
 	{
 		ASC->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpecToConsider, ActiveGE);
 		return false;

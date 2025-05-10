@@ -64,7 +64,7 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	bool bDotDamage = Duration > 0.f && Period > 0.f;
 	if (bDotDamage)
 	{
-		float Tick = FMath::RoundToFloat(Duration / Period);
+		float Tick = Duration / Period;
 		FinalDamage /= Tick;
 	}
 

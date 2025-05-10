@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "RsEffectCoefficient.h"
 #include "RsDamageDefinition.generated.h"
@@ -23,14 +24,16 @@ public:
 	URsDamageDefinition();
 
 	void SetInvinciblePierce(int32 InvinciblePierce);
+
+	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
 	virtual void ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
+
+	UPROPERTY()
+	int32 InvinciblePierce = 0;
 
 protected:
 	UPROPERTY()
 	const URsDeveloperSetting* DeveloperSetting;
-
-	UPROPERTY()
-	int32 InvinciblePierce = 0;
 };
 
 /**
@@ -98,9 +101,9 @@ public:
 };
 
 /**
- * Use this to select a specific damage effect class.
+ * Use this to select a specific effect class.
  */
-UCLASS(DisplayName = "Custom Damage")
+UCLASS(DisplayName = "Custom")
 class RS_API URsDamageDefinition_Custom : public URsDamageDefinition
 {
 	GENERATED_BODY()

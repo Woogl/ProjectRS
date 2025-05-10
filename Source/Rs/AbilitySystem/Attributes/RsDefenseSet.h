@@ -26,22 +26,22 @@ public:
 	ATTRIBUTE_ACCESSORS(URsDefenseSet, Defense)
 
 	// Damage immunity tier
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Invincible)
-	FGameplayAttributeData Invincible;
-	ATTRIBUTE_ACCESSORS(URsDefenseSet, Invincible)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_InvincibleTier)
+	FGameplayAttributeData InvincibleTier;
+	ATTRIBUTE_ACCESSORS(URsDefenseSet, InvincibleTier)
 
 	// Hit reaction immunity tier
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_SuperArmor)
-	FGameplayAttributeData SuperArmor;
-	ATTRIBUTE_ACCESSORS(URsDefenseSet, SuperArmor)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_SuperArmorTier)
+	FGameplayAttributeData SuperArmorTier;
+	ATTRIBUTE_ACCESSORS(URsDefenseSet, SuperArmorTier)
 	
 protected:
 	UFUNCTION()
 	virtual void OnRep_Defense(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
-	virtual void OnRep_Invincible(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_InvincibleTier(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
-	virtual void OnRep_SuperArmor(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_SuperArmorTier(const FGameplayAttributeData& OldValue);
 };

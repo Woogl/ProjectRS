@@ -88,7 +88,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	bool bDotDamage = Duration > 0.f && Period > 0.f;
 	if (bDotDamage)
 	{
-		float Tick = FMath::RoundToFloat(Duration / Period);
+		float Tick = Duration / Period;
 		FinalDamage /= Tick;
 	}
 

@@ -7,6 +7,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
 URsDamageDefinition::URsDamageDefinition()
@@ -17,6 +18,15 @@ URsDamageDefinition::URsDamageDefinition()
 void URsDamageDefinition::SetInvinciblePierce(int32 InInvinciblePierce)
 {
 	InvinciblePierce = InInvinciblePierce;
+}
+
+FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+	// Set Damage floater's location (Gameplay Cue)
+	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
+	EffectContext.AddHitResult(HitResult);
+	return EffectContext;
 }
 
 void URsDamageDefinition::ApplyDamageDefinition(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
@@ -30,29 +40,18 @@ void URsDamageDefinition_Instant::ApplyDamageDefinition(UAbilitySystemComponent*
 	{
 		return;
 	}
+
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	
-	// Set Damage floater's location (Gameplay Cue)
-	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
-	EffectContext.AddHitResult(HitResult);
-		
 	// Health damage
-	FGameplayEffectSpecHandle HealthDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->HealthDamageEffectClass, 0.f, EffectContext);
-	// Set coefficient for magnitude
-	for (const TTuple<FGameplayTag, float>& Coefficient : HealthDamageCoefficients)
-	{
-		HealthDamageSpec.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-	}
+	FRsEffectCoefficient RsHealthCoefficient(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
+	FGameplayEffectSpecHandle HealthDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthCoefficient);
 	SET_BY_CALLER_PROPERTY(HealthDamageSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*HealthDamageSpec.Data, TargetASC);
 
 	// Stagger damage
-	FGameplayEffectSpecHandle StaggerDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->StaggerDamageEffectClass, 0.f, EffectContext);
-	// Set coefficient for magnitude
-	for (const TTuple<FGameplayTag, float>& Coefficient : StaggerDamageCoefficients)
-	{
-		StaggerDamageSpec.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-	}
+	FRsEffectCoefficient RsStaggerCoefficient(DeveloperSetting->StaggerDamageEffectClass, StaggerDamageCoefficients);
+	FGameplayEffectSpecHandle StaggerDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerCoefficient);
 	SET_BY_CALLER_PROPERTY(StaggerDamageSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDamageSpec.Data, TargetASC);
 }
@@ -64,30 +63,19 @@ void URsDamageDefinition_Dot::ApplyDamageDefinition(UAbilitySystemComponent* Sou
 		return;
 	}
 
-	// Set Damage floater's location (Gameplay Cue)
-	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
-	EffectContext.AddHitResult(HitResult);
-		
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
+	
 	// Health DoT damage
-	FGameplayEffectSpecHandle HealthDotDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->HealthDotDamageEffectClass, 0.f, EffectContext);
-	// Set coefficient for magnitude
-	for (const TTuple<FGameplayTag, float>& Coefficient : HealthDamageCoefficients)
-	{
-		HealthDotDamageSpec.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-	}
+	FRsEffectCoefficient RsHealthDotCoefficient(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
+	FGameplayEffectSpecHandle HealthDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthDotCoefficient);
 	HealthDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
 	HealthDotDamageSpec.Data->Period = Period;
 	SET_BY_CALLER_PROPERTY(HealthDotDamageSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*HealthDotDamageSpec.Data, TargetASC);
-
+	
 	// Stagger damage
-	FGameplayEffectSpecHandle StaggerDotDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->StaggerDotDamageEffectClass, 0.f, EffectContext);
-	// Set coefficient for magnitude
-	for (const TTuple<FGameplayTag, float>& Coefficient : StaggerDamageCoefficients)
-	{
-		StaggerDotDamageSpec.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-	}
+	FRsEffectCoefficient RsStaggerDotCoefficient(DeveloperSetting->StaggerDotDamageEffectClass, StaggerDamageCoefficients);
+	FGameplayEffectSpecHandle StaggerDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerDotCoefficient);
 	StaggerDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
 	StaggerDotDamageSpec.Data->Period = Period;
 	SET_BY_CALLER_PROPERTY(StaggerDotDamageSpec, InvinciblePierce);
@@ -101,11 +89,7 @@ void URsDamageDefinition_DotBurst::ApplyDamageDefinition(UAbilitySystemComponent
 		return;
 	}
 	
-	// Set Damage floater's location (Gameplay Cue)
-	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
-	EffectContext.AddHitResult(HitResult);
-	
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotBurstDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->DotBurstDamageEffectClass, 0.f, EffectContext);
 	SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, InvinciblePierce);
 	SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, DamageMultiplierPerDotStacks);
@@ -119,17 +103,13 @@ void URsDamageDefinition_Custom::ApplyDamageDefinition(UAbilitySystemComponent* 
 		return;
 	}
 	
-	// Set Damage floater's location (Gameplay Cue)
-	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
-	EffectContext.AddHitResult(HitResult);
-
-	// Set coefficient for magnitude
-	FGameplayEffectSpecHandle CustomEffectSpec = SourceASC->MakeOutgoingSpec(CustomEffect.EffectClass, 0, EffectContext);
-	for (const TTuple<FGameplayTag, float>& Coefficient : CustomEffect.Coefficients)
+	if (CustomEffect.EffectClass == nullptr)
 	{
-		CustomEffectSpec.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+		return;
 	}
+
+	FRsEffectCoefficient RsCustomCoefficient(CustomEffect.EffectClass, CustomEffect.Coefficients);
+	FGameplayEffectSpecHandle CustomEffectSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoefficient);
 	SET_BY_CALLER_PROPERTY(CustomEffectSpec, InvinciblePierce);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*CustomEffectSpec.Data, TargetASC);
 }
