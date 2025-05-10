@@ -10,8 +10,10 @@
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
-URsDamageDefinition::URsDamageDefinition()
+void URsDamageDefinition::PostInitProperties()
 {
+	Super::PostInitProperties();
+	
 	DeveloperSetting = URsDeveloperSetting::Get();
 }
 

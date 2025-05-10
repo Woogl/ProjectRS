@@ -3,7 +3,6 @@
 
 #include "RsSendGameplayEventGameplayEffectComponent.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemBlueprintLibrary.h"
 #include "Misc/DataValidation.h"
 
 #define LOCTEXT_NAMESPACE "RsSendGameplayEventGEComponent"
@@ -17,10 +16,10 @@ void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiv
 
 	if (!EventTags.IsEmpty())
 	{
-		for (FGameplayTag EventTag : EventTags)
+		for (const FGameplayTag& EventTag : EventTags)
 		{
 			FGameplayEventData Payload;
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(ActiveGEContainer.Owner->GetOwnerActor(),EventTag,Payload);
+			ActiveGEContainer.Owner->HandleGameplayEvent(EventTag, &Payload);
 		}
 	}
 }

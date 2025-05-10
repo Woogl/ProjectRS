@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effect")
 	TSet<TSubclassOf<UGameplayEffect>> GrantedEffects;
 
-	// GameplayTags to add.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Gameplay Tag")
+	// Gameplay Tags to add.
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Tag")
 	FGameplayTagContainer GrantedTags;
 };

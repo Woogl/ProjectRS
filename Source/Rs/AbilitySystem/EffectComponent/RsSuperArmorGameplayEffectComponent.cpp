@@ -67,7 +67,7 @@ bool URsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const 
 	float SuperArmorTier = ASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorTierAttribute());
 
 	// Pierce penetrates same-tier immunity.
-	if (SuperArmorPierceTier != INDEX_NONE && SuperArmorTier > SuperArmorPierceTier)
+	if ((SuperArmorPierceTier != static_cast<float>(INDEX_NONE)) && (SuperArmorTier > SuperArmorPierceTier))
 	{
 		ASC->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpecToConsider, ActiveGE);
 		return false;

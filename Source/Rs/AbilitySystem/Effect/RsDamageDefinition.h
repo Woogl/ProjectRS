@@ -21,7 +21,7 @@ class RS_API URsDamageDefinition : public UObject
 	GENERATED_BODY()
 
 public:
-	URsDamageDefinition();
+	virtual void PostInitProperties() override;
 
 	void SetInvinciblePierce(int32 InvinciblePierce);
 
