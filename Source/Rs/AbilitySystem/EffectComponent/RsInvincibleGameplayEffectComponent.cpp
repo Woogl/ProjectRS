@@ -65,11 +65,11 @@ bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const 
 	}
 
 	FName InvinciblePierceName = GET_MEMBER_NAME_CHECKED(URsDamageDefinition, InvinciblePierce);
-	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(InvinciblePierceName, false, INDEX_NONE);
+	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(InvinciblePierceName, false, -1);
 	float InvincibleTier = ASC->GetNumericAttribute(URsDefenseSet::GetInvincibleTierAttribute());
 
 	// Pierce penetrates same-tier immunity.
-	if ((InvinciblePierceTier != static_cast<float>(INDEX_NONE)) && (InvincibleTier > InvinciblePierceTier))
+	if ((InvinciblePierceTier != -1) && (InvincibleTier > InvinciblePierceTier))
 	{
 		ASC->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpecToConsider, ActiveGE);
 		return false;
