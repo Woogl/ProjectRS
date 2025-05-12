@@ -93,7 +93,7 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		{
 			for (URsAbilitySet* AbilitySet : AbilitySets)
 			{
-				AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+				AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
 			}
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
