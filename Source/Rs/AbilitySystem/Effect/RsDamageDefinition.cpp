@@ -136,7 +136,6 @@ void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceAS
 	if (DotBurstDamageSpec.IsValid())
 	{
 		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, InvinciblePierce);
-		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, SuperArmorPierce);
 		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, DamageMultiplierPerDotStacks);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*DotBurstDamageSpec.Data, TargetASC);
 	}
@@ -158,8 +157,8 @@ void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC,
 	
 	// Apply custom effect
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
-	FRsEffectCoefficient RsCustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoeff, EffectContext);
+	FRsEffectCoefficient CustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
+	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, EffectContext);
 	if (CustomSpec.IsValid())
 	{
 		SET_BY_CALLER_PROPERTY(CustomSpec, InvinciblePierce);
