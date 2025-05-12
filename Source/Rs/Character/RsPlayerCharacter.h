@@ -51,9 +51,10 @@ private:
 	void HandleLook(const FInputActionValue& Value);
 
 public:
-	// Reference of the previous possessed friendly ai controller.
+	// Reference of the previous possessed friendly AI controller.
 	UPROPERTY()
 	TObjectPtr<AAIController> FriendlyAIController = nullptr;
 	
 	FORCEINLINE UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const { return PerfectDodgeCapsuleComponent; }
+	FORCEINLINE UInputMappingContext* GetDefaultMappingContext() const { return DefaultMappingContext; }
 };

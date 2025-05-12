@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsRechargeable() const;
 
+	UFUNCTION(BlueprintPure)
+	FText GetInputKeyText() const;
+
 	// FTickableGameObject
 	// NOTE: Ability class can't tick by default, but I want to display cooldown updated every frame.
 	virtual void Tick(float DeltaTime) override;

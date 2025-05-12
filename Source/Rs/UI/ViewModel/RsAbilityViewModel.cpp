@@ -3,7 +3,9 @@
 
 #include "RsAbilityViewModel.h"
 
+#include "InputMappingContext.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
+#include "Rs/Character/RsPlayerCharacter.h"
 
 URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Model)
 {
@@ -106,6 +108,27 @@ bool URsAbilityViewModel::IsRechargeable() const
 		return CachedModel->MaxRechargeStacks > 0;
 	}
 	return false;
+}
+
+FText URsAbilityViewModel::GetInputKeyText() const
+{
+	if (CachedModel.IsValid() && CachedModel->ActivationInputAction)
+	{
+		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(CachedModel->GetAvatarCharacter()))
+		{
+			if (UInputMappingContext* MappingContext = PlayerCharacter->GetDefaultMappingContext())
+			{
+				for (const FEnhancedActionKeyMapping& Mapping : MappingContext->GetMappings())
+				{
+					if (Mapping.Action == CachedModel->ActivationInputAction)
+					{
+						return Mapping.Key.GetDisplayName(false);
+					}
+				}
+			}
+		}
+	}
+	return FText::GetEmpty();
 }
 
 void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
