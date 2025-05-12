@@ -13,20 +13,28 @@
 void URsDamageDefinition::PostInitProperties()
 {
 	Super::PostInitProperties();
-	
+
+	// Cache a convenient pointer to the developer setting.
 	DeveloperSetting = URsDeveloperSetting::Get();
 }
 
-void URsDamageDefinition::SetInvinciblePierce(int32 InInvinciblePierce)
+void URsDamageDefinition::SetPierceTier(int32 InInvinciblePierce, int32 InSuperArmorPierce)
 {
 	InvinciblePierce = InInvinciblePierce;
+	SuperArmorPierce = InSuperArmorPierce;
+}
+
+void URsDamageDefinition::SetHitReaction(FGameplayTag InHitReaction)
+{
+	HitReaction = InHitReaction;
 }
 
 FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	// Set Damage floater's location (Gameplay Cue)
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
+	// TODO: Set HitLoc from weapon to target 
+	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, FVector(), FVector());
 	EffectContext.AddHitResult(HitResult);
 	return EffectContext;
 }
@@ -36,26 +44,62 @@ void URsDamageDefinition::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbili
 	unimplemented();
 }
 
+void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
+{
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
+	FGameplayEffectSpecHandle DamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
+	if (DamageSpec.IsValid())
+	{
+		SET_BY_CALLER_PROPERTY(DamageSpec, InvinciblePierce);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*DamageSpec.Data, TargetASC);
+	}
+}
+
+void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
+{
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
+	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
+	if (DotDamageSpec.IsValid())
+	{
+		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
+		DotDamageSpec.Data->Period = Period;
+		SET_BY_CALLER_PROPERTY(DotDamageSpec, InvinciblePierce);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*DotDamageSpec.Data, TargetASC);
+	}
+}
+
+void URsDamageDefinition::ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	if (!HitReaction.IsValid())
+	{
+		return;
+	}
+	
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
+	// TODO: Switch GE_HitReaction types.
+	FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->TriggerHitReactionEffectClass, 0.f, EffectContext);
+	if (HitReactionSpec.IsValid())
+	{
+		SET_BY_CALLER_PROPERTY(HitReactionSpec, InvinciblePierce);
+		SET_BY_CALLER_PROPERTY(HitReactionSpec, SuperArmorPierce);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*HitReactionSpec.Data, TargetASC);
+	}
+}
+
 void URsDamageDefinition_Instant::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
 		return;
 	}
-
-	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	
-	// Health damage
-	FRsEffectCoefficient RsHealthCoefficient(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
-	FGameplayEffectSpecHandle HealthDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthCoefficient, EffectContext);
-	SET_BY_CALLER_PROPERTY(HealthDamageSpec, InvinciblePierce);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*HealthDamageSpec.Data, TargetASC);
+	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
+	ApplyInstantDamage(SourceASC, TargetASC, RsHealthDamageCoeff);
 
-	// Stagger damage
-	FRsEffectCoefficient RsStaggerCoefficient(DeveloperSetting->StaggerDamageEffectClass, StaggerDamageCoefficients);
-	FGameplayEffectSpecHandle StaggerDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerCoefficient, EffectContext);
-	SET_BY_CALLER_PROPERTY(StaggerDamageSpec, InvinciblePierce);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDamageSpec.Data, TargetASC);
+	FRsEffectCoefficient RsStaggerDamageCoeff(DeveloperSetting->StaggerDamageEffectClass, StaggerDamageCoefficients);
+	ApplyInstantDamage(SourceASC, TargetASC, RsStaggerDamageCoeff);
+
+	ApplyHitReaction(SourceASC, TargetASC);
 }
 
 void URsDamageDefinition_Dot::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
@@ -64,24 +108,14 @@ void URsDamageDefinition_Dot::ApplyDamage(UAbilitySystemComponent* SourceASC, UA
 	{
 		return;
 	}
-
-	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	
-	// Health DoT damage
-	FRsEffectCoefficient RsHealthDotCoefficient(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
-	FGameplayEffectSpecHandle HealthDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsHealthDotCoefficient, EffectContext);
-	HealthDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
-	HealthDotDamageSpec.Data->Period = Period;
-	SET_BY_CALLER_PROPERTY(HealthDotDamageSpec, InvinciblePierce);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*HealthDotDamageSpec.Data, TargetASC);
+	FRsEffectCoefficient RsHealthDotCoeff(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
+	ApplyDotDamage(SourceASC, TargetASC, RsHealthDotCoeff, Duration, Period);
 	
-	// Stagger damage
-	FRsEffectCoefficient RsStaggerDotCoefficient(DeveloperSetting->StaggerDotDamageEffectClass, StaggerDamageCoefficients);
-	FGameplayEffectSpecHandle StaggerDotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsStaggerDotCoefficient, EffectContext);
-	StaggerDotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
-	StaggerDotDamageSpec.Data->Period = Period;
-	SET_BY_CALLER_PROPERTY(StaggerDotDamageSpec, InvinciblePierce);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*StaggerDotDamageSpec.Data, TargetASC);
+	FRsEffectCoefficient RsStaggerDotCoeff(DeveloperSetting->StaggerDotDamageEffectClass, StaggerDamageCoefficients);
+	ApplyDotDamage(SourceASC, TargetASC, RsStaggerDotCoeff, Duration, Period);
+	
+	ApplyHitReaction(SourceASC, TargetASC);
 }
 
 void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
@@ -91,11 +125,18 @@ void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceAS
 		return;
 	}
 	
+	// Apply DoT Burst Damage
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotBurstDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->DotBurstDamageEffectClass, 0.f, EffectContext);
-	SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, InvinciblePierce);
-	SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, DamageMultiplierPerDotStacks);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*DotBurstDamageSpec.Data, TargetASC);
+	if (DotBurstDamageSpec.IsValid())
+	{
+		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, InvinciblePierce);
+		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, SuperArmorPierce);
+		SET_BY_CALLER_PROPERTY(DotBurstDamageSpec, DamageMultiplierPerDotStacks);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*DotBurstDamageSpec.Data, TargetASC);
+	}
+	
+	ApplyHitReaction(SourceASC, TargetASC);
 }
 
 void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
@@ -109,10 +150,14 @@ void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC,
 	{
 		return;
 	}
-
-	FRsEffectCoefficient RsCustomCoefficient(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	FGameplayEffectSpecHandle CustomEffectSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoefficient, EffectContext);
-	SET_BY_CALLER_PROPERTY(CustomEffectSpec, InvinciblePierce);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*CustomEffectSpec.Data, TargetASC);
+	
+	// Apply custom effect
+	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
+	FRsEffectCoefficient RsCustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
+	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCustomCoeff, EffectContext);
+	if (CustomSpec.IsValid())
+	{
+		SET_BY_CALLER_PROPERTY(CustomSpec, InvinciblePierce);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*CustomSpec.Data, TargetASC);
+	}
 }

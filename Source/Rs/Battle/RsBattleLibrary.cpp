@@ -10,7 +10,6 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
-#include "Rs/System/RsDeveloperSetting.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
@@ -72,23 +71,12 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 		return;
 	}
 
-	// Apply instant, DoT, DoT burst type damages.
-	// Can be Immuned by GE_Invincible.
+	// Can be Immuned by "GE_Invincible" or "GE_SuperArmor".
 	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
-		DamageDefinition->SetInvinciblePierce(DamageContext.InvinciblePierce);
+		DamageDefinition->SetPierceTier(DamageContext.InvinciblePierce, DamageContext.SuperArmorPierce);
+		DamageDefinition->SetHitReaction(DamageContext.HitReaction);
 		DamageDefinition->ApplyDamage(SourceASC, TargetASC);
-	}
-
-	// Trigger hit reaction.
-	// Can be Immuned by GE_SuperArmor.
-	if (DamageContext.HitReaction.IsValid())
-	{
-		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-		FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(URsDeveloperSetting::Get()->TriggerHitReactionEffectClass, 0.f, EffectContext);
-		HitReactionSpec.Data->SetSetByCallerMagnitude(TEXT("SuperArmorPierce"), DamageContext.SuperArmorPierce);
-		HitReactionSpec.Data->SetSetByCallerMagnitude(TEXT("InvinciblePierce"), DamageContext.InvinciblePierce);
-		SourceASC->ApplyGameplayEffectSpecToTarget(*HitReactionSpec.Data, TargetASC);
 	}
 }
 

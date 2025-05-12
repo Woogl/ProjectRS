@@ -23,13 +23,24 @@ class RS_API URsDamageDefinition : public UObject
 public:
 	virtual void PostInitProperties() override;
 
-	void SetInvinciblePierce(int32 InvinciblePierce);
-
+	void SetPierceTier(int32 InvinciblePierce, int32 SuperArmorPierce);
+	void SetHitReaction(FGameplayTag HitReaction);
+	
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
+
 	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
+	void ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff);
+	void ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period);
+	void ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
 
 	UPROPERTY()
 	int32 InvinciblePierce = 0;
+
+	UPROPERTY()
+	int32 SuperArmorPierce = 0;
+
+	UPROPERTY()
+	FGameplayTag HitReaction;
 
 protected:
 	UPROPERTY()
@@ -74,7 +85,7 @@ public:
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Duration = 1.f;
+	float Duration = 3.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1000"))
 	float Period = 0.5f;
