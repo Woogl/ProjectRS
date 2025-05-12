@@ -39,13 +39,13 @@ FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbili
 	return EffectContext;
 }
 
-void URsDamageDefinition::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	unimplemented();
-}
-
 void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
 {
+	if (RsCoeff.Coefficients.IsEmpty())
+	{
+		return;
+	}
+	
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DamageSpec.IsValid())
@@ -57,6 +57,11 @@ void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC,
 
 void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
 {
+	if (RsCoeff.Coefficients.IsEmpty())
+	{
+		return;
+	}
+	
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
