@@ -71,7 +71,7 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 		return;
 	}
 
-	// Can be Immuned by "GE_Invincible" or "GE_SuperArmor".
+	// Can be immune by RsInvincibleGEComp or RsSuperArmorGECpomp.
 	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
 		DamageDefinition->SetPierceTier(DamageContext.InvinciblePierce, DamageContext.SuperArmorPierce);

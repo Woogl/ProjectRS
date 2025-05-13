@@ -6,9 +6,6 @@
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemGlobals.generated.h"
 
-#define SET_BY_CALLER_PROPERTY(Spec, PropertyName) \
-URsAbilitySystemGlobals::SetByCallerProperty(Spec, GET_MEMBER_NAME_CHECKED(ThisClass, PropertyName), PropertyName)
-
 /**
  * 
  */
@@ -20,6 +17,4 @@ class RS_API URsAbilitySystemGlobals : public UAbilitySystemGlobals
 public:
 	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
 	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
-
-	static void SetByCallerProperty(const FGameplayEffectSpecHandle& SpecHandle, FName SetByCallerName, float Magnitude);
 };

@@ -10,11 +10,3 @@ FGameplayEffectContext* URsAbilitySystemGlobals::AllocGameplayEffectContext() co
 {
 	return new FRsGameplayEffectContext();
 }
-
-void URsAbilitySystemGlobals::SetByCallerProperty(const FGameplayEffectSpecHandle& SpecHandle, FName SetByCallerName, float Magnitude)
-{
-	if (SpecHandle.Data.IsValid())
-	{
-		SpecHandle.Data->SetSetByCallerMagnitude(SetByCallerName, Magnitude);
-	}
-}

@@ -4,18 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
 class UGameplayAbility;
 class URsGameplayAbility;
 class UAbilitySystemComponent;
 struct FGameplayTagContainer;
+
+#define SET_SETBYCALLER_PROPERTY(SpecHandle, Property) \
+UAbilitySystemBlueprintLibrary::AssignSetByCallerMagnitude(SpecHandle, GET_MEMBER_NAME_CHECKED(ThisClass, Property), Property)
+
+#define GET_SETBYCALLER_PROPERTY(SpecHandle, Property, WarnIfNotFound, DefaultIfNotFound) \
+((SpecHandle.IsValid() && SpecHandle.Data.IsValid()) ? \
+SpecHandle.Data->GetSetByCallerMagnitude(GET_MEMBER_NAME_CHECKED(ThisClass, Property), WarnIfNotFound, DefaultIfNotFound) : DefaultIfNotFound)
+
 /**
  * 
  */
 UCLASS()
-class RS_API URsAbilitySystemLibrary : public UBlueprintFunctionLibrary
+class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 {
 	GENERATED_BODY()
 	
