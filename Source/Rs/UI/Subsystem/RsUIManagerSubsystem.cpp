@@ -40,7 +40,7 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	// Create Game HUD instance first only.
 	if (GameHUDInstance == nullptr)
 	{
-		GameHUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::TAG_UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
+		GameHUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
 	}
 
 	// Set the view model to Game HUD instance.

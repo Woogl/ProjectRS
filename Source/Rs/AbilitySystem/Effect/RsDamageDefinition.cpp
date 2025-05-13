@@ -65,7 +65,7 @@ void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAb
 	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
 	{
-		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::TAG_MANUAL_DURATION, Duration);
+		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
 		DotDamageSpec.Data->Period = Period;
 		SET_SETBYCALLER_PROPERTY(DotDamageSpec, InvinciblePierce);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*DotDamageSpec.Data, TargetASC);
