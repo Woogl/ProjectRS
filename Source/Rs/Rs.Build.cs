@@ -30,6 +30,7 @@ public class Rs : ModuleRules
 			"TargetingSystem",
 			"GameplayCameras",
 			"GameplayMessageRuntime",
+			"NavigationSystem",
 		});
 	}
 }
