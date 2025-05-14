@@ -21,6 +21,8 @@ URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAb
 
 void URsAbilityViewModel::Initialize()
 {
+	Super::Initialize();
+	
 	CachedModel = Cast<URsGameplayAbility>(GetOuter());
 	if (CachedModel.IsValid())
 	{
@@ -28,6 +30,16 @@ void URsAbilityViewModel::Initialize()
 		SetMaxRechargeStacks(CachedModel->MaxRechargeStacks);
 		
 		CachedModel->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
+	}
+}
+
+void URsAbilityViewModel::Deinitialize()
+{
+	Super::Deinitialize();
+	
+	if (CachedModel.IsValid())
+	{
+		CachedModel->OnRechargeStacksChanged.RemoveAll(this);
 	}
 }
 

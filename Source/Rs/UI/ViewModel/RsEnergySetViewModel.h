@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "RsViewModelBase.h"
 #include "RsEnergySetViewModel.generated.h"
 
 struct FOnAttributeChangeData;
@@ -11,7 +11,7 @@ struct FOnAttributeChangeData;
  * 
  */
 UCLASS()
-class RS_API URsEnergySetViewModel : public UMVVMViewModelBase
+class RS_API URsEnergySetViewModel : public URsViewModelBase
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,8 @@ public:
 	static URsEnergySetViewModel* CreateEnergySetViewModel(AActor* Model);
 
 protected:
-	void Initialize();
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
 
 public:
 	float GetCurrentEnergy() const;

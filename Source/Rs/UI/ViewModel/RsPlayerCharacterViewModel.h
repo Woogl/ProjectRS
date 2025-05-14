@@ -23,6 +23,7 @@ public:
 
 protected:
 	virtual void Initialize() override;
+	virtual void Deinitialize() override;
 
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))

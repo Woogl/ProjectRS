@@ -15,6 +15,8 @@ URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(AActor* M
 
 void URsHealthSetViewModel::Initialize()
 {
+	Super::Initialize();
+	
 	const AActor* Model = Cast<AActor>(GetOuter());
 	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 	{
@@ -27,6 +29,20 @@ void URsHealthSetViewModel::Initialize()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::CurrentHealthChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).AddUObject(this, &ThisClass::HealthRegenChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).AddUObject(this, &ThisClass::ShieldChanged);
+	}
+}
+
+void URsHealthSetViewModel::Deinitialize()
+{
+	Super::Deinitialize();
+	
+	const AActor* Model = Cast<AActor>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).RemoveAll(this);
 	}
 }
 

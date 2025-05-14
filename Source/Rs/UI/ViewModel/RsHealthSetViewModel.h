@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "RsViewModelBase.h"
 #include "RsHealthSetViewModel.generated.h"
 
 struct FOnAttributeChangeData;
@@ -12,7 +12,7 @@ struct FOnAttributeChangeData;
  * 
  */
 UCLASS()
-class RS_API URsHealthSetViewModel : public UMVVMViewModelBase
+class RS_API URsHealthSetViewModel : public URsViewModelBase
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,8 @@ public:
 	static URsHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
 
 protected:
-	void Initialize();
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
 
 public:
 	float GetCurrentHealth() const;

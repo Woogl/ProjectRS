@@ -33,6 +33,6 @@ class RS_API URsBuffEffect : public UGameplayEffect
 public:
 	URsBuffEffect();
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category="RS|Effect")
 	static FRsEffectCoefficient ToRsEffectCoefficient(const FRsBuffCoefficient& BuffCoefficient, float Duration);
 };

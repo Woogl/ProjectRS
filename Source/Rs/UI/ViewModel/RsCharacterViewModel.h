@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "RsViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
 class URsStaggerSetViewModel;
@@ -13,7 +13,7 @@ class ARsCharacterBase;
  * 
  */
 UCLASS()
-class RS_API URsCharacterViewModel : public UMVVMViewModelBase
+class RS_API URsCharacterViewModel : public URsViewModelBase
 {
 	GENERATED_BODY()
 
@@ -22,7 +22,8 @@ public:
 	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Model);
 
 protected:
-	virtual void Initialize();
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
 
 public:
 	FText GetCharacterName() const;

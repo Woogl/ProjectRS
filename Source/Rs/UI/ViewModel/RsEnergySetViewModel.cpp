@@ -15,6 +15,8 @@ URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(AActor* M
 
 void URsEnergySetViewModel::Initialize()
 {
+	Super::Initialize();
+	
 	const AActor* Model = Cast<AActor>(GetOuter());
 	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 	{
@@ -25,6 +27,19 @@ void URsEnergySetViewModel::Initialize()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).AddUObject(this, &ThisClass::EnergyRegenChanged);
+	}
+}
+
+void URsEnergySetViewModel::Deinitialize()
+{
+	Super::Deinitialize();
+	
+	const AActor* Model = Cast<AActor>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).RemoveAll(this);
 	}
 }
 

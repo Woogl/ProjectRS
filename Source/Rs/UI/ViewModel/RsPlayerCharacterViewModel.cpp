@@ -42,3 +42,8 @@ void URsPlayerCharacterViewModel::Initialize()
 		}
 	}
 }
+
+void URsPlayerCharacterViewModel::Deinitialize()
+{
+	Super::Deinitialize();
+}

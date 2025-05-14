@@ -17,12 +17,19 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 
 void URsCharacterViewModel::Initialize()
 {
+	Super::Initialize();
+	
 	FString DisplayName = UKismetSystemLibrary::GetDisplayName(GetOuter());
 	SetCharacterName(FText::FromString(DisplayName));
 	
 	ARsCharacterBase* Model = Cast<ARsCharacterBase>(GetOuter());
 	HealthSetViewModel = URsHealthSetViewModel::CreateHealthSetViewModel(Model);
 	StaggerSetViewModel = URsStaggerSetViewModel::CreateStaggerSetViewModel(Model);
+}
+
+void URsCharacterViewModel::Deinitialize()
+{
+	Super::Deinitialize();
 }
 
 FText URsCharacterViewModel::GetCharacterName() const

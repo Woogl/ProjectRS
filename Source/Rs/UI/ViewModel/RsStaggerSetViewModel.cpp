@@ -15,6 +15,8 @@ URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(AActor
 
 void URsStaggerSetViewModel::Initialize()
 {
+	Super::Initialize();
+	
 	const AActor* Model = Cast<AActor>(GetOuter());
 	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 	{
@@ -25,6 +27,19 @@ void URsStaggerSetViewModel::Initialize()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
+	}
+}
+
+void URsStaggerSetViewModel::Deinitialize()
+{
+	Super::Deinitialize();
+	
+	const AActor* Model = Cast<AActor>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).RemoveAll(this);
 	}
 }
 

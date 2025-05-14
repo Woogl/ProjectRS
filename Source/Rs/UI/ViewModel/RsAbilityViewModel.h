@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "RsViewModelBase.h"
 #include "RsAbilityViewModel.generated.h"
 
 class URsGameplayAbility;
@@ -12,7 +12,7 @@ class URsGameplayAbility;
  * 
  */
 UCLASS()
-class RS_API URsAbilityViewModel : public UMVVMViewModelBase, public FTickableGameObject
+class RS_API URsAbilityViewModel : public URsViewModelBase, public FTickableGameObject
 {
 	GENERATED_BODY()
 	
@@ -21,7 +21,8 @@ public:
 	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Model);
 
 protected:
-	void Initialize();
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
 
 public:
 	float GetCooldownDuration() const;
@@ -66,6 +67,7 @@ private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	int32 MaxRechargeStacks;
 
+	// Pointer for Tick optimization.
 	UPROPERTY()
 	TWeakObjectPtr<URsGameplayAbility> CachedModel;
 };
