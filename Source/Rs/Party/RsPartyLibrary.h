@@ -24,9 +24,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static TArray<ARsPlayerCharacter*> GetPartyMembers(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
+	static int32 FindPartyMemberIndex(ARsPlayerCharacter* Member);
 	
 	/** Party member setter */
-	
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static bool SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex);
 

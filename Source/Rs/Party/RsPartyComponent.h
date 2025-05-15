@@ -18,6 +18,10 @@ class RS_API URsPartyComponent : public UActorComponent
 public:	
 	URsPartyComponent();
 
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPartyMemberChanged, ARsPlayerCharacter*, int32);
+	FOnPartyMemberChanged OnAddPartyMember;
+	FOnPartyMemberChanged OnRemovePartyMember;
+
 	ARsPlayerCharacter* GetPartyMember(int32 MemberIndex) const;
 	TArray<ARsPlayerCharacter*> GetPartyMembers() const;
 	

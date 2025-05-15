@@ -9,6 +9,7 @@
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
 #include "Rs/Character/RsPlayerCharacter.h"
+#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
 
 URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model)
@@ -18,12 +19,23 @@ URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacte
 	return ViewModel;
 }
 
+int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
+{
+	return PartyMemberIndex;
+}
+
+void URsPlayerCharacterViewModel::SetPartyMemberIndex(int32 MemberIndex)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PartyMemberIndex, MemberIndex);
+}
+
 void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 	
 	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
 	{
+		SetPartyMemberIndex(URsPartyLibrary::FindPartyMemberIndex(Model));
 		EnergySetViewModel = URsEnergySetViewModel::CreateEnergySetViewModel(Model);
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 		{
@@ -46,4 +58,5 @@ void URsPlayerCharacterViewModel::Initialize()
 void URsPlayerCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
+	
 }

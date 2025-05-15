@@ -27,11 +27,17 @@ protected:
 
 public:
 	FText GetCharacterName() const;
+	UObject* GetCharacterIcon() const;
+    	
 	void SetCharacterName(FText NewCharacterName);
+	void SetCharacterIcon(UObject* NewCharacterIcon);
 	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	FText CharacterName;
+
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	TObjectPtr<UObject> CharacterIcon;
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsHealthSetViewModel> HealthSetViewModel;

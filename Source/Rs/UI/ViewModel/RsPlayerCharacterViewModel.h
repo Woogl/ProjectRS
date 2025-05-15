@@ -21,11 +21,17 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsPlayerCharacterViewModel* CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model);
 
+	int32 GetPartyMemberIndex() const;
+	void SetPartyMemberIndex(int32 MemberIndex);
+	
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
 private:
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, meta=(AllowPrivateAccess))
+	int32 PartyMemberIndex;
+	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;
 	
