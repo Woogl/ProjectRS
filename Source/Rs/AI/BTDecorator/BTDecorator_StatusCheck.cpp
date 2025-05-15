@@ -22,11 +22,11 @@ bool UBTDecorator_StatusCheck::CalculateRawConditionValue(UBehaviorTreeComponent
 				return FMath::IsNearlyEqual(FoundValue, Value, 0.4);
 			case EAttributeInequalityOperator::Less:
 				return FoundValue < Value;
-			case EAttributeInequalityOperator::Less_Equal:
+			case EAttributeInequalityOperator::LessEqual:
 				return FoundValue <= Value;
 			case EAttributeInequalityOperator::Greater:
 				return FoundValue > Value;
-			case EAttributeInequalityOperator::Greater_Equal:
+			case EAttributeInequalityOperator::GreaterEqual:
 				return FoundValue >= Value;
 			}
 		}

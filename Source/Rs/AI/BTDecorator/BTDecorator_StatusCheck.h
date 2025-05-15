@@ -15,9 +15,9 @@ enum class EAttributeInequalityOperator : uint8
 {
 	Equal,
 	Less,
-	Less_Equal,
+	LessEqual,
 	Greater,
-	Greater_Equal,
+	GreaterEqual,
 };
 
 UCLASS()
