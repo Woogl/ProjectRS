@@ -3,9 +3,12 @@
 
 #include "RsMVVMConversionLibrary.h"
 
-FText URsMVVMConversionLibrary::CooldownTimeToText(float CooldownTime)
+FText URsMVVMConversionLibrary::FloatToText(float Number, int32 FractionDigits)
 {
-	int32 Truncated = static_cast<int32>(CooldownTime * 10);
-	float DisplayValue = Truncated / 10.f;
-	return FText::AsNumber(DisplayValue, &FNumberFormattingOptions().SetMaximumFractionalDigits(1).SetMinimumFractionalDigits(1));
+	return FText::AsNumber(Number, &FNumberFormattingOptions().SetMinimumFractionalDigits(FractionDigits).SetMaximumFractionalDigits(FractionDigits));
+}
+
+FText URsMVVMConversionLibrary::IntegerToText(int32 Number)
+{
+	return FText::AsNumber(Number);
 }

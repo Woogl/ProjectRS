@@ -29,11 +29,13 @@ public:
 	float GetCooldownRemaining() const;
 	int32 GetCurrentRechargeStacks() const;
 	int32 GetMaxRechargeStacks() const;
+	UObject* GetSkillIcon() const;
 
 	void SetCooldownDuration(float NewCooldownDuration);
 	void SetCooldownRemaining(float NewCooldownRemaining);
 	void SetCurrentRechargeStacks(int32 NewStacks);
 	void SetMaxRechargeStacks(int32 NewStacks);
+	void SetSkillIcon(UObject* NewSkillIcon);
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCooldownPercent() const;
@@ -46,6 +48,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FText GetInputKeyText() const;
+
+	UFUNCTION(BlueprintPure)
+	bool HasSkillIcon() const;
 
 	// FTickableGameObject
 	// NOTE: Ability class can't tick by default, but I want to display cooldown updated every frame.
@@ -66,6 +71,9 @@ private:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	int32 MaxRechargeStacks;
+
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	TObjectPtr<UObject> SkillIcon;
 
 	// Pointer for Tick optimization.
 	UPROPERTY()

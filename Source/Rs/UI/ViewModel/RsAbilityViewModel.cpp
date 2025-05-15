@@ -28,6 +28,7 @@ void URsAbilityViewModel::Initialize()
 	{
 		SetCurrentRechargeStacks(CachedModel->GetCurrentRechargeStacks());
 		SetMaxRechargeStacks(CachedModel->MaxRechargeStacks);
+		SetSkillIcon(CachedModel->SkillIcon);
 		
 		CachedModel->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
 	}
@@ -61,6 +62,11 @@ int32 URsAbilityViewModel::GetCurrentRechargeStacks() const
 int32 URsAbilityViewModel::GetMaxRechargeStacks() const
 {
 	return MaxRechargeStacks;
+}
+
+UObject* URsAbilityViewModel::GetSkillIcon() const
+{
+	return SkillIcon;
 }
 
 void URsAbilityViewModel::SetCooldownDuration(float NewCooldownDuration)
@@ -97,6 +103,11 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
+}
+
+void URsAbilityViewModel::SetSkillIcon(UObject* NewSkillIcon)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(SkillIcon, NewSkillIcon);
 }
 
 float URsAbilityViewModel::GetCooldownPercent() const
@@ -141,6 +152,11 @@ FText URsAbilityViewModel::GetInputKeyText() const
 		}
 	}
 	return FText::GetEmpty();
+}
+
+bool URsAbilityViewModel::HasSkillIcon() const
+{
+	return SkillIcon != nullptr;
 }
 
 void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
