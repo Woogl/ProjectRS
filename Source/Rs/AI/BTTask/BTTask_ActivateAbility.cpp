@@ -11,6 +11,7 @@
 UBTTask_ActivateAbility::UBTTask_ActivateAbility()
 {
 	bCreateNodeInstance = true;
+	bNotifyTaskFinished = true;
 }
 
 EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -22,14 +23,10 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 		if (ASC->TryActivateAbilitiesByTag(AbilityTags))
 		{
 			ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, AbilityTags, true);
-			if (ActivatedAbility.IsValid())
+			if (ActivatedAbility->IsActive())
 			{
-				if (ActivatedAbility->IsActive())
-				{
-					MyOwnerComp = &OwnerComp;
-					ActivatedAbility->OnGameplayAbilityEnded.AddUObject(this, &ThisClass::HandleAbilityEnded);
-					Result = EBTNodeResult::InProgress;
-				}
+				ActivatedAbility->OnGameplayAbilityEnded.AddUObject(this, &ThisClass::HandleAbilityEnded, &OwnerComp);
+				Result = EBTNodeResult::InProgress;
 			}
 		}
 	}
@@ -40,14 +37,21 @@ void UBTTask_ActivateAbility::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, 
 {
 	if (ActivatedAbility.IsValid())
 	{
+		// unbind delegate
 		ActivatedAbility->OnGameplayAbilityEnded.RemoveAll(this);
+
+		if (ActivatedAbility->IsActive())
+		{
+			UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerComp.GetAIOwner())->CancelAbility(ActivatedAbility.Get());
+		}
 	}
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 }
 
-void UBTTask_ActivateAbility::HandleAbilityEnded(UGameplayAbility* Ability)
+void UBTTask_ActivateAbility::HandleAbilityEnded(UGameplayAbility* Ability, UBehaviorTreeComponent* OwnerComp)
 {
-	if (MyOwnerComp.IsValid())
+	if (IsValid(OwnerComp))
 	{
-		FinishLatentTask(*MyOwnerComp, EBTNodeResult::Succeeded);
+		FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

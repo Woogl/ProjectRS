@@ -24,9 +24,8 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
 
-private:
-	void HandleAbilityEnded(UGameplayAbility* Ability);
+protected:
+	void HandleAbilityEnded(UGameplayAbility* Ability, UBehaviorTreeComponent* OwnerComp);
 	
-	TWeakObjectPtr<UBehaviorTreeComponent> MyOwnerComp;
 	TWeakObjectPtr<UGameplayAbility> ActivatedAbility;
 };
