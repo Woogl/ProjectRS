@@ -14,5 +14,5 @@ float URsCostRecoverCalculation::CalculateBaseMagnitude_Implementation(const FGa
 		return 0.f;
 	}
 	
-	return Ability->CostRecoveryAmount.GetValueAtLevel(Ability->GetAbilityLevel());
+	return Ability->CostRecoveryAmount;
 }

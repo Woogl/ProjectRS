@@ -87,7 +87,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 3.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1000"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Period = 0.5f;
 
 public:

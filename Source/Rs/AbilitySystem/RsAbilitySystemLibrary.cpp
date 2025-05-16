@@ -66,3 +66,13 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 		FoundRsAbility->SetCooldownRemaining(NewRemaining);
 	}
 }
+
+FRsEffectCoefficient URsAbilitySystemLibrary::MakeEffectCoefficient_MagnitudeOnly(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude)
+{
+	return FRsEffectCoefficient(EffectClass, Magnitude);
+}
+
+FRsEffectCoefficient URsAbilitySystemLibrary::MakeEffectCoefficient_MagnitudeAndDuration(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude, float Duration)
+{
+	return FRsEffectCoefficient(EffectClass, Magnitude, Duration);
+}

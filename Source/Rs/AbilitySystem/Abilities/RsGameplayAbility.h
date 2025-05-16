@@ -36,7 +36,7 @@ public:
 	FGameplayTag CooldownTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
-	FScalableFloat CooldownDuration;
+	float CooldownDuration;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
@@ -45,13 +45,13 @@ public:
 	FOnRechargeStacksChanged OnRechargeStacksChanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	FScalableFloat CostAmount;
+	float CostAmount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	FScalableFloat CostRecoveryAmount;
+	float CostRecoveryAmount;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.

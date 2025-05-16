@@ -48,7 +48,7 @@ float URsAbilityViewModel::GetCooldownDuration() const
 {
 	if (CachedModel.IsValid())
 	{
-		return CachedModel->CooldownDuration.GetValueAtLevel(0);
+		return CachedModel->CooldownDuration;
 	}
 	return CooldownDuration;
 }
@@ -100,7 +100,7 @@ void URsAbilityViewModel::SetCurrentRechargeStacks(int32 NewStacks)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentRechargeStacks, NewStacks))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CurrentRechargeStacks);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentRechargeStacksText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
@@ -110,7 +110,8 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(MaxRechargeStacks, NewStacks))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(MaxRechargeStacks);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxRechargeStacksText);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CurrentRechargeStacks);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
