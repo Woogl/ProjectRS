@@ -75,3 +75,4 @@ DerivedDataCache/*
 
 # IDE setting
 *.user
+.idea/.idea.Rs/.idea/inspectionProfiles/Project_Default.xml

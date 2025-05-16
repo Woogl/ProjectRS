@@ -45,5 +45,8 @@ public:
 	URsPartyComponent* GetPartyComponent() const;
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
 	URsLockOnComponent* GetLockOnComponent() const;
+
+	UFUNCTION(BlueprintPure, Category="RS", meta=(WorldContext="WorldContextObject", UnsafeDuringActorConstruction="true"))
+	static APlayerController* GetRsPlayerController(const UObject* WorldContextObject);
 };
 

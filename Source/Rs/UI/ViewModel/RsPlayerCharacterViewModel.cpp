@@ -8,9 +8,9 @@
 #include "RsEnergySetViewModel.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
 
 URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model)
@@ -82,10 +82,10 @@ void URsPlayerCharacterViewModel::SetPartyMemberIndex(int32 MemberIndex)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberIndex, MemberIndex))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
 	}
 }
 
@@ -99,48 +99,37 @@ FText URsPlayerCharacterViewModel::GetPartySlotNumberText() const
 	return FText::AsNumber(GetPartySlotNumber());
 }
 
-bool URsPlayerCharacterViewModel::GetIsPlayerControlled() const
+bool URsPlayerCharacterViewModel::IsPartyMember() const
 {
-	return IsPlayerControlled;
+	TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(GetWorld());
+	if (PartyMembers.Num() > 0)
+	{
+		return PartyMembers.Contains(GetOuter());
+	}
+	return false;
 }
 
-void URsPlayerCharacterViewModel::SetIsPlayerControlled(bool bControlled)
+bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 {
-	if (UE_MVVM_SET_PROPERTY_VALUE(IsPlayerControlled, bControlled))
+	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	{
+		return Model->IsLocallyControlled();
+	}
+	return false;
+}
+
+void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
+{
+	if (OldPawn == GetOuter() || NewPawn == GetOuter())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 	}
 }
 
-bool URsPlayerCharacterViewModel::GetIsPartyMember() const
-{
-	return IsPartyMember;
-}
-
-void URsPlayerCharacterViewModel::SetIsPartyMember(bool bPartyMember)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(IsPartyMember, bPartyMember);
-}
-
-void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
-{
-	if (NewPawn == GetOuter())
-	{
-		SetIsPlayerControlled(true);
-	}
-	else
-	{
-		SetIsPlayerControlled(false);
-	}
-}
-
 void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex)
 {
-	if (AddedMember != GetOuter())
+	if (AddedMember == GetOuter())
 	{
-		return;
+		SetPartyMemberIndex(MemberIndex);
 	}
-	
-	SetPartyMemberIndex(MemberIndex);
-	SetIsPartyMember(true);
 }

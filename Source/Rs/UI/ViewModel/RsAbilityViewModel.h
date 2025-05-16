@@ -38,7 +38,16 @@ public:
 	void SetSkillIcon(UObject* NewSkillIcon);
 
 	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetCooldownRemainingText() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCooldownPercent() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetMaxRechargeStacksText() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetCurrentRechargeStacksText() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool IsOnCooldown() const;

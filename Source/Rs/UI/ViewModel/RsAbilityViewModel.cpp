@@ -90,6 +90,7 @@ void URsAbilityViewModel::SetCooldownRemaining(float NewCooldownRemaining)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(CooldownRemaining, NewCooldownRemaining))
 	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownRemainingText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
@@ -99,6 +100,7 @@ void URsAbilityViewModel::SetCurrentRechargeStacks(int32 NewStacks)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentRechargeStacks, NewStacks))
 	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CurrentRechargeStacks);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
@@ -108,6 +110,7 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(MaxRechargeStacks, NewStacks))
 	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(MaxRechargeStacks);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCooldownPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsOnCooldown);
 	}
@@ -115,8 +118,15 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 
 void URsAbilityViewModel::SetSkillIcon(UObject* NewSkillIcon)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(SkillIcon, NewSkillIcon);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasSkillIcon);
+	if (UE_MVVM_SET_PROPERTY_VALUE(SkillIcon, NewSkillIcon))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasSkillIcon);
+	}
+}
+
+FText URsAbilityViewModel::GetCooldownRemainingText() const
+{
+	return FText::AsNumber(CooldownRemaining, &FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1));
 }
 
 float URsAbilityViewModel::GetCooldownPercent() const
@@ -126,6 +136,16 @@ float URsAbilityViewModel::GetCooldownPercent() const
 		return 0.f;
 	}
 	return CooldownRemaining / CooldownDuration;
+}
+
+FText URsAbilityViewModel::GetMaxRechargeStacksText() const
+{
+	return FText::AsNumber(MaxRechargeStacks);
+}
+
+FText URsAbilityViewModel::GetCurrentRechargeStacksText() const
+{
+	return FText::AsNumber(CurrentRechargeStacks);
 }
 
 bool URsAbilityViewModel::IsOnCooldown() const

@@ -65,8 +65,6 @@ void URsPartyComponent::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32
 	if (!PartyMembers.Contains(NewMember))
 	{
 		PartyMembers.Insert(NewMember, MemberIndex);
-		// OnAddPartyMember.Broadcast(NewMember, MemberIndex);
-
 		for (int32 i = MemberIndex; i < PartyMembers.Num(); i++)
 		{
 			OnAddPartyMember.Broadcast(PartyMembers[i], i);

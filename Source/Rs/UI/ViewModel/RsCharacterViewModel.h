@@ -31,6 +31,9 @@ public:
     	
 	void SetCharacterName(FText NewCharacterName);
 	void SetCharacterIcon(UObject* NewCharacterIcon);
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool HasCharacterIcon() const;
 	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))

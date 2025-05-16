@@ -24,17 +24,17 @@ public:
 	int32 GetPartyMemberIndex() const;
 	void SetPartyMemberIndex(int32 MemberIndex);
 
-	bool GetIsPartyMember() const;
-	void SetIsPartyMember(bool bPartyMember);
-
-	bool GetIsPlayerControlled() const;
-	void SetIsPlayerControlled(bool bPlayerControlled);
-
 	UFUNCTION(FieldNotify, BlueprintPure)
 	int32 GetPartySlotNumber() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetPartySlotNumberText() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool IsPartyMember() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool IsPlayerControlled() const;
 	
 protected:
 	virtual void Initialize() override;
@@ -48,12 +48,6 @@ private:
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	int32 PartyMemberIndex;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	bool IsPartyMember = false;
-	
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	bool IsPlayerControlled = false;
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;

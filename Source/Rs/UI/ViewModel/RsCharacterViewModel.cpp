@@ -24,9 +24,9 @@ void URsCharacterViewModel::Initialize()
 		FString DisplayName = UKismetSystemLibrary::GetDisplayName(GetOuter());
 		SetCharacterName(FText::FromString(DisplayName));
 		SetCharacterIcon(Model->CharacterIcon);
-		
-		HealthSetViewModel = URsHealthSetViewModel::CreateHealthSetViewModel(Model);
-		StaggerSetViewModel = URsStaggerSetViewModel::CreateStaggerSetViewModel(Model);
+
+		UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(Model));
+		UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(Model));
 	}
 }
 
@@ -52,5 +52,13 @@ void URsCharacterViewModel::SetCharacterName(FText NewCharacterName)
 
 void URsCharacterViewModel::SetCharacterIcon(UObject* NewCharacterIcon)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(CharacterIcon, NewCharacterIcon);
+	if (UE_MVVM_SET_PROPERTY_VALUE(CharacterIcon, NewCharacterIcon))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasCharacterIcon);
+	}
+}
+
+bool URsCharacterViewModel::HasCharacterIcon() const
+{
+	return CharacterIcon != nullptr;
 }
