@@ -106,7 +106,8 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Critical calc
 	FinalDamage *= ((bCriticalHit && !bDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
 	// Defense rate calc
-	FinalDamage *= (190.f / (Defense + 190.f));
+	float DefenseConstant = URsGameSetting::Get()->DefenseConstant;
+	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
 	// Groggy has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
