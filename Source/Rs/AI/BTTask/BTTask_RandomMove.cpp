@@ -6,9 +6,11 @@
 #include "NavigationSystem.h"
 #include "Tasks/AITask_MoveTo.h"
 
+
 UBTTask_RandomMove::UBTTask_RandomMove()
 {
 	bCreateNodeInstance = true;
+	bNotifyTaskFinished = true;
 }
 
 EBTNodeResult::Type UBTTask_RandomMove::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -32,11 +34,11 @@ EBTNodeResult::Type UBTTask_RandomMove::ExecuteTask(UBehaviorTreeComponent& Owne
 			MinAngle = 150.f;
 			MaxAngle = 210.f;
 			break;
-		case EMoveDirection::Leftward:
+		case EMoveDirection::Left:
 			MinAngle = 240.f;
 			MaxAngle = 300.f;
 			break;
-		case EMoveDirection::Rightward:
+		case EMoveDirection::Right:
 			MinAngle = 60.f;
 			MaxAngle = 120.f;
 			break;
@@ -48,10 +50,17 @@ EBTNodeResult::Type UBTTask_RandomMove::ExecuteTask(UBehaviorTreeComponent& Owne
 		FVector TargetLocation = GetRandomReachablePointInAngle(PawnLocation, ForwardVector, MinAngle, MaxAngle);
 		if (TargetLocation != PawnLocation)
 		{
-			MyOwnerComp = &OwnerComp;
 			FAIMoveRequest MoveReq(TargetLocation);
 			Controller->MoveTo(MoveReq);
-			Controller->ReceiveMoveCompleted.AddDynamic(this, &UBTTask_RandomMove::OnMoveFinished);
+			Controller->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_RandomMove::OnMoveFinished,&OwnerComp);
+			/*
+			Controller->GetPathFollowingComponent()->OnRequestFinished.AddWeakLambda(
+				this,
+				[this, &OwnerComp](FAIRequestID RequestID, const FPathFollowingResult& Result)
+				{
+					OnMoveFinished(RequestID, Result, &OwnerComp);
+				});
+			*/
 			return EBTNodeResult::InProgress;
 		}
 	}
@@ -67,7 +76,7 @@ FVector UBTTask_RandomMove::GetRandomReachablePointInAngle(const FVector& Origin
 		{
 			float RandomAngle = FMath::RandRange(MinAngle, MaxAngle);
 			FVector RandomDirection = Forward.RotateAngleAxis(RandomAngle, FVector::UpVector);
-			float RandomDistance = FMath::RandRange(Distance * 0.8f, Distance * 1.2f);
+			float RandomDistance = FMath::RandRange(MinDistance, MaxDistance);
 			FVector RandomLocation = Origin + RandomDirection * RandomDistance;
 
 			FNavLocation TargetLocation;
@@ -77,17 +86,26 @@ FVector UBTTask_RandomMove::GetRandomReachablePointInAngle(const FVector& Origin
 			}
 			MinAngle -= 3.f;
 			MaxAngle += 3.f;
-			Distance -= 30.f;
+			MinDistance -= 30.f;
+			MaxDistance += 30.f;
 		}
 	}
 	return Origin;
 }
 
-void UBTTask_RandomMove::OnMoveFinished(FAIRequestID RequestID, EPathFollowingResult::Type Result)
+void UBTTask_RandomMove::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
-	if (MyOwnerComp.IsValid())
+	if (IsValid(&OwnerComp))
 	{
-		MyOwnerComp->GetAIOwner()->ReceiveMoveCompleted.RemoveDynamic(this, &UBTTask_RandomMove::OnMoveFinished);
-		FinishLatentTask(*MyOwnerComp,Result == EPathFollowingResult::Success ? EBTNodeResult::Succeeded : EBTNodeResult::Failed);
+		OwnerComp.GetAIOwner()->ReceiveMoveCompleted.RemoveAll(this);
+	}
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+}
+
+void UBTTask_RandomMove::OnMoveFinished(FAIRequestID RequestID, const FPathFollowingResult& Result, UBehaviorTreeComponent* OwnerComp)
+{
+	if (IsValid(OwnerComp))
+	{
+		FinishLatentTask(*OwnerComp, Result.IsSuccess() ? EBTNodeResult::Succeeded : EBTNodeResult::Failed);
 	}
 }

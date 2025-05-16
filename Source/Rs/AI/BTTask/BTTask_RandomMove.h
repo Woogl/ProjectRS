@@ -13,11 +13,11 @@
 UENUM(BlueprintType)
 enum class EMoveDirection : uint8
 {
-	None,
+	Any,
 	Forward,
 	Backward,
-	Leftward,
-	Rightward,
+	Left,
+	Right,
 };
 
 UCLASS()
@@ -31,16 +31,16 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 	FVector GetRandomReachablePointInAngle(const FVector& Origin, const FVector& Forward, float MinAngle, float MaxAngle);
-	UFUNCTION()
-	void OnMoveFinished(FAIRequestID RequestID, EPathFollowingResult::Type Result);
+
+	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
+	
+	void OnMoveFinished(FAIRequestID RequestID, const FPathFollowingResult& Result, UBehaviorTreeComponent* OwnerComp);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMoveDirection Direction = EMoveDirection::None;
-	
+	EMoveDirection Direction = EMoveDirection::Any;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Distance = 300.f;
-
-private:
-	TWeakObjectPtr<UBehaviorTreeComponent> MyOwnerComp;
-
+	float MinDistance = 250.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxDistance = 300.f;
 };
