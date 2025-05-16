@@ -3,12 +3,11 @@
 
 #include "RsStaggerSetViewModel.h"
 
-#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
-URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(AActor* Model)
+URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsStaggerSetViewModel* ViewModel = NewObject<URsStaggerSetViewModel>(Model);
+	URsStaggerSetViewModel* ViewModel = NewObject<URsStaggerSetViewModel>(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -17,8 +16,8 @@ void URsStaggerSetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		SetMaxStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
 		SetCurrentStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
@@ -34,8 +33,7 @@ void URsStaggerSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);

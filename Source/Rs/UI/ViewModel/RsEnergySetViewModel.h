@@ -6,6 +6,7 @@
 #include "RsViewModelBase.h"
 #include "RsEnergySetViewModel.generated.h"
 
+class UAbilitySystemComponent;
 struct FOnAttributeChangeData;
 /**
  * 
@@ -17,11 +18,13 @@ class RS_API URsEnergySetViewModel : public URsViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsEnergySetViewModel* CreateEnergySetViewModel(AActor* Model);
+	static URsEnergySetViewModel* CreateEnergySetViewModel(UAbilitySystemComponent* ASC);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
+
+	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
 
 public:
 	float GetCurrentEnergy() const;

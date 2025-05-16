@@ -6,6 +6,7 @@
 #include "RsViewModelBase.h"
 #include "RsHealthSetViewModel.generated.h"
 
+class UAbilitySystemComponent;
 struct FOnAttributeChangeData;
 
 /**
@@ -16,13 +17,16 @@ class RS_API URsHealthSetViewModel : public URsViewModelBase
 {
 	GENERATED_BODY()
 
+	// TODO: Model should be ASC.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsHealthSetViewModel* CreateHealthSetViewModel(AActor* Model);
+	static URsHealthSetViewModel* CreateHealthSetViewModel(UAbilitySystemComponent* ASC);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
+
+	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
 
 public:
 	float GetCurrentHealth() const;
@@ -40,6 +44,9 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetShieldPercent() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool IsDead() const;
 	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))

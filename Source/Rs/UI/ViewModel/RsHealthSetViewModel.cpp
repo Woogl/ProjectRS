@@ -3,12 +3,12 @@
 
 #include "RsHealthSetViewModel.h"
 
-#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 
-URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(AActor* Model)
+URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsHealthSetViewModel* ViewModel = NewObject<URsHealthSetViewModel>(Model);
+	URsHealthSetViewModel* ViewModel = NewObject<URsHealthSetViewModel>(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -17,8 +17,8 @@ void URsHealthSetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		SetMaxHealth(AbilitySystemComponent->GetNumericAttribute(URsHealthSet::GetMaxHealthAttribute()));
 		SetCurrentHealth(AbilitySystemComponent->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()));
@@ -36,8 +36,7 @@ void URsHealthSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
@@ -72,6 +71,7 @@ void URsHealthSetViewModel::SetCurrentHealth(float NewCurrentHealth)
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
 	}
 }
 
@@ -120,6 +120,18 @@ float URsHealthSetViewModel::GetShieldPercent() const
 	{
 		return 0;
 	}
+}
+
+bool URsHealthSetViewModel::IsDead() const
+{
+	if (CachedModel.IsValid())
+	{
+		if (URsBattleLibrary::IsDead(CachedModel->GetAvatarActor()))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)

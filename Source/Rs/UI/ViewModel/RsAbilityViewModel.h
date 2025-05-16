@@ -18,11 +18,14 @@ class RS_API URsAbilityViewModel : public URsViewModelBase, public FTickableGame
 	
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Model);
+	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Ability);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
+
+	UPROPERTY()
+	TWeakObjectPtr<URsGameplayAbility> CachedModel;
 
 public:
 	float GetCooldownDuration() const;
@@ -83,8 +86,4 @@ private:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	TObjectPtr<UObject> SkillIcon;
-
-	// Pointer for Tick optimization.
-	UPROPERTY()
-	TWeakObjectPtr<URsGameplayAbility> CachedModel;
 };

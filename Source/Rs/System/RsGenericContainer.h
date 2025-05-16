@@ -48,7 +48,8 @@ public:
 		}
 		else
 		{
-			UE_LOG(RsLog, Warning, TEXT("Cannot find for key '%s' in '%s'."), *Key.ToString(), *this->GetName());
+			UE_LOG(RsLog, Warning, TEXT("GenericContainer failed for key '%s' (type: %s) in '%s'."),
+				*Key.ToString(), *FString(typeid(T).name()), *GetName());
 		}
 		return T{};
 	}

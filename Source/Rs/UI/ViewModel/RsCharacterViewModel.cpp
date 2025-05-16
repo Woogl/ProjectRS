@@ -3,6 +3,7 @@
 
 #include "RsCharacterViewModel.h"
 
+#include "AbilitySystemGlobals.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,15 +19,19 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 void URsCharacterViewModel::Initialize()
 {
 	Super::Initialize();
-	
-	if (ARsCharacterBase* Model = Cast<ARsCharacterBase>(GetOuter()))
+
+	CachedModel = Cast<ARsCharacterBase>(GetOuter());
+	if (ARsCharacterBase* Model = CachedModel.Get())
 	{
 		FString DisplayName = UKismetSystemLibrary::GetDisplayName(GetOuter());
 		SetCharacterName(FText::FromString(DisplayName));
 		SetCharacterIcon(Model->CharacterIcon);
 
-		UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(Model));
-		UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(Model));
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+		{
+			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(ASC));
+			UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(ASC));
+		}
 	}
 }
 

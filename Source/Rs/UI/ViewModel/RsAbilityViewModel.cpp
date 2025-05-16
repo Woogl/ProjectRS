@@ -7,9 +7,9 @@
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 
-URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Model)
+URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Ability)
 {
-	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Model);
+	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Ability);
 	ViewModel->Initialize();
 	return ViewModel;
 }

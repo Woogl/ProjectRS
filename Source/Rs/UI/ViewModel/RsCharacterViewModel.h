@@ -25,6 +25,8 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
+	TWeakObjectPtr<ARsCharacterBase> CachedModel;
+
 public:
 	FText GetCharacterName() const;
 	UObject* GetCharacterIcon() const;

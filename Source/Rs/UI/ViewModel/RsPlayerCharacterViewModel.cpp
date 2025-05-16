@@ -26,9 +26,10 @@ void URsPlayerCharacterViewModel::Initialize()
 	
 	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
 	{
-		EnergySetViewModel = URsEnergySetViewModel::CreateEnergySetViewModel(Model);
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 		{
+			EnergySetViewModel = URsEnergySetViewModel::CreateEnergySetViewModel(ASC);
+			
 			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSetting::Get()->ESkillTag.GetSingleTagContainer(), true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));
@@ -60,15 +61,12 @@ void URsPlayerCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(CachedModel.Get(), 0))
 	{
-		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(Model, 0))
+		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
+		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
 		{
-			PlayerController->OnPossessedPawnChanged.RemoveAll(this);
-			if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
-			{
-				PartyComponent->OnAddPartyMember.RemoveAll(this);
-			}
+			PartyComponent->OnAddPartyMember.RemoveAll(this);
 		}
 	}
 }
@@ -113,7 +111,7 @@ bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 {
 	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
 	{
-		return Model->IsLocallyControlled();
+		return UGameplayStatics::GetPlayerController(GetWorld(), 0) == Model->GetController();
 	}
 	return false;
 }

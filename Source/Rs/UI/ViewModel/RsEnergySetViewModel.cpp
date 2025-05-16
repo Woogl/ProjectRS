@@ -3,12 +3,11 @@
 
 #include "RsEnergySetViewModel.h"
 
-#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 
-URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(AActor* Model)
+URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsEnergySetViewModel* ViewModel = NewObject<URsEnergySetViewModel>(Model);
+	URsEnergySetViewModel* ViewModel = NewObject<URsEnergySetViewModel>(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -17,8 +16,8 @@ void URsEnergySetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		SetMaxEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
 		SetCurrentEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
@@ -34,8 +33,7 @@ void URsEnergySetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	const AActor* Model = Cast<AActor>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);

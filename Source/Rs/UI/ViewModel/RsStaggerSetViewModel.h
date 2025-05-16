@@ -6,6 +6,7 @@
 #include "RsViewModelBase.h"
 #include "RsStaggerSetViewModel.generated.h"
 
+class UAbilitySystemComponent;
 struct FOnAttributeChangeData;
 
 /**
@@ -18,11 +19,13 @@ class RS_API URsStaggerSetViewModel : public URsViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsStaggerSetViewModel* CreateStaggerSetViewModel(AActor* Model);
+	static URsStaggerSetViewModel* CreateStaggerSetViewModel(UAbilitySystemComponent* ASC);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
+
+	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
 
 public:
 	float GetCurrentStagger() const;
