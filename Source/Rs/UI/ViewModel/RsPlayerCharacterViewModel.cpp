@@ -6,10 +6,11 @@
 #include "AbilitySystemGlobals.h"
 #include "RsAbilityViewModel.h"
 #include "RsEnergySetViewModel.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
 #include "Rs/Character/RsPlayerCharacter.h"
-#include "Rs/Party/RsPartyLibrary.h"
+#include "Rs/Party/RsPartyComponent.h"
 #include "Rs/System/RsGameSetting.h"
 
 URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model)
@@ -19,37 +20,37 @@ URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacte
 	return ViewModel;
 }
 
-int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
-{
-	return PartyMemberIndex;
-}
-
-void URsPlayerCharacterViewModel::SetPartyMemberIndex(int32 MemberIndex)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(PartyMemberIndex, MemberIndex);
-}
-
 void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 	
 	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
 	{
-		SetPartyMemberIndex(URsPartyLibrary::FindPartyMemberIndex(Model));
 		EnergySetViewModel = URsEnergySetViewModel::CreateEnergySetViewModel(Model);
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 		{
 			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSetting::Get()->ESkillTag.GetSingleTagContainer(), true))
 			{
-				AbilityViewModel_E = URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E);
+				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));
 			}
 			if (URsGameplayAbility* Skill_Q = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSetting::Get()->QSkillTag.GetSingleTagContainer(), true))
 			{
-				AbilityViewModel_Q = URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Q);
+				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Q, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Q));
 			}
 			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSetting::Get()->UltSkillTag.GetSingleTagContainer(), true))
 			{
-				AbilityViewModel_Ult = URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult);
+				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Ult, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult));
+			}
+		}
+
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+		{
+			PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawn);
+			if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
+			{
+				PartyComponent->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
+				int32 MemberIndex = PartyComponent->GetPartyMembers().Find(Model);
+				SetPartyMemberIndex(MemberIndex);
 			}
 		}
 	}
@@ -58,5 +59,88 @@ void URsPlayerCharacterViewModel::Initialize()
 void URsPlayerCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
+
+	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	{
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(Model, 0))
+		{
+			PlayerController->OnPossessedPawnChanged.RemoveAll(this);
+			if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
+			{
+				PartyComponent->OnAddPartyMember.RemoveAll(this);
+			}
+		}
+	}
+}
+
+int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
+{
+	return PartyMemberIndex;
+}
+
+void URsPlayerCharacterViewModel::SetPartyMemberIndex(int32 MemberIndex)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberIndex, MemberIndex))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
+	}
+}
+
+int32 URsPlayerCharacterViewModel::GetPartySlotNumber() const
+{
+	return PartyMemberIndex + 1;
+}
+
+FText URsPlayerCharacterViewModel::GetPartySlotNumberText() const
+{
+	return FText::AsNumber(GetPartySlotNumber());
+}
+
+bool URsPlayerCharacterViewModel::GetIsPlayerControlled() const
+{
+	return IsPlayerControlled;
+}
+
+void URsPlayerCharacterViewModel::SetIsPlayerControlled(bool bControlled)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(IsPlayerControlled, bControlled))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+	}
+}
+
+bool URsPlayerCharacterViewModel::GetIsPartyMember() const
+{
+	return IsPartyMember;
+}
+
+void URsPlayerCharacterViewModel::SetIsPartyMember(bool bPartyMember)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsPartyMember, bPartyMember);
+}
+
+void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
+{
+	if (NewPawn == GetOuter())
+	{
+		SetIsPlayerControlled(true);
+	}
+	else
+	{
+		SetIsPlayerControlled(false);
+	}
+}
+
+void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex)
+{
+	if (AddedMember != GetOuter())
+	{
+		return;
+	}
 	
+	SetPartyMemberIndex(MemberIndex);
+	SetIsPartyMember(true);
 }

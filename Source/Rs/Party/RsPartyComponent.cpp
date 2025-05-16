@@ -65,12 +65,11 @@ void URsPartyComponent::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32
 	if (!PartyMembers.Contains(NewMember))
 	{
 		PartyMembers.Insert(NewMember, MemberIndex);
+		// OnAddPartyMember.Broadcast(NewMember, MemberIndex);
+
 		for (int32 i = MemberIndex; i < PartyMembers.Num(); i++)
 		{
-			if (ARsPlayerCharacter* MovedMember = GetPartyMember(i))
-			{
-				OnAddPartyMember.Broadcast(MovedMember, i);
-			}
+			OnAddPartyMember.Broadcast(PartyMembers[i], i);
 		}
 	}
 	else
@@ -122,11 +121,6 @@ void URsPartyComponent::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* OwningPlayerController = Cast<APlayerController>(GetOwner());
-	if (OwningPlayerController == nullptr)
-	{
-		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent's owner should be RsPlayerController"));
-		return;
-	}
 	
 	if (ULocalPlayer* LocalPlayer = OwningPlayerController->GetLocalPlayer())
 	{
