@@ -1,0 +1,53 @@
+// Copyright 2024 Team BH.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "RsViewModelBase.h"
+#include "RsPartyViewModel.generated.h"
+
+class URsPlayerCharacterViewModel;
+class URsPartyComponent;
+class ARsPlayerCharacter;
+/**
+ * 
+ */
+UCLASS()
+class RS_API URsPartyViewModel : public URsViewModelBase
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool HasPartyMemberInSlot0() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool HasPartyMemberInSlot1() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool HasPartyMemberInSlot2() const;
+	
+	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
+	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
+	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
+
+protected:
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
+
+private:
+	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
+	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
+	
+	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;
+
+	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_1;
+
+	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_2;
+};

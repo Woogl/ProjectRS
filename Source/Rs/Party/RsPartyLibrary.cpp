@@ -30,6 +30,17 @@ TArray<ARsPlayerCharacter*> URsPartyLibrary::GetPartyMembers(UObject* WorldConte
 	return TArray<ARsPlayerCharacter*>();
 }
 
+int32 URsPartyLibrary::FindPartyMemberIndex(ARsPlayerCharacter* Member)
+{
+	TArray<ARsPlayerCharacter*> PartyMembers = GetPartyMembers(Member);
+	if (PartyMembers.Num() > 0)
+	{
+		return PartyMembers.Find(Member);
+	}
+	
+	return INDEX_NONE;
+}
+
 bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex)
 {
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))

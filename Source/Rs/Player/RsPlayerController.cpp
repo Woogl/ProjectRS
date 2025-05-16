@@ -6,6 +6,7 @@
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
 #include "GameFramework/GameplayCameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -73,4 +74,9 @@ UGameplayCameraComponent* ARsPlayerController::GetGameplayCameraComponent() cons
 URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
 {
 	return LockOnComponent;
+}
+
+APlayerController* ARsPlayerController::GetRsPlayerController(const UObject* WorldContextObject)
+{
+	return Cast<APlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
 }

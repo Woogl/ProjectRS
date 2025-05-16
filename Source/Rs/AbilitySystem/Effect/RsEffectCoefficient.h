@@ -22,8 +22,10 @@ struct FRsEffectCoefficient
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
 
-	FRsEffectCoefficient() {}
-	
-	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, const TMap<FGameplayTag, float>& InCoefficients)
-		: EffectClass(InEffectClass), Coefficients(InCoefficients) {}
+	bool IsValid() const;
+
+	FRsEffectCoefficient() {};
+	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, const TMap<FGameplayTag, float>& InCoefficients);
+	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, float Magnitude);
+	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, float Magnitude, float Duration);
 };

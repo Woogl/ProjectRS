@@ -14,5 +14,5 @@ float URsCostAmountCalculation::CalculateBaseMagnitude_Implementation(const FGam
 		return 0.f;
 	}
 
-	return Ability->CostAmount.GetValueAtLevel(Ability->GetAbilityLevel());
+	return Ability->CostAmount;
 }

@@ -14,5 +14,5 @@ float URsCooldownCalculation::CalculateBaseMagnitude_Implementation(const FGamep
 		return 0.f;
 	}
 
-	return Ability->CooldownDuration.GetValueAtLevel(Ability->GetAbilityLevel());
+	return Ability->CooldownDuration;
 }

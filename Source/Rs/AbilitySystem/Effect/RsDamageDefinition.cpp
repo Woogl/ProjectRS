@@ -40,11 +40,6 @@ FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbili
 
 void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
 {
-	if (RsCoeff.Coefficients.IsEmpty())
-	{
-		return;
-	}
-	
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DamageSpec.IsValid())
@@ -56,11 +51,6 @@ void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC,
 
 void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
 {
-	if (RsCoeff.Coefficients.IsEmpty())
-	{
-		return;
-	}
-	
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
@@ -145,11 +135,6 @@ void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceAS
 void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-	
-	if (CustomEffect.EffectClass == nullptr)
 	{
 		return;
 	}

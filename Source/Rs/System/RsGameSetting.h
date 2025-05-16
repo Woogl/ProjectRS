@@ -40,4 +40,7 @@ public:
 	// NOTE: MVVM settings are not saved when this file is set in DefaultGame.ini
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UCommonActivatableWidget> GameHUDClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	float DefenseConstant = 190.f;
 };

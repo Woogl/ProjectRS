@@ -49,7 +49,7 @@ bool URsBattleLibrary::ExecuteTargeting(AActor* SourceActor, const UTargetingPre
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
-	if (SourceASC && EffectCoefficient.EffectClass)
+	if (SourceASC && EffectCoefficient.IsValid())
 	{
 		FGameplayEffectContextHandle EffectContext = InEffectContext.IsValid() ? InEffectContext : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
@@ -84,7 +84,7 @@ FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActo
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
 	
-	if (SourceASC && EffectCoefficient.EffectClass)
+	if (SourceASC && EffectCoefficient.IsValid())
 	{
 		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);

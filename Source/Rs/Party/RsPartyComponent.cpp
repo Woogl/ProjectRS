@@ -37,7 +37,8 @@ void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 {
 	if (!PartyMembers.Contains(NewMember))
 	{
-		PartyMembers.Add(NewMember);
+		int32 MemberIndex = PartyMembers.Add(NewMember);
+		OnAddPartyMember.Broadcast(NewMember, MemberIndex);
 	}
 	else
 	{
@@ -49,7 +50,9 @@ void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 {
 	if (PartyMembers.Contains(MemberToRemove))
 	{
+		int32 MemberIndex = PartyMembers.Find(MemberToRemove);
 		PartyMembers.Remove(MemberToRemove);
+		OnRemovePartyMember.Broadcast(MemberToRemove, MemberIndex);
 	}
 	else
 	{
@@ -62,6 +65,10 @@ void URsPartyComponent::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32
 	if (!PartyMembers.Contains(NewMember))
 	{
 		PartyMembers.Insert(NewMember, MemberIndex);
+		for (int32 i = MemberIndex; i < PartyMembers.Num(); i++)
+		{
+			OnAddPartyMember.Broadcast(PartyMembers[i], i);
+		}
 	}
 	else
 	{
@@ -73,7 +80,9 @@ void URsPartyComponent::RemovePartyMemberAt(int32 MemberIndex)
 {
 	if (PartyMembers.IsValidIndex(MemberIndex))
 	{
+		ARsPlayerCharacter* RemovedCharacter = PartyMembers[MemberIndex];
 		PartyMembers.RemoveAtSwap(MemberIndex);
+		OnRemovePartyMember.Broadcast(RemovedCharacter, MemberIndex);
 	}
 	else
 	{
@@ -110,11 +119,6 @@ void URsPartyComponent::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* OwningPlayerController = Cast<APlayerController>(GetOwner());
-	if (OwningPlayerController == nullptr)
-	{
-		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent's owner should be RsPlayerController"));
-		return;
-	}
 	
 	if (ULocalPlayer* LocalPlayer = OwningPlayerController->GetLocalPlayer())
 	{
@@ -122,7 +126,7 @@ void URsPartyComponent::BeginPlay()
 		{
 			if (ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform()))
 			{
-				PartyMembers.Add(SpawnedActor);
+				AddPartyMember(SpawnedActor);
 			}
 		}
 	}

@@ -26,29 +26,32 @@ public:
 	bool bActivateOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RS")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns", meta = (Categories = "Cooldown"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	TObjectPtr<UObject> SkillIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
-	FScalableFloat CooldownDuration;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
+	float CooldownDuration;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns", meta = (ClampMin = "0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRechargeStacksChanged, int32 NewStacks);
 	FOnRechargeStacksChanged OnRechargeStacksChanged;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
-	FScalableFloat CostAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
+	float CostAmount;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
-	FScalableFloat CostRecoveryAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
+	float CostRecoveryAmount;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.

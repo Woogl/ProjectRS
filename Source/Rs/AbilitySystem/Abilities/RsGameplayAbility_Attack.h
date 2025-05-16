@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "RsGameplayAbility.h"
-#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
 class URsDamageDefinition;
