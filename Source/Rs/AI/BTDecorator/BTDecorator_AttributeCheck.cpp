@@ -1,12 +1,12 @@
 // Copyright 2024 Team BH.
 
 
-#include "BTDecorator_StatusCheck.h"
+#include "BTDecorator_AttributeCheck.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
 
-bool UBTDecorator_StatusCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
+bool UBTDecorator_AttributeCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerComp.GetAIOwner());
 	if (ASC)

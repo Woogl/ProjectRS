@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "BTDecorator_StatusCheck.generated.h"
+#include "BTDecorator_AttributeCheck.generated.h"
 
 /**
  * 
@@ -21,7 +21,7 @@ enum class EAttributeInequalityOperator : uint8
 };
 
 UCLASS()
-class RS_API UBTDecorator_StatusCheck : public UBTDecorator
+class RS_API UBTDecorator_AttributeCheck : public UBTDecorator
 {
 	GENERATED_BODY()
 
