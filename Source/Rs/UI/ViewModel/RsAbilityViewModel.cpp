@@ -46,11 +46,19 @@ void URsAbilityViewModel::Deinitialize()
 
 float URsAbilityViewModel::GetCooldownDuration() const
 {
+	if (CachedModel.IsValid())
+	{
+		return CachedModel->CooldownDuration.GetValueAtLevel(0);
+	}
 	return CooldownDuration;
 }
 
 float URsAbilityViewModel::GetCooldownRemaining() const
 {
+	if (CachedModel.IsValid())
+	{
+		return CachedModel->GetCooldownTimeRemaining();
+	}
 	return CooldownRemaining;
 }
 
@@ -108,6 +116,7 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 void URsAbilityViewModel::SetSkillIcon(UObject* NewSkillIcon)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SkillIcon, NewSkillIcon);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasSkillIcon);
 }
 
 float URsAbilityViewModel::GetCooldownPercent() const

@@ -6,8 +6,9 @@
 #include "RsViewModelBase.h"
 #include "RsPartyViewModel.generated.h"
 
+class URsPlayerCharacterViewModel;
+class URsPartyComponent;
 class ARsPlayerCharacter;
-class URsCharacterViewModel;
 /**
  * 
  */
@@ -18,7 +19,7 @@ class RS_API URsPartyViewModel : public URsViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsPartyViewModel* CreateRsPartyViewModel(APlayerController* PlayerController);
+	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
 
 protected:
 	virtual void Initialize() override;
@@ -29,11 +30,11 @@ private:
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsCharacterViewModel> CharacterViewModel_0;
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsCharacterViewModel> CharacterViewModel_1;
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_1;
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsCharacterViewModel> CharacterViewModel_2;
+	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_2;
 };

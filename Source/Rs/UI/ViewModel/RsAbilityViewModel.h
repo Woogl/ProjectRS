@@ -49,7 +49,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	FText GetInputKeyText() const;
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(FieldNotify, BlueprintPure)
 	bool HasSkillIcon() const;
 
 	// FTickableGameObject
