@@ -41,6 +41,9 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool IsPlayerControlled() const;
 
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetCharacterDetailVisibility() const;
+
 private:
 	UFUNCTION()
 	void HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn);

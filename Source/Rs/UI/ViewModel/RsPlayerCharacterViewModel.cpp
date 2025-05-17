@@ -4,8 +4,10 @@
 #include "RsPlayerCharacterViewModel.h"
 
 #include "AbilitySystemGlobals.h"
+#include "CommonHardwareVisibilityBorder.h"
 #include "RsAbilityViewModel.h"
 #include "RsEnergySetViewModel.h"
+#include "RsHealthSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
@@ -115,11 +117,21 @@ bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 	return false;
 }
 
+ESlateVisibility URsPlayerCharacterViewModel::GetCharacterDetailVisibility() const
+{
+	if (HealthSetViewModel->IsDead() || IsPlayerControlled())
+	{
+		return ESlateVisibility::Hidden;
+	}
+	return ESlateVisibility::HitTestInvisible;
+}
+
 void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
 {
 	if (OldPawn == GetOuter() || NewPawn == GetOuter())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
 	}
 }
 
@@ -132,6 +144,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
 	}
 }
 
@@ -144,5 +157,6 @@ void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* Re
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
 	}
 }

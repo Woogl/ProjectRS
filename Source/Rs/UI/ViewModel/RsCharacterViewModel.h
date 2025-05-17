@@ -37,7 +37,7 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool HasCharacterIcon() const;
 	
-private:
+protected:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsHealthSetViewModel> HealthSetViewModel;
 
