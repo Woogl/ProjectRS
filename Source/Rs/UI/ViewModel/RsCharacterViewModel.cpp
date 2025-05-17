@@ -45,16 +45,16 @@ FText URsCharacterViewModel::GetCharacterName() const
 	return FText::GetEmpty();
 }
 
-UObject* URsCharacterViewModel::GetCharacterIcon() const
+UObject* URsCharacterViewModel::GetPortrait() const
 {
 	if (ARsCharacterBase* Model = CachedModel.Get())
 	{
-		return Model->CharacterIcon;
+		return Model->Portrait;
 	}
 	return nullptr;
 }
 
 bool URsCharacterViewModel::HasCharacterIcon() const
 {
-	return GetCharacterIcon() != nullptr;
+	return GetPortrait() != nullptr;
 }

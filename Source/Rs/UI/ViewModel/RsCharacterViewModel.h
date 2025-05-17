@@ -32,7 +32,7 @@ public:
 	FText GetCharacterName() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	UObject* GetCharacterIcon() const;
+	UObject* GetPortrait() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool HasCharacterIcon() const;
