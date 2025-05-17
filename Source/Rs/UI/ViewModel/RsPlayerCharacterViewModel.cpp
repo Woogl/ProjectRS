@@ -117,7 +117,7 @@ bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 	return false;
 }
 
-ESlateVisibility URsPlayerCharacterViewModel::GetCharacterDetailVisibility() const
+ESlateVisibility URsPlayerCharacterViewModel::GetDetailInfoVisibility() const
 {
 	if (HealthSetViewModel->IsDead() || IsPlayerControlled())
 	{
@@ -131,7 +131,7 @@ void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* New
 	if (OldPawn == GetOuter() || NewPawn == GetOuter())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
 	}
 }
 
@@ -144,7 +144,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
 	}
 }
 
@@ -157,6 +157,6 @@ void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* Re
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCharacterDetailVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
 	}
 }

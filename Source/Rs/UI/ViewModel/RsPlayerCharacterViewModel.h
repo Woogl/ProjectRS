@@ -42,7 +42,7 @@ public:
 	bool IsPlayerControlled() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	ESlateVisibility GetCharacterDetailVisibility() const;
+	ESlateVisibility GetDetailInfoVisibility() const;
 
 private:
 	UFUNCTION()
