@@ -13,7 +13,7 @@ class ARsPlayerCharacter;
  * 
  */
 UCLASS()
-class RS_API URsPlayerCharacterViewModel : public URsCharacterViewModel
+class RS_API URsPlayerCharacterViewModel : public URsCharacterViewModel, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -43,6 +43,14 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	ESlateVisibility GetDetailInfoVisibility() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetPartySwitchCooldownRemaining() const;
+
+	// FTickableGameObject
+	// Display cooldown updated every frame.
+	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override;
 
 private:
 	UFUNCTION()

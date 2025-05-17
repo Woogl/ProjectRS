@@ -3,6 +3,7 @@
 
 #include "RsPlayerCharacterViewModel.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "CommonHardwareVisibilityBorder.h"
 #include "RsAbilityViewModel.h"
@@ -126,12 +127,41 @@ ESlateVisibility URsPlayerCharacterViewModel::GetDetailInfoVisibility() const
 	return ESlateVisibility::HitTestInvisible;
 }
 
+FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
+{
+	if (ARsCharacterBase* Model = CachedModel.Get())
+	{
+		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponent())
+		{
+			FGameplayTag QueryTag = FGameplayTag::RequestGameplayTag(TEXT("Cooldown.GlobalPartySwitch"));
+			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(QueryTag.GetSingleTagContainer());
+			TArray<float> TimeRemaining = ASC->GetActiveEffectsTimeRemaining(EffectQuery);
+			if (TimeRemaining.Num() > 0)
+			{
+				return FText::AsNumber(TimeRemaining[0], &FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1));
+			}
+		}
+	}
+	return FText::GetEmpty();
+}
+
+void URsPlayerCharacterViewModel::Tick(float DeltaTime)
+{
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
+}
+
+TStatId URsPlayerCharacterViewModel::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(URsPlayerCharacterViewModel, STATGROUP_Tickables);
+}
+
 void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
 {
 	if (OldPawn == GetOuter() || NewPawn == GetOuter())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
 	}
 }
 
@@ -145,6 +175,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
 	}
 }
 
@@ -158,5 +189,6 @@ void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* Re
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
 	}
 }
