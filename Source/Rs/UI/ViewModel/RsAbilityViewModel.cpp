@@ -19,13 +19,13 @@ void URsAbilityViewModel::Initialize()
 	Super::Initialize();
 	
 	CachedModel = Cast<URsGameplayAbility>(GetOuter());
-	if (CachedModel.IsValid())
+	if (URsGameplayAbility* Model = CachedModel.Get())
 	{
-		SetCurrentRechargeStacks(CachedModel->GetCurrentRechargeStacks());
-		SetMaxRechargeStacks(CachedModel->MaxRechargeStacks);
-		SetSkillIcon(CachedModel->SkillIcon);
+		SetCooldownDuration(Model->CooldownDuration);
+		SetCurrentRechargeStacks(Model->GetCurrentRechargeStacks());
+		SetMaxRechargeStacks(Model->MaxRechargeStacks);
 		
-		CachedModel->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
+		Model->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
 	}
 }
 
@@ -33,27 +33,19 @@ void URsAbilityViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (CachedModel.IsValid())
+	if (URsGameplayAbility* Model = CachedModel.Get())
 	{
-		CachedModel->OnRechargeStacksChanged.RemoveAll(this);
+		Model->OnRechargeStacksChanged.RemoveAll(this);
 	}
 }
 
 float URsAbilityViewModel::GetCooldownDuration() const
 {
-	if (CachedModel.IsValid())
-	{
-		return CachedModel->CooldownDuration;
-	}
 	return CooldownDuration;
 }
 
 float URsAbilityViewModel::GetCooldownRemaining() const
 {
-	if (CachedModel.IsValid())
-	{
-		return CachedModel->GetCooldownTimeRemaining();
-	}
 	return CooldownRemaining;
 }
 
@@ -65,11 +57,6 @@ int32 URsAbilityViewModel::GetCurrentRechargeStacks() const
 int32 URsAbilityViewModel::GetMaxRechargeStacks() const
 {
 	return MaxRechargeStacks;
-}
-
-UObject* URsAbilityViewModel::GetSkillIcon() const
-{
-	return SkillIcon;
 }
 
 void URsAbilityViewModel::SetCooldownDuration(float NewCooldownDuration)
@@ -112,14 +99,6 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 	}
 }
 
-void URsAbilityViewModel::SetSkillIcon(UObject* NewSkillIcon)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(SkillIcon, NewSkillIcon))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasSkillIcon);
-	}
-}
-
 FText URsAbilityViewModel::GetCooldownRemainingText() const
 {
 	return FText::AsNumber(CooldownRemaining, &FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1));
@@ -151,24 +130,21 @@ bool URsAbilityViewModel::IsOnCooldown() const
 
 bool URsAbilityViewModel::IsRechargeable() const
 {
-	if (CachedModel.IsValid())
-	{
-		return CachedModel->MaxRechargeStacks > 0;
-	}
-	return false;
+	return MaxRechargeStacks > 0;;
 }
 
 FText URsAbilityViewModel::GetInputKeyText() const
 {
-	if (CachedModel.IsValid() && CachedModel->ActivationInputAction)
+	URsGameplayAbility* Model = CachedModel.Get();
+	if (Model && Model->ActivationInputAction)
 	{
-		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(CachedModel->GetAvatarCharacter()))
+		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Model->GetAvatarCharacter()))
 		{
 			if (UInputMappingContext* MappingContext = PlayerCharacter->GetDefaultMappingContext())
 			{
 				for (const FEnhancedActionKeyMapping& Mapping : MappingContext->GetMappings())
 				{
-					if (Mapping.Action == CachedModel->ActivationInputAction)
+					if (Mapping.Action == Model->ActivationInputAction)
 					{
 						return Mapping.Key.GetDisplayName(false);
 					}
@@ -179,9 +155,18 @@ FText URsAbilityViewModel::GetInputKeyText() const
 	return FText::GetEmpty();
 }
 
+UObject* URsAbilityViewModel::GetSkillIcon() const
+{
+	if (URsGameplayAbility* Model = CachedModel.Get())
+	{
+		return Model->SkillIcon;
+	}
+	return nullptr;
+}
+
 bool URsAbilityViewModel::HasSkillIcon() const
 {
-	return SkillIcon != nullptr;
+	return GetSkillIcon() != nullptr;
 }
 
 void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
@@ -191,14 +176,9 @@ void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
 
 void URsAbilityViewModel::Tick(float DeltaTime)
 {
-	if (CachedModel.IsValid())
+	if (URsGameplayAbility* Model = CachedModel.Get())
 	{
-		float LocalCooldownRemaining;
-		float LocalCooldownDuration;
-		CachedModel->GetCooldownTimeRemainingAndDuration(FGameplayAbilitySpecHandle(), CachedModel->GetCurrentActorInfo(), LocalCooldownRemaining, LocalCooldownDuration);
-
-		SetCooldownRemaining(LocalCooldownRemaining);
-		SetCooldownDuration(LocalCooldownDuration);
+		SetCooldownRemaining(Model->GetCooldownTimeRemaining());
 	}
 }
 

@@ -24,7 +24,7 @@ void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	if (ARsCharacterBase* Model = CachedModel.Get())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 		{
@@ -44,14 +44,14 @@ void URsPlayerCharacterViewModel::Initialize()
 			}
 		}
 
+		// Listen party member change
 		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 		{
 			PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawn);
 			if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
 			{
 				PartyComponent->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
-				int32 MemberIndex = PartyComponent->GetPartyMembers().Find(Model);
-				SetPartyMemberIndex(MemberIndex);
+				PartyComponent->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 			}
 		}
 	}
@@ -67,29 +67,28 @@ void URsPlayerCharacterViewModel::Deinitialize()
 		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
 		{
 			PartyComponent->OnAddPartyMember.RemoveAll(this);
+			PartyComponent->OnRemovePartyMember.RemoveAll(this);
 		}
 	}
 }
 
 int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
 {
-	return PartyMemberIndex;
-}
-
-void URsPlayerCharacterViewModel::SetPartyMemberIndex(int32 MemberIndex)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberIndex, MemberIndex))
+	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
+		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(CachedModel.Get());
+		return PartyMembers.Find(Cast<ARsPlayerCharacter>(Model));
 	}
+	return INDEX_NONE;
 }
 
 int32 URsPlayerCharacterViewModel::GetPartySlotNumber() const
 {
-	return PartyMemberIndex + 1;
+	if (GetPartyMemberIndex() == INDEX_NONE)
+	{
+		return INDEX_NONE;
+	}
+	return GetPartyMemberIndex() + 1;
 }
 
 FText URsPlayerCharacterViewModel::GetPartySlotNumberText() const
@@ -128,6 +127,22 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 {
 	if (AddedMember == GetOuter())
 	{
-		SetPartyMemberIndex(MemberIndex);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
+	}
+}
+
+void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex)
+{
+	if (RemovedMember == GetOuter())
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumberText);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPartyMember);
 	}
 }

@@ -17,15 +17,15 @@ void URsEnergySetViewModel::Initialize()
 	Super::Initialize();
 	
 	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
+	if (UAbilitySystemComponent* Model = CachedModel.Get())
 	{
-		SetMaxEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
-		SetCurrentEnergy(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
-		SetEnergyRegen(AbilitySystemComponent->GetNumericAttribute(URsEnergySet::GetEnergyRegenAttribute()));
+		SetMaxEnergy(Model->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
+		SetCurrentEnergy(Model->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
+		SetEnergyRegen(Model->GetNumericAttribute(URsEnergySet::GetEnergyRegenAttribute()));
 		
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).AddUObject(this, &ThisClass::EnergyRegenChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).AddUObject(this, &ThisClass::EnergyRegenChanged);
 	}
 }
 
@@ -33,11 +33,11 @@ void URsEnergySetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
+	if (UAbilitySystemComponent* Model = CachedModel.Get())
 	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).RemoveAll(this);
 	}
 }
 

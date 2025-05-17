@@ -9,9 +9,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsCharacterBase.h"
 
-URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsCharacterBase* Model)
+URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsCharacterBase* Character)
 {
-	URsCharacterViewModel* ViewModel = NewObject<URsCharacterViewModel>(Model);
+	URsCharacterViewModel* ViewModel = NewObject<URsCharacterViewModel>(Character);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -23,10 +23,6 @@ void URsCharacterViewModel::Initialize()
 	CachedModel = Cast<ARsCharacterBase>(GetOuter());
 	if (ARsCharacterBase* Model = CachedModel.Get())
 	{
-		FString DisplayName = UKismetSystemLibrary::GetDisplayName(GetOuter());
-		SetCharacterName(FText::FromString(DisplayName));
-		SetCharacterIcon(Model->CharacterIcon);
-
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
 		{
 			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(ASC));
@@ -42,28 +38,23 @@ void URsCharacterViewModel::Deinitialize()
 
 FText URsCharacterViewModel::GetCharacterName() const
 {
-	return CharacterName;
+	if (ARsCharacterBase* Model = CachedModel.Get())
+	{
+		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Model));
+	}
+	return FText::GetEmpty();
 }
 
 UObject* URsCharacterViewModel::GetCharacterIcon() const
 {
-	return CharacterIcon;
-}
-
-void URsCharacterViewModel::SetCharacterName(FText NewCharacterName)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(CharacterName, NewCharacterName);
-}
-
-void URsCharacterViewModel::SetCharacterIcon(UObject* NewCharacterIcon)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(CharacterIcon, NewCharacterIcon))
+	if (ARsCharacterBase* Model = CachedModel.Get())
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasCharacterIcon);
+		return Model->CharacterIcon;
 	}
+	return nullptr;
 }
 
 bool URsCharacterViewModel::HasCharacterIcon() const
 {
-	return CharacterIcon != nullptr;
+	return GetCharacterIcon() != nullptr;
 }

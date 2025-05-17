@@ -17,15 +17,15 @@ void URsStaggerSetViewModel::Initialize()
 	Super::Initialize();
 	
 	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
+	if (UAbilitySystemComponent* Model = CachedModel.Get())
 	{
-		SetMaxStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
-		SetCurrentStagger(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
-		SetStaggerRegen(AbilitySystemComponent->GetNumericAttribute(URsStaggerSet::GetStaggerRegenAttribute()));
+		SetMaxStagger(Model->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
+		SetCurrentStagger(Model->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
+		SetStaggerRegen(Model->GetNumericAttribute(URsStaggerSet::GetStaggerRegenAttribute()));
 		
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
 	}
 }
 
@@ -33,11 +33,11 @@ void URsStaggerSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* AbilitySystemComponent = CachedModel.Get())
+	if (UAbilitySystemComponent* Model = CachedModel.Get())
 	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).RemoveAll(this);
 	}
 }
 

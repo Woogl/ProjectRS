@@ -19,7 +19,7 @@ class RS_API URsCharacterViewModel : public URsViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Model);
+	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Character);
 
 protected:
 	virtual void Initialize() override;
@@ -28,22 +28,16 @@ protected:
 	TWeakObjectPtr<ARsCharacterBase> CachedModel;
 
 public:
+	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetCharacterName() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	UObject* GetCharacterIcon() const;
-    	
-	void SetCharacterName(FText NewCharacterName);
-	void SetCharacterIcon(UObject* NewCharacterIcon);
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool HasCharacterIcon() const;
 	
 private:
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	FText CharacterName;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	TObjectPtr<UObject> CharacterIcon;
-	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsHealthSetViewModel> HealthSetViewModel;
 

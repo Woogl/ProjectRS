@@ -21,6 +21,13 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
 
+protected:
+	virtual void Initialize() override;
+	virtual void Deinitialize() override;
+
+	TWeakObjectPtr<URsPartyComponent> CachedModel;
+
+public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool HasPartyMemberInSlot0() const;
 
@@ -33,10 +40,6 @@ public:
 	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
-
-protected:
-	virtual void Initialize() override;
-	virtual void Deinitialize() override;
 
 private:
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);

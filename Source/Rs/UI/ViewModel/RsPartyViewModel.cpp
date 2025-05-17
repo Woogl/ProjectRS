@@ -18,12 +18,13 @@ void URsPartyViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (URsPartyComponent* PartyComponent = Cast<URsPartyComponent>(GetOuter()))
+	CachedModel = Cast<URsPartyComponent>(GetOuter());
+	if (URsPartyComponent* Model = CachedModel.Get())
 	{
-		PartyComponent->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
-		PartyComponent->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
+		Model->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
+		Model->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 
-		TArray<ARsPlayerCharacter*> PartyMembers = PartyComponent->GetPartyMembers();
+		TArray<ARsPlayerCharacter*> PartyMembers = Model->GetPartyMembers();
 		for (int32 i = 0; i < PartyMembers.Num(); ++i)
 		{
 			URsPlayerCharacterViewModel* CharacterViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(PartyMembers[i]);
@@ -47,10 +48,10 @@ void URsPartyViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (URsPartyComponent* PartyComponent = Cast<URsPartyComponent>(GetOuter()))
+	if (URsPartyComponent* Model = CachedModel.Get())
 	{
-		PartyComponent->OnAddPartyMember.RemoveAll(this);
-		PartyComponent->OnRemovePartyMember.RemoveAll(this);
+		Model->OnAddPartyMember.RemoveAll(this);
+		Model->OnRemovePartyMember.RemoveAll(this);
 	}
 }
 

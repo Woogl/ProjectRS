@@ -32,13 +32,11 @@ public:
 	float GetCooldownRemaining() const;
 	int32 GetCurrentRechargeStacks() const;
 	int32 GetMaxRechargeStacks() const;
-	UObject* GetSkillIcon() const;
 
 	void SetCooldownDuration(float NewCooldownDuration);
 	void SetCooldownRemaining(float NewCooldownRemaining);
 	void SetCurrentRechargeStacks(int32 NewStacks);
 	void SetMaxRechargeStacks(int32 NewStacks);
-	void SetSkillIcon(UObject* NewSkillIcon);
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetCooldownRemainingText() const;
@@ -61,7 +59,10 @@ public:
 	UFUNCTION(BlueprintPure)
 	FText GetInputKeyText() const;
 
-	UFUNCTION(FieldNotify, BlueprintPure)
+	UFUNCTION(BlueprintPure)
+	UObject* GetSkillIcon() const;
+
+	UFUNCTION(BlueprintPure)
 	bool HasSkillIcon() const;
 
 	// FTickableGameObject
@@ -83,7 +84,4 @@ private:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
 	int32 MaxRechargeStacks;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	TObjectPtr<UObject> SkillIcon;
 };
