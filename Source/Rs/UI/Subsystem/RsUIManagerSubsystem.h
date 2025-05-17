@@ -17,6 +17,8 @@ class RS_API URsUIManagerSubsystem : public UGameUIManagerSubsystem
 
 public:
 	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer) override;
+	
+	UCommonActivatableWidget* GetGameHUD();
 
 private:
 	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);

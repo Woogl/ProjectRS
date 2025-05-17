@@ -23,6 +23,11 @@ void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 	}
 }
 
+UCommonActivatableWidget* URsUIManagerSubsystem::GetGameHUD()
+{
+	return GameHUDInstance;
+}
+
 void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
 {
 	if (LocalPlayer == nullptr || Pawn == nullptr)
@@ -48,11 +53,11 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	{
 		if (ARsPlayerCharacter* OwnerCharacter = Cast<ARsPlayerCharacter>(Pawn))
 		{
-			if (URsCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(OwnerCharacter))
+			if (URsPlayerCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(OwnerCharacter))
 			{
-				if (UMVVMView* MVVM = Cast<UMVVMView>(GameHUDInstance->GetExtension(UMVVMView::StaticClass())))
+				if (UMVVMView* View = Cast<UMVVMView>(GameHUDInstance->GetExtension<UMVVMView>()))
 				{
-					MVVM->SetViewModelByClass(PCViewModel);
+					View->SetViewModelByClass(PCViewModel);
 				}
 			}
 		}
