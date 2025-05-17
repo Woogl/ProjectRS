@@ -17,17 +17,6 @@ void URsDamageDefinition::PostInitProperties()
 	DeveloperSetting = URsDeveloperSetting::Get();
 }
 
-void URsDamageDefinition::SetPierceTier(int32 InInvinciblePierce, int32 InSuperArmorPierce)
-{
-	InvinciblePierce = InInvinciblePierce;
-	SuperArmorPierce = InSuperArmorPierce;
-}
-
-void URsDamageDefinition::SetHitReaction(FGameplayTag InHitReaction)
-{
-	HitReaction = InHitReaction;
-}
-
 FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();

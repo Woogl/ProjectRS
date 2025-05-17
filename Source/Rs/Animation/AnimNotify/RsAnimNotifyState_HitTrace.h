@@ -18,6 +18,8 @@ class RS_API URsAnimNotifyState_HitTrace : public URsAnimNotifyState_Targeting
 public:
 	URsAnimNotifyState_HitTrace();
 
+	virtual FString GetNotifyName_Implementation() const override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	FRsDamageContext DamageContext;
 	

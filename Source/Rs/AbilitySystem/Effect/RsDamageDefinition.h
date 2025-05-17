@@ -22,26 +22,22 @@ class RS_API URsDamageDefinition : public UObject
 
 public:
 	virtual void PostInitProperties() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
+	int32 InvinciblePierce;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
+	int32 SuperArmorPierce;
 
-	void SetPierceTier(int32 InvinciblePierce, int32 SuperArmorPierce);
-	void SetHitReaction(FGameplayTag HitReaction);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
+	FGameplayTag HitReaction;
 	
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
-
 	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) PURE_VIRTUAL(URsDamageDefinition::ApplyDamage, );
 	void ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff);
 	void ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period);
 	void ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
-
-	UPROPERTY()
-	int32 InvinciblePierce = 0;
-
-	UPROPERTY()
-	int32 SuperArmorPierce = 0;
-
-	UPROPERTY()
-	FGameplayTag HitReaction;
-
+	
 protected:
 	UPROPERTY()
 	const URsDeveloperSetting* DeveloperSetting;
@@ -96,7 +92,7 @@ public:
 
 /**
  * Instantly deals the remaining damage from all active DoT stacks.
- * (Ex: Bloodburst) 
+ * (Ex: Disorder from Zenless Zone Zero) 
  */
 UCLASS(DisplayName = "DoT Burst Damage")
 class RS_API URsDamageDefinition_DotBurst : public URsDamageDefinition
@@ -104,7 +100,7 @@ class RS_API URsDamageDefinition_DotBurst : public URsDamageDefinition
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Amount")
 	float DamageMultiplierPerDotStacks;
 
 public:

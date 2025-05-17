@@ -16,6 +16,8 @@ class RS_API URsAnimNotify_HitScan : public URsAnimNotify_Targeting
 	GENERATED_BODY()
 
 public:
+	virtual FString GetNotifyName_Implementation() const override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	FRsDamageContext DamageContext;
 	

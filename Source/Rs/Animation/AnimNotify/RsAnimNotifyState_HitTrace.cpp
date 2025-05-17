@@ -14,6 +14,16 @@ URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 	bSortByDistance = false;
 }
 
+FString URsAnimNotifyState_HitTrace::GetNotifyName_Implementation() const
+{
+	if (DamageContext.DamageEventTag.IsValid())
+	{
+		FString EventTagString = DamageContext.DamageEventTag.ToString();
+		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
+	}
+	return Super::GetNotifyName_Implementation();
+}
+
 void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
@@ -60,10 +70,7 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	{
 		if (Target.IsValid() && !HitTargets.Contains(Target))
 		{
-			// for (const FRsEffectCoefficient& EffectCoefficient : DamageContext.EffectCoefficients)
-			// {
-			// 	URsBattleLibrary::ApplyEffectCoefficient(MeshComp->GetOwner(), Target.Get(), EffectCoefficient);
-			// }
+			URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target.Get(), DamageContext);
 			HitTargets.Emplace(Target.Get());
 			
 			if (bStopTraceWhenFirstHit)

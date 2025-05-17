@@ -74,8 +74,6 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 	// Can be immune by RsInvincibleGEComp or RsSuperArmorGECpomp.
 	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
-		DamageDefinition->SetPierceTier(DamageContext.InvinciblePierce, DamageContext.SuperArmorPierce);
-		DamageDefinition->SetHitReaction(DamageContext.HitReaction);
 		DamageDefinition->ApplyDamage(SourceASC, TargetASC);
 	}
 }

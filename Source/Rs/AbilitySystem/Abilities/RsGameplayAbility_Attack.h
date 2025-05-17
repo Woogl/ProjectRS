@@ -18,15 +18,6 @@ struct FRsDamageContext
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<TObjectPtr<URsDamageDefinition>> DamageDefinitions;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 InvinciblePierce;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 SuperArmorPierce;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
-	FGameplayTag HitReaction;
 
 	bool operator==(const FRsDamageContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
