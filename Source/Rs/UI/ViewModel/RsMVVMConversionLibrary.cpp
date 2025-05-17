@@ -5,7 +5,7 @@
 
 FText URsMVVMConversionLibrary::FloatToText(float Number, int32 FractionDigits)
 {
-	static FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1);
+	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1);
 	return FText::AsNumber(Number, &Format);
 }
 

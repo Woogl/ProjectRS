@@ -46,6 +46,12 @@ public:
 	float GetShieldPercent() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetCurrentHealthText() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetMaxHealthText() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	bool IsDead() const;
 	
 private:

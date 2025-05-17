@@ -69,6 +69,7 @@ void URsHealthSetViewModel::SetCurrentHealth(float NewCurrentHealth)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, NewCurrentHealth))
 	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
@@ -79,6 +80,7 @@ void URsHealthSetViewModel::SetMaxHealth(float NewMaxHealth)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, NewMaxHealth))
 	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealthText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 	}
@@ -120,6 +122,18 @@ float URsHealthSetViewModel::GetShieldPercent() const
 	{
 		return 0;
 	}
+}
+
+FText URsHealthSetViewModel::GetCurrentHealthText() const
+{
+	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
+	return FText::AsNumber(CurrentHealth, &Format);
+}
+
+FText URsHealthSetViewModel::GetMaxHealthText() const
+{
+	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
+	return FText::AsNumber(MaxHealth, &Format);
 }
 
 bool URsHealthSetViewModel::IsDead() const

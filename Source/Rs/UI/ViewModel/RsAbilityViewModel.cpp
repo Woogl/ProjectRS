@@ -101,7 +101,8 @@ void URsAbilityViewModel::SetMaxRechargeStacks(int32 NewStacks)
 
 FText URsAbilityViewModel::GetCooldownRemainingText() const
 {
-	return FText::AsNumber(CooldownRemaining, &FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1));
+	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1);
+	return FText::AsNumber(CooldownRemaining, &Format);
 }
 
 float URsAbilityViewModel::GetCooldownPercent() const
