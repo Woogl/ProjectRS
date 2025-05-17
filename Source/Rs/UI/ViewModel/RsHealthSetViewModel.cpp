@@ -71,7 +71,6 @@ void URsHealthSetViewModel::SetCurrentHealth(float NewCurrentHealth)
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
 	}
 }
@@ -95,7 +94,6 @@ void URsHealthSetViewModel::SetShield(float NewShield)
 {
 	if (UE_MVVM_SET_PROPERTY_VALUE(Shield, NewShield))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 	}
 }
@@ -140,10 +138,7 @@ bool URsHealthSetViewModel::IsDead() const
 {
 	if (UAbilitySystemComponent* Model = CachedModel.Get())
 	{
-		if (URsBattleLibrary::IsDead(Model->GetAvatarActor()))
-		{
-			return true;
-		}
+		return URsBattleLibrary::IsDead(Model->GetAvatarActor());
 	}
 	return false;
 }
