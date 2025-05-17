@@ -24,9 +24,6 @@ protected:
 	virtual void OnDestroy(bool AbilityIsEnding) override;
 
 private:
-	UPROPERTY(Replicated)
 	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
-
-	UPROPERTY(Replicated)
 	ERsCharacterFacingMode FacingMode = ERsCharacterFacingMode::MovementDirection;
 };

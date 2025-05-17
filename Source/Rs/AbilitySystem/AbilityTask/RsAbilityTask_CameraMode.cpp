@@ -21,14 +21,6 @@ void URsAbilityTask_CameraMode::Activate()
 	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), CameraRig, FacingMode);
 }
 
-void URsAbilityTask_CameraMode::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, CameraRig);
-	DOREPLIFETIME(ThisClass, FacingMode);
-}
-
 void URsAbilityTask_CameraMode::OnDestroy(bool AbilityIsEnding)
 {
 	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), ERsCameraRig::ThirdPerson, ERsCharacterFacingMode::MovementDirection);
