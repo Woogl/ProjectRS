@@ -12,7 +12,6 @@
 struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
-class UTargetingPreset;
 /**
  * 
  */
@@ -22,9 +21,6 @@ class RS_API URsBattleLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static bool ExecuteTargeting(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
-
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
 	

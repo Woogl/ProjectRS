@@ -83,7 +83,7 @@ bool URsAnimNotifyState_Targeting::PerformOverlapping(const USkeletalMeshCompone
 	}
 
 #if WITH_EDITOR
-	if (World->WorldType == EWorldType::PIE && bShowDebugInPIE)
+	if (World->WorldType == EWorldType::PIE && (bShowDebugInPIE || RsTargetingGlobals::GShowDebugTargeting == true))
 	{
 		DrawDebugShape(World, SourceTransform);
 	}

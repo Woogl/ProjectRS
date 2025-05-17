@@ -117,9 +117,10 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 			}
 		}
 	}
+	UE_LOG(LogTemp, Log, TEXT("bShowDebugTargeting: %d"), RsTargetingGlobals::GShowDebugTargeting);
 
 #if WITH_EDITOR
-	if (World->WorldType == EWorldType::PIE && bShowDebugInPIE)
+	if (World->WorldType == EWorldType::PIE && (bShowDebugInPIE || RsTargetingGlobals::GShowDebugTargeting == true))
 	{
 		DrawDebugShape(World, SourceTransform);
 	}

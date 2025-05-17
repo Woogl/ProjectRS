@@ -12,3 +12,8 @@ enum class ERsTargetingShape : uint8
 	Sphere,
 	Capsule,
 };
+
+namespace RsTargetingGlobals
+{
+	extern bool GShowDebugTargeting;
+}
