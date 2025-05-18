@@ -78,10 +78,9 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	bool bSuccess = ResultActors.Num() > 0;
 
 #if WITH_EDITOR
-	if (ShouldDrawDebugShape(World, bDrawDebug) == true)
+	if (ShouldDrawDebugShape(World, bDrawDebug) == true && bSuccess)
 	{
-		FColor Color = bSuccess ? FColor::Green : FColor::Red;
-		DrawDebugShape(World, StartLoc, Start.Rotator(), Collision, Color);
+		DrawDebugShape(World, StartLoc, Start.Rotator(), Collision, FColor::Green);
 	}
 #endif // WITH_EDITOR
 	
