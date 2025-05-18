@@ -133,7 +133,7 @@ FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 	{
 		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponent())
 		{
-			FGameplayTag QueryTag = FGameplayTag::RequestGameplayTag(TEXT("Cooldown.GlobalPartySwitch"));
+			FGameplayTag QueryTag = URsGameSetting::Get()->SwitchMemberCooldownTag;
 			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(QueryTag.GetSingleTagContainer());
 			TArray<float> TimeRemaining = ASC->GetActiveEffectsTimeRemaining(EffectQuery);
 			if (TimeRemaining.Num() > 0)
