@@ -11,8 +11,8 @@ class UTargetingPreset;
 
 namespace RsTargetingGlobals
 {
-	extern bool bShowDebugTargeting;
-	extern float DebugTime;
+	extern bool bTargetingShowDebug;
+	extern float TargetingDebugTime;
 }
 
 /**

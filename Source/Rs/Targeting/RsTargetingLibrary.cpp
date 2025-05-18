@@ -10,11 +10,11 @@
 
 namespace RsTargetingGlobals
 {
-	bool bShowDebugTargeting = false;
-	float DebugTime = 0.5f;
+	bool bTargetingShowDebug = false;
+	float TargetingDebugTime = 0.5f;
 	
-	FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bShowDebugTargeting, TEXT("Enable/Disable targeting collision debug shapes during gameplay."), ECVF_Cheat);
-	FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), DebugTime, TEXT("Set lifetime of the debug shapes for targeting."), ECVF_Cheat);
+	FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bTargetingShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay."), ECVF_Cheat);
+	FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), TargetingDebugTime, TEXT("Set the duration of the debug shapes for targeting."), ECVF_Cheat);
 }
 
 bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
@@ -216,22 +216,22 @@ void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FVector StartLoc
 	switch (Collision.ShapeType)
 	{
 	case ERsTargetingShape::Box:
-		DrawDebugBox(World, StartLoc, CollisionShape.GetExtent(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::DebugTime, DepthPriority, Thickness);
+		DrawDebugBox(World, StartLoc, CollisionShape.GetExtent(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Sphere:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::DebugTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, StartLoc, CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Capsule:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::DebugTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, StartLoc, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 	}
 }
 
 bool URsTargetingLibrary::ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
 {
-	if (SourceActor == nullptr || TargetingPreset == nullptr)
+	if (!SourceActor || !TargetingPreset)
 	{
 		return false;
 	}
@@ -281,7 +281,7 @@ bool URsTargetingLibrary::ShouldDrawDebugShape(UWorld* World, bool bDrawDebug)
 		return true;
 	}
 
-	if (World->WorldType == EWorldType::PIE && RsTargetingGlobals::bShowDebugTargeting == true)
+	if (World->WorldType == EWorldType::PIE && RsTargetingGlobals::bTargetingShowDebug == true)
 	{
 		return true;
 	}
