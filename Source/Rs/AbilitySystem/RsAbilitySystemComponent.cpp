@@ -3,6 +3,7 @@
 
 #include "RsAbilitySystemComponent.h"
 
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
@@ -17,6 +18,12 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 {
 	// Set the Owning Actor and Avatar Actor. (Used throughout the Gameplay Ability System to get references etc.)
 	InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
+	if (!ensure(AbilitySet))
+	{
+		UE_LOG(RsLog, Error, TEXT("%s does not have ABS!"), *InAvatarActor->GetName());
+		return;
+	}
 	
 	// Apply the Gameplay Tag container as loose Gameplay Tags. (These are not replicated by default and should be applied on both server and client respectively.)
 	AddLooseGameplayTags(AbilitySet->GrantedTags);
