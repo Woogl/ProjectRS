@@ -39,7 +39,7 @@ bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FVector StartLoc, FRot
 	return bSuccess;
 }
 
-bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 Substeps, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
 	UWorld* World = Owner->GetWorld();
 	if (!World)
@@ -49,11 +49,12 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	
 	FVector StartLoc = Start.GetLocation();
 	FVector EndLoc = End.GetLocation();
-	
 	float DeltaDistance = FVector::Dist(StartLoc, EndLoc);
+
+	// Calculate substep num based on distance.
 	FVector ShapeExtent = Collision.MakeShape().GetExtent();
 	int32 SubstepNum = FMath::CeilToInt(DeltaDistance / FMath::Min3(ShapeExtent.X, ShapeExtent.Y, ShapeExtent.Z));
-	SubstepNum = FMath::Min(SubstepNum, Substeps);
+	SubstepNum = FMath::Min(SubstepNum, MaxSubsteps);
 	
 	// Perform targeting from last transform to current transform without leaving any gaps.
 	TSet<AActor*> OverlappedSet;
@@ -136,8 +137,8 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 				TargetTeamId = TargetTeamInterface->GetGenericTeamId();
 			}
 			
-			const bool bSelfCheck = Target == Owner;
 			const bool bSameTeam = (OwnerTeamId == TargetTeamId);
+			const bool bSelfCheck = Target == Owner;
 			
 			if (!Filter.bIncludeSelf && bSelfCheck)
 			{
@@ -200,35 +201,6 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 	return SortedResult;
 }
 
-void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, FColor Color)
-{
-	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
-	if (!World)
-	{
-		return;
-	}
-	
-	bool bPersistentLines = false;
-	uint8 DepthPriority = 0;
-	float Thickness = 1.f;
-
-	FCollisionShape CollisionShape = Collision.MakeShape();
-	switch (Collision.ShapeType)
-	{
-	case ERsTargetingShape::Box:
-		DrawDebugBox(World, StartLoc, CollisionShape.GetExtent(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
-		break;
-		
-	case ERsTargetingShape::Sphere:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
-		break;
-		
-	case ERsTargetingShape::Capsule:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
-		break;
-	}
-}
-
 bool URsTargetingLibrary::ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors)
 {
 	if (!SourceActor || !TargetingPreset)
@@ -287,4 +259,33 @@ bool URsTargetingLibrary::ShouldDrawDebugShape(UWorld* World, bool bDrawDebug)
 	}
 	
 	return false;
+}
+
+void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, FColor Color)
+{
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World)
+	{
+		return;
+	}
+	
+	bool bPersistentLines = false;
+	uint8 DepthPriority = 0;
+	float Thickness = 1.f;
+
+	FCollisionShape CollisionShape = Collision.MakeShape();
+	switch (Collision.ShapeType)
+	{
+	case ERsTargetingShape::Box:
+		DrawDebugBox(World, StartLoc, CollisionShape.GetExtent(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		break;
+		
+	case ERsTargetingShape::Sphere:
+		DrawDebugCapsule(World, StartLoc, CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		break;
+		
+	case ERsTargetingShape::Capsule:
+		DrawDebugCapsule(World, StartLoc, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		break;
+	}
 }

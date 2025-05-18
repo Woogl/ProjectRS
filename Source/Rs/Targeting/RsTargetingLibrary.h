@@ -24,11 +24,13 @@ class RS_API URsTargetingLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	// Perform overlapping, filtering and sorting.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static bool PerformTargeting(AActor* Owner, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 
+	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 Substeps, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
 	static TArray<AActor*> PerformOverlapping(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision);
@@ -39,12 +41,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static TArray<AActor*> PerformSorting(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingSorter& Sorter);
 	
-	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static void DrawDebugShape(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, FColor Color);
-	
+	// Use Gameplay Targeting System plugin.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ShouldDrawDebugShape(UWorld* World, bool bDrawDebug = false);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
+	static void DrawDebugShape(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, FColor Color);
 };

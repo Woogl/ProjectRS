@@ -57,17 +57,11 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	FRsTargetingFilter Filter(bIncludeSelf, bIncludeFriendlyTeam, bIncludeHostileTeam, MaxTargetCount, TargetRequirements, HitTargets);
 	FRsTargetingSorter Sorter(bSortByDistance);
 
-	// Calculate substeps based on distance.
-	float DeltaDistance = FVector::Dist(LastSocketTransform->GetLocation(), MeshComp->GetSocketLocation(SocketName));
-	FVector ShapeExtent = Collision.MakeShape().GetExtent();
-	int32 SubstepNum = FMath::CeilToInt(DeltaDistance / FMath::Min3(ShapeExtent.X, ShapeExtent.Y, ShapeExtent.Z));
-	SubstepNum = FMath::Min(SubstepNum, MaxSubstep);
-
-	TArray<AActor*> ResultActor;
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, SubstepNum, Collision, Filter, Sorter, ResultActor))
+	TArray<AActor*> ResultActors;
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, MaxSubsteps, Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
-		for (AActor* Target : ResultActor)
+		for (AActor* Target : ResultActors)
 		{
 			URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
 			HitTargets.Emplace(Target);
