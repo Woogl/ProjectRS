@@ -37,7 +37,7 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 		return;
 	}
 
-	if (Targets.IsEmpty() || Targets[0].IsValid() == false)
+	if (Targets.IsEmpty())
 	{
 		return;
 	}

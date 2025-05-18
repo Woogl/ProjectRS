@@ -10,9 +10,6 @@ FCollisionShape FRsTargetingCollision::MakeShape() const
 	case ERsTargetingShape::Box:
 		return FCollisionShape::MakeBox(HalfExtent);
 
-	case ERsTargetingShape::Cylinder:
-		return FCollisionShape::MakeBox(HalfExtent);
-
 	case ERsTargetingShape::Sphere:
 		return FCollisionShape::MakeSphere(Radius);
 

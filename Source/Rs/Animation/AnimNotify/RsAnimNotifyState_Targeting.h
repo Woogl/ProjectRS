@@ -61,31 +61,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
 	bool bSortByDistance = true;
 
-#if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
-	bool bShowDebugInPIE = false;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
-	float DebugLifeTime = 0.5f;
-#endif // WITH_EDITORONLY_DATA
-
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
-	TArray<TWeakObjectPtr<AActor>> Targets;
-	
-	bool PerformOverlapping(const USkeletalMeshComponent* MeshComp, FTransform SourceTransform);
-	void PerformFiltering(const AActor* Owner);
-	void PerformSorting(const AActor* Owner);
-	
-	FCollisionShape GetCollisionShape() const;
+	UPROPERTY()
+	TArray<AActor*> Targets;
 
 #if WITH_EDITOR
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const { return SocketNames; }
-	
-	void DrawDebugShape(const UWorld* World, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA

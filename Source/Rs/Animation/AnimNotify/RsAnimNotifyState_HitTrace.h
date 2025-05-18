@@ -41,6 +41,5 @@ protected:
 	UPROPERTY()
 	TOptional<FTransform> LastSocketTransform;
 
-	UPROPERTY()
 	bool bStopTrace = false;
 };

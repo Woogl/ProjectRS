@@ -10,7 +10,6 @@ UENUM()
 enum class ERsTargetingShape : uint8
 {
 	Box,
-	Cylinder,
 	Sphere,
 	Capsule,
 };

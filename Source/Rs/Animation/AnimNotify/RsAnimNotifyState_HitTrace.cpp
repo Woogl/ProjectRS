@@ -3,8 +3,8 @@
 
 #include "RsAnimNotifyState_HitTrace.h"
 
-#include "Rs/RsLogChannels.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 DECLARE_STATS_GROUP(TEXT("RsAnimNotifyState"), STATGROUP_RSANIMNOTIFYSTATE, STATCAT_Advanced)
 DECLARE_CYCLE_STAT(TEXT("RsAnimNotifyState_HitTrace"), STAT_RsAnimNotifyState_HitTrace, STATGROUP_RSANIMNOTIFYSTATE);
@@ -34,7 +34,7 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 	}
 
 	bStopTrace = false;
-    HitTargets.Empty();
+    HitTargets.Reset();
 }
 
 void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -47,31 +47,30 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
     {
        return;
     }
-	
+
+	// Get socket transform.
+	FTransform CurrentSocketTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
+	CurrentSocketTransform.SetLocation(CurrentSocketTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
+	CurrentSocketTransform.SetRotation(RotationOffset.Quaternion() * CurrentSocketTransform.GetRotation());
+
+	FRsTargetingCollision Collision(CollisionObjectTypes, ShapeType, HalfExtent, Radius, HalfHeight);
+	FRsTargetingFilter Filter(bIncludeSelf, bIncludeFriendlyTeam, bIncludeHostileTeam, MaxTargetCount, TargetRequirements, HitTargets);
+	FRsTargetingSorter Sorter(bSortByDistance);
+
+	// Calculate substeps based on distance.
 	float DeltaDistance = FVector::Dist(LastSocketTransform->GetLocation(), MeshComp->GetSocketLocation(SocketName));
-	FVector ShapeExtent = GetCollisionShape().GetExtent();
+	FVector ShapeExtent = Collision.MakeShape().GetExtent();
 	int32 SubstepNum = FMath::CeilToInt(DeltaDistance / FMath::Min3(ShapeExtent.X, ShapeExtent.Y, ShapeExtent.Z));
 	SubstepNum = FMath::Min(SubstepNum, MaxSubstep);
 
-	// Perform targeting from last transform to current transform without leaving any gaps.
-	PerformOverlapping(MeshComp, MeshComp->GetSocketTransform(SocketName));
-	for (int32 i = 1; i <= SubstepNum; ++i)
+	TArray<AActor*> ResultActor;
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, SubstepNum, Collision, Filter, Sorter, ResultActor))
 	{
-		float Alpha = static_cast<float>(i) / SubstepNum;
-		FTransform SubstepTransform;
-		SubstepTransform.Blend(LastSocketTransform.GetValue(), MeshComp->GetSocketTransform(SocketName), Alpha);
-		PerformOverlapping(MeshComp, SubstepTransform);
-	}
-	PerformFiltering(MeshComp->GetOwner());
-	PerformSorting(MeshComp->GetOwner());
-
-	// Deal damage to each target
-	for (TWeakObjectPtr<AActor> Target : Targets)
-	{
-		if (Target.IsValid() && !HitTargets.Contains(Target))
+		// Deal damage to each target.
+		for (AActor* Target : ResultActor)
 		{
-			URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target.Get(), DamageContext);
-			HitTargets.Emplace(Target.Get());
+			URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
+			HitTargets.Emplace(Target);
 			
 			if (bStopTraceWhenFirstHit)
 			{
@@ -81,5 +80,6 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 		}
 	}
 
+	// Keep old socket transform for next tick.
 	LastSocketTransform = MeshComp->GetSocketTransform(SocketName);
 }
