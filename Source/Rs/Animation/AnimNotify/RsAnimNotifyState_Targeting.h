@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
-#include "RsTargetingTypes.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_Targeting.generated.h"
 
 /**

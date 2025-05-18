@@ -6,6 +6,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "Engine/OverlapResult.h"
 #include "Rs/AI/RsAILibrary.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_Targeting::URsAnimNotifyState_Targeting()
 {
@@ -83,7 +84,7 @@ bool URsAnimNotifyState_Targeting::PerformOverlapping(const USkeletalMeshCompone
 	}
 
 #if WITH_EDITOR
-	if (World->WorldType == EWorldType::PIE && (bShowDebugInPIE || RsTargetingGlobals::GShowDebugTargeting == true))
+	if (World->WorldType == EWorldType::PIE && (bShowDebugInPIE || RsTargetingGlobals::bShowDebugTargeting == true))
 	{
 		DrawDebugShape(World, SourceTransform);
 	}

@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
-#include "RsTargetingTypes.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotify_Targeting.generated.h"
 
 /**
@@ -65,27 +65,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
 	bool bSortByDistance = false;
 
-#if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
-	bool bShowDebugInPIE = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
-	float DebugLifeTime = 0.5f;
-#endif // WITH_EDITORONLY_DATA
-
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AActor*> ResultActors;
 
-	FCollisionShape GetCollisionShape() const;
-	
 #if WITH_EDITOR
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const { return SocketNames; }
-	
-	void DrawDebugShape(const UWorld* World, FTransform SourceTransform);
 #endif // WITH_EDITOR
 
 #if WITH_EDITORONLY_DATA
