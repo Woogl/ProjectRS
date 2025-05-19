@@ -54,7 +54,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 				Payload.EventTag = EventTag;
 				Payload.Instigator = MeshComp->GetOwner();
 				Payload.Target = ResultActor;
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Payload);
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(ResultActor, EventTag, Payload);
 			}
 		}
 	}
