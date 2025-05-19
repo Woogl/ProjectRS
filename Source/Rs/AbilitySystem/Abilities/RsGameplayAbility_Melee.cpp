@@ -11,13 +11,15 @@ void URsGameplayAbility_Melee::ActivateAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	if (DamageEvents.Num() > 0)
+	for (const FRsDamageContext& Event : DamageEvents)
 	{
-		for (const FRsDamageContext& Event : DamageEvents)
+		if (Event.DamageEventTag.IsValid())
 		{
-			UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.DamageEventTag);
-			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
-			HitDetectTask->ReadyForActivation();
+			if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.DamageEventTag))
+			{
+				HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleHitDetect);
+				HitDetectTask->ReadyForActivation();
+			}
 		}
 	}
 }
