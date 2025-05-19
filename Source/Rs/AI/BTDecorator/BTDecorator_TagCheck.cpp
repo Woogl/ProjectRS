@@ -14,7 +14,7 @@ UBTDecorator_TagCheck::UBTDecorator_TagCheck()
 
 bool UBTDecorator_TagCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
-	if (ASC.IsValid() && ASC->HasMatchingGameplayTag(Tag))
+	if (ASC.IsValid() && ASC->HasAllMatchingGameplayTags(Tags))
 	{
 		return true;
 	}
@@ -35,7 +35,10 @@ void UBTDecorator_TagCheck::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, 
 	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerComp.GetAIOwner()->GetPawn());
 	if (ASC.IsValid())
 	{
-		ASC->RegisterGameplayTagEvent(Tag).AddUObject(this, &UBTDecorator_TagCheck::OnTagAddedOrRemoved, &OwnerComp);
+		for (const FGameplayTag& Tag : Tags)
+		{
+			ASC->RegisterGameplayTagEvent(Tag).AddUObject(this, &UBTDecorator_TagCheck::OnTagAddedOrRemoved, &OwnerComp);
+		}
 	}
 }
 
@@ -43,7 +46,10 @@ void UBTDecorator_TagCheck::OnCeaseRelevant(UBehaviorTreeComponent& OwnerComp, u
 {
 	if (ASC.IsValid())
 	{
-		ASC->RegisterGameplayTagEvent(Tag).RemoveAll(this);
+		for (const FGameplayTag& Tag : Tags)
+		{
+			ASC->RegisterGameplayTagEvent(Tag).RemoveAll(this);
+		}
 	}
 	Super::OnCeaseRelevant(OwnerComp, NodeMemory);
 }

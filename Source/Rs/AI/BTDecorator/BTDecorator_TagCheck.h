@@ -28,8 +28,8 @@ protected:
 	virtual void OnCeaseRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Tag To Check (if exists, return true)"))
-	FGameplayTag Tag;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Tags To Check (if exists, return true)"))
+	FGameplayTagContainer Tags;
 
 protected:
 	UPROPERTY()
