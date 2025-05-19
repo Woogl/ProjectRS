@@ -18,7 +18,7 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (!MeshComp || !MeshComp->GetOwner())
+	if (!MeshComp)
 	{
 		return;
 	}
@@ -32,10 +32,13 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	FRsTargetingFilter Filter(bIncludeSelf, bIncludeFriendlyTeam, bIncludeHostileTeam, MaxTargetCount, TargetRequirements, TArray<AActor*>());
 	FRsTargetingSorter Sorter(bSortByDistance);
 	
-	TArray<AActor*> OutActors;
-	if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform.GetLocation(), SourceTransform.Rotator(), Collision, Filter, Sorter, OutActors))
+	if (MeshComp->GetOwner())
 	{
-		Targets = OutActors;
+		TArray<AActor*> OutActors;
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform.GetLocation(), SourceTransform.Rotator(), Collision, Filter, Sorter, OutActors))
+		{
+			Targets = OutActors;
+		}
 	}
 
 #if WITH_EDITOR
