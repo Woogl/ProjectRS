@@ -5,23 +5,35 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
+#include "RsBuffEffect.h"
 #include "RsEffectCoefficient.h"
-#include "RsDamageDefinition.generated.h"
+#include "RsEffectDefinition.generated.h"
 
 struct FGameplayEffectSpec;
 struct FGameplayEffectSpecHandle;
 class URsDeveloperSetting;
 class UAbilitySystemComponent;
+
 /**
- * Datas to make damage GE specs.
+ * Datas to make GE specs.
  */
 UCLASS(DefaultToInstanced, EditInlineNew, Abstract, CollapseCategories)
-class RS_API URsDamageDefinition : public UObject
+class RS_API URsEffectDefinition : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) PURE_VIRTUAL(URsEffectDefinition::ApplyEffect, );
+};
+
+UCLASS(Abstract)
+class RS_API URsDamageDefinition : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
 public:
 	virtual void PostInitProperties() override;
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override {};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 InvinciblePierce;
@@ -33,7 +45,6 @@ public:
 	FGameplayTag HitReaction;
 	
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
-	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) PURE_VIRTUAL(URsDamageDefinition::ApplyDamage, );
 	void ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff);
 	void ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period);
 	void ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC);
@@ -60,7 +71,7 @@ public:
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 public:
-	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -87,7 +98,7 @@ public:
 	float Period = 0.5f;
 
 public:
-	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -104,14 +115,36 @@ public:
 	float DamageMultiplierPerDotStacks;
 
 public:
-	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Buff effect that needs duration
+ */
+UCLASS(DisplayName = "Buff")
+class RS_API URsBuffDefinition : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<URsBuffEffect> BuffClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> Coefficients;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Duration = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
  * Use this to select a specific effect class.
  */
 UCLASS(DisplayName = "Custom")
-class RS_API URsDamageDefinition_Custom : public URsDamageDefinition
+class RS_API URsEffectDefinition_Custom : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
@@ -120,5 +153,5 @@ public:
 	FRsEffectCoefficient CustomEffect;
 
 public:
-	virtual void ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };

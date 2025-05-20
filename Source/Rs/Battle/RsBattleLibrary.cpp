@@ -8,7 +8,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
+#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
@@ -36,9 +36,9 @@ void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Ta
 	}
 
 	// Can be immune by RsInvincibleGEComp or RsSuperArmorGECpomp.
-	for (TObjectPtr<URsDamageDefinition> DamageDefinition : DamageContext.DamageDefinitions)
+	for (TObjectPtr<URsEffectDefinition> DamageDefinition : DamageContext.DamageDefinitions)
 	{
-		DamageDefinition->ApplyDamage(SourceASC, TargetASC);
+		DamageDefinition->ApplyEffect(SourceASC, TargetASC);
 	}
 }
 

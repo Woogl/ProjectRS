@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsDamageDefinition.h"
+#include "RsEffectDefinition.h"
 
 #include "AbilitySystemComponent.h"
 #include "Rs/RsGameplayTags.h"
@@ -69,7 +69,7 @@ void URsDamageDefinition::ApplyHitReaction(UAbilitySystemComponent* SourceASC, U
 	}
 }
 
-void URsDamageDefinition_Instant::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_Instant::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -85,7 +85,7 @@ void URsDamageDefinition_Instant::ApplyDamage(UAbilitySystemComponent* SourceASC
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsDamageDefinition_Dot::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_Dot::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -101,7 +101,7 @@ void URsDamageDefinition_Dot::ApplyDamage(UAbilitySystemComponent* SourceASC, UA
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsDamageDefinition_DotBurst::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -121,7 +121,24 @@ void URsDamageDefinition_DotBurst::ApplyDamage(UAbilitySystemComponent* SourceAS
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsBuffDefinition::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	if (!SourceASC || !TargetASC)
+	{
+		return;
+	}
+
+	// Apply buff effect
+	FRsEffectCoefficient EffectCoefficient(BuffClass, Coefficients);
+	FGameplayEffectSpecHandle BuffSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
+	if (BuffSpec.IsValid())
+	{
+		BuffSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*BuffSpec.Data, TargetASC);
+	}
+}
+
+void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!SourceASC || !TargetASC)
 	{
@@ -129,12 +146,10 @@ void URsDamageDefinition_Custom::ApplyDamage(UAbilitySystemComponent* SourceASC,
 	}
 	
 	// Apply custom effect
-	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FRsEffectCoefficient CustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, EffectContext);
+	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, SourceASC->MakeEffectContext());
 	if (CustomSpec.IsValid())
 	{
-		SET_SETBYCALLER_PROPERTY(CustomSpec, InvinciblePierce);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*CustomSpec.Data, TargetASC);
 	}
 }

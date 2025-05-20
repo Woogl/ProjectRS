@@ -5,7 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
+#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/System/RsGameSetting.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.

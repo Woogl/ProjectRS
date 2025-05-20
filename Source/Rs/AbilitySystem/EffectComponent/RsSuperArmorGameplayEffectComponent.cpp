@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Misc/DataValidation.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
-#include "Rs/AbilitySystem/Effect/RsDamageDefinition.h"
+#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 
 #define LOCTEXT_NAMESPACE "RsSuperArmorGameplayEffectComponent"
 

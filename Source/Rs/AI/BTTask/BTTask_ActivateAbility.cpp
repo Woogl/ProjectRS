@@ -36,14 +36,16 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 void UBTTask_ActivateAbility::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
 	UGameplayAbility* Ability = ActivatedAbility.Get();
-	AAIController* AIOwner = OwnerComp.GetAIOwner();
-	if (Ability && AIOwner)
+	if (Ability)
 	{
 		// unbind delegate
 		Ability->OnGameplayAbilityEnded.RemoveAll(this);
 		if (Ability->IsActive())
 		{
-			UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(AIOwner)->CancelAbility(Ability);
+			if (AAIController* AIOwner = OwnerComp.GetAIOwner())
+			{
+				UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(AIOwner)->CancelAbility(Ability);
+			}
 		}
 	}
 	

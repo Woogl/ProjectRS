@@ -6,18 +6,18 @@
 #include "RsGameplayAbility.h"
 #include "RsGameplayAbility_Attack.generated.h"
 
-class URsDamageDefinition;
+class URsEffectDefinition;
 
 USTRUCT(BlueprintType)
 struct FRsDamageContext
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Animnotify.HitScan"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Animnotify"))
 	FGameplayTag DamageEventTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TArray<TObjectPtr<URsDamageDefinition>> DamageDefinitions;
+	TArray<TObjectPtr<URsEffectDefinition>> DamageDefinitions;
 
 	bool operator==(const FRsDamageContext& Other) const { return this->DamageEventTag == Other.DamageEventTag; }
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
