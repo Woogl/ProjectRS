@@ -13,13 +13,13 @@ namespace RsTargetingGlobals
 	bool bTargetingShowDebug = false;
 	float TargetingDebugTime = 0.5f;
 	
-	FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bTargetingShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay."), ECVF_Cheat);
-	FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), TargetingDebugTime, TEXT("Set the duration of the debug shapes for targeting."), ECVF_Cheat);
+	FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bTargetingShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay.  ex) rs.Targeting.ShowDebug [0/1]"), ECVF_Cheat);
+	FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), TargetingDebugTime, TEXT("Set the duration of the debug shapes for targeting.  ex) rs.Targeting.DebugTime [Sec]"), ECVF_Cheat);
 }
 
-bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
-	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, StartLoc, StartRot, Collision);
+	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Collision);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Filter);
 	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Sorter);
 	ResultActors = SortedActors;
@@ -30,7 +30,7 @@ bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FVector StartLoc, FRot
 		if (ShouldDrawDebugShape(World, bDrawDebug) == true)
 		{
 			FColor Color = bSuccess ? FColor::Green : FColor::Red;
-			DrawDebugShape(World, StartLoc, StartRot, Collision, Color);
+			DrawDebugShape(World, Transform, Collision, Color);
 		}
 	}
 	
@@ -61,11 +61,11 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 		float Alpha = static_cast<float>(i) / SubstepNum;
 		FTransform SubstepTransform;
 		SubstepTransform.Blend(Start, End, Alpha);
-		TArray<AActor*> SubstepOverlappedActors = URsTargetingLibrary::PerformOverlapping(Owner, SubstepTransform.GetLocation(), SubstepTransform.Rotator(), Collision);
+		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Collision);
 		OverlappedSet.Append(SubstepOverlappedActors);
 		if (ShouldDrawDebugShape(World, bDrawDebug) == true)
 		{
-			DrawDebugShape(World, SubstepTransform.GetLocation(), SubstepTransform.Rotator(), Collision, FColor::Red);
+			DrawDebugShape(World, SubstepTransform, Collision, FColor::Red);
 		}
 	}
 
@@ -76,13 +76,13 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 
 	if (ShouldDrawDebugShape(World, bDrawDebug) == true && bSuccess)
 	{
-		DrawDebugShape(World, StartLoc, Start.Rotator(), Collision, FColor::Green);
+		DrawDebugShape(World, Start, Collision, FColor::Green);
 	}
 	
 	return bSuccess;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision)
+TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingCollision& Collision)
 {
 	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
@@ -100,7 +100,7 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, F
 			const ECollisionChannel& Channel = UCollisionProfile::Get()->ConvertToCollisionChannel(false, *Iter);
 			ObjectParams.AddObjectTypesToQuery(Channel);
 		}
-		World->OverlapMultiByObjectType(OverlapResults, StartLoc, StartRot.Quaternion(), ObjectParams, Collision.MakeShape());
+		World->OverlapMultiByObjectType(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), ObjectParams, Collision.MakeShape());
 	}
 	
 	for (const FOverlapResult& OverlapResult : OverlapResults)
@@ -255,7 +255,7 @@ bool URsTargetingLibrary::ShouldDrawDebugShape(UWorld* World, bool bDrawDebug)
 	return false;
 }
 
-void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FVector StartLoc, FRotator StartRot, const FRsTargetingCollision& Collision, FColor Color)
+void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FTransform Transform, const FRsTargetingCollision& Collision, FColor Color)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World)
@@ -271,15 +271,15 @@ void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FVector StartLoc
 	switch (Collision.ShapeType)
 	{
 	case ERsTargetingShape::Box:
-		DrawDebugBox(World, StartLoc, CollisionShape.GetExtent(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		DrawDebugBox(World, Transform.GetLocation(), CollisionShape.GetExtent(), Transform.GetRotation(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Sphere:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, Transform.GetLocation(), CollisionShape.GetSphereRadius(), CollisionShape.GetSphereRadius(), Transform.GetRotation(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 		
 	case ERsTargetingShape::Capsule:
-		DrawDebugCapsule(World, StartLoc, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), StartRot.Quaternion(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
+		DrawDebugCapsule(World, Transform.GetLocation(), CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), Transform.GetRotation(), Color, bPersistentLines, RsTargetingGlobals::TargetingDebugTime, DepthPriority, Thickness);
 		break;
 	}
 }

@@ -29,13 +29,13 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 	
-	if (MeshComp == nullptr)
+	if (!MeshComp)
 	{
 		return;
 	}
 	
 	UWorld* World = MeshComp->GetWorld();
-	if (World == nullptr)
+	if (!World)
 	{
 		return;
 	}
@@ -43,8 +43,6 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	ResultActors.Reset();
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	SourceTransform.SetLocation(SourceTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
-	SourceTransform.SetRotation(RotationOffset.Quaternion() * SourceTransform.GetRotation());
 
 	FRsTargetingCollision Collision(CollisionObjectTypes, ShapeType, HalfExtent, Radius, HalfHeight);
 	FRsTargetingFilter Filter(bIncludeSelf, bIncludeFriendlyTeam, bIncludeHostileTeam, MaxTargetCount, TargetRequirements, TArray<AActor*>());
@@ -53,7 +51,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	TArray<AActor*> OutActors;
 	if (MeshComp->GetOwner())
 	{
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform.GetLocation(), SourceTransform.GetRotation().Rotator(), Collision, Filter, Sorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
 		{
 			ResultActors = OutActors;
 		
