@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "RsDotExplosionExecution.generated.h"
+#include "RsDotBurstDamageExecution.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsDotExplosionExecution : public UGameplayEffectExecutionCalculation
+class RS_API URsDotBurstDamageExecution : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 	

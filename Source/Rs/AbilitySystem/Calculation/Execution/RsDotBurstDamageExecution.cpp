@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsDotExplosionExecution.h"
+#include "RsDotBurstDamageExecution.h"
 #include "AbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
@@ -28,7 +28,7 @@ struct RsDotExplosionDamageStatics
 	}
 };
 
-void URsDotExplosionExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (TargetASC == nullptr)
