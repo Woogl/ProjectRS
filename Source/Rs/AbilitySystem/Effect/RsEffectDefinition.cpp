@@ -17,7 +17,7 @@ void URsDamageDefinition::PostInitProperties()
 	DeveloperSetting = URsDeveloperSetting::Get();
 }
 
-FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	// Set Damage floater's location (Gameplay Cue)
@@ -71,11 +71,6 @@ void URsDamageDefinition::ApplyHitReaction(UAbilitySystemComponent* SourceASC, U
 
 void URsDamageDefinition_Instant::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-	
 	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
 	ApplyInstantDamage(SourceASC, TargetASC, RsHealthDamageCoeff);
 
@@ -87,11 +82,6 @@ void URsDamageDefinition_Instant::ApplyEffect(UAbilitySystemComponent* SourceASC
 
 void URsDamageDefinition_Dot::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-	
 	FRsEffectCoefficient RsHealthDotCoeff(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
 	ApplyDotDamage(SourceASC, TargetASC, RsHealthDotCoeff, Duration, Period);
 	
@@ -103,11 +93,6 @@ void URsDamageDefinition_Dot::ApplyEffect(UAbilitySystemComponent* SourceASC, UA
 
 void URsDamageDefinition_DotBurst::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-	
 	// Apply DoT Burst Damage
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotBurstDamageSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->DotBurstDamageEffectClass, 0.f, EffectContext);
@@ -123,11 +108,6 @@ void URsDamageDefinition_DotBurst::ApplyEffect(UAbilitySystemComponent* SourceAS
 
 void URsBuffDefinition::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-
 	// Apply buff effect
 	FRsEffectCoefficient EffectCoefficient(BuffClass, Coefficients);
 	FGameplayEffectSpecHandle BuffSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
@@ -140,11 +120,6 @@ void URsBuffDefinition::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbility
 
 void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-	
 	// Apply custom effect
 	FRsEffectCoefficient CustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
 	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, SourceASC->MakeEffectContext());

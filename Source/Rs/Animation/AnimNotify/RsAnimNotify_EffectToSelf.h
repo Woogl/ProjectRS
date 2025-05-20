@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
-#include "RsAnimNotify_ApplyEffectToSelf.generated.h"
+#include "RsAnimNotify_EffectToSelf.generated.h"
 
+class URsEffectDefinition;
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotify_ApplyEffectToSelf : public UAnimNotify
+class RS_API URsAnimNotify_EffectToSelf : public UAnimNotify
 {
 	GENERATED_BODY()
 
 public:
-	URsAnimNotify_ApplyEffectToSelf();
+	URsAnimNotify_EffectToSelf();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effect")
-	FRsEffectCoefficient EffectCoefficient;
+	URsEffectDefinition* EffectDefinition;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

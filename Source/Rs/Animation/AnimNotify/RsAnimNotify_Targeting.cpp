@@ -15,6 +15,16 @@ URsAnimNotify_Targeting::URsAnimNotify_Targeting()
 #endif // WITH_EDITORONLY_DATA
 }
 
+FString URsAnimNotify_Targeting::GetNotifyName_Implementation() const
+{
+	if (EventTag.IsValid())
+	{
+		FString EventTagString = EventTag.ToString();
+		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
+	}
+	return Super::GetNotifyName_Implementation();
+}
+
 void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

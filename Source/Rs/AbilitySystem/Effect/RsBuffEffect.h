@@ -4,22 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
-#include "RsEffectCoefficient.h"
 #include "RsBuffEffect.generated.h"
-
-USTRUCT(BlueprintType)
-struct FRsBuffCoefficient
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class URsBuffEffect> BuffClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> Coefficients;
-
-	FRsEffectCoefficient ToRsEffectCoefficient(float Duration) const;
-};
 
 /**
  * Categorized gameplay effect used by AnimNotify. It must have a duration.
@@ -32,7 +17,4 @@ class RS_API URsBuffEffect : public UGameplayEffect
 
 public:
 	URsBuffEffect();
-
-	UFUNCTION(BlueprintPure, Category="RS|Effect")
-	static FRsEffectCoefficient ToRsEffectCoefficient(const FRsBuffCoefficient& BuffCoefficient, float Duration);
 };

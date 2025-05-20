@@ -3,21 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotifyState_Targeting.h"
-#include "Rs/AbilitySystem/Effect/RsBuffEffect.h"
-#include "RsAnimNotifyState_BuffToTarget.generated.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "RsAnimNotifyState_EffectToSelf.generated.h"
 
+class URsEffectDefinition;
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_BuffToTarget : public URsAnimNotifyState_Targeting
+class RS_API URsAnimNotifyState_EffectToSelf : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effect")
-	FRsBuffCoefficient BuffCoefficient;
+	URsEffectDefinition* EffectDefinition;
 
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 };

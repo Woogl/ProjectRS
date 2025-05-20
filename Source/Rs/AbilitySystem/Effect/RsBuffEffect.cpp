@@ -3,7 +3,6 @@
 
 #include "RsBuffEffect.h"
 
-#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Calculation/ModifierMagnitude/RsDurationCalculation.h"
 
 URsBuffEffect::URsBuffEffect()
@@ -19,16 +18,4 @@ URsBuffEffect::URsBuffEffect()
 	// FCustomCalculationBasedFloat CustomMagnitude;
 	// CustomMagnitude.CalculationClassMagnitude = URsCoefficientCalculation::StaticClass();
 	// Modifiers.Add(ModifierInfo);
-}
-
-FRsEffectCoefficient URsBuffEffect::ToRsEffectCoefficient(const FRsBuffCoefficient& BuffCoefficient, float Duration)
-{
-	return BuffCoefficient.ToRsEffectCoefficient(Duration);
-}
-
-FRsEffectCoefficient FRsBuffCoefficient::ToRsEffectCoefficient(float Duration) const
-{
-	FRsEffectCoefficient EffectCoefficient = FRsEffectCoefficient(BuffClass, Coefficients);
-	EffectCoefficient.Coefficients.Add(RsGameplayTags::MANUAL_DURATION, Duration);
-	return EffectCoefficient;
 }
