@@ -27,23 +27,13 @@ protected:
 
 	TWeakObjectPtr<URsPartyComponent> CachedModel;
 
-public:
-	UFUNCTION(FieldNotify, BlueprintPure)
-	bool HasPartyMemberInSlot0() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	bool HasPartyMemberInSlot1() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	bool HasPartyMemberInSlot2() const;
-	
-	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
-	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
-	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
-
 private:
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
+
+	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
+	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
+	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
 	
 	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;

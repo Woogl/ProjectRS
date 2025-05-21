@@ -55,45 +55,6 @@ void URsPartyViewModel::Deinitialize()
 	}
 }
 
-bool URsPartyViewModel::HasPartyMemberInSlot0() const
-{
-	return URsPartyLibrary::GetPartyMemberAt(GetWorld(), 0) != nullptr;
-}
-
-bool URsPartyViewModel::HasPartyMemberInSlot1() const
-{
-	return URsPartyLibrary::GetPartyMemberAt(GetWorld(), 1) != nullptr;
-}
-
-bool URsPartyViewModel::HasPartyMemberInSlot2() const
-{
-	return URsPartyLibrary::GetPartyMemberAt(GetWorld(), 2) != nullptr;
-}
-
-void URsPartyViewModel::SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_0, CharacterViewModel))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasPartyMemberInSlot0);
-	}
-}
-
-void URsPartyViewModel::SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_1, CharacterViewModel))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasPartyMemberInSlot1);
-	}
-}
-
-void URsPartyViewModel::SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_2, CharacterViewModel))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HasPartyMemberInSlot2);
-	}
-}
-
 void URsPartyViewModel::HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex)
 {
 	URsPlayerCharacterViewModel* NewCharacterViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(PartyMember);
@@ -125,4 +86,19 @@ void URsPartyViewModel::HandleRemovePartyMember(ARsPlayerCharacter* PartyMember,
 	{
 		SetPartyMemberViewModel_2(nullptr);
 	}
+}
+
+void URsPartyViewModel::SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_0, CharacterViewModel);
+}
+
+void URsPartyViewModel::SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_1, CharacterViewModel);
+}
+
+void URsPartyViewModel::SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PartyMemberViewModel_2, CharacterViewModel);
 }
