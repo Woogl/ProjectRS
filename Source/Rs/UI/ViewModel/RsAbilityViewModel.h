@@ -63,7 +63,7 @@ public:
 	UObject* GetSkillIcon() const;
 
 	UFUNCTION(BlueprintPure)
-	bool HasSkillIcon() const;
+	ESlateVisibility GetSkillIconVisibility() const;
 
 	// FTickableGameObject
 	// NOTE: Ability class can't tick by default, but I want to display cooldown updated every frame.

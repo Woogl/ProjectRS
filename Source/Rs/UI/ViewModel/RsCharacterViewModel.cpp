@@ -4,6 +4,7 @@
 #include "RsCharacterViewModel.h"
 
 #include "AbilitySystemGlobals.h"
+#include "CommonHardwareVisibilityBorder.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
@@ -54,7 +55,11 @@ UObject* URsCharacterViewModel::GetPortrait() const
 	return nullptr;
 }
 
-bool URsCharacterViewModel::HasCharacterIcon() const
+ESlateVisibility URsCharacterViewModel::GetPortraitVisibility() const
 {
-	return GetPortrait() != nullptr;
+	if (GetPortrait())
+	{
+		return ESlateVisibility::SelfHitTestInvisible;
+	}
+	return ESlateVisibility::Hidden;
 }

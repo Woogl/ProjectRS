@@ -3,6 +3,7 @@
 
 #include "RsAbilityViewModel.h"
 
+#include "CommonHardwareVisibilityBorder.h"
 #include "InputMappingContext.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Character/RsPlayerCharacter.h"
@@ -165,9 +166,13 @@ UObject* URsAbilityViewModel::GetSkillIcon() const
 	return nullptr;
 }
 
-bool URsAbilityViewModel::HasSkillIcon() const
+ESlateVisibility URsAbilityViewModel::GetSkillIconVisibility() const
 {
-	return GetSkillIcon() != nullptr;
+	if (GetSkillIcon())
+	{
+		return ESlateVisibility::SelfHitTestInvisible;
+	}
+	return ESlateVisibility::Hidden;
 }
 
 void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)

@@ -28,14 +28,14 @@ protected:
 	TWeakObjectPtr<ARsCharacterBase> CachedModel;
 
 public:
-	UFUNCTION(FieldNotify, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText GetCharacterName() const;
 
-	UFUNCTION(FieldNotify, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	UObject* GetPortrait() const;
 
-	UFUNCTION(FieldNotify, BlueprintPure)
-	bool HasCharacterIcon() const;
+	UFUNCTION(BlueprintPure)
+	ESlateVisibility GetPortraitVisibility() const;
 	
 protected:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
