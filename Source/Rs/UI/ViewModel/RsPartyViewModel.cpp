@@ -5,7 +5,6 @@
 
 #include "RsPlayerCharacterViewModel.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/Party/RsPartyLibrary.h"
 
 URsPartyViewModel* URsPartyViewModel::CreateRsPartyViewModel(URsPartyComponent* PartyComponent)
 {

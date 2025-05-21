@@ -17,9 +17,8 @@ class RS_API URsHealthSetViewModel : public URsViewModelBase
 {
 	GENERATED_BODY()
 
-	// TODO: Model should be ASC.
 public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	static URsHealthSetViewModel* CreateHealthSetViewModel(UAbilitySystemComponent* ASC);
 
 protected:

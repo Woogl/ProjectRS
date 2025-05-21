@@ -17,7 +17,7 @@ class RS_API URsAbilityViewModel : public URsViewModelBase, public FTickableGame
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Ability);
 
 protected:

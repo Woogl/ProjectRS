@@ -18,7 +18,7 @@ class RS_API URsPartyViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
 
 protected:
