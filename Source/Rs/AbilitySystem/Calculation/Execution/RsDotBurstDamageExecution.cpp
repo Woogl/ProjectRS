@@ -86,7 +86,7 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
 
 	float DefenseConstant = URsGameSetting::Get()->DefenseConstant;
-	const FName PropertyName = GET_MEMBER_NAME_CHECKED(URsDamageDefinition_DotBurst, DamageMultiplierPerDotStacks);
+	const FName PropertyName = GET_MEMBER_NAME_CHECKED(URsEffectDefinition_DotBurstDamage, DamageMultiplierPerDotStacks);
 	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(PropertyName));
 	TotalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 

@@ -46,7 +46,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (OwningAbility.IsValid())
 	{
 		OwningAbility->ApplyCostRecovery();
-		OwningAbility->OnAttackHitTarget(OtherActor, EventTag);
+		OwningAbility->OnAttackHitTarget(OtherActor, DamageContext.DamageEventTag);
 	}
 	
 	if (GetInstigator() && OtherActor)

@@ -48,8 +48,7 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 
 	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
 	{
-		Projectile->DamageContext = *DamageContext;
-		Projectile->EventTag = EventData.EventTag;
+		Projectile->DamageContext.DamageEventTag = EventData.EventTag;
 		Projectile->OwningAbility = this;
 	}
 	

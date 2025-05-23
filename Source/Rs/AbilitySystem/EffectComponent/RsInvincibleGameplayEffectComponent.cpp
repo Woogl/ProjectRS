@@ -63,7 +63,7 @@ bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const 
 		return true;
 	}
 
-	FName InvinciblePierceName = GET_MEMBER_NAME_CHECKED(URsDamageDefinition, InvinciblePierce);
+	FName InvinciblePierceName = GET_MEMBER_NAME_CHECKED(URsEffectDefinition_DamageBase, InvinciblePierce);
 	float InvinciblePierceTier = GESpecToConsider.GetSetByCallerMagnitude(InvinciblePierceName, false, -1);
 	float InvincibleTier = ASC->GetNumericAttribute(URsDefenseSet::GetInvincibleTierAttribute());
 

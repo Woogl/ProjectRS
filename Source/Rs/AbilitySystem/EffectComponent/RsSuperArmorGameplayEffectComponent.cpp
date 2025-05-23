@@ -63,7 +63,7 @@ bool URsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const 
 		return true;
 	}
 	
-	FName SuperArmorPierceName = GET_MEMBER_NAME_CHECKED(URsDamageDefinition, SuperArmorPierce);
+	FName SuperArmorPierceName = GET_MEMBER_NAME_CHECKED(URsEffectDefinition_DamageBase, SuperArmorPierce);
 	float SuperArmorPierceTier = GESpecToConsider.GetSetByCallerMagnitude(SuperArmorPierceName, false, -1);
 	float SuperArmorTier = ASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorTierAttribute());
 

@@ -51,4 +51,6 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "RS|Damage", DisplayName = "OnAttackHitTarget")
 	void K2_OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
+
+	FRsDamageContext FindDamageEvent(FGameplayTag EventTag) const;
 };

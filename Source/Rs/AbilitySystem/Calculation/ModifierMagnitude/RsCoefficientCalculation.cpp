@@ -13,7 +13,7 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 	{
 		if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))
 		{
-			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, false);
+			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
 		}
 		else if (CoefficientTag.Key.ToString().EndsWith(TEXT("Target")))
 		{

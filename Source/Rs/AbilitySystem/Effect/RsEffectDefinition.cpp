@@ -4,12 +4,14 @@
 #include "RsEffectDefinition.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameFramework/Character.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
-void URsDamageDefinition::PostInitProperties()
+void URsEffectDefinition_DamageBase::PostInitProperties()
 {
 	Super::PostInitProperties();
 
@@ -17,7 +19,7 @@ void URsDamageDefinition::PostInitProperties()
 	DeveloperSetting = URsDeveloperSetting::Get();
 }
 
-FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
+FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	// Set Damage floater's location (Gameplay Cue)
@@ -27,7 +29,7 @@ FGameplayEffectContextHandle URsDamageDefinition::MakeDamageEffectContext(UAbili
 	return EffectContext;
 }
 
-void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
+void URsEffectDefinition_DamageBase::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
 {
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
@@ -38,7 +40,7 @@ void URsDamageDefinition::ApplyInstantDamage(UAbilitySystemComponent* SourceASC,
 	}
 }
 
-void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
+void URsEffectDefinition_DamageBase::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
 {
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
 	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
@@ -51,7 +53,7 @@ void URsDamageDefinition::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAb
 	}
 }
 
-void URsDamageDefinition::ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_DamageBase::ApplyHitReaction(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (!HitReaction.IsValid())
 	{
@@ -69,7 +71,7 @@ void URsDamageDefinition::ApplyHitReaction(UAbilitySystemComponent* SourceASC, U
 	}
 }
 
-void URsDamageDefinition_Instant::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
 	ApplyInstantDamage(SourceASC, TargetASC, RsHealthDamageCoeff);
@@ -80,7 +82,7 @@ void URsDamageDefinition_Instant::ApplyEffect(UAbilitySystemComponent* SourceASC
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsDamageDefinition_Dot::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FRsEffectCoefficient RsHealthDotCoeff(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
 	ApplyDotDamage(SourceASC, TargetASC, RsHealthDotCoeff, Duration, Period);
@@ -91,7 +93,7 @@ void URsDamageDefinition_Dot::ApplyEffect(UAbilitySystemComponent* SourceASC, UA
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsDamageDefinition_DotBurst::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	// Apply DoT Burst Damage
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
@@ -106,7 +108,7 @@ void URsDamageDefinition_DotBurst::ApplyEffect(UAbilitySystemComponent* SourceAS
 	ApplyHitReaction(SourceASC, TargetASC);
 }
 
-void URsBuffDefinition::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	// Apply buff effect
 	FRsEffectCoefficient EffectCoefficient(BuffClass, Coefficients);
@@ -115,6 +117,24 @@ void URsBuffDefinition::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbility
 	{
 		BuffSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*BuffSpec.Data, TargetASC);
+	}
+}
+
+void URsEffectDefinition_Projectile::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	// Spawn projectile
+	if (ACharacter* SourceCharacter = Cast<ACharacter>(SourceASC->GetAvatarActor()))
+	{
+		FTransform SocketTransform = SourceCharacter->GetMesh()->GetSocketTransform(SpawnSocket);
+		if (ARsProjectile* ProjectileInstance = SourceCharacter->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, SocketTransform, SourceCharacter, SourceCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			if (URsGameplayAbility_Attack* RsAbility = Cast<URsGameplayAbility_Attack>(SourceASC->GetAnimatingAbility()))
+			{
+				ProjectileInstance->DamageContext = RsAbility->FindDamageEvent(EventTagOnHit);
+			}
+			SocketTransform.SetRotation(SourceCharacter->GetActorForwardVector().ToOrientationQuat());
+			ProjectileInstance->FinishSpawning(SocketTransform);
+		}
 	}
 }
 

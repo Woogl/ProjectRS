@@ -39,3 +39,8 @@ void URsGameplayAbility_Attack::OnAttackHitTarget(const AActor* Target, const FG
 	StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
 	K2_OnAttackHitTarget(Target, DamageEvent);
 }
+
+FRsDamageContext URsGameplayAbility_Attack::FindDamageEvent(FGameplayTag EventTag) const
+{
+	return *DamageEvents.FindByKey(EventTag);
+}

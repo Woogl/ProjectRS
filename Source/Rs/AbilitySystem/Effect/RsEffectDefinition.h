@@ -9,6 +9,7 @@
 #include "RsEffectCoefficient.h"
 #include "RsEffectDefinition.generated.h"
 
+class ARsProjectile;
 struct FGameplayEffectSpec;
 struct FGameplayEffectSpecHandle;
 class URsDeveloperSetting;
@@ -27,7 +28,7 @@ public:
 };
 
 UCLASS(Abstract)
-class RS_API URsDamageDefinition : public URsEffectDefinition
+class RS_API URsEffectDefinition_DamageBase : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
@@ -59,7 +60,7 @@ protected:
  * (Ex: Melee hit)
  */
 UCLASS(DisplayName = "Instant Damage")
-class RS_API URsDamageDefinition_Instant : public URsDamageDefinition
+class RS_API URsEffectDefinition_InstantDamage : public URsEffectDefinition_DamageBase
 {
 	GENERATED_BODY()
 
@@ -79,7 +80,7 @@ public:
  * (Ex: Poison) 
  */
 UCLASS(DisplayName = "DoT Damage")
-class RS_API URsDamageDefinition_Dot : public URsDamageDefinition
+class RS_API URsEffectDefinition_DotDamage : public URsEffectDefinition_DamageBase
 {
 	GENERATED_BODY()
 
@@ -106,7 +107,7 @@ public:
  * (Ex: Disorder from Zenless Zone Zero) 
  */
 UCLASS(DisplayName = "DoT Burst Damage")
-class RS_API URsDamageDefinition_DotBurst : public URsDamageDefinition
+class RS_API URsEffectDefinition_DotBurstDamage : public URsEffectDefinition_DamageBase
 {
 	GENERATED_BODY()
 
@@ -122,7 +123,7 @@ public:
  * Buff effect that needs duration
  */
 UCLASS(DisplayName = "Buff")
-class RS_API URsBuffDefinition : public URsEffectDefinition
+class RS_API URsEffectDefinition_Buff : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
@@ -135,6 +136,29 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Spawn projectile.
+ * Damage is applied through the event tag of the ability.
+ */
+UCLASS(DisplayName = "Spawn Projectile")
+class RS_API URsEffectDefinition_Projectile : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ARsProjectile> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "AnimNotify"))
+	FGameplayTag EventTagOnHit;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SpawnSocket;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
