@@ -74,6 +74,10 @@
 		{
 			"Name": "AnimationLocomotionLibrary",
 			"Enabled": true
+		},
+		{
+			"Name": "GameSubtitles",
+			"Enabled": true
 		}
 	]
 }
