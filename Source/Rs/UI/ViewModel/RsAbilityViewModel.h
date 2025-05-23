@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static URsAbilityViewModel* CreateRsAbilityViewModel(URsGameplayAbility* Ability);
 
+	UFUNCTION(BlueprintCallable)
+	void TryActivateAbility();
+
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;

@@ -3,6 +3,7 @@
 
 #include "RsAbilityViewModel.h"
 
+#include "AbilitySystemComponent.h"
 #include "CommonHardwareVisibilityBorder.h"
 #include "InputMappingContext.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -13,6 +14,17 @@ URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAb
 	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Ability);
 	ViewModel->Initialize();
 	return ViewModel;
+}
+
+void URsAbilityViewModel::TryActivateAbility()
+{
+	if (URsGameplayAbility* Model = CachedModel.Get())
+	{
+		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponentFromActorInfo())
+		{
+			ASC->TryActivateAbility(Model->GetCurrentAbilitySpecHandle());
+		}
+	}
 }
 
 void URsAbilityViewModel::Initialize()
