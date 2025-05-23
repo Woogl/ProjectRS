@@ -28,18 +28,12 @@ struct FRsTargetingCollision
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Radius = 50.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HalfHeight = 100.0f;
-
 	FCollisionShape MakeShape() const;
 
 	FRsTargetingCollision() {}
 	
-	FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent, float Radius, float HalfHeight)
-		: CollisionObjectTypes(CollisionObjectTypes), ShapeType(ShapeType), HalfExtent(HalfExtent), Radius(Radius), HalfHeight(HalfHeight)
+	FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent)
+		: CollisionObjectTypes(CollisionObjectTypes), ShapeType(ShapeType), HalfExtent(HalfExtent)
 	{}
 };
 
@@ -73,17 +67,25 @@ struct FRsTargetingFilter
 	{}
 };
 
+UENUM()
+enum class ERsSortingOrder : uint8
+{
+	None,
+	Ascending,
+	Descending,
+};
+
 USTRUCT(BlueprintType)
 struct FRsTargetingSorter
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bSortByDistance = false;
+	ERsSortingOrder SortByDistance = ERsSortingOrder::None;
 
 	FRsTargetingSorter() {}
 
-	FRsTargetingSorter(bool bSortByDistance)
-		: bSortByDistance(bSortByDistance)
+	FRsTargetingSorter(ERsSortingOrder SortByDistance)
+		: SortByDistance(SortByDistance)
 	{}
 };

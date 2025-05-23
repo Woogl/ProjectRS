@@ -183,12 +183,24 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 {
 	TArray<AActor*> SortedResult = InActors;
 
-	if (Sorter.bSortByDistance && Owner)
+	if (Sorter.SortByDistance != ERsSortingOrder::None && Owner)
 	{
 		const FVector OwnerLocation = Owner->GetActorLocation();
-		SortedResult.Sort([OwnerLocation](const AActor& A, const AActor& B)
+		const ERsSortingOrder Order = Sorter.SortByDistance;
+		SortedResult.Sort([OwnerLocation, Order](const AActor& A, const AActor& B)
 		{
-			return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) < FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
+			if (Order == ERsSortingOrder::Ascending)
+			{
+				return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) < FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
+			}
+			else if (Order == ERsSortingOrder::Descending)
+			{
+				return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) > FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
+			}
+			else
+			{
+				return false;
+			}
 		});
 	}
 	

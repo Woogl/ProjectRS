@@ -11,7 +11,6 @@ DECLARE_CYCLE_STAT(TEXT("RsAnimNotifyState_HitTrace"), STAT_RsAnimNotifyState_Hi
 
 URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 {
-	bSortByDistance = false;
 }
 
 FString URsAnimNotifyState_HitTrace::GetNotifyName_Implementation() const
@@ -53,23 +52,22 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	CurrentSocketTransform.SetLocation(CurrentSocketTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
 	CurrentSocketTransform.SetRotation(RotationOffset.Quaternion() * CurrentSocketTransform.GetRotation());
 
-	FRsTargetingCollision Collision(CollisionObjectTypes, ShapeType, HalfExtent, Radius, HalfHeight);
-	FRsTargetingFilter Filter(bIncludeSelf, bIncludeFriendlyTeam, bIncludeHostileTeam, MaxTargetCount, TargetRequirements, HitTargets);
-	FRsTargetingSorter Sorter(bSortByDistance);
-
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, MaxSubsteps, Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
 		{
-			URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
-			HitTargets.Emplace(Target);
-			
-			if (bStopTraceWhenFirstHit)
+			if (!HitTargets.Contains(Target))
 			{
-				bStopTrace = true;
-				break;
+				URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
+				HitTargets.Emplace(Target);
+			
+				if (bStopTraceWhenFirstHit)
+				{
+					bStopTrace = true;
+					break;
+				}
 			}
 		}
 	}

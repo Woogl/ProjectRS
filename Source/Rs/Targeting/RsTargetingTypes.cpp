@@ -11,10 +11,10 @@ FCollisionShape FRsTargetingCollision::MakeShape() const
 		return FCollisionShape::MakeBox(HalfExtent);
 
 	case ERsTargetingShape::Sphere:
-		return FCollisionShape::MakeSphere(Radius);
+		return FCollisionShape::MakeSphere(FMath::Min3(HalfExtent.X, HalfExtent.Y, HalfExtent.Z));
 
 	case ERsTargetingShape::Capsule:
-		return FCollisionShape::MakeCapsule(Radius, HalfHeight);
+		return FCollisionShape::MakeCapsule(FMath::Min(HalfExtent.X, HalfExtent.Y), HalfExtent.Z);
 	}
 	
 	return FCollisionShape();

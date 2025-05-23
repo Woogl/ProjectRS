@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_Targeting.generated.h"
@@ -19,48 +18,24 @@ class RS_API URsAnimNotifyState_Targeting : public UAnimNotifyState
 public:
 	URsAnimNotifyState_Targeting();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source", meta = (GetOptions="GetSocketNames"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting|Source", meta = (GetOptions="GetSocketNames"))
 	FName SocketName = FName("root");
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting|Source")
 	FVector PositionOffset = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Source")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting|Source")
 	FRotator RotationOffset = FRotator::ZeroRotator;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape")
-	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape", meta=(EditCondition = "ShapeType == ERsTargetingShape::Box || ShapeType == ERsTargetingShape::Cylinder", EditConditionHides))
-	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape", meta=(EditCondition = "ShapeType == ERsTargetingShape::Sphere || ShapeType == ERsTargetingShape::Capsule", EditConditionHides))
-	float Radius = 50.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Shape", meta=(EditCondition = "ShapeType == ERsTargetingShape::Capsule", EditConditionHides))
-	float HalfHeight = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bIncludeSelf = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingCollision Collision;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bIncludeFriendlyTeam = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingFilter Filter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	bool bIncludeHostileTeam = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	int32 MaxTargetCount = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Filter")
-	FGameplayTagRequirements TargetRequirements;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sorter")
-	bool bSortByDistance = true;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingSorter Sorter;
+	
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
