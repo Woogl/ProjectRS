@@ -6,6 +6,7 @@
 #include "GameUIManagerSubsystem.h"
 #include "RsUIManagerSubsystem.generated.h"
 
+class URsHUDLayout;
 class UCommonActivatableWidget;
 /**
  * 
@@ -18,7 +19,7 @@ class RS_API URsUIManagerSubsystem : public UGameUIManagerSubsystem
 public:
 	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer) override;
 	
-	UCommonActivatableWidget* GetGameHUD();
+	URsHUDLayout* GetGameHUD();
 
 private:
 	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
@@ -28,5 +29,5 @@ private:
 	// TSubclassOf<UCommonActivatableWidget> GameHUDClass;
 
 	UPROPERTY(Transient)
-	UCommonActivatableWidget* GameHUDInstance = nullptr;
+	URsHUDLayout* RsHUDInstance = nullptr;
 };

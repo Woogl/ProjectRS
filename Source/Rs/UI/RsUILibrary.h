@@ -6,8 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsUILibrary.generated.h"
 
+class URsHUDLayout;
 class UMVVMViewModelBase;
-class UCommonActivatableWidget;
 /**
  * 
  */
@@ -24,11 +24,8 @@ public:
 	static void HideGameHUD(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
-	static UCommonActivatableWidget* GetGameHUD(UObject* WorldContextObject);
+	static URsHUDLayout* GetGameHUD(UObject* WorldContextObject);
 
-	UFUNCTION(BlueprintCallable, Category="RS UI Library")
-	static bool SetViewModelByName(UUserWidget* Widget, FName ViewModelName, UMVVMViewModelBase* ViewModel);
-
-	UFUNCTION(BlueprintCallable, Category="RS UI Library")
-	static bool SetViewModelByClass(UUserWidget* Widget, UMVVMViewModelBase* ViewModel);
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
+	static void AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration = 2.f);
 };

@@ -11,6 +11,7 @@
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/System/RsGameSetting.h"
 #include "Rs/UI/ViewModel/RsPlayerCharacterViewModel.h"
+#include "Rs/UI/Widget/RsHUDLayout.h"
 #include "View/MVVMView.h"
 
 void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
@@ -23,9 +24,9 @@ void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 	}
 }
 
-UCommonActivatableWidget* URsUIManagerSubsystem::GetGameHUD()
+URsHUDLayout* URsUIManagerSubsystem::GetGameHUD()
 {
-	return GameHUDInstance;
+	return RsHUDInstance;
 }
 
 void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
@@ -43,19 +44,20 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	}
 
 	// Create Game HUD instance first only.
-	if (GameHUDInstance == nullptr)
+	if (RsHUDInstance == nullptr)
 	{
-		GameHUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
+		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
+		RsHUDInstance = Cast<URsHUDLayout>(HUDInstance);
 	}
 
 	// Set the view model to Game HUD instance.
-	if (GameHUDInstance)
+	if (RsHUDInstance)
 	{
 		if (ARsPlayerCharacter* OwnerCharacter = Cast<ARsPlayerCharacter>(Pawn))
 		{
 			if (URsPlayerCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(OwnerCharacter))
 			{
-				if (UMVVMView* View = Cast<UMVVMView>(GameHUDInstance->GetExtension<UMVVMView>()))
+				if (UMVVMView* View = Cast<UMVVMView>(RsHUDInstance->GetExtension<UMVVMView>()))
 				{
 					View->SetViewModelByClass(PCViewModel);
 				}
