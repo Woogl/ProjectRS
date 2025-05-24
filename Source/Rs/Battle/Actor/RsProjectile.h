@@ -27,7 +27,7 @@ public:
 public:	
 	ARsProjectile();
 	
-	void SetupDamage(URsGameplayAbility_Attack* OwningAbility, FRsDamageContext DamageContext);
+	void SetupDamage(URsGameplayAbility_Attack* OwningAbility, FGameplayTag DamageEventTag);
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	float MaxRange = 1000.f;
@@ -45,7 +45,7 @@ protected:
 	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
 	
 	UPROPERTY()
-	FRsDamageContext DamageContext;
+	FGameplayTag DamageEventTag;
 	
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

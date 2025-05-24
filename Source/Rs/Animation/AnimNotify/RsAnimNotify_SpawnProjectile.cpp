@@ -22,13 +22,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 					SpawnTransform.SetRotation(Character->GetActorForwardVector().ToOrientationQuat());
 					if (ARsProjectile* ProjectileInstance = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, SpawnTransform, Character, Character))
 					{
-						if (URsGameplayAbility_Attack* AttackAbility = Cast<URsGameplayAbility_Attack>(CurrentAbility))
-						{
-							if (FRsDamageContext* DamageContext = AttackAbility->FindDamageEvent(DamageEventTag))
-							{
-								ProjectileInstance->SetupDamage(AttackAbility, *DamageContext);
-							}
-						}
+						ProjectileInstance->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
 						ProjectileInstance->FinishSpawning(SpawnTransform);
 					}
 				}

@@ -23,10 +23,10 @@ ARsProjectile::ARsProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
-void ARsProjectile::SetupDamage(URsGameplayAbility_Attack* InOwningAbility, FRsDamageContext InDamageContext)
+void ARsProjectile::SetupDamage(URsGameplayAbility_Attack* InOwningAbility, FGameplayTag InDamageEventTag)
 {
 	OwningAbility = InOwningAbility;
-	DamageContext = InDamageContext;
+	DamageEventTag = InDamageEventTag;
 }
 
 void ARsProjectile::BeginPlay()
@@ -48,16 +48,13 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 			return;
 		}
 	}
-
-	if (OwningAbility.IsValid())
-	{
-		OwningAbility->ApplyCostRecovery();
-		OwningAbility->OnAttackHitTarget(OtherActor, DamageContext.DamageEventTag);
-	}
 	
 	if (GetInstigator() && OtherActor)
 	{
-		URsBattleLibrary::ApplyDamageContext(GetInstigator(), OtherActor, DamageContext);
+		FRsDamageContext* DamageContext = OwningAbility->FindDamageEvent(DamageEventTag);
+		URsBattleLibrary::ApplyDamageContext(GetInstigator(), OtherActor, *DamageContext);
+		OwningAbility->OnAttackHitTarget(OtherActor, DamageEventTag);
+		
 		MaxHitCount--;
 		if (MaxHitCount == 0)
 		{

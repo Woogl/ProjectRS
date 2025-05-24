@@ -43,17 +43,13 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 		ProjectileTransform.SetRotation(UKismetMathLibrary::FindLookAtRotation(Start, End).Quaternion());
 	}
 
-	ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
+	if (ARsProjectile* Projectile = GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, ProjectileTransform, Source, Source))
 	{
-		Projectile->SetupDamage(this, *DamageContext);
+		if (AActor* Victim = CachedVictim.Get())
+		{
+			Projectile->ProjectileMovement->HomingTargetComponent = Victim->GetRootComponent();
+		}
+		Projectile->SetupDamage(this, EventData.EventTag);
+		Projectile->FinishSpawning(AvatarCharacter->GetActorTransform());
 	}
-	
-	if (CachedVictim.IsValid())
-	{
-		Projectile->ProjectileMovement->HomingTargetComponent = CachedVictim.Get()->GetRootComponent();
-	}
-	
-	Projectile->FinishSpawning(AvatarCharacter->GetActorTransform());
 }

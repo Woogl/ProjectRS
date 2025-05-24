@@ -37,6 +37,7 @@ void URsGameplayAbility_Attack::HandleMontageCancelled()
 void URsGameplayAbility_Attack::OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent)
 {
 	StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
+	ApplyCostRecovery();
 	K2_OnAttackHitTarget(Target, DamageEvent);
 }
 
