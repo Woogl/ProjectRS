@@ -6,6 +6,7 @@
 #include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
 class URsGameplayAbility_Attack;
@@ -29,15 +30,15 @@ public:
 	
 	void SetupDamage(URsGameplayAbility_Attack* OwningAbility, FGameplayTag DamageEventTag);
 
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
 	float MaxRange = 1000.f;
 
 	// 0 or Minus value means infinite hit
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
 	int32 MaxHitCount = 1;
 
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	bool bCannotHitFriend = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
+	FRsTargetingFilter Filter;
 
 protected:
 	virtual void BeginPlay() override;

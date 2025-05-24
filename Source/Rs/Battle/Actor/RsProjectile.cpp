@@ -6,8 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
-#include "Rs/AI/RsAILibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 
 ARsProjectile::ARsProjectile()
@@ -41,15 +41,11 @@ void ARsProjectile::BeginPlay()
 
 void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bCannotHitFriend == true)
-	{
-		if (URsAILibrary::GetTeamID(GetInstigator()) == URsAILibrary::GetTeamID(OtherActor))
-		{
-			return;
-		}
-	}
+	TArray<AActor*> InActors;
+	InActors.Add(OtherActor);
+	TArray<AActor*> FilteredActor = URsTargetingLibrary::PerformFiltering(InActors, GetInstigator(), Filter);
 	
-	if (GetInstigator() && OtherActor)
+	if (GetInstigator() && FilteredActor.Contains(OtherActor))
 	{
 		FRsDamageContext* DamageContext = OwningAbility->FindDamageEvent(DamageEventTag);
 		URsBattleLibrary::ApplyDamageContext(GetInstigator(), OtherActor, *DamageContext);
