@@ -8,7 +8,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/System/RsGameSetting.h"
 
 void URsGameplayAbility_Ranged::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -48,8 +47,7 @@ void URsGameplayAbility_Ranged::HandleFireProjectile(FGameplayEventData EventDat
 
 	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
 	{
-		Projectile->DamageContext.DamageEventTag = EventData.EventTag;
-		Projectile->OwningAbility = this;
+		Projectile->SetupDamage(this, *DamageContext);
 	}
 	
 	if (CachedVictim.IsValid())

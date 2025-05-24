@@ -4,11 +4,9 @@
 #include "RsEffectDefinition.h"
 
 #include "AbilitySystemComponent.h"
-#include "GameFramework/Character.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
 void URsEffectDefinition_DamageBase::PostInitProperties()
@@ -117,24 +115,6 @@ void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, U
 	{
 		BuffSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*BuffSpec.Data, TargetASC);
-	}
-}
-
-void URsEffectDefinition_Projectile::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	// Spawn projectile
-	if (ACharacter* SourceCharacter = Cast<ACharacter>(SourceASC->GetAvatarActor()))
-	{
-		FTransform SocketTransform = SourceCharacter->GetMesh()->GetSocketTransform(SpawnSocket);
-		if (ARsProjectile* ProjectileInstance = SourceCharacter->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, SocketTransform, SourceCharacter, SourceCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
-		{
-			if (URsGameplayAbility_Attack* RsAbility = Cast<URsGameplayAbility_Attack>(SourceASC->GetAnimatingAbility()))
-			{
-				ProjectileInstance->DamageContext = RsAbility->FindDamageEvent(EventTagOnHit);
-			}
-			SocketTransform.SetRotation(SourceCharacter->GetActorForwardVector().ToOrientationQuat());
-			ProjectileInstance->FinishSpawning(SocketTransform);
-		}
 	}
 }
 

@@ -9,7 +9,6 @@
 #include "RsEffectCoefficient.h"
 #include "RsEffectDefinition.generated.h"
 
-class ARsProjectile;
 struct FGameplayEffectSpec;
 struct FGameplayEffectSpecHandle;
 class URsDeveloperSetting;
@@ -120,7 +119,7 @@ public:
 };
 
 /**
- * Buff effect that needs duration
+ * Buff effect that needs duration.
  */
 UCLASS(DisplayName = "Buff")
 class RS_API URsEffectDefinition_Buff : public URsEffectDefinition
@@ -136,29 +135,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 0.f;
-
-public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
-};
-
-/**
- * Spawn projectile.
- * Damage is applied through the event tag of the ability.
- */
-UCLASS(DisplayName = "Spawn Projectile")
-class RS_API URsEffectDefinition_Projectile : public URsEffectDefinition
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ARsProjectile> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "AnimNotify"))
-	FGameplayTag EventTagOnHit;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName SpawnSocket;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

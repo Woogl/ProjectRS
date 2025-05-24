@@ -23,6 +23,12 @@ ARsProjectile::ARsProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
+void ARsProjectile::SetupDamage(URsGameplayAbility_Attack* InOwningAbility, FRsDamageContext InDamageContext)
+{
+	OwningAbility = InOwningAbility;
+	DamageContext = InDamageContext;
+}
+
 void ARsProjectile::BeginPlay()
 {
 	Super::BeginPlay();

@@ -40,7 +40,7 @@ void URsGameplayAbility_Attack::OnAttackHitTarget(const AActor* Target, const FG
 	K2_OnAttackHitTarget(Target, DamageEvent);
 }
 
-FRsDamageContext URsGameplayAbility_Attack::FindDamageEvent(FGameplayTag EventTag) const
+FRsDamageContext* URsGameplayAbility_Attack::FindDamageEvent(FGameplayTag EventTag)
 {
-	return *DamageEvents.FindByKey(EventTag);
+	return DamageEvents.FindByKey(EventTag);
 }
