@@ -51,7 +51,7 @@ public:
 	ERsProjectileDirection Direction;
 
 	// Relative spawn height when the direction is set to "SkyToTarget".
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true, EditCondition = "Direction == ERsProjectileDirection::SkyToTarget"), Category = "RS")
 	float SpawnHeight = 1000.f;
 
 protected:
