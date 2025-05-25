@@ -43,7 +43,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	TArray<AActor*> InActors;
 	InActors.Add(OtherActor);
-	TArray<AActor*> FilteredActor = URsTargetingLibrary::PerformFiltering(InActors, GetInstigator(), Filter);
+	TArray<AActor*> FilteredActor = URsTargetingLibrary::PerformFiltering(InActors, GetInstigator(), DamageFilter);
 	
 	if (GetInstigator() && FilteredActor.Contains(OtherActor))
 	{

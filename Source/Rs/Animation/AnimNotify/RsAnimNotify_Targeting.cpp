@@ -40,7 +40,7 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		return;
 	}
 
-	ResultActors.Reset();
+	Targets.Reset();
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	TArray<AActor*> OutActors;
@@ -48,10 +48,10 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
 		{
-			ResultActors = OutActors;
+			Targets = OutActors;
 		
 			// For GA's damage event compatibility
-			for (AActor* ResultActor : ResultActors)
+			for (AActor* ResultActor : Targets)
 			{
 				FGameplayEventData Payload;
 				Payload.EventTag = EventTag;

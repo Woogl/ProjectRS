@@ -19,8 +19,8 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	for (AActor* Victim : ResultActors)
+	for (AActor* Target : Targets)
 	{
-		URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Victim, DamageContext);
+		URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
 	}
 }

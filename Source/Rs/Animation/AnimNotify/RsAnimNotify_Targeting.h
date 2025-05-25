@@ -47,7 +47,7 @@ public:
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	TArray<AActor*> ResultActors;
+	TArray<AActor*> Targets;
 
 #if WITH_EDITOR
 	UFUNCTION()

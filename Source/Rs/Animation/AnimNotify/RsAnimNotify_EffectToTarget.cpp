@@ -15,9 +15,9 @@ void URsAnimNotify_EffectToTarget::Notify(USkeletalMeshComponent* MeshComp, UAni
 	{
 		if (UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
-			for (AActor* ResultActor : ResultActors)
+			for (AActor* Target : Targets)
 			{
-				if (UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ResultActor))
+				if (UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
 				{
 					EffectDefinition->ApplyEffect(SourceASC, TargetASC);
 				}

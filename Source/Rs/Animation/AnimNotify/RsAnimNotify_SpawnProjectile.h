@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "RsAnimNotify_Targeting.h"
 #include "RsAnimNotify_SpawnProjectile.generated.h"
 
 class ARsProjectile;
@@ -11,7 +12,7 @@ class ARsProjectile;
  * 
  */
 UCLASS()
-class RS_API URsAnimNotify_SpawnProjectile : public UAnimNotify
+class RS_API URsAnimNotify_SpawnProjectile : public URsAnimNotify_Targeting
 {
 	GENERATED_BODY()
 
@@ -20,7 +21,10 @@ public:
 	TSubclassOf<ARsProjectile> ProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName SocketName;
+	FName SpawnSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bFireAtLeastOne = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
 	FGameplayTag DamageEventTag;
