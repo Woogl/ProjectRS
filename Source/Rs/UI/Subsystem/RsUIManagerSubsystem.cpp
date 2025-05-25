@@ -35,6 +35,12 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	{
 		return;
 	}
+
+	// Prevent crash on LV_Title and LV_Lobby.
+	if (!Pawn->IsA(ARsPlayerCharacter::StaticClass()))
+	{
+		return;
+	}
 	
 	if (URsGameSetting::Get()->GameHUDClass == nullptr)
 	{
