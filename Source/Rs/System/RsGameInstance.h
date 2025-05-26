@@ -17,7 +17,10 @@ class RS_API URsGameInstance : public UCommonGameInstance
 	
 public:
 	virtual void Init() override;
+	
+	const URsGameSetting* GetRsGameSetting() const;
 
+private:
 	UPROPERTY()
 	TObjectPtr<URsGameSetting> RsGameSetting;
 };

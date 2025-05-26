@@ -16,7 +16,7 @@ const URsGameSetting* URsGameSetting::Get()
 	{
 		if (URsGameInstance* RsGameInstance = GWorld->GetGameInstanceChecked<URsGameInstance>())
 		{
-			return RsGameInstance->RsGameSetting;
+			return RsGameInstance->GetRsGameSetting();
 		}
 	}
 	return nullptr;

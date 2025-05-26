@@ -29,11 +29,13 @@ void URsGameInstance::Init()
 	}
 
 	// Load DA_RsGameSetting
-	FSoftObjectPath SoftObjectPath = AssetManager.GetPrimaryAssetPath(OutAssets[0]);
-	FSoftObjectPtr AssetPtr(AssetManager.GetPrimaryAssetPath(OutAssets[0]));
-	if (AssetPtr.IsPending())
-	{
-		AssetPtr.LoadSynchronous();
-	}
-	RsGameSetting = Cast<URsGameSetting>(AssetPtr.Get());
+	const FPrimaryAssetId& AssetId = OutAssets[0];
+	const FSoftObjectPath AssetPath = AssetManager.GetPrimaryAssetPath(AssetId);
+	TSoftObjectPtr<URsGameSetting> GameSettingPtr(AssetPath);
+	RsGameSetting = GameSettingPtr.LoadSynchronous();
+}
+
+const URsGameSetting* URsGameInstance::GetRsGameSetting() const
+{
+	return RsGameSetting;
 }
