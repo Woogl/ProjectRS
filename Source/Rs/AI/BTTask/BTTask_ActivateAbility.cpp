@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
+#include "GameFramework/Character.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
 UBTTask_ActivateAbility::UBTTask_ActivateAbility()
@@ -23,6 +25,11 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 		if (ASC->TryActivateAbilitiesByTag(AbilityTags))
 		{
 			ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, AbilityTags, true);
+			if (!ActivatedAbility.IsValid())
+			{
+				UE_LOG(RsLog, Error, TEXT("Character [%s] doesn't have Ability with tag [%s]"), *OwnerComp.GetAIOwner()->GetCharacter()->GetName(), *AbilityTags.ToString());
+				return EBTNodeResult::Failed;
+			}
 			if (ActivatedAbility->IsActive())
 			{
 				ActivatedAbility->OnGameplayAbilityEnded.AddUObject(this, &ThisClass::HandleAbilityEnded, &OwnerComp);
