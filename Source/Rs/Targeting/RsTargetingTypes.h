@@ -31,10 +31,7 @@ struct FRsTargetingCollision
 	FCollisionShape MakeShape() const;
 
 	FRsTargetingCollision() {}
-	
-	FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent)
-		: CollisionObjectTypes(CollisionObjectTypes), ShapeType(ShapeType), HalfExtent(HalfExtent)
-	{}
+	FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent);
 };
 
 USTRUCT(BlueprintType)
@@ -61,10 +58,7 @@ struct FRsTargetingFilter
 	TArray<AActor*> ActorsToIgnore;
 
 	FRsTargetingFilter() {}
-
-	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, int32 MaxTargetCount, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore)
-		: bIncludeSelf(bIncludeSelf), bIncludeFriendlyTeam(bIncludeFriendlyTeam), bIncludeHostileTeam(bIncludeHostileTeam), MaxTargetCount(MaxTargetCount), TargetRequirements(TargetRequirements), ActorsToIgnore(ActorsToIgnore)
-	{}
+	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, int32 MaxTargetCount, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore);
 };
 
 UENUM()
@@ -84,8 +78,5 @@ struct FRsTargetingSorter
 	ERsSortingOrder SortByDistance = ERsSortingOrder::None;
 
 	FRsTargetingSorter() {}
-
-	FRsTargetingSorter(ERsSortingOrder SortByDistance)
-		: SortByDistance(SortByDistance)
-	{}
+	FRsTargetingSorter(ERsSortingOrder SortByDistance);
 };
