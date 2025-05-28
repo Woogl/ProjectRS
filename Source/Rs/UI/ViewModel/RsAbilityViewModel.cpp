@@ -144,7 +144,7 @@ bool URsAbilityViewModel::IsOnCooldown() const
 
 bool URsAbilityViewModel::IsRechargeable() const
 {
-	return MaxRechargeStacks > 0;;
+	return MaxRechargeStacks > 0;
 }
 
 FText URsAbilityViewModel::GetInputKeyText() const

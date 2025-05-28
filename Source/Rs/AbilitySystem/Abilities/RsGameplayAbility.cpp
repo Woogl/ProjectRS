@@ -69,8 +69,13 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 
 void URsGameplayAbility::ApplyCostRecovery()
 {
-	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CostRecoveryEffectClass, GetAbilityLevel());
-	ApplyGameplayEffectSpecToOwner(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, SpecHandle);
+	if (CostRecoveryEffectClass)
+	{
+		if (UGameplayEffect* CostRecoveryEffect = CostRecoveryEffectClass->GetDefaultObject<UGameplayEffect>())
+		{
+			ApplyGameplayEffectToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, CostRecoveryEffect, GetAbilityLevel());
+		}
+	}
 }
 
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
