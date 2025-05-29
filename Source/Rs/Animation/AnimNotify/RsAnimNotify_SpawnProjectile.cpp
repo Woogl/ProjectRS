@@ -36,8 +36,10 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 				
 			for (AActor* Target : Targets)
 			{
+				const float DefaultSpawnDistance = 100.f;
 				FTransform SpawnTransform = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketTransform(SpawnSocketName) : Character->GetActorTransform();
-				const FVector TargetLocation = Target != nullptr ? Target->GetActorLocation() : Character->GetActorLocation() + Character->GetActorForwardVector() * 300.f;
+				const FVector TargetLocation = Target != nullptr ? Target->GetActorLocation() : Character->GetActorLocation() + Character->GetActorForwardVector() * DefaultSpawnDistance;
+
 				if (ARsProjectile* ProjectileInstance = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, SpawnTransform, Character, Character))
 				{
 					ProjectileInstance->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
@@ -55,6 +57,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 								
 					case ERsProjectileDirection::SkyToTarget:
 						FVector SpawnLocation = TargetLocation + FVector(0, 0, ProjectileInstance->SpawnHeight);
+						SpawnLocation = SpawnLocation + Character->GetActorForwardVector() * (ProjectileInstance->FallbackSpawnDistance - DefaultSpawnDistance);
 						SpawnTransform.SetLocation(SpawnLocation);
 						SpawnTransform.SetRotation((TargetLocation - SpawnLocation).GetSafeNormal().ToOrientationQuat());
 						break;
