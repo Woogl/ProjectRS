@@ -8,6 +8,9 @@
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
+struct FInputActionValue;
+class UInputAction;
+class UInputMappingContext;
 class URsLockOnComponent;
 class AAIController;
 class UGameplayCameraComponent;
@@ -21,14 +24,20 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, Category = "Party")
+	UPROPERTY(VisibleAnywhere, Category = "RS|Party")
 	TObjectPtr<URsPartyComponent> PartyComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsLockOnComponent> LockOnComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> ControllerMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ToggleCursorAction;
 	
 public:
 	ARsPlayerController();
@@ -48,5 +57,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="RS", meta=(WorldContext="WorldContextObject", UnsafeDuringActorConstruction="true"))
 	static APlayerController* GetRsPlayerController(const UObject* WorldContextObject);
+	
+protected:
+	virtual void SetupInputComponent() override;
+	
+	void HandleToggleCursor(const FInputActionValue& Value);
 };
 

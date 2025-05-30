@@ -4,6 +4,7 @@
 #include "RsUILibrary.h"
 
 #include "PrimaryGameLayout.h"
+#include "Input/CommonUIActionRouterBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystem/RsUIManagerSubsystem.h"
 #include "Widget/RsHUDLayout.h"
@@ -31,6 +32,54 @@ URsHUDLayout* URsUILibrary::GetGameHUD(UObject* WorldContextObject)
 		return GameInstance->GetSubsystem<URsUIManagerSubsystem>()->GetGameHUD();
 	}
 	return nullptr;
+}
+
+void URsUILibrary::ShowCursor(UObject* WorldContextObject)
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!PlayerController)
+	{
+		return;
+	}
+	
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+	
+	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
+	{
+		FUIInputConfig InputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock, false);
+		InputConfig.bIgnoreLookInput = true;
+		InputConfig.bIgnoreMoveInput = true;
+		UIActionRouter->SetActiveUIInputConfig(InputConfig);
+	}
+	PlayerController->bShowMouseCursor = true;
+}
+
+void URsUILibrary::HideCursor(UObject* WorldContextObject)
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!PlayerController)
+	{
+		return;
+	}
+	
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+
+	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
+	{
+		FUIInputConfig InputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently, EMouseLockMode::LockOnCapture, false);
+		InputConfig.bIgnoreLookInput = false;
+		InputConfig.bIgnoreMoveInput = false;
+		UIActionRouter->SetActiveUIInputConfig(InputConfig);
+	}
+	PlayerController->bShowMouseCursor = false;
 }
 
 void URsUILibrary::AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration)

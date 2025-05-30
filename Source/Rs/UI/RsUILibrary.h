@@ -27,5 +27,11 @@ public:
 	static URsHUDLayout* GetGameHUD(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
+	static void ShowCursor(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
+	static void HideCursor(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static void AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration = 2.f);
 };
