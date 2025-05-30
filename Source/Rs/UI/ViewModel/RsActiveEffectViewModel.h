@@ -13,6 +13,16 @@ class URsGameplayEffectUIDataComponent;
  * 
  */
 
+UENUM(BlueprintType)
+enum class ERsActiveEffectCategory : uint8
+{
+	DotDamage,
+	Debuff,
+	Buff,
+	Others,
+};
+
+
 UCLASS()
 class RS_API URsActiveEffectViewModel : public URsViewModelBase, public FTickableGameObject
 {
@@ -20,10 +30,10 @@ class RS_API URsActiveEffectViewModel : public URsViewModelBase, public FTickabl
 
 public:
 	UFUNCTION(BlueprintCallable)
-	static URsActiveEffectViewModel* CreateRsActiveEffectViewModel(URsAbilitySystemComponent* ASC, const FActiveGameplayEffect& Effect);
+	static URsActiveEffectViewModel* CreateRsActiveEffectViewModel(FActiveGameplayEffectHandle EffectHandle);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetEffectTimeRemainingPercent() const;
+	float GetEffectProgress() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetStackDataText() const;
@@ -34,7 +44,9 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetDescription() const;
 	
-
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ERsActiveEffectCategory GetCategory() const;
+	
 protected:
 	static const URsGameplayEffectUIDataComponent* FindRsUIData(const FActiveGameplayEffect& Effect);
 

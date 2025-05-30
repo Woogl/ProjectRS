@@ -5,19 +5,21 @@
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/EffectComponent/RsGameplayEffectUIDataComponent.h"
 
-URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewModel(URsAbilitySystemComponent* ASC, const FActiveGameplayEffect& Effect)
+URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewModel(FActiveGameplayEffectHandle EffectHandle)
 {
-	if (FindRsUIData(Effect))
+	UAbilitySystemComponent* ASC = EffectHandle.GetOwningAbilitySystemComponent();
+	const FActiveGameplayEffect* Effect = ASC->GetActiveGameplayEffect(EffectHandle);
+	if (ASC && Effect && FindRsUIData(*Effect))
 	{
 		URsActiveEffectViewModel* ViewModel = NewObject<URsActiveEffectViewModel>(ASC);
-		ViewModel->CachedModel = &Effect;
+		ViewModel->CachedModel = Effect;
 		ViewModel->Initialize();
 		return ViewModel;
 	}
 	return nullptr;
 }
 
-float URsActiveEffectViewModel::GetEffectTimeRemainingPercent() const
+float URsActiveEffectViewModel::GetEffectProgress() const
 {
 	if (CachedModel)
 	{
@@ -33,7 +35,7 @@ FText URsActiveEffectViewModel::GetStackDataText() const
 		return FText();
 	}
 	FGameplayTagContainer EffectTags;
-	CachedModel->Spec.GetAllGrantedTags(EffectTags);
+	CachedModel->Spec.GetAllAssetTags(EffectTags);
 	if (int32 Stack = CachedASC->GetActiveEffectsWithAllTags(EffectTags).Num() > 1)
 	{
 		return FText::AsNumber(Stack);
@@ -59,6 +61,28 @@ FText URsActiveEffectViewModel::GetDescription() const
 	return FText();
 }
 
+ERsActiveEffectCategory URsActiveEffectViewModel::GetCategory() const
+{
+	if (CachedModel)
+	{
+		FGameplayTagContainer EffectTags;
+		CachedModel->Spec.GetAllAssetTags(EffectTags);
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Dot")))
+		{
+			return ERsActiveEffectCategory::DotDamage;
+		}
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Debuff")))
+		{
+			return ERsActiveEffectCategory::Debuff;
+		}
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Buff")))
+		{
+			return ERsActiveEffectCategory::Buff;
+		}
+	}
+	return ERsActiveEffectCategory::Others;
+}
+
 const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(const FActiveGameplayEffect& Effect)
 {
 	if (const UGameplayEffectComponent* UIData = Effect.Spec.Def->FindComponent(URsGameplayEffectUIDataComponent::StaticClass()))
@@ -70,15 +94,17 @@ const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(c
 
 void URsActiveEffectViewModel::OnEffectAdded(const FActiveGameplayEffect& Effect)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectTimeRemainingPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectProgress);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackDataText);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIcon);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDescription);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCategory);
 }
 
 void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectTimeRemainingPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectProgress);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackDataText);
 }
 
 void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
@@ -111,5 +137,5 @@ void URsActiveEffectViewModel::Deinitialize()
 
 void URsActiveEffectViewModel::Tick(float DeltaTime)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectTimeRemainingPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectProgress);
 }
