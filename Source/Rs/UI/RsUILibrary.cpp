@@ -50,7 +50,7 @@ void URsUILibrary::ShowCursor(UObject* WorldContextObject)
 	
 	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
 	{
-		FUIInputConfig InputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock, false);
+		FUIInputConfig InputConfig(UIActionRouter->GetActiveInputMode(), EMouseCaptureMode::CaptureDuringMouseDown, false);
 		InputConfig.bIgnoreLookInput = true;
 		InputConfig.bIgnoreMoveInput = true;
 		UIActionRouter->SetActiveUIInputConfig(InputConfig);
@@ -74,7 +74,7 @@ void URsUILibrary::HideCursor(UObject* WorldContextObject)
 
 	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
 	{
-		FUIInputConfig InputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently, EMouseLockMode::LockOnCapture, false);
+		FUIInputConfig InputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, true);
 		InputConfig.bIgnoreLookInput = false;
 		InputConfig.bIgnoreMoveInput = false;
 		UIActionRouter->SetActiveUIInputConfig(InputConfig);
