@@ -3,9 +3,9 @@
 
 #include "RsDurationCalculation.h"
 
-#include "Rs/System/RsDeveloperSetting.h"
+#include "Rs/RsGameplayTags.h"
 
 float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	return Spec.GetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualDurationTag, true);
+	return Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, true);
 }

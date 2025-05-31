@@ -27,12 +27,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
-	FGameplayTag ManualMagnitudeTag;
-	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Manual"))
-	FGameplayTag ManualDurationTag;
-
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Instant")
 	TSubclassOf<UGameplayEffect> HealthDamageEffectClass;
 

@@ -3,6 +3,7 @@
 
 #include "RsCoefficientCalculation.h"
 
+#include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
@@ -71,7 +72,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	}
 
 	// Add "Manual" magnitude
-	FinalMagnitude += Spec.GetSetByCallerMagnitude(URsDeveloperSetting::Get()->ManualMagnitudeTag, false);
+	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL_MAGNITUDE, false);
 	
 	return FinalMagnitude;
 }
