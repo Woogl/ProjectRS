@@ -9,19 +9,31 @@
 #include "Subsystem/RsUIManagerSubsystem.h"
 #include "Widget/RsHUDLayout.h"
 
-void URsUILibrary::ShowGameHUD(UObject* WorldContextObject)
+void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
 {
 	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
 	{
-		GameHUD->SetVisibility(ESlateVisibility::Visible);
+		for (const FGameplayTag& Layer : Layers)
+		{
+			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
+			{
+				LayerWidget->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
 	}
 }
 
-void URsUILibrary::HideGameHUD(UObject* WorldContextObject)
+void URsUILibrary::HideGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
 {
 	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
 	{
-		GameHUD->SetVisibility(ESlateVisibility::Hidden);
+		for (const FGameplayTag& Layer : Layers)
+		{
+			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
+			{
+				LayerWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
 	}
 }
 

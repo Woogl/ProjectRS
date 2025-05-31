@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
+#include "RsActivatableWidget.h"
 #include "RsHUDLayout.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class RS_API URsHUDLayout : public UCommonActivatableWidget
+UCLASS(Abstract, BlueprintType, Blueprintable)
+class RS_API URsHUDLayout : public URsActivatableWidget
 {
 	GENERATED_BODY()
 
