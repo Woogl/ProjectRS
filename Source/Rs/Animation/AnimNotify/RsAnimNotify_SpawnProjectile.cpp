@@ -24,52 +24,60 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 	{
 		return;
 	}
-	
-	if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
-	{
-		if (UGameplayAbility* CurrentAbility = OwnerASC->GetAnimatingAbility())
-		{
-			if (Targets.Num() == 0 && bFireAtLeastOne)
-			{
-				Targets.Add(nullptr);
-			}
-				
-			for (AActor* Target : Targets)
-			{
-				const float DefaultSpawnDistance = 100.f;
-				FTransform SpawnTransform = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketTransform(SpawnSocketName) : Character->GetActorTransform();
-				const FVector TargetLocation = Target != nullptr ? Target->GetActorLocation() : Character->GetActorLocation() + Character->GetActorForwardVector() * DefaultSpawnDistance;
 
-				if (ARsProjectile* ProjectileInstance = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, SpawnTransform, Character, Character))
-				{
-					ProjectileInstance->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
-							
-					switch (ProjectileInstance->Direction)
-					{
-					case ERsProjectileDirection::SourceForward:
-						SpawnTransform.SetRotation(Character->GetActorForwardVector().ToOrientationQuat());
-						break;
-								
-					case ERsProjectileDirection::SourceToTarget:
-						FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnTransform.GetLocation(), TargetLocation);
-						SpawnTransform.SetRotation(SpawnRotation.Quaternion());
-						break;
-								
-					case ERsProjectileDirection::SkyToTarget:
-						FVector SpawnLocation = TargetLocation + FVector(0, 0, ProjectileInstance->SpawnHeight);
-						SpawnLocation = SpawnLocation + Character->GetActorForwardVector() * (ProjectileInstance->FallbackSpawnDistance - DefaultSpawnDistance);
-						SpawnTransform.SetLocation(SpawnLocation);
-						SpawnTransform.SetRotation((TargetLocation - SpawnLocation).GetSafeNormal().ToOrientationQuat());
-						break;
-								
-					default:
-						UE_LOG(RsLog, Error, TEXT("%s's direction is unknown!"), *ProjectileInstance->GetName());
-						break;
-					}
-					
-					ProjectileInstance->FinishSpawning(SpawnTransform);
-				}
+	UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character);
+	if (!OwnerASC)
+	{
+		return;
+	}
+
+	UGameplayAbility* CurrentAbility = OwnerASC->GetAnimatingAbility();
+	if (!CurrentAbility)
+	{
+		return;
+	}
+	
+	if (Targets.Num() == 0 && bFireAtLeastOne)
+	{
+		Targets.Add(nullptr);
+	}
+			
+	const FVector CharacterForward = Character->GetActorForwardVector();
+	const float DefaultDistance = 100.f;
+
+	for (AActor* Target : Targets)
+	{
+		const FVector SpawnLocation = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketLocation(SpawnSocketName) : Character->GetActorLocation();
+		const FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultDistance;
+
+		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
+		{
+			Projectile->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
+
+			FVector FinalLocation = SpawnLocation;
+			FRotator FinalRotation;
+
+			switch (Projectile->Direction)
+			{
+			case ERsProjectileDirection::SourceForward:
+				FinalRotation = CharacterForward.Rotation();
+				break;
+
+			case ERsProjectileDirection::SourceToTarget:
+				FinalRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, TargetLocation);
+				break;
+
+			case ERsProjectileDirection::SkyToTarget:
+				FinalLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultDistance);
+				FinalRotation = (TargetLocation - FinalLocation).GetSafeNormal().Rotation();
+				break;
+
+			default:
+				UE_LOG(RsLog, Error, TEXT("Unknown projectile direction: %s"), *Projectile->GetName());
+				continue;
 			}
+
+			Projectile->FinishSpawning(FTransform(FinalRotation, FinalLocation));
 		}
 	}
 }
