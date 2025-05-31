@@ -5,11 +5,14 @@
 
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/UI/RsUILibrary.h"
 
 ARsPlayerController::ARsPlayerController()
 {
@@ -79,4 +82,31 @@ URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
 APlayerController* ARsPlayerController::GetRsPlayerController(const UObject* WorldContextObject)
 {
 	return Cast<APlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
+}
+
+void ARsPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(ControllerMappingContext, 0);
+	}
+	
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(ToggleCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleToggleCursor);
+	}
+}
+
+void ARsPlayerController::HandleToggleCursor(const FInputActionValue& Value)
+{
+	if (bShowMouseCursor)
+	{
+		URsUILibrary::HideCursor(this);
+	}
+	else
+	{
+		URsUILibrary::ShowCursor(this);
+	}
 }

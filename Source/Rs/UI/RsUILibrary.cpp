@@ -4,23 +4,36 @@
 #include "RsUILibrary.h"
 
 #include "PrimaryGameLayout.h"
+#include "Input/CommonUIActionRouterBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystem/RsUIManagerSubsystem.h"
 #include "Widget/RsHUDLayout.h"
 
-void URsUILibrary::ShowGameHUD(UObject* WorldContextObject)
+void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
 {
 	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
 	{
-		GameHUD->SetVisibility(ESlateVisibility::Visible);
+		for (const FGameplayTag& Layer : Layers)
+		{
+			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
+			{
+				LayerWidget->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
 	}
 }
 
-void URsUILibrary::HideGameHUD(UObject* WorldContextObject)
+void URsUILibrary::HideGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
 {
 	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
 	{
-		GameHUD->SetVisibility(ESlateVisibility::Hidden);
+		for (const FGameplayTag& Layer : Layers)
+		{
+			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
+			{
+				LayerWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
 	}
 }
 
@@ -31,6 +44,54 @@ URsHUDLayout* URsUILibrary::GetGameHUD(UObject* WorldContextObject)
 		return GameInstance->GetSubsystem<URsUIManagerSubsystem>()->GetGameHUD();
 	}
 	return nullptr;
+}
+
+void URsUILibrary::ShowCursor(UObject* WorldContextObject)
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!PlayerController)
+	{
+		return;
+	}
+	
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+	
+	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
+	{
+		FUIInputConfig InputConfig(UIActionRouter->GetActiveInputMode(), EMouseCaptureMode::CaptureDuringMouseDown, false);
+		InputConfig.bIgnoreLookInput = true;
+		InputConfig.bIgnoreMoveInput = true;
+		UIActionRouter->SetActiveUIInputConfig(InputConfig);
+	}
+	PlayerController->bShowMouseCursor = true;
+}
+
+void URsUILibrary::HideCursor(UObject* WorldContextObject)
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!PlayerController)
+	{
+		return;
+	}
+	
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+
+	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
+	{
+		FUIInputConfig InputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, true);
+		InputConfig.bIgnoreLookInput = false;
+		InputConfig.bIgnoreMoveInput = false;
+		UIActionRouter->SetActiveUIInputConfig(InputConfig);
+	}
+	PlayerController->bShowMouseCursor = false;
 }
 
 void URsUILibrary::AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration)
