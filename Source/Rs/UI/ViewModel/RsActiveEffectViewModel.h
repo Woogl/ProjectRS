@@ -57,8 +57,6 @@ protected:
 
 	virtual void OnEffectAdded(const FActiveGameplayEffect& Effect);
 	virtual void OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration);
-	virtual void OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
-
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(URsAbilityViewModel, STATGROUP_Tickables); };
 protected:
 	UPROPERTY()

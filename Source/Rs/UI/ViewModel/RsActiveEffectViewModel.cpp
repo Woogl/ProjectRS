@@ -67,15 +67,17 @@ ERsActiveEffectCategory URsActiveEffectViewModel::GetCategory() const
 	{
 		FGameplayTagContainer EffectTags;
 		CachedModel->Spec.GetAllAssetTags(EffectTags);
-		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Dot")))
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Effect.Damage.Dot")))
 		{
 			return ERsActiveEffectCategory::DotDamage;
 		}
-		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Debuff")))
+		/*
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Effect.Debuff")))
 		{
 			return ERsActiveEffectCategory::Debuff;
 		}
-		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Buff")))
+		*/
+		if (EffectTags.HasTag(FGameplayTag::RequestGameplayTag("Effect.Buff")))
 		{
 			return ERsActiveEffectCategory::Buff;
 		}
@@ -107,11 +109,6 @@ void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle Effec
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackDataText);
 }
 
-void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
-{
-	BeginDestroy();
-}
-
 void URsActiveEffectViewModel::Initialize()
 {
 	Super::Initialize();
@@ -121,7 +118,6 @@ void URsActiveEffectViewModel::Initialize()
 	{
 		OnEffectAdded(*CachedModel);
 		CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(CachedModel->Handle)->AddUObject(this, &URsActiveEffectViewModel::OnEffectRenewed);
-		CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(CachedModel->Handle)->AddUObject(this, &URsActiveEffectViewModel::OnEffectRemoved);
 	}
 }
 
@@ -130,7 +126,6 @@ void URsActiveEffectViewModel::Deinitialize()
 	if (CachedASC.Get() && CachedModel)
 	{
 		CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(CachedModel->Handle)->AddUObject(this, &URsActiveEffectViewModel::OnEffectRenewed);
-		CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(CachedModel->Handle)->AddUObject(this, &URsActiveEffectViewModel::OnEffectRemoved);
 	}
 	Super::Deinitialize();
 }
