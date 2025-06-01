@@ -8,27 +8,10 @@
 void URsActivatableWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
-	
-	if (APlayerController* PlayerController = GetOwningPlayer())
-	{
-		if (InputConfig == ERsWidgetInputMode::Menu)
-		{
-			PlayerController->SetShowMouseCursor(true);
-		}
-		else if (InputConfig == ERsWidgetInputMode::Game)
-		{
-			PlayerController->SetShowMouseCursor(false);
-		}
-	}
 }
 
 void URsActivatableWidget::NativeOnDeactivated()
 {
-	if (UCommonUIActionRouterBase* UIActionRouter = ULocalPlayer::GetSubsystem<UCommonUIActionRouterBase>(GetOwningLocalPlayer()))
-	{
-		UIActionRouter->RefreshUIInputConfig();
-	}
-	
 	Super::NativeOnDeactivated();
 }
 
@@ -38,13 +21,13 @@ TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const
 	{
 		case ERsWidgetInputMode::GameAndMenu:
 		{
-			FUIInputConfig GameAndMenuConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture);
+			FUIInputConfig GameAndMenuConfig(ECommonInputMode::All, EMouseCaptureMode::CapturePermanently);
 			return GameAndMenuConfig;
 		}
 
 		case ERsWidgetInputMode::Game:
 		{
-			FUIInputConfig GameConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, false);
+			FUIInputConfig GameConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
 			GameConfig.bIgnoreLookInput = false;
 			GameConfig.bIgnoreMoveInput = false;
 			return GameConfig;
@@ -52,7 +35,7 @@ TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const
 
 		case ERsWidgetInputMode::Menu:
 		{
-			FUIInputConfig MenuConfig(ECommonInputMode::Menu, EMouseCaptureMode::CaptureDuringMouseDown, false);
+			FUIInputConfig MenuConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture);
 			MenuConfig.bIgnoreLookInput = true;
 			MenuConfig.bIgnoreMoveInput = true;
 			return MenuConfig;
