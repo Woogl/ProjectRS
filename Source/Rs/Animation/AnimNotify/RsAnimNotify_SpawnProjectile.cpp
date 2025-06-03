@@ -47,29 +47,27 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 
 	for (AActor* Target : Targets)
 	{
-		const FVector SpawnLocation = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketLocation(SpawnSocketName) : Character->GetActorLocation();
-		const FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultDistance;
+		FVector SpawnLocation = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketLocation(SpawnSocketName) : Character->GetActorLocation();
+		FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultDistance;
 
 		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
 		{
 			Projectile->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
-
-			FVector FinalLocation = SpawnLocation;
-			FRotator FinalRotation;
+			FRotator SpawnRotation;
 
 			switch (Projectile->Direction)
 			{
 			case ERsProjectileDirection::SourceForward:
-				FinalRotation = CharacterForward.Rotation();
+				SpawnRotation = CharacterForward.Rotation();
 				break;
 
 			case ERsProjectileDirection::SourceToTarget:
-				FinalRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, TargetLocation);
+				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
 				break;
 
 			case ERsProjectileDirection::SkyToTarget:
-				FinalLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultDistance);
-				FinalRotation = (TargetLocation - FinalLocation).GetSafeNormal().Rotation();
+				SpawnLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultDistance);
+				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
 				break;
 
 			default:
@@ -77,7 +75,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 				continue;
 			}
 
-			Projectile->FinishSpawning(FTransform(FinalRotation, FinalLocation));
+			Projectile->FinishSpawning(FTransform(SpawnRotation, SpawnLocation));
 		}
 	}
 }
