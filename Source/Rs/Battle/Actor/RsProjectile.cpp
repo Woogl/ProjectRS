@@ -18,6 +18,7 @@ ARsProjectile::ARsProjectile()
 	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
 	Capsule->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::HandleBeginOverlap);
 	Capsule->OnComponentHit.AddDynamic(this, &ThisClass::HandleBlock);
+	Capsule->SetCollisionProfileName(TEXT("RsProjectile"));
 	SetRootComponent(Capsule);
 	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
