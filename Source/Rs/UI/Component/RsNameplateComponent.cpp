@@ -4,7 +4,8 @@
 #include "RsNameplateComponent.h"
 
 #include "Extensions/UserWidgetExtension.h"
-#include "Rs/Character/RsCharacterBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/UI/ViewModel/RsCharacterViewModel.h"
 #include "View/MVVMView.h"
 
@@ -29,6 +30,40 @@ void URsNameplateComponent::BeginPlay()
 					MVVM->SetViewModelByClass(CharacterViewModel);
 				}
 			}
+
+			if (OwnerCharacter->IsA(ARsPlayerCharacter::StaticClass()))
+			{
+				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+				{
+					HandlePossessChanged(nullptr, nullptr);
+					PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePossessChanged);
+				}
+			}
 		}
+	}
+}
+
+void URsNameplateComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetOwner() && GetOwner()->IsA(ARsPlayerCharacter::StaticClass()))
+	{
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+		{
+			PlayerController->OnPossessedPawnChanged.RemoveDynamic(this, &ThisClass::HandlePossessChanged);
+		}
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
+void URsNameplateComponent::HandlePossessChanged(APawn* OldPawn, APawn* NewPawn)
+{
+	if (GetOwner() == UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		SetVisibility(false);
+	}
+	else
+	{
+		SetVisibility(true);
 	}
 }
