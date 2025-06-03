@@ -79,9 +79,9 @@ URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
 	return LockOnComponent;
 }
 
-APlayerController* ARsPlayerController::GetRsPlayerController(const UObject* WorldContextObject)
+ARsPlayerController* ARsPlayerController::GetRsPlayerController(const UObject* WorldContextObject)
 {
-	return Cast<APlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
+	return Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
 }
 
 void ARsPlayerController::SetupInputComponent()

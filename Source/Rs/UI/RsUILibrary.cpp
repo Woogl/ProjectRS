@@ -17,7 +17,10 @@ void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContaine
 		{
 			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
 			{
-				LayerWidget->SetVisibility(ESlateVisibility::Visible);
+				if (UCommonActivatableWidget* ActiveWidget = LayerWidget->GetActiveWidget())
+				{
+					ActiveWidget->SetVisibility(ESlateVisibility::Visible);
+				}
 			}
 		}
 	}
@@ -31,7 +34,10 @@ void URsUILibrary::HideGameHUD(UObject* WorldContextObject, FGameplayTagContaine
 		{
 			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
 			{
-				LayerWidget->SetVisibility(ESlateVisibility::Hidden);
+				if (UCommonActivatableWidget* ActiveWidget = LayerWidget->GetActiveWidget())
+				{
+					ActiveWidget->SetVisibility(ESlateVisibility::Hidden);
+				}
 			}
 		}
 	}

@@ -50,13 +50,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
-	
+
+	UFUNCTION(BlueprintCallable)
 	URsPartyComponent* GetPartyComponent() const;
+
+	UFUNCTION(BlueprintCallable)
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
+
+	UFUNCTION(BlueprintCallable)
 	URsLockOnComponent* GetLockOnComponent() const;
 
 	UFUNCTION(BlueprintPure, Category="RS", meta=(WorldContext="WorldContextObject", UnsafeDuringActorConstruction="true"))
-	static APlayerController* GetRsPlayerController(const UObject* WorldContextObject);
+	static ARsPlayerController* GetRsPlayerController(const UObject* WorldContextObject);
 	
 protected:
 	virtual void SetupInputComponent() override;

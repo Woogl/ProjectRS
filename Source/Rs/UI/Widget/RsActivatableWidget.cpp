@@ -21,24 +21,17 @@ TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const
 	{
 		case ERsWidgetInputMode::GameAndMenu:
 		{
-			FUIInputConfig GameAndMenuConfig(ECommonInputMode::All, EMouseCaptureMode::CapturePermanently);
-			return GameAndMenuConfig;
+			return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::CapturePermanently);
 		}
 
 		case ERsWidgetInputMode::Game:
 		{
-			FUIInputConfig GameConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
-			GameConfig.bIgnoreLookInput = false;
-			GameConfig.bIgnoreMoveInput = false;
-			return GameConfig;
+			return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
 		}
 
 		case ERsWidgetInputMode::Menu:
 		{
-			FUIInputConfig MenuConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture);
-			MenuConfig.bIgnoreLookInput = true;
-			MenuConfig.bIgnoreMoveInput = true;
-			return MenuConfig;
+			return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture);
 		}
 
 		case ERsWidgetInputMode::Default:
