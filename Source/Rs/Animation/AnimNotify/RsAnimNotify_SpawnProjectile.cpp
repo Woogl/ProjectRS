@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 
@@ -43,12 +42,10 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 	}
 			
 	const FVector CharacterForward = Character->GetActorForwardVector();
-	const float DefaultDistance = 100.f;
-
 	for (AActor* Target : Targets)
 	{
 		FVector SpawnLocation = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketLocation(SpawnSocketName) : Character->GetActorLocation();
-		FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultDistance;
+		FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultTargetDistance;
 
 		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
 		{
@@ -66,7 +63,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 				break;
 
 			case ERsProjectileDirection::SkyToTarget:
-				SpawnLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultDistance);
+				SpawnLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultTargetDistance);
 				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
 				break;
 

@@ -3,7 +3,6 @@
 
 #include "RsAnimNotify_Targeting.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_Targeting::URsAnimNotify_Targeting()
@@ -43,22 +42,15 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	Targets.Reset();
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
+	FTransform OffsetTransform(FQuat(RotationOffset), PositionOffset);
+	SourceTransform *= OffsetTransform;
+	
 	TArray<AActor*> OutActors;
 	if (MeshComp->GetOwner())
 	{
 		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
 		{
 			Targets = OutActors;
-		
-			// For GA's damage event compatibility
-			for (AActor* ResultActor : Targets)
-			{
-				FGameplayEventData Payload;
-				Payload.EventTag = EventTag;
-				Payload.Instigator = MeshComp->GetOwner();
-				Payload.Target = ResultActor;
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Payload);
-			}
 		}
 	}
 

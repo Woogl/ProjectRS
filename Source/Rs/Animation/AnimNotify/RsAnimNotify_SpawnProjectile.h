@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ARsProjectile> ProjectileClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (GetOptions="GetSocketNames"))
 	FName SpawnSocketName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -31,4 +31,6 @@ public:
 
 protected:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+	const float DefaultTargetDistance = 100.f;
 };
