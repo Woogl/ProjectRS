@@ -96,6 +96,21 @@ void URsPartyComponent::RemovePartyMemberAt(int32 MemberIndex)
 	}
 }
 
+void URsPartyComponent::SpawnPartyMembers()
+{
+	APlayerController* OwingPlayerController = Cast<APlayerController>(GetOwner());
+	if (ULocalPlayer* LocalPlayer = OwingPlayerController->GetLocalPlayer())
+	{
+		for (TSubclassOf<ARsPlayerCharacter> PartyMemberClass : URsPartySubsystem::Get(LocalPlayer)->GetPartyMemberClasses())
+		{
+			if (ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform()))
+			{
+				AddPartyMember(SpawnedActor);
+			}
+		}
+	}
+}
+
 bool URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex)
 {
 	if (ARsPlayerCharacter* NewPartyMember = GetPartyMember(MemberIndex))
@@ -126,16 +141,5 @@ void URsPartyComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APlayerController* OwningPlayerController = Cast<APlayerController>(GetOwner());
-	
-	if (ULocalPlayer* LocalPlayer = OwningPlayerController->GetLocalPlayer())
-	{
-		for (TSubclassOf<ARsPlayerCharacter> PartyMemberClass : URsPartySubsystem::Get(LocalPlayer)->GetPartyMemberClasses())
-		{
-			if (ARsPlayerCharacter* SpawnedActor = GetWorld()->SpawnActor<ARsPlayerCharacter>(PartyMemberClass, GetOwner()->GetActorTransform()))
-			{
-				AddPartyMember(SpawnedActor);
-			}
-		}
-	}
+	SpawnPartyMembers();
 }

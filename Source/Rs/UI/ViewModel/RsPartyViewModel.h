@@ -27,6 +27,16 @@ protected:
 
 	TWeakObjectPtr<URsPartyComponent> CachedModel;
 
+public:
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetPartyMemberVisibility_0() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetPartyMemberVisibility_1() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetPartyMemberVisibility_2() const;
+
 private:
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);

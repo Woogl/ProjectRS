@@ -30,7 +30,8 @@ public:
 
 	void InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex);
 	void RemovePartyMemberAt(int32 MemberIndex);
-	
+
+	void SpawnPartyMembers();
 	bool SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
 	
 protected:
