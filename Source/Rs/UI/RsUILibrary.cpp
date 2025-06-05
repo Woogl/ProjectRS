@@ -19,7 +19,7 @@ void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContaine
 			{
 				if (UCommonActivatableWidget* ActiveWidget = LayerWidget->GetActiveWidget())
 				{
-					ActiveWidget->SetVisibility(ESlateVisibility::Visible);
+					ActiveWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 				}
 			}
 		}

@@ -4,15 +4,30 @@
 #include "RsActivatableWidget.h"
 
 #include "Input/CommonUIActionRouterBase.h"
+#include "Kismet/GameplayStatics.h"
 
 void URsActivatableWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
+
+	if (PauseControl == ERsWidgetPauseMode::GamePause)
+	{
+		UGameplayStatics::SetGamePaused(GetOwningPlayer(), true);
+	}
+	else if (PauseControl == ERsWidgetPauseMode::GameResume)
+	{
+		UGameplayStatics::SetGamePaused(GetOwningPlayer(), false);
+	}
 }
 
 void URsActivatableWidget::NativeOnDeactivated()
 {
 	Super::NativeOnDeactivated();
+	
+	if (PauseControl == ERsWidgetPauseMode::GamePause)
+	{
+		UGameplayStatics::SetGamePaused(GetOwningPlayer(), false);
+	}
 }
 
 TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const

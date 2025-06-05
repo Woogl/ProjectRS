@@ -15,6 +15,14 @@ enum class ERsWidgetInputMode : uint8
 	Menu
 };
 
+UENUM(BlueprintType)
+enum class ERsWidgetPauseMode : uint8
+{
+	Default,
+	GamePause,
+	GameResume
+};
+
 /**
  * An activatable widget that automatically drives the desired input config when activated
  */
@@ -31,6 +39,9 @@ public:
 
 protected:
 	/** The desired input mode to use while this UI is activated, for example do you want key presses to still reach the game/player controller? */
-	UPROPERTY(EditDefaultsOnly, Category = "RS|Input")
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	ERsWidgetInputMode InputConfig = ERsWidgetInputMode::Default;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	ERsWidgetPauseMode PauseControl = ERsWidgetPauseMode::Default;
 };
