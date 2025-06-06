@@ -43,8 +43,8 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	Targets.Reset();
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	FTransform OffsetTransform(FQuat(RotationOffset), PositionOffset);
-	SourceTransform *= OffsetTransform;
+	SourceTransform.AddToTranslation(SourceTransform.GetRotation().RotateVector(PositionOffset));
+	SourceTransform.ConcatenateRotation(FQuat(RotationOffset));
 	
 	TArray<AActor*> OutActors;
 	if (MeshComp->GetOwner())
