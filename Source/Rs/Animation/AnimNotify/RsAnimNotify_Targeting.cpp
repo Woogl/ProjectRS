@@ -3,6 +3,7 @@
 
 #include "RsAnimNotify_Targeting.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_Targeting::URsAnimNotify_Targeting()
@@ -51,6 +52,16 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
 		{
 			Targets = OutActors;
+
+			// For GA's damage event compatibility
+			for (AActor* ResultActor : Targets)
+			{
+				FGameplayEventData Payload;
+				Payload.EventTag = EventTag;
+				Payload.Instigator = MeshComp->GetOwner();
+				Payload.Target = ResultActor;
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Payload);
+			}
 		}
 	}
 
