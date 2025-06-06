@@ -3,7 +3,6 @@
 
 #include "RsAnimNotify_Targeting.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_Targeting::URsAnimNotify_Targeting()
