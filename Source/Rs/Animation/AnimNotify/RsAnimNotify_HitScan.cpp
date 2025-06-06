@@ -3,13 +3,13 @@
 
 #include "RsAnimNotify_HitScan.h"
 
-#include "Rs/Battle/RsBattleLibrary.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 FString URsAnimNotify_HitScan::GetNotifyName_Implementation() const
 {
-	if (DamageContext.DamageEventTag.IsValid())
+	if (DamageTag.IsValid())
 	{
-		FString EventTagString = DamageContext.DamageEventTag.ToString();
+		FString EventTagString = DamageTag.ToString();
 		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
 	}
 	return Super::GetNotifyName_Implementation();
@@ -19,8 +19,12 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	for (AActor* Target : Targets)
+	for (AActor* ResultActor : Targets)
 	{
-		URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
+		FGameplayEventData Payload;
+		Payload.EventTag = DamageTag;
+		Payload.Instigator = MeshComp->GetOwner();
+		Payload.Target = ResultActor;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), DamageTag, Payload);
 	}
 }

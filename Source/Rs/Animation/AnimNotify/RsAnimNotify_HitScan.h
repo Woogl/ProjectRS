@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "RsAnimNotify_Targeting.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "RsAnimNotify_HitScan.generated.h"
 
 /**
@@ -18,8 +17,8 @@ class RS_API URsAnimNotify_HitScan : public URsAnimNotify_Targeting
 public:
 	virtual FString GetNotifyName_Implementation() const override;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
-	FRsDamageContext DamageContext;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
+	FGameplayTag DamageTag;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

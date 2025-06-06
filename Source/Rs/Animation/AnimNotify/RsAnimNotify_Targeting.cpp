@@ -15,16 +15,6 @@ URsAnimNotify_Targeting::URsAnimNotify_Targeting()
 #endif // WITH_EDITORONLY_DATA
 }
 
-FString URsAnimNotify_Targeting::GetNotifyName_Implementation() const
-{
-	if (EventTag.IsValid())
-	{
-		FString EventTagString = EventTag.ToString();
-		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
-	}
-	return Super::GetNotifyName_Implementation();
-}
-
 void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
@@ -52,16 +42,6 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
 		{
 			Targets = OutActors;
-
-			// For GA's damage event compatibility
-			for (AActor* ResultActor : Targets)
-			{
-				FGameplayEventData Payload;
-				Payload.EventTag = EventTag;
-				Payload.Instigator = MeshComp->GetOwner();
-				Payload.Target = ResultActor;
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Payload);
-			}
 		}
 	}
 
