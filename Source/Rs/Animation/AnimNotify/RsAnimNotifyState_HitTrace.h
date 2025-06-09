@@ -20,8 +20,8 @@ public:
 
 	virtual FString GetNotifyName_Implementation() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
-	FRsDamageContext DamageContext;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
+	FGameplayTag DamageEvent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bStopTraceWhenFirstHit = false;
@@ -42,4 +42,7 @@ protected:
 	TOptional<FTransform> LastSocketTransform;
 
 	bool bStopTrace = false;
+
+	// TODO: class change (URsGameplayAbility_Attack -> URsGameplayAbility)
+	TWeakObjectPtr<URsGameplayAbility_Attack> CurrentAbility;
 };

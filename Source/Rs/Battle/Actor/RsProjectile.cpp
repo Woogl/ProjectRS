@@ -27,7 +27,7 @@ ARsProjectile::ARsProjectile()
 void ARsProjectile::SetupDamage(URsGameplayAbility_Attack* InOwningAbility, FGameplayTag InDamageEventTag)
 {
 	OwningAbility = InOwningAbility;
-	DamageEventTag = InDamageEventTag;
+	DamageEvent = InDamageEventTag;
 }
 
 void ARsProjectile::BeginPlay()
@@ -48,9 +48,7 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && FilteredActor.Contains(OtherActor))
 	{
-		FRsDamageContext* DamageContext = OwningAbility->FindDamageEvent(DamageEventTag);
-		URsBattleLibrary::ApplyDamageContext(GetInstigator(), OtherActor, *DamageContext);
-		OwningAbility->OnAttackHitTarget(OtherActor, DamageEventTag);
+		OwningAbility->ApplyDamageEvent(DamageEvent, OtherActor);
 		
 		MaxHitCount--;
 		if (MaxHitCount == 0)

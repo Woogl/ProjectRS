@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
-#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotify_Targeting.generated.h"

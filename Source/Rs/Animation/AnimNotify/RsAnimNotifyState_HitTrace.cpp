@@ -3,6 +3,8 @@
 
 #include "RsAnimNotifyState_HitTrace.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -15,9 +17,9 @@ URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 
 FString URsAnimNotifyState_HitTrace::GetNotifyName_Implementation() const
 {
-	if (DamageContext.DamageEventTag.IsValid())
+	if (DamageEvent.IsValid())
 	{
-		FString EventTagString = DamageContext.DamageEventTag.ToString();
+		FString EventTagString = DamageEvent.ToString();
 		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
 	}
 	return Super::GetNotifyName_Implementation();
@@ -27,9 +29,17 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (MeshComp)
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		LastSocketTransform = MeshComp->GetSocketTransform(SocketName);
+		
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		{
+			if (UGameplayAbility* AnimatingAbility = ASC->GetAnimatingAbility())
+			{
+				CurrentAbility = Cast<URsGameplayAbility_Attack>(AnimatingAbility);
+			}
+		}
 	}
 
 	bStopTrace = false;
@@ -60,7 +70,7 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 		{
 			if (!HitTargets.Contains(Target))
 			{
-				URsBattleLibrary::ApplyDamageContext(MeshComp->GetOwner(), Target, DamageContext);
+				CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
 				HitTargets.Emplace(Target);
 			
 				if (bStopTraceWhenFirstHit)

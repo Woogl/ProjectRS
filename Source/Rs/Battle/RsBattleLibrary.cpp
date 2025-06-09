@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
@@ -24,22 +23,6 @@ FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySy
 		return EffectSpecHandle;
 	}
 	return FGameplayEffectSpecHandle();
-}
-
-void URsBattleLibrary::ApplyDamageContext(const AActor* Source, const AActor* Target, FRsDamageContext& DamageContext)
-{
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target);
-	if (!SourceASC || !TargetASC)
-	{
-		return;
-	}
-
-	// Can be immune by RsInvincibleGEComp or RsSuperArmorGECpomp.
-	for (TObjectPtr<URsEffectDefinition> DamageDefinition : DamageContext.DamageDefinitions)
-	{
-		DamageDefinition->ApplyEffect(SourceASC, TargetASC);
-	}
 }
 
 FActiveGameplayEffectHandle URsBattleLibrary::ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient)

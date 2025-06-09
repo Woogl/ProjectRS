@@ -26,7 +26,7 @@ private:
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 
 	UFUNCTION()
-	void HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle);
+	void HandleAttackHit(const AActor* Target, const FGameplayTag& DamageEvent);
 
 	TWeakObjectPtr<URsAbilityTask_PauseMontage> PauseMontageTask;
 };

@@ -3,20 +3,17 @@
 
 #include "RsAnimNotifyState_HitStop.h"
 
-#include "GameplayEffectTypes.h"
-#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 
 void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (OwnerASC.IsValid())
+	// TODO: Integrate ability
+	if (URsGameplayAbility_Attack* AttackAbility = Cast<URsGameplayAbility_Attack>(CurrentAbility))
 	{
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
-		{
-			RsASC->OnDealDamage.AddUniqueDynamic(this, &ThisClass::HandleDealDamage);
-		}
+		AttackAbility->OnAttackHitTarget.AddDynamic(this, &ThisClass::HandleAttackHit);
 	}
 }
 
@@ -24,16 +21,14 @@ void URsAnimNotifyState_HitStop::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (OwnerASC.IsValid())
+	// TODO: Integrate ability
+	if (URsGameplayAbility_Attack* AttackAbility = Cast<URsGameplayAbility_Attack>(CurrentAbility))
 	{
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(OwnerASC))
-		{
-			RsASC->OnDealDamage.RemoveDynamic(this, &ThisClass::HandleDealDamage);
-		}
+		AttackAbility->OnAttackHitTarget.RemoveDynamic(this, &ThisClass::HandleAttackHit);
 	}
 }
 
-void URsAnimNotifyState_HitStop::HandleDealDamage(UAbilitySystemComponent* TargetASC, FGameplayEffectSpecHandle DamageEffectHandle)
+void URsAnimNotifyState_HitStop::HandleAttackHit(const AActor* Target, const FGameplayTag& DamageEvent)
 {
 	if (CurrentAbility.IsValid())
 	{

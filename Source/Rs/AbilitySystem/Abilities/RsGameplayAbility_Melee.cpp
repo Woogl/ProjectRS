@@ -28,8 +28,6 @@ void URsGameplayAbility_Melee::HandleHitDetect(FGameplayEventData EventData)
 {
 	if (FRsDamageContext* DamageContext = DamageEvents.FindByKey(EventData.EventTag))
 	{
-		URsBattleLibrary::ApplyDamageContext(EventData.Instigator, EventData.Target, *DamageContext);
-		ApplyCostRecovery();
-		OnAttackHitTarget(EventData.Target, EventData.EventTag);
+		ApplyDamageEvent(EventData.EventTag, EventData.Target);
 	}
 }

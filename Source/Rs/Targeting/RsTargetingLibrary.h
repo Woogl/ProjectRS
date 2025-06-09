@@ -20,11 +20,11 @@ class RS_API URsTargetingLibrary : public UBlueprintFunctionLibrary
 public:
 	// Perform overlapping, filtering and sorting.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingCollision& Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 
 	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargetingWithSubsteps(AActor* Owner, FTransform Transform, FTransform End, int32 MaxSubsteps, const FRsTargetingCollision& Collision, const FRsTargetingFilter& Filter, const FRsTargetingSorter& Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingCollision& Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
 	static TArray<AActor*> PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingCollision& Collision);

@@ -7,9 +7,9 @@
 
 FString URsAnimNotify_HitScan::GetNotifyName_Implementation() const
 {
-	if (DamageTag.IsValid())
+	if (DamageEvent.IsValid())
 	{
-		FString EventTagString = DamageTag.ToString();
+		FString EventTagString = DamageEvent.ToString();
 		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
 	}
 	return Super::GetNotifyName_Implementation();
@@ -22,9 +22,9 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	for (AActor* ResultActor : Targets)
 	{
 		FGameplayEventData Payload;
-		Payload.EventTag = DamageTag;
+		Payload.EventTag = DamageEvent;
 		Payload.Instigator = MeshComp->GetOwner();
 		Payload.Target = ResultActor;
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), DamageTag, Payload);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), DamageEvent, Payload);
 	}
 }

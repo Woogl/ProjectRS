@@ -23,6 +23,8 @@ struct FRsDamageContext
 	bool operator==(const FGameplayTag& Other) const { return this->DamageEventTag == Other; }
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttackHitTarget, const AActor*, Target, const FGameplayTag&, DamageEvent);
+
 /**
  * 
  */
@@ -47,10 +49,15 @@ protected:
 	void HandleMontageCancelled();
 
 public:
-	void OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
+	UPROPERTY(BlueprintAssignable)
+	FOnAttackHitTarget OnAttackHitTarget;
 	
+	// TODO: Delete this
 	UFUNCTION(BlueprintImplementableEvent, Category = "RS|Damage", DisplayName = "OnAttackHitTarget")
 	void K2_OnAttackHitTarget(const AActor* Target, const FGameplayTag& DamageEvent);
 
 	FRsDamageContext* FindDamageEvent(FGameplayTag EventTag);
+
+	UFUNCTION(BlueprintCallable, Category = "RS|Damage")
+	void ApplyDamageEvent(FGameplayTag EventTag, const AActor* Victim);
 };

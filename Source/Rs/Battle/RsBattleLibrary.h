@@ -25,9 +25,6 @@ public:
 	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static void ApplyDamageContext(const AActor* Source, const AActor* Target, FRsDamageContext& DamageContext);
-	
-	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
