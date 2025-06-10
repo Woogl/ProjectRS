@@ -13,6 +13,10 @@ class URsAbilitySet;
 enum class ERsTeamId : uint8;
 class URsAbilitySystemComponent;
 
+/**
+ * Actor that uses its own abilities and acts on its own.
+ * (EX: Summoned creatures, turrets, or mines.)
+ */
 UCLASS()
 class RS_API ARsBattleActor : public AActor, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGenericTeamAgentInterface
 {
@@ -43,7 +47,4 @@ protected:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
 	ERsTeamId TeamId;
-
-public:
-	virtual void Tick(float DeltaTime) override;
 };

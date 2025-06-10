@@ -3,6 +3,7 @@
 
 #include "RsCharacterBase.h"
 
+#include "Component/RsBattleActorManagerComponent.h"
 #include "Component/RsCharacterMovementComponent.h"
 #include "Component/RsHealthComponent.h"
 #include "Component/RsStaggerComponent.h"
@@ -31,6 +32,8 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	CharacterAppearance = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterAppearance"));
 	CharacterAppearance->SetupAttachment(GetMesh());
 	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
+
+	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

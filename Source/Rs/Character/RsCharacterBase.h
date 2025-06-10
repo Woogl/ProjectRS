@@ -10,6 +10,7 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsBattleActorManagerComponent;
 class URsShieldComponent;
 class URsNameplateComponent;
 class URsStaggerComponent;
@@ -71,6 +72,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
 
 	// Data used to initialize the Ability System Component.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")

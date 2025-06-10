@@ -20,7 +20,7 @@ public:
 	TSubclassOf<ARsBattleActor> BattleActorClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector PositionOffset;
+	FVector LocalPosition = FVector(150.f, 0.f, 0.f);
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 

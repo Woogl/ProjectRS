@@ -63,10 +63,3 @@ FGenericTeamId ARsBattleActor::GetGenericTeamId() const
 {
 	return static_cast<uint8>(TeamId);
 }
-
-void ARsBattleActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	
-}
-
