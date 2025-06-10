@@ -14,20 +14,16 @@ void URsActivatableWidget::NativeOnActivated()
 	{
 		UGameplayStatics::SetGamePaused(GetOwningPlayer(), true);
 	}
-	else if (PauseControl == ERsWidgetPauseMode::GameResume)
-	{
-		UGameplayStatics::SetGamePaused(GetOwningPlayer(), false);
-	}
 }
 
 void URsActivatableWidget::NativeOnDeactivated()
 {
-	Super::NativeOnDeactivated();
-	
 	if (PauseControl == ERsWidgetPauseMode::GamePause)
 	{
 		UGameplayStatics::SetGamePaused(GetOwningPlayer(), false);
 	}
+	
+	Super::NativeOnDeactivated();
 }
 
 TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const

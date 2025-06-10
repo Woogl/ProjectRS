@@ -20,7 +20,6 @@ enum class ERsWidgetPauseMode : uint8
 {
 	Default,
 	GamePause,
-	GameResume
 };
 
 /**
