@@ -17,7 +17,7 @@ class URsAbilitySystemComponent;
  * Actor that uses its own abilities and acts on its own.
  * (EX: Summoned creatures, turrets, or mines.)
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API ARsBattleActor : public AActor, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()

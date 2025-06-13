@@ -13,7 +13,7 @@ class UInputMappingContext;
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Abstract, Blueprintable)
 class RS_API ARsPlayerCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()

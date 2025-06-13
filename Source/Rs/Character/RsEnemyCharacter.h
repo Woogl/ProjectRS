@@ -10,7 +10,7 @@
  * Base class to use for Server controlled Characters.
  * This class contains its own Ability System Component.
  */
-UCLASS(Blueprintable)
+UCLASS(Abstract, Blueprintable)
 class RS_API ARsEnemyCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()
