@@ -43,7 +43,7 @@ ARsBattleActor* URsBattleActorManagerComponent::SpawnBattleActor(const TSubclass
 	return nullptr;
 }
 
-void URsBattleActorManagerComponent::DestroyBattleActors(TSubclassOf<ARsBattleActor> BattleActorClass)
+void URsBattleActorManagerComponent::DespawnBattleActors(TSubclassOf<ARsBattleActor> BattleActorClass)
 {
 	for (int32 i = ManagedBattleActors.Num() - 1; i >= 0; --i)
 	{
@@ -51,6 +51,7 @@ void URsBattleActorManagerComponent::DestroyBattleActors(TSubclassOf<ARsBattleAc
 		{
 			if (BattleActor->IsA(BattleActorClass))
 			{
+				// TODO: Despawn VFX and destroy after delay. 
 				BattleActor->Destroy();
 				ManagedBattleActors.RemoveAt(i);
 			}

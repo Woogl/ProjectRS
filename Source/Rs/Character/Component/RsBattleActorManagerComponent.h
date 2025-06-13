@@ -22,7 +22,7 @@ public:
 	URsBattleActorManagerComponent();
 	
 	ARsBattleActor* SpawnBattleActor(const TSubclassOf<ARsBattleActor>& BattleActorClass, FVector LocalPosition);
-	void DestroyBattleActors(TSubclassOf<ARsBattleActor> BattleActorClass);
+	void DespawnBattleActors(TSubclassOf<ARsBattleActor> BattleActorClass);
 
 protected:
 	TArray<TWeakObjectPtr<ARsBattleActor>> ManagedBattleActors;
