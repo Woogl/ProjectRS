@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotify_Teleport.generated.h"
 
 UENUM()
@@ -29,9 +30,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bLookTarget = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback")
+	bool bFallbackToTargeting = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxSearchDistance = 10000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	FRsTargetingCollision FallbackCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	FRsTargetingFilter FallbackFilter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	FRsTargetingSorter FallbackSorter;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

@@ -6,10 +6,9 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
-#include "Rs/Character/RsEnemyCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
@@ -33,27 +32,6 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 				if (URsLockOnComponent* LockOnComponent = RsPlayerController->GetLockOnComponent())
 				{
 					TeleportTarget = LockOnComponent->GetLockedOnTarget();
-
-					// If the lock on target is none, Search the closest enemy.
-					if (TeleportTarget == nullptr)
-					{
-						TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-						ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
-						TArray<AActor*> OutActors;
-						UKismetSystemLibrary::SphereOverlapActors(Owner->GetWorld(), Owner->GetActorLocation(), MaxSearchDistance, ObjectTypes, ARsEnemyCharacter::StaticClass(), TArray<AActor*>(), OutActors);
-
-						const FVector OwnerLocation = Owner->GetActorLocation();
-						float MinDistanceSquared = MaxSearchDistance * MaxSearchDistance;
-						for (AActor* Actor : OutActors)
-						{
-							float DistanceSquared = FVector::DistSquared(Actor->GetActorLocation(), OwnerLocation);
-							if (DistanceSquared < MinDistanceSquared)
-							{
-								MinDistanceSquared = DistanceSquared;
-								TeleportTarget = Actor;
-							}
-						}
-					}
 				}
 			}
 			
@@ -68,6 +46,16 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 					}
 				}
 			}
+		}
+	}
+
+	// Find target by targeting system.
+	if (bFallbackToTargeting == true && TeleportTarget == nullptr)
+	{
+		TArray<AActor*> OutActors;
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), Owner->GetActorTransform(), FallbackCollision, FallbackFilter, FallbackSorter, OutActors))
+		{
+			TeleportTarget = OutActors[0];
 		}
 	}
 
@@ -94,7 +82,7 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 		FVector LookDirection;
 		if (TeleportTarget)
 		{
-			LookDirection = TeleportTarget->GetActorLocation() - Owner->GetActorLocation();	
+			LookDirection = TeleportTarget->GetActorLocation() - Owner->GetActorLocation();
 		}
 		else
 		{
