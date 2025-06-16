@@ -6,6 +6,7 @@
 #include "RsViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
+class URsActiveEffectListViewViewModel;
 class URsStaggerSetViewModel;
 class URsHealthSetViewModel;
 class ARsCharacterBase;
@@ -43,4 +44,7 @@ protected:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsStaggerSetViewModel> StaggerSetViewModel;
+
+	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess, FieldNotifySetter = ""))
+	TObjectPtr<URsActiveEffectListViewViewModel> ActiveEffectListViewViewModel;
 };

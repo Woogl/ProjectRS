@@ -20,7 +20,10 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	URsAbilitySystemComponent();
-	
+
+	// TODO: Refactor this
+	FOnDealDamage OnDealDamage;
+
 	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
 	
 	void SetupAbilityInputBindings();

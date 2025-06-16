@@ -5,6 +5,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "CommonHardwareVisibilityBorder.h"
+#include "RsActiveEffectListViewViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,6 +29,7 @@ void URsCharacterViewModel::Initialize()
 		{
 			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(ASC));
 			UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(ASC));
+			UE_MVVM_SET_PROPERTY_VALUE(ActiveEffectListViewViewModel, URsActiveEffectListViewViewModel::CreateActiveEffectListViewViewModel(ASC));
 		}
 	}
 }
