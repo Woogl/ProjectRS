@@ -4,6 +4,7 @@
 #include "RsStaggerDamageExecution.h"
 
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
+#include "Rs/System/RsGameSetting.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsStaggerDamageStatics
@@ -39,10 +40,15 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	{
 		return;
 	}
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
+	{
+		return;
+	}
 
 	const RsStaggerDamageStatics* DamageStatics = &RsStaggerDamageStatics::Get();
 

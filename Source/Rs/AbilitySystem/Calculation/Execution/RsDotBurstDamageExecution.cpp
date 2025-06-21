@@ -35,8 +35,15 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	{
 		return;
 	}
-
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	FAggregatorEvaluateParameters EvaluationParameters{};
+	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
+	{
+		return;
+	}
 	
 	FGameplayTagContainer DotDamageTags;
 	Spec.GetAllAssetTags(DotDamageTags);
@@ -80,7 +87,6 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 		return;
 	}
 	
-	FAggregatorEvaluateParameters EvaluationParameters{};
 	const RsDotExplosionDamageStatics* DamageStatics = &RsDotExplosionDamageStatics::Get();
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
