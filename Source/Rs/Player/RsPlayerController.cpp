@@ -16,6 +16,7 @@
 
 ARsPlayerController::ARsPlayerController()
 {
+	bShouldPerformFullTickWhenPaused = true;
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
 

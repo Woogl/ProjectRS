@@ -10,6 +10,12 @@
 class URsGenericContainer;
 class ARsCharacterBase;
 
+USTRUCT(BlueprintType)
+struct FRsGameplayMessage
+{
+	GENERATED_BODY()
+	
+};
 /**
  * 
  */

@@ -55,7 +55,6 @@ void URsAnimNotifyState_OnDamageAbility::HandleReceiveDamage(AActor* Source, FGa
 {
 	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
 	{
-		CurrentAbility.Get()->K2_CancelAbility();
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}
 }
@@ -64,7 +63,6 @@ void URsAnimNotifyState_OnDamageAbility::HandleBlockDamage(FGameplayEffectSpecHa
 {
 	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
 	{
-		CurrentAbility.Get()->K2_CancelAbility();
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}
 }

@@ -69,17 +69,18 @@ void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& Chan
 	}
 	OnStaggerChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
 
-	if (ChangeData.NewValue >= GetMaxStagger() && bIsGroggy == false)
+	bool GroggyCondition = ChangeData.NewValue >= GetMaxStagger();
+	if (GroggyCondition != bIsGroggy)
 	{
-		bIsGroggy = true;
-		OnRep_bIsGroggy(false);
+		bIsGroggy = !bIsGroggy;
+		OnRep_bIsGroggy(!bIsGroggy);
 		GetOwner()->ForceNetUpdate();
 	}
 }
 
 void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (OldValue == false && bIsGroggy == true)
+	if (bIsGroggy == true)
 	{
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{
