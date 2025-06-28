@@ -29,14 +29,11 @@ void ARsGhostTrail::BeginPlay()
 
 	SetLifeSpan(LifeTime);
 
-	if (PoseableMesh && GetOwner())
+	if (GetOwner() && PoseableMesh && Material)
 	{
-		if (Material)
+		for (int32 i = 0; i < PoseableMesh->GetNumMaterials(); i++)
 		{
-			for (int32 i = 0; i < PoseableMesh->GetNumMaterials(); i++)
-			{
-				PoseableMesh->SetMaterial(i, Material);
-			}
+			PoseableMesh->SetMaterial(i, Material);
 		}
 	}
 }
