@@ -19,9 +19,25 @@ void URsAnimNotify_GhostTrail::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		
 		for (USkeletalMeshComponent* Component : OutComponents)
 		{
-			ARsGhostTrail* SpawnedActor = Owner->GetWorld()->SpawnActor<ARsGhostTrail>(GhostTrailClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+			SpawnedActor = Owner->GetWorld()->SpawnActorDeferred<ARsGhostTrail>(GhostTrailClass, FTransform::Identity, Owner);
 			SpawnedActor->InitAppearance(Component);
+
+			if (UWorld* World = MeshComp->GetWorld())
+			{
+				FTimerHandle TimerHandle;
+				World->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::DestroyGhostTrail, SpawnedActor->LifeTime);
+			}
+
 			// Location and Rotation will be set in ARsGhostTrail::BeginPlay().
+			SpawnedActor->FinishSpawning(FTransform::Identity);
 		}
+	}
+}
+
+void URsAnimNotify_GhostTrail::DestroyGhostTrail()
+{
+	if (SpawnedActor)
+	{
+		SpawnedActor->Destroy();
 	}
 }

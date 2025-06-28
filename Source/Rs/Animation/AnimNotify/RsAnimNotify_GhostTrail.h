@@ -20,4 +20,10 @@ public:
 	TSubclassOf<ARsGhostTrail> GhostTrailClass;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+private:
+	UPROPERTY()
+	ARsGhostTrail* SpawnedActor;
+
+	void DestroyGhostTrail();
 };
