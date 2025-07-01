@@ -48,13 +48,8 @@ void URsActiveEffectListViewViewModel::OnEffectAdded(UAbilitySystemComponent* AS
 		else
 		{
 			// add new viewmodel
-			// todo : 배열 소팅한거 리스트뷰에 순서가 적용되나 확인할것
 			NewEffectViewModel->OnViewModelDisabled.AddUObject(this, &ThisClass::OnEffectRemoved);
 			ActiveEffectViewModels.Add(NewEffectViewModel);
-			ActiveEffectViewModels.Sort([](TObjectPtr<URsActiveEffectViewModel> A, TObjectPtr<URsActiveEffectViewModel> B)->bool
-			{
-				return A->GetCategory() < B->GetCategory();
-			});
 			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
 		}
 	}

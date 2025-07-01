@@ -19,7 +19,7 @@ URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewMode
 	if (ASC && Effect && FindRsUIData(*Effect))
 	{
 		URsActiveEffectViewModel* ViewModel = NewObject<URsActiveEffectViewModel>(ASC);
-		ViewModel->CachedModel = EffectHandle;
+		ViewModel->CachedModel = Effect;
 		ViewModel->Initialize();
 		return ViewModel;
 	}
@@ -42,72 +42,45 @@ FText URsActiveEffectViewModel::GetStackText() const
 
 float URsActiveEffectViewModel::GetEffectProgress() const
 {
-	if (CachedASC.Get() && CachedModel.IsValid())
+	if (CachedASC.Get() && CachedModel)
 	{
-		if (GetCategory() != ERsEffectCategory::DotDamage)
-		{
-			if (const FActiveGameplayEffect* ActiveEffect = CachedASC->GetActiveGameplayEffect(CachedModel))
-			{
-				return ActiveEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds()) / ActiveEffect->GetDuration();
-			}
-		}
+		return CachedModel->GetTimeRemaining(GetWorld()->GetTimeSeconds()) / CachedModel->GetDuration();
 	}
 	return 1;
 }
 
 
-UTexture2D* URsActiveEffectViewModel::GetIcon() const
+UObject* URsActiveEffectViewModel::GetIcon() const
 {
-	if (CachedASC.Get() && CachedModel.IsValid())
+	if (CachedASC.Get() && CachedModel)
 	{
-		if (const FActiveGameplayEffect* ActiveEffect = CachedASC->GetActiveGameplayEffect(CachedModel))
-		{
-			return FindRsUIData(*ActiveEffect)->Icon;
-		}
+		return FindRsUIData(*CachedModel)->Icon;
 	}
 	return nullptr;
 }
 
 FText URsActiveEffectViewModel::GetDescription() const
 {
-	if (CachedASC.Get() && CachedModel.IsValid())
+	if (CachedASC.Get() && CachedModel)
 	{
-		if (const FActiveGameplayEffect* ActiveEffect = CachedASC->GetActiveGameplayEffect(CachedModel))
-		{
-			return FindRsUIData(*ActiveEffect)->Description;
-		}
+		return FindRsUIData(*CachedModel)->Description;
 	}
 	return FText();
 }
 
-ERsEffectCategory URsActiveEffectViewModel::GetCategory() const
-{
-	if (CachedASC.Get() && CachedModel.IsValid())
-	{
-		if (const FActiveGameplayEffect* ActiveEffect = CachedASC->GetActiveGameplayEffect(CachedModel))
-		{
-			return FindRsUIData(*ActiveEffect)->Category;
-		}
-	}
-	return ERsEffectCategory::Invalid;
-}
-
 void URsActiveEffectViewModel::AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle)
 {
-	if (CachedASC.Get() && CachedModel.IsValid())
+	if (CachedASC.Get() && CachedModel)
 	{
-		if (const FActiveGameplayEffect* ActiveEffect = CachedASC->GetActiveGameplayEffect(CachedModel))
+		const FActiveGameplayEffect* OtherModelEffect = CachedASC->GetActiveGameplayEffect(OtherEffectHandle);
+		if (FindRsUIData(*CachedModel) == FindRsUIData(*OtherModelEffect))
 		{
-			const FActiveGameplayEffect* OtherModelEffect = CachedASC->GetActiveGameplayEffect(OtherEffectHandle);
-			if (FindRsUIData(*ActiveEffect) == FindRsUIData(*OtherModelEffect))
-			{
-				ExtraModels.Add(OtherEffectHandle);
-				CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRenewed);
-				CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRemoved);
-				Stack++;
-				UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStack);
-				UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackText);
-			}
+			ExtraModels.Add(OtherModelEffect);
+			CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRenewed);
+			CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRemoved);
+			Stack++;
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStack);
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackText);
 		}
 	}
 }
@@ -121,12 +94,20 @@ const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(c
 	return nullptr;
 }
 
-void URsActiveEffectViewModel::OnEffectAdded(FActiveGameplayEffectHandle EffectHandle)
+void URsActiveEffectViewModel::OnEffectAdded()
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectProgress);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIcon);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDescription);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCategory);
+	if (CachedASC.Get() && CachedModel)
+	{
+		FGameplayTagContainer ModelTags;
+		CachedModel->Spec.GetAllAssetTags(ModelTags);
+		if (ModelTags.HasTag(FGameplayTag::RequestGameplayTag("Effect.Damage.Dot")))
+		{
+			IsStackable = true;
+		}
+	}
 }
 
 void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration)
@@ -137,9 +118,8 @@ void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle Effec
 
 void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
 {
-	FActiveGameplayEffectHandle RemovedModel = RemovalInfo.ActiveEffect->Handle;
-	int32 Index = ExtraModels.Find(RemovedModel);
-
+	int32 Index = ExtraModels.Find(RemovalInfo.ActiveEffect);
+	
 	if (Index != INDEX_NONE)
 	{
 		ExtraModels.RemoveAt(Index);
@@ -166,11 +146,11 @@ void URsActiveEffectViewModel::Initialize()
 	Super::Initialize();
 
 	CachedASC = Cast<URsAbilitySystemComponent>(GetOuter());
-	if (CachedASC.Get() && CachedModel.IsValid())
+	if (CachedASC.Get() && CachedModel)
 	{
-		OnEffectAdded(CachedModel);
-		CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(CachedModel)->AddUObject(this, &ThisClass::OnEffectRenewed);
-		CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(CachedModel)->AddUObject(this, &ThisClass::OnEffectRemoved);
+		OnEffectAdded();
+		CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(CachedModel->Handle)->AddUObject(this, &ThisClass::OnEffectRenewed);
+		CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(CachedModel->Handle)->AddUObject(this, &ThisClass::OnEffectRemoved);
 		UE_MVVM_SET_PROPERTY_VALUE(Visibility, ESlateVisibility::HitTestInvisible);
 	}
 }
@@ -182,8 +162,7 @@ void URsActiveEffectViewModel::Deinitialize()
 
 bool URsActiveEffectViewModel::IsTickable() const
 {
-	ERsEffectCategory Category = GetCategory();
-	return (Category != ERsEffectCategory::DotDamage) && (Category != ERsEffectCategory::Invalid);
+	return !IsStackable;
 }
 
 void URsActiveEffectViewModel::Tick(float DeltaTime)

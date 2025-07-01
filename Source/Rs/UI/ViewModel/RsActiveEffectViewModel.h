@@ -13,7 +13,6 @@ class URsAbilitySystemComponent;
  * 
  */
 
-
 UCLASS()
 class RS_API URsActiveEffectViewModel : public URsViewModelBase, public FTickableGameObject
 {
@@ -36,13 +35,10 @@ public:
 	float GetEffectProgress() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	UTexture2D* GetIcon() const;
+	UObject* GetIcon() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetDescription() const;
-	
-	UFUNCTION(FieldNotify, BlueprintPure)
-	ERsEffectCategory GetCategory() const;
 
 	void AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle);
 
@@ -55,7 +51,7 @@ protected:
 	virtual bool IsTickable() const override;
 	virtual void Tick(float DeltaTime) override;
 
-	void OnEffectAdded(FActiveGameplayEffectHandle EffectHandle);
+	void OnEffectAdded();
 	void OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration);
 	void OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(URsAbilityViewModel, STATGROUP_Tickables); };
@@ -65,14 +61,16 @@ public:
 	FOnViewModelDisabled OnViewModelDisabled;
 
 private:
+	bool IsStackable;
+	
 	UPROPERTY(FieldNotify, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ESlateVisibility Visibility;
 
-	TArray<FActiveGameplayEffectHandle> ExtraModels;
+	TArray<const FActiveGameplayEffect*> ExtraModels;
 	int32 Stack = 1;
 	
 	UPROPERTY()
 	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
 	
-	FActiveGameplayEffectHandle CachedModel;
+	const FActiveGameplayEffect* CachedModel;
 };
