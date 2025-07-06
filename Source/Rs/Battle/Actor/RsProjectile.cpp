@@ -3,10 +3,11 @@
 
 #include "RsProjectile.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
-#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 
@@ -24,7 +25,7 @@ ARsProjectile::ARsProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
-void ARsProjectile::SetupDamage(URsGameplayAbility_Attack* InOwningAbility, FGameplayTag InDamageEventTag)
+void ARsProjectile::SetupDamage(URsGameplayAbility* InOwningAbility, FGameplayTag InDamageEventTag)
 {
 	OwningAbility = InOwningAbility;
 	DamageEvent = InDamageEventTag;
@@ -48,7 +49,15 @@ void ARsProjectile::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	
 	if (GetInstigator() && FilteredActor.Contains(OtherActor))
 	{
-		OwningAbility->ApplyDamageEvent(DamageEvent, OtherActor);
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetInstigator()))
+		{
+			//OwningAbility->ApplyDamageEvent(DamageEvent, OtherActor);
+			FGameplayEventData Payload;
+			Payload.EventTag = DamageEvent;
+			Payload.Instigator = GetInstigator();
+			Payload.Target = OtherActor;
+			ASC->HandleGameplayEvent(DamageEvent, &Payload);
+		}
 		
 		MaxHitCount--;
 		if (MaxHitCount == 0)

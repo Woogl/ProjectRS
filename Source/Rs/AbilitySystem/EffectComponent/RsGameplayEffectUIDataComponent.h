@@ -13,7 +13,7 @@ class RS_API URsGameplayEffectUIDataComponent : public UGameplayEffectUIData
 	
 public:
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "UI", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> Icon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")

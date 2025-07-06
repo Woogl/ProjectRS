@@ -9,6 +9,7 @@
 struct FGameplayEffectSpecHandle;
 class URsAbilityTask_PauseMontage;
 class URsAbilitySystemComponent;
+struct FGameplayEventData;
 /**
  * 
  */
@@ -25,8 +26,7 @@ private:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 
-	UFUNCTION()
-	void HandleAttackHit(const AActor* Target, const FGameplayTag& DamageEvent);
+	void HandleAttackHit(const FGameplayEventData* EventData);
 
 	TWeakObjectPtr<URsAbilityTask_PauseMontage> PauseMontageTask;
 };

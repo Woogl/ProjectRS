@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
-class URsGameplayAbility_Attack;
+class URsGameplayAbility;
 class UProjectileMovementComponent;
 class UCapsuleComponent;
 
@@ -35,7 +33,7 @@ public:
 public:	
 	ARsProjectile();
 	
-	void SetupDamage(URsGameplayAbility_Attack* OwningAbility, FGameplayTag DamageEventTag);
+	void SetupDamage(URsGameplayAbility* OwningAbility, FGameplayTag DamageEventTag);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
 	float MaxRange = 5000.f;
@@ -61,7 +59,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	TWeakObjectPtr<URsGameplayAbility_Attack> OwningAbility;
+	TWeakObjectPtr<URsGameplayAbility> OwningAbility;
 	
 	UPROPERTY()
 	FGameplayTag DamageEvent;

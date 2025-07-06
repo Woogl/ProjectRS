@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
+#include "RsAbilityEventInfo.h"
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
@@ -35,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> SkillIcon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
@@ -96,6 +97,8 @@ public:
 	// Contains state values. Useful for storing data between anim notifies.
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<URsGenericContainer> StatesContainer;
+
+	const TArray<FRsAbilityEventInfo>& GetAbilityEvents() const { return AbilityEvents; }
 	
 protected:
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
@@ -126,6 +129,24 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify", ForceInlineRow, TitleProperty="EventTag"))
+	TArray<FRsAbilityEventInfo> AbilityEvents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
+	TObjectPtr<UAnimMontage> MontageToPlay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
+	TArray<UAnimMontage*> OptionalMontages;
+	
+	UFUNCTION()
+	void HandleMontageCompleted();
+
+	UFUNCTION()
+	void HandleMontageCancelled();
+
+	UFUNCTION()
+	void HandleAbilityEvent(FGameplayEventData EventData);
 
 private:
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;

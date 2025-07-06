@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "RsAnimNotifyState_Targeting.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "RsAnimNotifyState_HitTrace.generated.h"
 
+class URsGameplayAbility;
 /**
  * 
  */
@@ -43,6 +43,5 @@ protected:
 
 	bool bStopTrace = false;
 
-	// TODO: class change (URsGameplayAbility_Attack -> URsGameplayAbility)
-	TWeakObjectPtr<URsGameplayAbility_Attack> CurrentAbility;
+	TWeakObjectPtr<URsGameplayAbility> CurrentAbility;
 };

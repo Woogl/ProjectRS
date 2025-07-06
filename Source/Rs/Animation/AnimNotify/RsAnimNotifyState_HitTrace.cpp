@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 DECLARE_STATS_GROUP(TEXT("RsAnimNotifyState"), STATGROUP_RSANIMNOTIFYSTATE, STATCAT_Advanced)
@@ -37,7 +37,7 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 		{
 			if (UGameplayAbility* AnimatingAbility = ASC->GetAnimatingAbility())
 			{
-				CurrentAbility = Cast<URsGameplayAbility_Attack>(AnimatingAbility);
+				CurrentAbility = Cast<URsGameplayAbility>(AnimatingAbility);
 			}
 		}
 	}
@@ -70,7 +70,15 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 		{
 			if (!HitTargets.Contains(Target))
 			{
-				CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
+				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
+				{
+					//CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
+					FGameplayEventData Payload;
+					Payload.EventTag = DamageEvent;
+					Payload.Instigator = MeshComp->GetOwner();
+					Payload.Target = Target;
+					ASC->HandleGameplayEvent(DamageEvent, &Payload);
+				}
 				HitTargets.Emplace(Target);
 			
 				if (bStopTraceWhenFirstHit)

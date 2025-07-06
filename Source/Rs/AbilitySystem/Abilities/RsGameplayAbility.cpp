@@ -4,7 +4,11 @@
 #include "RsGameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "EnhancedInputComponent.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
 
@@ -206,6 +210,30 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if (MontageToPlay)
+	{
+		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
+		{
+			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCancelled);
+			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
+			MontageTask->ReadyForActivation();
+		}
+	}
+
+	for (const FRsAbilityEventInfo& Event : AbilityEvents)
+	{
+		if (Event.EventTag.IsValid())
+		{
+			if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.EventTag))
+			{
+				HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleAbilityEvent);
+				HitDetectTask->ReadyForActivation();
+			}
+		}
+	}
 }
 
 void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -307,3 +335,34 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 
 	K2_OnRemoveAbility();
 }
+
+void URsGameplayAbility::HandleMontageCompleted()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void URsGameplayAbility::HandleMontageCancelled()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
+{
+	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
+	if (FRsAbilityEventInfo* AbilityEventInfo = AbilityEvents.FindByKey(EventData.EventTag))
+	{
+		for (TObjectPtr<URsEffectDefinition> EffectDefinition : AbilityEventInfo->EffectDefinitions)
+		{
+			EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+		}
+	}
+
+	// Post damage effect
+	if (EventData.EventTag.ToString().Contains(TEXT("Hit")))
+	{
+		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
+		ApplyCostRecovery();
+	}
+}
+
