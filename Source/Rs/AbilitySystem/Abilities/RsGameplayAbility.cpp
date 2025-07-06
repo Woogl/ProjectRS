@@ -376,6 +376,6 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
 		ApplyCostRecovery();
 	}
-	K2_OnPostAbilityEvent(EventData);
+	K2_OnAbilityEvent(EventData);
 }
 
