@@ -143,6 +143,32 @@ public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
+UENUM()
+enum class ECooldownModifingType
+{
+	PlusMinus,
+	Override
+};
+
+UCLASS(DisplayName = "Modify Cooldown")
+class RS_API URsEffectDefinition_ModifyCooldown : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Cooldown"))
+	FGameplayTag CooldownTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ECooldownModifingType ModifingType = ECooldownModifingType::PlusMinus;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Amount = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
 /**
  * Use this to select a specific effect class.
  */

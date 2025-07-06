@@ -121,6 +121,27 @@ void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, U
 	}
 }
 
+void URsEffectDefinition_ModifyCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
+	TArray<FActiveGameplayEffectHandle> CooldownEffects = SourceASC->GetActiveEffects(Query);
+	for (const FActiveGameplayEffectHandle& EffectHandle : CooldownEffects)
+	{
+		if (const FActiveGameplayEffect* CooldownEffect = SourceASC->GetActiveGameplayEffect(EffectHandle))
+		{
+			if (ModifingType == ECooldownModifingType::PlusMinus)
+			{
+				SourceASC->ModifyActiveEffectStartTime(EffectHandle, Amount);
+			}
+			else if (ModifingType == ECooldownModifingType::Override)
+			{
+				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
+				SourceASC->ModifyActiveEffectStartTime(EffectHandle, -TimeRemaining + Amount);
+			}
+		}
+	}
+}
+
 void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	// Apply custom effect
