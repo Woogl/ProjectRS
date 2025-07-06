@@ -134,10 +134,11 @@ protected:
 	TArray<FRsAbilityEventInfo> AbilityEvents;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	TObjectPtr<UAnimMontage> MontageToPlay;
+	TArray<UAnimMontage*> Montages;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
-	TArray<UAnimMontage*> OptionalMontages;
+	// Override in BP to select a montage. Defaults to a random one.
+	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
+	UAnimMontage* SetMontageToPlay();
 	
 	UFUNCTION()
 	void HandleMontageCompleted();
@@ -149,6 +150,9 @@ protected:
 	void HandleAbilityEvent(FGameplayEventData EventData);
 
 private:
+	UPROPERTY(Transient)
+	TObjectPtr<UAnimMontage> MontageToPlay;
+	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
 	int32 CurrentRechargeStacks = 0;

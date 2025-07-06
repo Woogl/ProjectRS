@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
 	FGameplayTag DamageEvent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bStopTraceWhenFirstHit = false;
-	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxSubsteps = 8;
@@ -40,8 +37,6 @@ protected:
 	
 	UPROPERTY()
 	TOptional<FTransform> LastSocketTransform;
-
-	bool bStopTrace = false;
-
+	
 	TWeakObjectPtr<URsGameplayAbility> CurrentAbility;
 };

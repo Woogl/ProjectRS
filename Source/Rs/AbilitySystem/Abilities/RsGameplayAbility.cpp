@@ -11,6 +11,7 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
+#include "UObject/ObjectSaveContext.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -211,6 +212,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	MontageToPlay = SetMontageToPlay();
 	if (MontageToPlay)
 	{
 		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
@@ -336,6 +338,17 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	K2_OnRemoveAbility();
 }
 
+UAnimMontage* URsGameplayAbility::SetMontageToPlay_Implementation()
+{
+	if (Montages.Num() == 0)
+	{
+		return nullptr;
+	}
+	
+	int32 RandomIndex = FMath::RandRange(0, Montages.Num() - 1);
+	return Montages[RandomIndex];
+}
+
 void URsGameplayAbility::HandleMontageCompleted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -358,7 +371,7 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 		}
 	}
 
-	// Post damage effect
+	// TODO: Refactor post ability event
 	if (EventData.EventTag.ToString().Contains(TEXT("Hit")))
 	{
 		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);

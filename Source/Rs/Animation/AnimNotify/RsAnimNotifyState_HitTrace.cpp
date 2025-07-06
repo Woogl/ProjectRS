@@ -42,8 +42,7 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 		}
 	}
 
-	bStopTrace = false;
-    HitTargets.Reset();
+	HitTargets.Reset();
 }
 
 void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -52,7 +51,7 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
    
     SCOPE_CYCLE_COUNTER(STAT_RsAnimNotifyState_HitTrace);
    
-    if (!MeshComp || !MeshComp->GetWorld() || !LastSocketTransform.IsSet() || bStopTrace)
+    if (!MeshComp || !MeshComp->GetWorld() || !LastSocketTransform.IsSet())
     {
        return;
     }
@@ -80,12 +79,6 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 					ASC->HandleGameplayEvent(DamageEvent, &Payload);
 				}
 				HitTargets.Emplace(Target);
-			
-				if (bStopTraceWhenFirstHit)
-				{
-					bStopTrace = true;
-					break;
-				}
 			}
 		}
 	}
