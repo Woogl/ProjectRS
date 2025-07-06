@@ -17,6 +17,7 @@ struct FRsGameplayMessage
 	GENERATED_BODY()
 	
 };
+
 /**
  * 
  */
@@ -129,6 +130,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnPostAbilityEvent")
+	void K2_OnPostAbilityEvent(const FGameplayEventData& EventData);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify", ForceInlineRow, TitleProperty="EventTag"))
 	TArray<FRsAbilityEventInfo> AbilityEvents;

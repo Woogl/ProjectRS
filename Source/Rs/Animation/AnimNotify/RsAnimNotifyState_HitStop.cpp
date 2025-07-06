@@ -13,10 +13,10 @@ void URsAnimNotifyState_HitStop::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 	if (UAbilitySystemComponent* ASC = OwnerASC.Get())
 	{
 		FGameplayTag HitScanTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitScan"));
-		FGameplayTag HitTraceTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitTrace"));
+		// FGameplayTag HitTraceTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitTrace"));
 		
 		ASC->GenericGameplayEventCallbacks.FindOrAdd(HitScanTag).AddUObject(this, &ThisClass::HandleAttackHit);
-		ASC->GenericGameplayEventCallbacks.FindOrAdd(HitTraceTag).AddUObject(this, &ThisClass::HandleAttackHit);
+		// ASC->GenericGameplayEventCallbacks.FindOrAdd(HitTraceTag).AddUObject(this, &ThisClass::HandleAttackHit);
 	}
 }
 
@@ -27,10 +27,10 @@ void URsAnimNotifyState_HitStop::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 	if (UAbilitySystemComponent* ASC = OwnerASC.Get())
 	{
 		FGameplayTag HitScanTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitScan"));
-		FGameplayTag HitTraceTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitTrace"));
+		// FGameplayTag HitTraceTag = FGameplayTag::RequestGameplayTag(TEXT("AnimNotify.HitTrace"));
 		
 		ASC->GenericGameplayEventCallbacks.FindOrAdd(HitScanTag).RemoveAll(this);
-		ASC->GenericGameplayEventCallbacks.FindOrAdd(HitTraceTag).RemoveAll(this);
+		// ASC->GenericGameplayEventCallbacks.FindOrAdd(HitTraceTag).RemoveAll(this);
 	}
 }
 

@@ -11,7 +11,6 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
-#include "UObject/ObjectSaveContext.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -377,5 +376,6 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
 		ApplyCostRecovery();
 	}
+	K2_OnPostAbilityEvent(EventData);
 }
 
