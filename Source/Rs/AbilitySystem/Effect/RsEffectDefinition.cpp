@@ -75,7 +75,7 @@ URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
 {
 	// Set default coefficient.
 	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATTACK_SOURCE, 1.f);
-	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMPACT_TARGET, 1.f);
+	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMPACT_SOURCE, 1.f);
 }
 
 void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
