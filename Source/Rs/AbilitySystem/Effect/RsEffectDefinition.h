@@ -67,6 +67,8 @@ class RS_API URsEffectDefinition_InstantDamage : public URsEffectDefinition_Dama
 	GENERATED_BODY()
 
 public:
+	URsEffectDefinition_InstantDamage();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
 	TMap<FGameplayTag, float> HealthDamageCoefficients;
 	
@@ -114,15 +116,15 @@ class RS_API URsEffectDefinition_DotBurstDamage : public URsEffectDefinition_Dam
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Amount")
-	float DamageMultiplierPerDotStacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageMultiplierPerDotStacks = 0.05f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
- * Buff effect that needs duration.
+ * Buff effect that has duration.
  */
 UCLASS(DisplayName = "Buff")
 class RS_API URsEffectDefinition_Buff : public URsEffectDefinition
@@ -146,12 +148,15 @@ public:
 UENUM()
 enum class ECooldownModifingType
 {
-	PlusMinus,
-	Override
+	Add,
+	Set
 };
 
-UCLASS(DisplayName = "Modify Cooldown")
-class RS_API URsEffectDefinition_ModifyCooldown : public URsEffectDefinition
+/**
+ * Changes the cooldown of an ability.
+ */
+UCLASS(DisplayName = "Change Cooldown")
+class RS_API URsEffectDefinition_ChangeCooldown : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
@@ -160,10 +165,30 @@ public:
 	FGameplayTag CooldownTag;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECooldownModifingType ModifingType = ECooldownModifingType::PlusMinus;
+	ECooldownModifingType ModifingType = ECooldownModifingType::Add;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Amount = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Changes an attribute. Only supports instant effects.
+ * WARNING: It is too much generic. Unsafe to use.
+ */
+UCLASS(DisplayName = "Change Attribute")
+class RS_API URsEffectDefinition_ChangeAttribute : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient"))
+	FGameplayTag AttributeTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AddAmount = 0.f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

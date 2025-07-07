@@ -71,6 +71,13 @@ void URsEffectDefinition_DamageBase::ApplyHitReaction(UAbilitySystemComponent* S
 	}
 }
 
+URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
+{
+	// Set default coefficient.
+	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATTACK_SOURCE, 1.f);
+	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATTACK_TARGET, 1.f);
+}
+
 void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
@@ -121,7 +128,7 @@ void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, U
 	}
 }
 
-void URsEffectDefinition_ModifyCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
 	TArray<FActiveGameplayEffectHandle> CooldownEffects = SourceASC->GetActiveEffects(Query);
@@ -129,15 +136,46 @@ void URsEffectDefinition_ModifyCooldown::ApplyEffect(UAbilitySystemComponent* So
 	{
 		if (const FActiveGameplayEffect* CooldownEffect = SourceASC->GetActiveGameplayEffect(EffectHandle))
 		{
-			if (ModifingType == ECooldownModifingType::PlusMinus)
+			if (ModifingType == ECooldownModifingType::Add)
 			{
 				SourceASC->ModifyActiveEffectStartTime(EffectHandle, Amount);
 			}
-			else if (ModifingType == ECooldownModifingType::Override)
+			else if (ModifingType == ECooldownModifingType::Set)
 			{
 				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
 				SourceASC->ModifyActiveEffectStartTime(EffectHandle, -TimeRemaining + Amount);
 			}
+		}
+	}
+}
+
+void URsEffectDefinition_ChangeAttribute::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	UAbilitySystemComponent* SelectedASC = nullptr;
+	if (AttributeTag.ToString().EndsWith(TEXT("Source")))
+	{
+		SelectedASC = SourceASC;
+	}
+	else if (AttributeTag.ToString().EndsWith(TEXT("Target")))
+	{
+		SelectedASC = TargetASC;
+	}
+	
+	if (SelectedASC)
+	{
+		// Create a dynamic instant Gameplay Effect
+		if (UGameplayEffect* DynamicGE = NewObject<UGameplayEffect>(SelectedASC))
+		{
+			DynamicGE->DurationPolicy = EGameplayEffectDurationType::Instant;
+			DynamicGE->Modifiers.SetNum(1);
+
+			FGameplayModifierInfo& ModifierInfo = DynamicGE->Modifiers[0];
+			ModifierInfo.ModifierMagnitude = FScalableFloat(AddAmount);
+			ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+			ModifierInfo.Attribute = URsDeveloperSetting::Get()->CoefficientTags.FindRef(AttributeTag);
+
+			// Apply a dynamic instant Gameplay Effect
+			SelectedASC->ApplyGameplayEffectToSelf(DynamicGE, 0.f, SelectedASC->MakeEffectContext());
 		}
 	}
 }
