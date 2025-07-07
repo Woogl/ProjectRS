@@ -22,11 +22,14 @@ void URsAnimNotify_GhostTrail::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 			SpawnedActor = Owner->GetWorld()->SpawnActorDeferred<ARsGhostTrail>(GhostTrailClass, FTransform::Identity, Owner);
 			SpawnedActor->InitAppearance(Component);
 
+#if WITH_EDITOR
+			// Prevent accumulate in EditorPreview.
 			if (UWorld* World = MeshComp->GetWorld())
 			{
 				FTimerHandle TimerHandle;
 				World->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::DestroyGhostTrail, SpawnedActor->LifeTime);
 			}
+#endif //WITH_EDITOR
 
 			// Location and Rotation will be set in ARsGhostTrail::BeginPlay().
 			SpawnedActor->FinishSpawning(FTransform::Identity);
