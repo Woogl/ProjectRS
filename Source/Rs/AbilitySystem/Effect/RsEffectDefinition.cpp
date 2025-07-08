@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
@@ -149,34 +151,50 @@ void URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* So
 	}
 }
 
-void URsEffectDefinition_ChangeAttribute::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+void URsEffectDefinition_GainEnergy::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	UAbilitySystemComponent* SelectedASC = nullptr;
-	if (AttributeTag.ToString().EndsWith(TEXT("Source")))
+	if (SourceASC == nullptr)
 	{
-		SelectedASC = SourceASC;
-	}
-	else if (AttributeTag.ToString().EndsWith(TEXT("Target")))
-	{
-		SelectedASC = TargetASC;
+		return;
 	}
 	
-	if (SelectedASC)
+	// Create a dynamic instant Gameplay Effect
+	if (UGameplayEffect* GainEnergyGE = NewObject<UGameplayEffect>(SourceASC))
 	{
-		// Create a dynamic instant Gameplay Effect
-		if (UGameplayEffect* DynamicGE = NewObject<UGameplayEffect>(SelectedASC))
-		{
-			DynamicGE->DurationPolicy = EGameplayEffectDurationType::Instant;
-			DynamicGE->Modifiers.SetNum(1);
+		GainEnergyGE->DurationPolicy = EGameplayEffectDurationType::Instant;
+		GainEnergyGE->Modifiers.SetNum(1);
 
-			FGameplayModifierInfo& ModifierInfo = DynamicGE->Modifiers[0];
-			ModifierInfo.ModifierMagnitude = FScalableFloat(AddAmount);
-			ModifierInfo.ModifierOp = EGameplayModOp::Additive;
-			ModifierInfo.Attribute = URsDeveloperSetting::Get()->CoefficientTags.FindRef(AttributeTag);
+		FGameplayModifierInfo& ModifierInfo = GainEnergyGE->Modifiers[0];
+		ModifierInfo.ModifierMagnitude = FScalableFloat(Amount);
+		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+		ModifierInfo.Attribute = URsEnergySet::GetCurrentEnergyAttribute();
 
-			// Apply a dynamic instant Gameplay Effect
-			SelectedASC->ApplyGameplayEffectToSelf(DynamicGE, 0.f, SelectedASC->MakeEffectContext());
-		}
+		// Apply a dynamic instant Gameplay Effect
+		SourceASC->ApplyGameplayEffectToSelf(GainEnergyGE, 0.f, SourceASC->MakeEffectContext());
+	}
+}
+
+void URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	if (SourceASC == nullptr || TargetASC == nullptr)
+	{
+		return;
+	}
+	
+	// Create a dynamic instant Gameplay Effect
+	if (UGameplayEffect* LifestealGE = NewObject<UGameplayEffect>(SourceASC))
+	{
+		LifestealGE->DurationPolicy = EGameplayEffectDurationType::Instant;
+		LifestealGE->Modifiers.SetNum(1);
+
+		FGameplayModifierInfo& ModifierInfo = LifestealGE->Modifiers[0];
+		float Amount = TargetASC->GetNumericAttribute(URsHealthSet::GetHealthDamageAttribute());
+		ModifierInfo.ModifierMagnitude = FScalableFloat(Amount);
+		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+		ModifierInfo.Attribute = URsHealthSet::GetCurrentHealthAttribute();
+
+		// Apply a dynamic instant Gameplay Effect
+		SourceASC->ApplyGameplayEffectToSelf(LifestealGE, 0.f, SourceASC->MakeEffectContext());
 	}
 }
 

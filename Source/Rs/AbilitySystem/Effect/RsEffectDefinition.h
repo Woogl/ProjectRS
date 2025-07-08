@@ -175,20 +175,33 @@ public:
 };
 
 /**
- * Changes an attribute. Only supports instant effects.
- * WARNING: It is too much generic. Unsafe to use.
+ * Gain energy for using ultimate skill.
  */
-UCLASS(DisplayName = "Change Attribute")
-class RS_API URsEffectDefinition_ChangeAttribute : public URsEffectDefinition
+UCLASS(DisplayName = "Gain Energy")
+class RS_API URsEffectDefinition_GainEnergy : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient"))
-	FGameplayTag AttributeTag;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AddAmount = 0.f;
+	float Amount = 10.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Gain current health based on target's damage.
+ * HealthGain = (HealthDamage * DamageMultiplier)
+ */
+UCLASS(DisplayName = "Lifesteal")
+class RS_API URsEffectDefinition_Lifesteal : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageMultiplier = 0.1f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
