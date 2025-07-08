@@ -9,6 +9,7 @@
 
 URsCoefficientCalculation::URsCoefficientCalculation()
 {
+	// NOTE: Captured attribute must exist in the source and target!
 	// Capture every attribute of source and target
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
 	{

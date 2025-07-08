@@ -366,7 +366,10 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	{
 		for (TObjectPtr<URsEffectDefinition> EffectDefinition : AbilityEventInfo->EffectDefinitions)
 		{
-			EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+			if (EffectDefinition)
+			{
+				EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+			}
 		}
 	}
 

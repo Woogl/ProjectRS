@@ -22,6 +22,12 @@ bool URsSuperArmorGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGa
 	FActiveGameplayEffectHandle& ActiveGEHandle = ActiveGE.Handle;
 	UAbilitySystemComponent* OwnerASC = ActiveGEContainer.Owner;
 
+	// Set default super armor tier.
+	if (OwnerASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorTierAttribute()) <= 0)
+	{
+		OwnerASC->SetNumericAttributeBase(URsDefenseSet::GetSuperArmorTierAttribute(), 0.f);
+	}
+
 	// Register our immunity query to potentially block applications of any Gameplay Effects
 	FGameplayEffectApplicationQuery& BoundQuery = OwnerASC->GameplayEffectApplicationQueries.AddDefaulted_GetRef();
 	BoundQuery.BindUObject(this, &ThisClass::AllowGameplayEffectApplication, ActiveGEHandle);

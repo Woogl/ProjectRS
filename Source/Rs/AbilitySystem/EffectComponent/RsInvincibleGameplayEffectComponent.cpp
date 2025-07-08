@@ -22,6 +22,12 @@ bool URsInvincibleGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGa
 	FActiveGameplayEffectHandle& ActiveGEHandle = ActiveGE.Handle;
 	UAbilitySystemComponent* OwnerASC = ActiveGEContainer.Owner;
 
+	// Set default invincible tier.
+	if (OwnerASC->GetNumericAttribute(URsDefenseSet::GetInvincibleTierAttribute()) <= 0)
+	{
+		OwnerASC->SetNumericAttributeBase(URsDefenseSet::GetInvincibleTierAttribute(), 0.f);
+	}
+
 	// Register our immunity query to potentially block applications of any Gameplay Effects
 	FGameplayEffectApplicationQuery& BoundQuery = OwnerASC->GameplayEffectApplicationQueries.AddDefaulted_GetRef();
 	BoundQuery.BindUObject(this, &ThisClass::AllowGameplayEffectApplication, ActiveGEHandle);
