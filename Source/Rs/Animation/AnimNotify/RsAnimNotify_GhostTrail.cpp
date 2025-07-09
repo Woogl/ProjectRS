@@ -9,6 +9,7 @@ void URsAnimNotify_GhostTrail::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	SpawnedGhostTrail == nullptr;
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		FActorSpawnParameters SpawnParameters;
@@ -19,28 +20,34 @@ void URsAnimNotify_GhostTrail::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		
 		for (USkeletalMeshComponent* Component : OutComponents)
 		{
-			SpawnedActor = Owner->GetWorld()->SpawnActorDeferred<ARsGhostTrail>(GhostTrailClass, FTransform::Identity, Owner);
-			SpawnedActor->InitAppearance(Component);
-
-#if WITH_EDITOR
-			// Prevent accumulate in EditorPreview.
-			if (UWorld* World = MeshComp->GetWorld())
+			if (Component->IsVisible() == false)
 			{
-				FTimerHandle TimerHandle;
-				World->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::DestroyGhostTrail, SpawnedActor->LifeTime);
+				continue;
 			}
+			
+			SpawnedGhostTrail = Owner->GetWorld()->SpawnActorDeferred<ARsGhostTrail>(GhostTrailClass, FTransform::Identity, Owner);
+			if (SpawnedGhostTrail)
+			{
+				SpawnedGhostTrail->InitAppearance(Component);
+#if WITH_EDITOR
+				// Prevent accumulate in EditorPreview.
+				if (UWorld* World = MeshComp->GetWorld())
+				{
+					FTimerHandle TimerHandle;
+					World->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::DestroyGhostTrail, SpawnedGhostTrail->LifeTime);
+				}
 #endif //WITH_EDITOR
-
-			// Location and Rotation will be set in ARsGhostTrail::BeginPlay().
-			SpawnedActor->FinishSpawning(FTransform::Identity);
+				// Location and Rotation will be set in ARsGhostTrail::BeginPlay().
+				SpawnedGhostTrail->FinishSpawning(FTransform::Identity);
+			}
 		}
 	}
 }
 
 void URsAnimNotify_GhostTrail::DestroyGhostTrail()
 {
-	if (SpawnedActor)
+	if (SpawnedGhostTrail)
 	{
-		SpawnedActor->Destroy();
+		SpawnedGhostTrail->Destroy();
 	}
 }

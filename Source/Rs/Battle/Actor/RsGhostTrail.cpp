@@ -17,7 +17,7 @@ void ARsGhostTrail::InitAppearance(USkeletalMeshComponent* OwnerComponent)
 {
 	if (USkeletalMesh* SkeletalMesh = OwnerComponent->GetSkeletalMeshAsset(); OwnerComponent->IsVisible())
 	{
-		PoseableMesh->SetSkinnedAsset(SkeletalMesh);
+		PoseableMesh->SetSkinnedAssetAndUpdate(SkeletalMesh);
 		PoseableMesh->CopyPoseFromSkeletalComponent(OwnerComponent);
 		PoseableMesh->SetWorldTransform(OwnerComponent->GetComponentTransform());
 	}
