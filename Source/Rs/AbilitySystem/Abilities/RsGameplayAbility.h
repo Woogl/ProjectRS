@@ -54,9 +54,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	float CostRecoveryAmount;
 
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
