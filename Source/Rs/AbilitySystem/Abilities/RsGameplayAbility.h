@@ -54,9 +54,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostRecoveryAmount;
@@ -71,8 +68,6 @@ public:
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-
-	void ApplyCostRecovery();
 	
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void ModifyCooldownRemaining(float TimeDiff);

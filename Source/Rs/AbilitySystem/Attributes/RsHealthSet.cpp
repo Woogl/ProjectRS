@@ -70,8 +70,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	if (Data.EvaluatedData.Attribute == GetHealthDamageAttribute())
 	{
 		float LocalHealthDamage = GetHealthDamage();
-   		SetHealthDamage(0.f);
-		
 		if (LocalHealthDamage > 0.f)
 		{
 			if (GetShield() > 0.f)

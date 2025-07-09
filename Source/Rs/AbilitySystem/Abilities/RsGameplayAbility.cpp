@@ -71,17 +71,6 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	}
 }
 
-void URsGameplayAbility::ApplyCostRecovery()
-{
-	if (CostRecoveryEffectClass)
-	{
-		if (UGameplayEffect* CostRecoveryEffect = CostRecoveryEffectClass->GetDefaultObject<UGameplayEffect>())
-		{
-			ApplyGameplayEffectToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, CostRecoveryEffect, GetAbilityLevel());
-		}
-	}
-}
-
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
 {
 	if (CurrentCooldownHandle.IsValid())
@@ -377,7 +366,6 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	if (EventData.EventTag.ToString().Contains(TEXT("Hit")))
 	{
 		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
-		ApplyCostRecovery();
 	}
 	K2_OnAbilityEvent(EventData);
 }
