@@ -28,11 +28,11 @@ public:
 
 	// Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability")
-	TSet<TSubclassOf<URsGameplayAbility>> GrantedAbilities;
+	TArray<TSubclassOf<URsGameplayAbility>> GrantedAbilities;
 
 	// Gameplay Effects to apply.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effect")
-	TSet<TSubclassOf<UGameplayEffect>> GrantedEffects;
+	TArray<TSubclassOf<UGameplayEffect>> GrantedEffects;
 
 	// Gameplay Tags to add.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Tag")
