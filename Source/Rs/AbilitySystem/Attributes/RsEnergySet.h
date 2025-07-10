@@ -31,10 +31,6 @@ public:
 	FGameplayAttributeData MaxEnergy;
 	ATTRIBUTE_ACCESSORS(URsEnergySet, MaxEnergy)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_EnergyRegen)
-	FGameplayAttributeData EnergyRegen;
-	ATTRIBUTE_ACCESSORS(URsEnergySet, EnergyRegen)
-
 	// Special resource for character-specific mechanics or abilities.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentSpecial)
 	FGameplayAttributeData CurrentSpecial;
@@ -50,9 +46,6 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_MaxEnergy(const FGameplayAttributeData& OldValue);
-
-	UFUNCTION()
-	virtual void OnRep_EnergyRegen(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
 	virtual void OnRep_CurrentSpecial(const FGameplayAttributeData& OldValue);

@@ -21,11 +21,9 @@ void URsEnergySetViewModel::Initialize()
 	{
 		SetMaxEnergy(Model->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
 		SetCurrentEnergy(Model->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
-		SetEnergyRegen(Model->GetNumericAttribute(URsEnergySet::GetEnergyRegenAttribute()));
 		
 		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
 		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).AddUObject(this, &ThisClass::EnergyRegenChanged);
 	}
 }
 
@@ -37,7 +35,6 @@ void URsEnergySetViewModel::Deinitialize()
 	{
 		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
 		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetEnergyRegenAttribute()).RemoveAll(this);
 	}
 }
 

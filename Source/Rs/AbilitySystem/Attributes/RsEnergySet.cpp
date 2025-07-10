@@ -11,7 +11,6 @@ URsEnergySet::URsEnergySet()
 {
 	CurrentEnergy = 0.f;
 	MaxEnergy = 0.f;
-	EnergyRegen = 0.f;
 	CurrentSpecial = 0.f;
 	MaxSpecial = 0.f;
 }
@@ -30,7 +29,6 @@ void URsEnergySet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	// Only Owner
 	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, EnergyRegen, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentSpecial, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxSpecial, Params);
 }
@@ -43,14 +41,6 @@ void URsEnergySet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}
-	else if (Attribute == GetCurrentEnergyAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxEnergy());
-	}
-	else if (Attribute == GetCurrentSpecialAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, 0.f, GetCurrentEnergy());
-	}
 }
 
 void URsEnergySet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -60,10 +50,6 @@ void URsEnergySet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	if (Data.EvaluatedData.Attribute == GetCurrentEnergyAttribute())
 	{
 		SetCurrentEnergy(FMath::Clamp(GetCurrentEnergy(), 0.f, GetMaxEnergy()));
-	}
-	else if (Data.EvaluatedData.Attribute == GetEnergyRegenAttribute())
-	{
-		SetEnergyRegen(FMath::Clamp(GetEnergyRegen(), 0.f, GetMaxEnergy()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetCurrentSpecialAttribute())
 	{
@@ -79,11 +65,6 @@ void URsEnergySet::OnRep_CurrentEnergy(const FGameplayAttributeData& OldValue)
 void URsEnergySet::OnRep_MaxEnergy(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, MaxEnergy, OldValue);
-}
-
-void URsEnergySet::OnRep_EnergyRegen(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, EnergyRegen, OldValue);
 }
 
 void URsEnergySet::OnRep_CurrentSpecial(const FGameplayAttributeData& OldValue)
