@@ -7,7 +7,7 @@
 #include "RsCoefficientCalculation.generated.h"
 
 /**
- * 
+ * Calculate magnitude based on captured attributes from source and target.
  */
 UCLASS()
 class RS_API URsCoefficientCalculation : public UGameplayModMagnitudeCalculation
