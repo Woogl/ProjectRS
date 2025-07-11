@@ -37,3 +37,19 @@ void ARsGhostTrail::BeginPlay()
 		}
 	}
 }
+
+#if WITH_EDITOR
+void ARsGhostTrail::PostEditChangeProperty(FPropertyChangedEvent& InPropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(InPropertyChangedEvent);
+
+	const FName PropertyName = InPropertyChangedEvent.Property != nullptr ? InPropertyChangedEvent.Property->GetFName() : NAME_None;
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Material))
+	{
+		for (int32 i = 0; i < PoseableMesh->GetNumMaterials(); i++)
+		{
+			PoseableMesh->SetMaterial(i, Material);
+		}
+	}
+}
+#endif //WITH_EDITOR
