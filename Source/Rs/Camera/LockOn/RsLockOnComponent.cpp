@@ -25,16 +25,9 @@ bool URsLockOnComponent::ToggleLockOn()
 			LockOn(OutActors[0]);
 			return true;
 		}
-		else
-		{
-			return false;
-		}
 	}
-	else
-	{
-		LockOff();
-		return false;
-	}
+	LockOff();
+	return false;
 }
 
 void URsLockOnComponent::LockOn(AActor* TargetActor)
