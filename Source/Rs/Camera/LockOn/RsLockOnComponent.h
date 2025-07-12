@@ -25,7 +25,7 @@ public:
 	bool ToggleLockOn();
 	
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	void LockOn(AActor* TargetActor);
+	bool LockOn(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	void LockOff();

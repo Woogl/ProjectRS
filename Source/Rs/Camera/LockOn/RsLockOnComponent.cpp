@@ -56,8 +56,7 @@ bool URsLockOnComponent::ToggleLockOn()
 				TArray<AActor*> OutActors;
 				if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
 				{
-					LockOn(OutActors[0]);
-					return true;
+					return LockOn(OutActors[0]);
 				}
 			}
 		}
@@ -66,13 +65,13 @@ bool URsLockOnComponent::ToggleLockOn()
 	return false;
 }
 
-void URsLockOnComponent::LockOn(AActor* TargetActor)
+bool URsLockOnComponent::LockOn(AActor* TargetActor)
 {
 	if (IRsLockOnInterface* LockOnInterface = Cast<IRsLockOnInterface>(TargetActor))
 	{
 		if (LockOnInterface->Execute_IsLockableTarget(TargetActor) == false)
 		{
-			return;
+			return false;
 		}
 	}
 
@@ -115,6 +114,7 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 	}
 
 	SetComponentTickEnabled(true);
+	return true;
 }
 
 void URsLockOnComponent::LockOff()
