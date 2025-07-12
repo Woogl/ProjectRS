@@ -17,27 +17,28 @@ class RS_API URsEnergySet : public URsAttributeSetBase
 public:
 	URsEnergySet();
 	
-	// Set Attributes to replicate.
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	// Attribute Set Overrides.
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	// Holds the current value for Energy.
+	// Cost for ultimate skill.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentEnergy)
 	FGameplayAttributeData CurrentEnergy;
 	ATTRIBUTE_ACCESSORS(URsEnergySet, CurrentEnergy)
 
-	// Holds the value for Maximum Energy.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxEnergy)
 	FGameplayAttributeData MaxEnergy;
 	ATTRIBUTE_ACCESSORS(URsEnergySet, MaxEnergy)
 
-	// Holds the value for Energy Regeneration.
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_EnergyRegen)
-	FGameplayAttributeData EnergyRegen;
-	ATTRIBUTE_ACCESSORS(URsEnergySet, EnergyRegen)
+	// Special resource for character-specific mechanics or abilities.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentSpecial)
+	FGameplayAttributeData CurrentSpecial;
+	ATTRIBUTE_ACCESSORS(URsEnergySet, CurrentSpecial)
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxSpecial)
+	FGameplayAttributeData MaxSpecial;
+	ATTRIBUTE_ACCESSORS(URsEnergySet, MaxSpecial)
 
 protected:
 	UFUNCTION()
@@ -47,5 +48,8 @@ protected:
 	virtual void OnRep_MaxEnergy(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
-	virtual void OnRep_EnergyRegen(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_CurrentSpecial(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_MaxSpecial(const FGameplayAttributeData& OldValue);
 };

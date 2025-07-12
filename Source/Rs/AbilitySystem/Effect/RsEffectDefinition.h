@@ -45,7 +45,7 @@ public:
 	FGameplayTagContainer AdditionalDamageTags;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
-	FGameplayTag HitReaction;
+	FGameplayTag HitReaction = FGameplayTag::RequestGameplayTag(TEXT("Ability.HitReaction"));
 	
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const;
 	void ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff);
@@ -67,6 +67,8 @@ class RS_API URsEffectDefinition_InstantDamage : public URsEffectDefinition_Dama
 	GENERATED_BODY()
 
 public:
+	URsEffectDefinition_InstantDamage();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
 	TMap<FGameplayTag, float> HealthDamageCoefficients;
 	
@@ -114,15 +116,15 @@ class RS_API URsEffectDefinition_DotBurstDamage : public URsEffectDefinition_Dam
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage Amount")
-	float DamageMultiplierPerDotStacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageMultiplierPerDotStacks = 0.05f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
- * Buff effect that needs duration.
+ * Buff effect that has duration.
  */
 UCLASS(DisplayName = "Buff")
 class RS_API URsEffectDefinition_Buff : public URsEffectDefinition
@@ -138,6 +140,68 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+UENUM()
+enum class ECooldownModifingType
+{
+	Add,
+	Set
+};
+
+/**
+ * Changes the cooldown of an ability.
+ */
+UCLASS(DisplayName = "Change Cooldown")
+class RS_API URsEffectDefinition_ChangeCooldown : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Cooldown"))
+	FGameplayTag CooldownTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ECooldownModifingType ModifingType = ECooldownModifingType::Add;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Amount = 0.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Gain energy for using ultimate skill.
+ */
+UCLASS(DisplayName = "Gain Energy")
+class RS_API URsEffectDefinition_GainEnergy : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Amount = 10.f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+/**
+ * Gain current health based on target's damage.
+ * HealthGain = (HealthDamage * DamageMultiplier)
+ */
+UCLASS(DisplayName = "Lifesteal")
+class RS_API URsEffectDefinition_Lifesteal : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageMultiplier = 0.1f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

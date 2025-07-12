@@ -23,7 +23,7 @@ public:
 
 private:
 	UPROPERTY()
-	ARsGhostTrail* SpawnedActor;
+	TObjectPtr<ARsGhostTrail> SpawnedGhostTrail;
 
 	void DestroyGhostTrail();
 };

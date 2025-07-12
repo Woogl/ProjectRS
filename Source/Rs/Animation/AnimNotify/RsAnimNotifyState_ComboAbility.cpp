@@ -21,7 +21,7 @@ void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshCo
 		}
 		else
 		{
-			WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
+			WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction);
 			WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
 			WaitInputTask->ReadyForActivation();
 		}
@@ -45,7 +45,7 @@ void URsAnimNotifyState_ComboAbility::NotifyEnd(USkeletalMeshComponent* MeshComp
 
 void URsAnimNotifyState_ComboAbility::HandleGameplayEvent(FGameplayEventData Payload)
 {
-	WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction, bTriggerOnce);
+	WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction);
 	WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
 	WaitInputTask->ReadyForActivation();
 }

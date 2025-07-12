@@ -10,6 +10,7 @@
 URsCoefficientCalculation::URsCoefficientCalculation()
 {
 	// Capture every attribute of source and target
+	// NOTE: Attributes to be captured must exist in the source and target!
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
 	{
 		if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))

@@ -7,6 +7,7 @@
 #include "AbilitySystemGlobals.h"
 #include "GameFramework/Character.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 
 void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -49,7 +50,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 
 		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
 		{
-			Projectile->SetupDamage(Cast<URsGameplayAbility_Attack>(CurrentAbility), DamageEventTag);
+			Projectile->SetupDamage(Cast<URsGameplayAbility>(CurrentAbility), DamageEventTag);
 			FRotator SpawnRotation;
 
 			switch (Projectile->Direction)

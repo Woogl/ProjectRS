@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 DECLARE_STATS_GROUP(TEXT("RsAnimNotifyState"), STATGROUP_RSANIMNOTIFYSTATE, STATCAT_Advanced)
@@ -37,13 +37,12 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 		{
 			if (UGameplayAbility* AnimatingAbility = ASC->GetAnimatingAbility())
 			{
-				CurrentAbility = Cast<URsGameplayAbility_Attack>(AnimatingAbility);
+				CurrentAbility = Cast<URsGameplayAbility>(AnimatingAbility);
 			}
 		}
 	}
 
-	bStopTrace = false;
-    HitTargets.Reset();
+	HitTargets.Reset();
 }
 
 void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -52,7 +51,7 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
    
     SCOPE_CYCLE_COUNTER(STAT_RsAnimNotifyState_HitTrace);
    
-    if (!MeshComp || !MeshComp->GetWorld() || !LastSocketTransform.IsSet() || bStopTrace)
+    if (!MeshComp || !MeshComp->GetWorld() || !LastSocketTransform.IsSet())
     {
        return;
     }
@@ -70,14 +69,16 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 		{
 			if (!HitTargets.Contains(Target))
 			{
-				CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
-				HitTargets.Emplace(Target);
-			
-				if (bStopTraceWhenFirstHit)
+				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
 				{
-					bStopTrace = true;
-					break;
+					//CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
+					FGameplayEventData Payload;
+					Payload.EventTag = DamageEvent;
+					Payload.Instigator = MeshComp->GetOwner();
+					Payload.Target = Target;
+					ASC->HandleGameplayEvent(DamageEvent, &Payload);
 				}
+				HitTargets.Emplace(Target);
 			}
 		}
 	}

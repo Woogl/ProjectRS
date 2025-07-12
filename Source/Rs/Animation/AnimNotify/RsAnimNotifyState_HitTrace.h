@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "RsAnimNotifyState_Targeting.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "RsAnimNotifyState_HitTrace.generated.h"
 
+class URsGameplayAbility;
 /**
  * 
  */
@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
 	FGameplayTag DamageEvent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bStopTraceWhenFirstHit = false;
-	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxSubsteps = 8;
@@ -40,9 +37,6 @@ protected:
 	
 	UPROPERTY()
 	TOptional<FTransform> LastSocketTransform;
-
-	bool bStopTrace = false;
-
-	// TODO: class change (URsGameplayAbility_Attack -> URsGameplayAbility)
-	TWeakObjectPtr<URsGameplayAbility_Attack> CurrentAbility;
+	
+	TWeakObjectPtr<URsGameplayAbility> CurrentAbility;
 };

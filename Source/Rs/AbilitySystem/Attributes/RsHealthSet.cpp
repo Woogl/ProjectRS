@@ -9,10 +9,10 @@
 
 URsHealthSet::URsHealthSet()
 {
-	MaxHealth = 0.0f;
-	CurrentHealth = 0.0f;
-	HealthRegen = 0.0f;
-	Shield = 0.0f;
+	MaxHealth = 0.f;
+	CurrentHealth = 0.f;
+	HealthRegen = 0.f;
+	Shield = 0.f;
 }
 
 void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -44,7 +44,7 @@ void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	
 	else if (Attribute == GetCurrentHealthAttribute())
 	{
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
 
 	else if (Attribute == GetShieldAttribute())
@@ -70,8 +70,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	if (Data.EvaluatedData.Attribute == GetHealthDamageAttribute())
 	{
 		float LocalHealthDamage = GetHealthDamage();
-   		SetHealthDamage(0.f);
-		
 		if (LocalHealthDamage > 0.f)
 		{
 			if (GetShield() > 0.f)
@@ -83,7 +81,7 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 					HealthComponent->ApplyDamageToShields(GetOwningAbilitySystemComponent(), Absorbed);
 				}
 			}
-			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.0f, GetMaxHealth()));
+			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.f, GetMaxHealth()));
 		}
 	}
 	
@@ -96,13 +94,13 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		{
 			// Apply the Health change and then clamp it.
 			const float NewHealth = GetCurrentHealth() + LocalHealingDone;
-			SetCurrentHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+			SetCurrentHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 		}
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
-		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaxHealth()));
+		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.f, GetMaxHealth()));
 	}
 }
 

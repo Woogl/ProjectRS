@@ -51,7 +51,10 @@ void UBTTask_ActivateAbility::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, 
 		{
 			if (AAIController* AIOwner = OwnerComp.GetAIOwner())
 			{
-				UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(AIOwner)->CancelAbility(Ability);
+				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(AIOwner))
+				{
+					ASC->CancelAbility(Ability);
+				}
 			}
 		}
 	}

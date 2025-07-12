@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "ActiveGameplayEffectHandle.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility_Attack.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsBattleLibrary.generated.h"
 

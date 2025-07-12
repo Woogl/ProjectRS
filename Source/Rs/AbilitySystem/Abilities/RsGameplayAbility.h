@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
+#include "RsAbilityEventInfo.h"
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
@@ -29,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> SkillIcon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
@@ -47,12 +48,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	TSubclassOf<UGameplayEffect> CostRecoveryEffectClass;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	float CostRecoveryAmount;
-
 	// Returns the "Avatar Character" associated with this Gameplay Ability.
 	// Will return null if the Avatar Actor does not derive from Character.
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -63,8 +58,6 @@ public:
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-
-	void ApplyCostRecovery();
 	
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void ModifyCooldownRemaining(float TimeDiff);
@@ -90,6 +83,8 @@ public:
 	// Contains state values. Useful for storing data between anim notifies.
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<URsGenericContainer> StatesContainer;
+
+	const TArray<FRsAbilityEventInfo>& GetAbilityEvents() const { return AbilityEvents; }
 	
 protected:
 	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
@@ -121,7 +116,32 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityEvent")
+	void K2_OnAbilityEvent(const FGameplayEventData& EventData);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify", ForceInlineRow, TitleProperty="EventTag"))
+	TArray<FRsAbilityEventInfo> AbilityEvents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
+	TArray<UAnimMontage*> Montages;
+
+	// Override in BP to select a montage. Defaults to a random one.
+	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
+	UAnimMontage* SetMontageToPlay();
+	
+	UFUNCTION()
+	void HandleMontageCompleted();
+
+	UFUNCTION()
+	void HandleMontageCancelled();
+
+	UFUNCTION()
+	void HandleAbilityEvent(FGameplayEventData EventData);
+
 private:
+	UPROPERTY(Transient)
+	TObjectPtr<UAnimMontage> MontageToPlay;
+	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
 	int32 CurrentRechargeStacks = 0;
