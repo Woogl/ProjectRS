@@ -4,6 +4,7 @@
 #include "RsActiveEffectViewModel.h"
 
 #include "Components/SlateWrapperTypes.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/EffectComponent/RsGameplayEffectUIDataComponent.h"
 
@@ -54,7 +55,10 @@ UObject* URsActiveEffectViewModel::GetIcon() const
 {
 	if (CachedASC.Get() && CachedModel)
 	{
-		return FindRsUIData(*CachedModel)->Icon;
+		if (const URsGameplayEffectUIDataComponent* UIData = FindRsUIData(*CachedModel))
+		{
+			return UIData->Icon;
+		}
 	}
 	return nullptr;
 }
@@ -63,7 +67,10 @@ FText URsActiveEffectViewModel::GetDescription() const
 {
 	if (CachedASC.Get() && CachedModel)
 	{
-		return FindRsUIData(*CachedModel)->Description;
+		if (const URsGameplayEffectUIDataComponent* UIData = FindRsUIData(*CachedModel))
+		{
+			return UIData->Description;
+		}
 	}
 	return FText();
 }
