@@ -253,7 +253,7 @@ void URsGameplayAbility::HandleInputPressedEvent(const FGameplayAbilityActorInfo
 	
 	Spec->InputPressed = true;
 	
-	if (!Spec->IsActive())
+	if (!Spec->IsActive() || bRetriggerInstancedAbility)
 	{
 		// Ability is not active, so try to activate it
 		AbilitySystemComponent->TryActivateAbility(SpecHandle);

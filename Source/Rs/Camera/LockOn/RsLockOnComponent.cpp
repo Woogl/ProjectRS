@@ -12,18 +12,54 @@
 
 URsLockOnComponent::URsLockOnComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = false;
+}
+
+void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	AActor* Target = GetLockOnTarget();
+	if (!Target)
+	{
+		return;
+	}
+	AController* Controller = Cast<AController>(GetOwner());
+	if (!Controller)
+	{
+		return;
+	}
+	APawn* ControlledPawn = Controller->GetPawn();
+	if (!ControlledPawn)
+	{
+		return;
+	}
+
+	FVector TargetLocation = Target->GetActorLocation();
+	FVector PawnLocation = ControlledPawn->GetActorLocation();
+	double Distance = FVector::Dist(TargetLocation, PawnLocation);
+	if (Distance > MaxTargetDistance)
+	{
+		LockOff();
+	}
 }
 
 bool URsLockOnComponent::ToggleLockOn()
 {
 	if (GetLockOnTarget() == nullptr)
 	{
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(GetOwner(), GetOwner()->GetActorTransform(), TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
+		if (AController* Controller = Cast<AController>(GetOwner()))
 		{
-			LockOn(OutActors[0]);
-			return true;
+			if (APawn* ControlledPawn = Controller->GetPawn())
+			{
+				TArray<AActor*> OutActors;
+				if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
+				{
+					LockOn(OutActors[0]);
+					return true;
+				}
+			}
 		}
 	}
 	LockOff();
@@ -46,8 +82,8 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 		ReticleComponent.Get()->DestroyComponent();
 	}
 
-	LockedOnTarget = TargetActor;
-	if (LockedOnTarget.IsValid())
+	LockOnTarget = TargetActor;
+	if (LockOnTarget.IsValid())
 	{
 		// Create new reticle widget.
 		ReticleComponent = NewObject<UWidgetComponent>(TargetActor);
@@ -67,7 +103,7 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 			ReticleComponent->RegisterComponent();
 		}
 
-		if (URsHealthComponent* HealthComponent = LockedOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
+		if (URsHealthComponent* HealthComponent = LockOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
 		{
 			HealthComponent->OnDeathStarted.AddUniqueDynamic(this, &ThisClass::HandleDeathStarted);
 		}
@@ -77,17 +113,19 @@ void URsLockOnComponent::LockOn(AActor* TargetActor)
 	{
 		RsPlayerController->CameraRig = ERsCameraRig::LockOn;
 	}
+
+	SetComponentTickEnabled(true);
 }
 
 void URsLockOnComponent::LockOff()
 {
-	if (LockedOnTarget.IsValid())
+	if (LockOnTarget.IsValid())
 	{
-		if (URsHealthComponent* HealthComponent = LockedOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
+		if (URsHealthComponent* HealthComponent = LockOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
 		{
 			HealthComponent->OnDeathStarted.RemoveAll(this);
 		}
-		LockedOnTarget.Reset();
+		LockOnTarget.Reset();
 	}
 
 	if (ReticleComponent.IsValid())
@@ -99,11 +137,13 @@ void URsLockOnComponent::LockOff()
 	{
 		RsPlayerController->CameraRig = ERsCameraRig::ThirdPerson;
 	}
+	
+	SetComponentTickEnabled(false);
 }
 
 AActor* URsLockOnComponent::GetLockOnTarget() const
 {
-	return LockedOnTarget.Get();
+	return LockOnTarget.Get();
 }
 
 void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)

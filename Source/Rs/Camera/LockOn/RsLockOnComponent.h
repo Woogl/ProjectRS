@@ -18,6 +18,8 @@ class RS_API URsLockOnComponent : public UActorComponent
 
 public:	
 	URsLockOnComponent();
+	
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	bool ToggleLockOn();
@@ -43,6 +45,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	FRsTargetingSorter TargetingSorter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	float MaxTargetDistance = 5000.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<UUserWidget> ReticleWidget;
@@ -57,7 +62,7 @@ protected:
 	void HandleDeathStarted(AActor* DeadActor);
 
 private:
-	TWeakObjectPtr<AActor> LockedOnTarget;
+	TWeakObjectPtr<AActor> LockOnTarget;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Widget")
 	TWeakObjectPtr<UWidgetComponent> ReticleComponent;
