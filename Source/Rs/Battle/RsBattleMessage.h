@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "RsBattleMessage.generated.h"
 
-class ARsCharacterBase;
 /**
  * 
  */
@@ -15,5 +14,11 @@ struct FRsLinkSkillMessage
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ARsCharacterBase* TriggeredCharacter;
+	AActor* TriggeredCharacter;
+}; 
+
+USTRUCT(BlueprintType)
+struct FRsGameplayMessage
+{
+	GENERATED_BODY()
 };
