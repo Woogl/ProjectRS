@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsLockOnComponent.generated.h"
 
 
@@ -19,20 +20,29 @@ public:
 	URsLockOnComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
+	bool ToggleLockOn();
+	
+	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	void LockOn(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	void LockOff();
 
 	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
-	bool HasLockOnTarget() const;
-
-	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
-	AActor* GetLockedOnTarget() const;
+	AActor* GetLockOnTarget() const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	FGameplayTag LockOnAbilityTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	FRsTargetingCollision TargetingCollision;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	FRsTargetingFilter TargetingFilter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	FRsTargetingSorter TargetingSorter;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<UUserWidget> ReticleWidget;

@@ -31,7 +31,7 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 			{
 				if (URsLockOnComponent* LockOnComponent = RsPlayerController->GetLockOnComponent())
 				{
-					TeleportTarget = LockOnComponent->GetLockedOnTarget();
+					TeleportTarget = LockOnComponent->GetLockOnTarget();
 				}
 			}
 			

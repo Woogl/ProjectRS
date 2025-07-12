@@ -8,10 +8,33 @@
 #include "Components/WidgetComponent.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Player/RsPlayerController.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsLockOnComponent::URsLockOnComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+bool URsLockOnComponent::ToggleLockOn()
+{
+	if (GetLockOnTarget() == nullptr)
+	{
+		TArray<AActor*> OutActors;
+		if (URsTargetingLibrary::PerformTargeting(GetOwner(), GetOwner()->GetActorTransform(), TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
+		{
+			LockOn(OutActors[0]);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		LockOff();
+		return false;
+	}
 }
 
 void URsLockOnComponent::LockOn(AActor* TargetActor)
@@ -85,12 +108,7 @@ void URsLockOnComponent::LockOff()
 	}
 }
 
-bool URsLockOnComponent::HasLockOnTarget() const
-{
-	return LockedOnTarget.IsValid();
-}
-
-AActor* URsLockOnComponent::GetLockedOnTarget() const
+AActor* URsLockOnComponent::GetLockOnTarget() const
 {
 	return LockedOnTarget.Get();
 }
