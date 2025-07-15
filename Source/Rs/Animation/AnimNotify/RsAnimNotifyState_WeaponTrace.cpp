@@ -26,8 +26,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	{
 		return;
 	}
-
-	WeaponComponent = Owner->FindComponentByTag<UMeshComponent>(ComponentTag);
+	WeaponComponent = Owner->FindComponentByTag<USceneComponent>(ComponentTag);
 	if (!WeaponComponent.IsValid())
 	{
 		return;

@@ -20,14 +20,12 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	{
 		return;
 	}
-
 	AActor* Owner = MeshComp->GetOwner();
 	if (!Owner)
 	{
 		return;
 	}
-
-	UMeshComponent* WeaponComponent = Owner->FindComponentByTag<UMeshComponent>(ComponentTag);
+	USceneComponent* WeaponComponent = Owner->FindComponentByTag<USceneComponent>(ComponentTag);
 	if (!WeaponComponent)
 	{
 		return;

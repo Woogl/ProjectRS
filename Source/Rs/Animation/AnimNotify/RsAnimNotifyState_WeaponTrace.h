@@ -50,7 +50,7 @@ protected:
 
 	FTransform GetWeaponTransform() const;
 	
-	TWeakObjectPtr<UMeshComponent> WeaponComponent;
+	TWeakObjectPtr<USceneComponent> WeaponComponent;
 
 	// Ignore already hit actors
 	UPROPERTY()
