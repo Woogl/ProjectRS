@@ -32,11 +32,12 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	{
 		return;
 	}
+
+	LastTransform = GetWeaponTransform();
 	
-	LastTransform = WeaponComponent->GetComponentTransform();
 	Collision.ShapeType = ShapeType;
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent();
+	Collision.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Scale;
 
 	HitTargets.Empty();
 }
@@ -54,10 +55,9 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	{
 		return;
 	}
-
-	FTransform CurrentTransform = WeaponComponent->GetComponentTransform();
+	
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, CurrentTransform, MaxSubsteps, Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
@@ -78,5 +78,16 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	}
 
 	// Keep old transform for next tick.
-	LastTransform = CurrentTransform;
+	LastTransform = GetWeaponTransform();
+}
+
+FTransform URsAnimNotifyState_WeaponTrace::GetWeaponTransform() const
+{
+	if (!WeaponComponent.IsValid())
+	{
+		return FTransform::Identity;
+	}
+	FTransform CurrentTransform = WeaponComponent->GetComponentTransform();
+	CurrentTransform.SetLocation(WeaponComponent->Bounds.Origin);
+	return CurrentTransform;
 }

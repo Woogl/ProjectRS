@@ -10,6 +10,7 @@
 /**
  * 
  */
+// TODO: Make it compatible with RsWeapon class
 UCLASS()
 class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 {
@@ -18,8 +19,11 @@ class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 public:
 	URsAnimNotifyState_WeaponTrace();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	FName ComponentTag = FName("Weapon");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	FVector Scale = FVector::OneVector;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
@@ -44,6 +48,8 @@ protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
+	FTransform GetWeaponTransform() const;
+	
 	TWeakObjectPtr<UMeshComponent> WeaponComponent;
 
 	// Ignore already hit actors
