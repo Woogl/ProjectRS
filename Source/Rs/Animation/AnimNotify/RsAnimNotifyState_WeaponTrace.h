@@ -23,7 +23,7 @@ public:
 	FName ComponentTag = FName("Weapon");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	FVector Scale = FVector::OneVector;
+	FTransform Offset = FTransform::Identity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;

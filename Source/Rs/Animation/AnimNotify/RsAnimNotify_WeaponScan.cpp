@@ -25,22 +25,19 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	{
 		return;
 	}
-	USceneComponent* WeaponComponent = Owner->FindComponentByTag<USceneComponent>(ComponentTag);
-	if (!WeaponComponent)
+	WeaponComponent = Owner->FindComponentByTag<USceneComponent>(ComponentTag);
+	if (!WeaponComponent.IsValid())
 	{
 		return;
 	}
 	
-	FTransform WeaponTransform = WeaponComponent->GetComponentTransform();
-	WeaponTransform.SetLocation(WeaponComponent->Bounds.Origin);
-	
 	FRsTargetingCollision Collision;
 	Collision.ShapeType = ShapeType;
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.HalfExtent = WeaponComponent->Bounds.GetBox().GetExtent() * Scale;
+	Collision.HalfExtent = WeaponComponent->Bounds.GetBox().GetExtent() * Offset.GetScale3D();
 	
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargeting(Owner, WeaponTransform, Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
@@ -55,4 +52,18 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 			}
 		}
 	}
+}
+
+FTransform URsAnimNotify_WeaponScan::GetWeaponTransform() const
+{
+	if (!WeaponComponent.IsValid())
+	{
+		return FTransform::Identity;
+	}
+	FTransform WorldTransform = WeaponComponent->GetComponentTransform();
+	FTransform OffsetNoScale = Offset;
+	OffsetNoScale.SetScale3D(FVector(1,1,1));
+	WorldTransform *= OffsetNoScale;
+	WorldTransform.SetLocation(WeaponComponent->Bounds.Origin + WorldTransform.TransformVector(Offset.GetLocation()));
+	return WorldTransform;
 }

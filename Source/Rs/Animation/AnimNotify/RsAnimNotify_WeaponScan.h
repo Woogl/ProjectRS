@@ -23,7 +23,7 @@ public:
 	FName ComponentTag = FName("Weapon");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	FVector Scale = FVector::OneVector;
+	FTransform Offset = FTransform::Identity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
@@ -41,4 +41,9 @@ public:
 	FGameplayTag DamageEvent;
 
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+protected:
+	TWeakObjectPtr<USceneComponent> WeaponComponent;
+	
+	FTransform GetWeaponTransform() const;
 };

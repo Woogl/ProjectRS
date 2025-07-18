@@ -36,7 +36,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	
 	Collision.ShapeType = ShapeType;
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Scale;
+	Collision.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Offset.GetScale3D();
 
 	HitTargets.Empty();
 }
@@ -86,7 +86,10 @@ FTransform URsAnimNotifyState_WeaponTrace::GetWeaponTransform() const
 	{
 		return FTransform::Identity;
 	}
-	FTransform CurrentTransform = WeaponComponent->GetComponentTransform();
-	CurrentTransform.SetLocation(WeaponComponent->Bounds.Origin);
-	return CurrentTransform;
+	FTransform WorldTransform = WeaponComponent->GetComponentTransform();
+	FTransform OffsetNoScale = Offset;
+	OffsetNoScale.SetScale3D(FVector(1,1,1));
+	WorldTransform *= OffsetNoScale;
+	WorldTransform.SetLocation(WeaponComponent->Bounds.Origin + WorldTransform.TransformVector(Offset.GetLocation()));
+	return WorldTransform;
 }
