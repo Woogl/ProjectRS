@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsAnimNotify_Teleport.h"
+#include "RsAnimNotifyState_MoveTo.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -10,41 +10,49 @@
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
-void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
-	Super::Notify(MeshComp, Animation, EventReference);
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	if (Owner == nullptr)
 	{
 		return;
 	}
-
-	FVector NewLocation = Owner->GetActorLocation();
-
-	switch (PositionMode)
+	
+	if (PositionMode == ERsMoveToPosition::TargetLocalPosition)
 	{
-	case ERsTeleportPosition::SourceLocalPosition:
-		NewLocation += Owner->GetActorTransform().TransformVector(Position);
-		break;
-
-	case ERsTeleportPosition::WorldPosition:
-		NewLocation = Position;
-		break;
-
-	case ERsTeleportPosition::TargetLocalPosition:
-		if (AActor* TeleportTarget = FindTeleportTarget(Owner))
+		if (AActor* MoveTarget = FindMoveTarget(Owner))
 		{
-			FRotator TargetRotation = TeleportTarget->GetActorRotation();
-			NewLocation = TeleportTarget->GetActorLocation() + TargetRotation.RotateVector(Position);
+			TargetLocation = MoveTarget->GetActorLocation() + MoveTarget->GetActorTransform().TransformVector(Position);
 		}
-		break;
 	}
+	else if (PositionMode == ERsMoveToPosition::SourceLocalPosition)
+	{
+		TargetLocation = Owner->GetActorLocation() + Owner->GetActorTransform().TransformVector(Position);
+	}
+	else if (PositionMode == ERsMoveToPosition::WorldPosition)
+	{
+		TargetLocation = Position;
+	}
+}
 
+void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+
+	AActor* Owner = MeshComp->GetOwner();
+	if (Owner == nullptr)
+	{
+		return;
+	}
+	
+	float Progress = FMath::Clamp(EventReference.GetCurrentAnimationTime() / EventReference.GetNotify()->Duration, 0.f, 1.f);
+	FVector NewLocation = FMath::Lerp(Owner->GetActorLocation(), TargetLocation, Progress);
 	Owner->SetActorLocation(NewLocation, true);
 }
 
-AActor* URsAnimNotify_Teleport::FindTeleportTarget(AActor* Owner) const
+AActor* URsAnimNotifyState_MoveTo::FindMoveTarget(AActor* Owner) const
 {
 	if (!Owner)
 	{

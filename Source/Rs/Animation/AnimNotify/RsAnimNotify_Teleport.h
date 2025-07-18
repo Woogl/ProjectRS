@@ -10,7 +10,8 @@
 UENUM()
 enum class ERsTeleportPosition : uint8
 {
-	LocalPosition,
+	SourceLocalPosition,
+	TargetLocalPosition,
 	WorldPosition
 };
 /**
@@ -23,25 +24,25 @@ class RS_API URsAnimNotify_Teleport : public UAnimNotify
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsTeleportPosition PositionMode = ERsTeleportPosition::LocalPosition;
+	ERsTeleportPosition PositionMode = ERsTeleportPosition::TargetLocalPosition;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Position = FVector::ZeroVector;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bLookTarget = true;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "PositionMode == ERsTeleportPosition::TargetLocalPosition"))
 	bool bFallbackToTargeting = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsTeleportPosition::TargetLocalPosition"))
 	FRsTargetingCollision FallbackCollision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsTeleportPosition::TargetLocalPosition"))
 	FRsTargetingFilter FallbackFilter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsTeleportPosition::TargetLocalPosition"))
 	FRsTargetingSorter FallbackSorter;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+protected:
+	AActor* FindTeleportTarget(AActor* Owner) const;
 };
