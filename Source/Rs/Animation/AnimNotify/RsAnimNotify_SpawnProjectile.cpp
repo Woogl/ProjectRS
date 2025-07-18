@@ -10,6 +10,15 @@
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 
+URsAnimNotify_SpawnProjectile::URsAnimNotify_SpawnProjectile()
+{
+	bIsNativeBranchingPoint = true;
+	
+#if WITH_EDITORONLY_DATA
+	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
+}
+
 void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

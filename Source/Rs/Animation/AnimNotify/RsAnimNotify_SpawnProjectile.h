@@ -17,6 +17,8 @@ class RS_API URsAnimNotify_SpawnProjectile : public URsAnimNotify_Targeting
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_SpawnProjectile();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ARsProjectile> ProjectileClass;
 

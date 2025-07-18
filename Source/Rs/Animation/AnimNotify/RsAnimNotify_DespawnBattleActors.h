@@ -16,6 +16,8 @@ class RS_API URsAnimNotify_DespawnBattleActors : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_DespawnBattleActors();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ARsBattleActor> BattleActorClass;
 	

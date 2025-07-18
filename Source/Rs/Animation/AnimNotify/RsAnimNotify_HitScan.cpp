@@ -5,6 +5,15 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 
+URsAnimNotify_HitScan::URsAnimNotify_HitScan()
+{
+	bIsNativeBranchingPoint = true;
+	
+#if WITH_EDITORONLY_DATA
+	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
+}
+
 FString URsAnimNotify_HitScan::GetNotifyName_Implementation() const
 {
 	if (DamageEvent.IsValid())

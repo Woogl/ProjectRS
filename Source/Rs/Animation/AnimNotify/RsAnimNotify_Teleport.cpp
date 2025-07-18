@@ -10,6 +10,11 @@
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
+URsAnimNotify_Teleport::URsAnimNotify_Teleport()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

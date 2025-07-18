@@ -23,6 +23,8 @@ class RS_API URsAnimNotify_Teleport : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_Teleport();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsTeleportPosition PositionMode = ERsTeleportPosition::TargetLocalPosition;
 	
