@@ -49,4 +49,9 @@ protected:
 	AActor* FindMoveTarget(AActor* Owner) const;
 	
 	FVector TargetLocation = FVector::ZeroVector;
+
+	float Duration = 1.f;
+	float Elapsed = 0.f;
+	
+	float GetNotifyProgress() const;
 };

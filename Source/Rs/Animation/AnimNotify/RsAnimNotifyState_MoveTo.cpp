@@ -14,6 +14,9 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
+	Duration = TotalDuration;
+	Elapsed = 0.f;
+
 	AActor* Owner = MeshComp->GetOwner();
 	if (Owner == nullptr)
 	{
@@ -41,14 +44,16 @@ void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
+	Elapsed += FrameDeltaTime;
+
 	AActor* Owner = MeshComp->GetOwner();
 	if (Owner == nullptr)
 	{
 		return;
 	}
-	
-	float Progress = FMath::Clamp(EventReference.GetCurrentAnimationTime() / EventReference.GetNotify()->Duration, 0.f, 1.f);
-	FVector NewLocation = FMath::Lerp(Owner->GetActorLocation(), TargetLocation, Progress);
+
+	float Progress = GetNotifyProgress();
+	FVector NewLocation = FMath::Lerp(Owner->GetActorLocation(), TargetLocation, GetNotifyProgress());
 	Owner->SetActorLocation(NewLocation, true);
 }
 
@@ -97,4 +102,9 @@ AActor* URsAnimNotifyState_MoveTo::FindMoveTarget(AActor* Owner) const
 	}
 
 	return TeleportTarget;
+}
+
+float URsAnimNotifyState_MoveTo::GetNotifyProgress() const
+{
+	return FMath::Clamp(Elapsed / FMath::Max(Duration, SMALL_NUMBER), 0.f, 1.f);
 }
