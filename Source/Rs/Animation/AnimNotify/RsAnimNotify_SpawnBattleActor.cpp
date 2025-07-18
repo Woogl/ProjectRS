@@ -6,6 +6,15 @@
 #include "Rs/Battle/Actor/RsBattleActor.h"
 #include "Rs/Character/Component/RsBattleActorManagerComponent.h"
 
+URsAnimNotify_SpawnBattleActor::URsAnimNotify_SpawnBattleActor()
+{
+	bIsNativeBranchingPoint = true;
+	
+#if WITH_EDITORONLY_DATA
+	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
+}
+
 void URsAnimNotify_SpawnBattleActor::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

@@ -21,6 +21,8 @@ class RS_API URsAnimNotifyState_ComboAbility : public URsAnimNotifyState_Ability
 	GENERATED_BODY()
 
 public:
+	URsAnimNotifyState_ComboAbility();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Condition")
 	FGameplayTag WaitEventTag;
 	

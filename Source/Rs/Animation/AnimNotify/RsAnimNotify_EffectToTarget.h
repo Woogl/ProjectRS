@@ -16,6 +16,8 @@ class RS_API URsAnimNotify_EffectToTarget : public URsAnimNotify_Targeting
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_EffectToTarget();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effect")
 	URsEffectDefinition* EffectDefinition;
 	

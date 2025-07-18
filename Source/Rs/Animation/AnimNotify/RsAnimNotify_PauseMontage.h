@@ -15,6 +15,8 @@ class RS_API URsAnimNotify_PauseMontage : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_PauseMontage();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	float Duration = 0.25f;
 	

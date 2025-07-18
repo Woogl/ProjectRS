@@ -13,6 +13,11 @@ DECLARE_CYCLE_STAT(TEXT("RsAnimNotifyState_HitTrace"), STAT_RsAnimNotifyState_Hi
 
 URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 {
+	bIsNativeBranchingPoint = true;
+	
+#if WITH_EDITORONLY_DATA
+	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
 }
 
 FString URsAnimNotifyState_HitTrace::GetNotifyName_Implementation() const

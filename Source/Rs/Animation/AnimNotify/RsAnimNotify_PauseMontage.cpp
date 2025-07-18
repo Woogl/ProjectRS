@@ -7,6 +7,13 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 
+URsAnimNotify_PauseMontage::URsAnimNotify_PauseMontage()
+{
+#if WITH_EDITORONLY_DATA
+	bShouldFireInEditor = true;
+#endif // WITH_EDITORONLY_DATA
+}
+
 void URsAnimNotify_PauseMontage::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

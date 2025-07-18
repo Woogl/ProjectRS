@@ -7,6 +7,11 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 
+URsAnimNotify_EffectToTarget::URsAnimNotify_EffectToTarget()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotify_EffectToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

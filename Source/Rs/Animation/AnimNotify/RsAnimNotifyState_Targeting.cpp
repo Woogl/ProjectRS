@@ -5,14 +5,6 @@
 
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
-URsAnimNotifyState_Targeting::URsAnimNotifyState_Targeting()
-{
-	bIsNativeBranchingPoint = true;
-	
-#if WITH_EDITORONLY_DATA
-	bShouldFireInEditor = true;
-#endif // WITH_EDITORONLY_DATA
-}
 
 void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {

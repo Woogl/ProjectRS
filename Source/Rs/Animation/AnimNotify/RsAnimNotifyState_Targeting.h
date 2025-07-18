@@ -16,8 +16,6 @@ class RS_API URsAnimNotifyState_Targeting : public UAnimNotifyState
 	GENERATED_BODY()
 
 public:
-	URsAnimNotifyState_Targeting();
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting|Source", meta = (GetOptions="GetSocketNames"))
 	FName SocketName = FName("root");
 
