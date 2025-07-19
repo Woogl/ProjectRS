@@ -57,10 +57,6 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
-	{
-		return;
-	}
 
 	const RsHealthDamageStatics* DamageStatics = &RsHealthDamageStatics::Get();
 

@@ -40,10 +40,6 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
-	{
-		return;
-	}
 	
 	FGameplayTagContainer DotDamageTags;
 	Spec.GetAllAssetTags(DotDamageTags);
