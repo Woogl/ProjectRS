@@ -20,7 +20,7 @@ struct FRsAbilityEventInfo
 	FGameplayTag EventTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TArray<TObjectPtr<URsEffectDefinition>> EffectDefinitions;
+	TArray<URsEffectDefinition*> EffectDefinitions;
 
 	bool operator==(const FRsAbilityEventInfo& Other) const
 	{

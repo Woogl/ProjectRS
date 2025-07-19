@@ -353,7 +353,7 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
 	if (FRsAbilityEventInfo* AbilityEventInfo = AbilityEvents.FindByKey(EventData.EventTag))
 	{
-		for (TObjectPtr<URsEffectDefinition> EffectDefinition : AbilityEventInfo->EffectDefinitions)
+		for (URsEffectDefinition* EffectDefinition : AbilityEventInfo->EffectDefinitions)
 		{
 			if (EffectDefinition)
 			{
