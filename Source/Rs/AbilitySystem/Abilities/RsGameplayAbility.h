@@ -127,7 +127,7 @@ protected:
 
 	// Override in BP to select a montage. Defaults to a random one.
 	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
-	UAnimMontage* SetMontageToPlay();
+	UAnimMontage* SelectMontageToPlay();
 	
 	UFUNCTION()
 	void HandleMontageCompleted();

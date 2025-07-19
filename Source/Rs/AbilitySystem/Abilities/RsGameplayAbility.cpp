@@ -200,7 +200,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	MontageToPlay = SetMontageToPlay();
+	MontageToPlay = SelectMontageToPlay();
 	if (MontageToPlay)
 	{
 		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
@@ -326,7 +326,7 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	K2_OnRemoveAbility();
 }
 
-UAnimMontage* URsGameplayAbility::SetMontageToPlay_Implementation()
+UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation()
 {
 	if (Montages.Num() == 0)
 	{
