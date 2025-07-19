@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Rs/Battle/Actor/RsWeapon.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_WeaponTrace.generated.h"
 
 /**
  * 
  */
-// TODO: Make it compatible with RsWeapon class
 UCLASS()
 class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 {
@@ -18,9 +18,12 @@ class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 
 public:
 	URsAnimNotifyState_WeaponTrace();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	ERsWeaponRecognitionMethod WeaponRecognition = ERsWeaponRecognitionMethod::ByMeshComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	FName ComponentTag = FName("Weapon");
+	FName WeaponTag = FName("Weapon");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	FTransform Offset = FTransform::Identity;

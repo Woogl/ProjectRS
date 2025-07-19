@@ -26,7 +26,31 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	{
 		return;
 	}
-	WeaponComponent = Owner->FindComponentByTag<USceneComponent>(ComponentTag);
+
+	switch (WeaponRecognition)
+	{
+	case ERsWeaponRecognitionMethod::ByMeshComponent:
+		WeaponComponent = Owner->FindComponentByTag<USceneComponent>(WeaponTag);
+		break;
+		
+	case ERsWeaponRecognitionMethod::ByWeaponClass:
+		TArray<AActor*> OutActors;
+		Owner->GetAttachedActors(OutActors);
+		if (OutActors.IsEmpty())
+		{
+			return;
+		}
+		for (AActor* Actor : OutActors)
+		{
+			if (Actor->ActorHasTag(WeaponTag))
+			{
+				WeaponComponent = Actor->GetRootComponent();
+				break;
+			}
+		}
+		break;
+	}
+
 	if (!WeaponComponent.IsValid())
 	{
 		return;
