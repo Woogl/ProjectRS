@@ -9,12 +9,12 @@
  * 
  */
 USTRUCT(BlueprintType)
-struct FRsLinkSkillMessage
+struct FRsStateChangeMessage
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* TriggeredCharacter;
+	AActor* Source;
 }; 
 
 USTRUCT(BlueprintType)
