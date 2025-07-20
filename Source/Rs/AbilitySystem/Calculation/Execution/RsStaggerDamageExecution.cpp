@@ -77,5 +77,5 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Additive, FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Override, FinalDamage));
 }

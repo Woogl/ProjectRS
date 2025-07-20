@@ -6,8 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "GameFramework/Character.h"
-#include "Rs/RsLogChannels.h"
-#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 
 URsAnimNotify_SpawnProjectile::URsAnimNotify_SpawnProjectile()
@@ -39,12 +37,6 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 	{
 		return;
 	}
-
-	UGameplayAbility* CurrentAbility = OwnerASC->GetAnimatingAbility();
-	if (!CurrentAbility)
-	{
-		return;
-	}
 	
 	if (Targets.Num() == 0 && bFireAtLeastOne)
 	{
@@ -59,9 +51,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 
 		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
 		{
-			Projectile->SetupDamage(Cast<URsGameplayAbility>(CurrentAbility), DamageEventTag);
 			FRotator SpawnRotation;
-
 			switch (Projectile->Direction)
 			{
 			case ERsProjectileDirection::SourceForward:
@@ -76,12 +66,9 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 				SpawnLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultTargetDistance);
 				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
 				break;
-
-			default:
-				UE_LOG(RsLog, Error, TEXT("Unknown projectile direction: %s"), *Projectile->GetName());
-				continue;
 			}
 
+			Projectile->SetDamage(DamageEventTag);
 			Projectile->FinishSpawning(FTransform(SpawnRotation, SpawnLocation));
 		}
 	}

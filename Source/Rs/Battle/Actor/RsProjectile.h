@@ -6,6 +6,7 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
+class UNiagaraSystem;
 class URsGameplayAbility;
 class UProjectileMovementComponent;
 class UCapsuleComponent;
@@ -22,18 +23,16 @@ UCLASS()
 class RS_API ARsProjectile : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	
+	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovement;
-	
-public:	
-	ARsProjectile();
-	
-	void SetupDamage(URsGameplayAbility* OwningAbility, FGameplayTag DamageEventTag);
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
+	UNiagaraSystem* DestroyParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
 	float MaxRange = 5000.f;
@@ -55,13 +54,17 @@ public:
 	// Relative distance when targeting failed.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true, EditCondition = "Direction == ERsProjectileDirection::SkyToTarget"), Category = "RS")
 	float FallbackSpawnDistance = 300.f;
+	
+public:	
+	ARsProjectile();
+	virtual void Destroyed() override;
+	
+	void SetDamage(FGameplayTag DamageEventTag);
 
 protected:
 	virtual void BeginPlay() override;
-
-	TWeakObjectPtr<URsGameplayAbility> OwningAbility;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn))
 	FGameplayTag DamageEvent;
 	
 	UFUNCTION()

@@ -107,7 +107,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	{
 		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
 		FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
-		ContextHandle->bIsCriticalHit = true;
+		ContextHandle->bIsCriticalHit = false;
 	}
 	
 	// Critical calc
@@ -123,5 +123,5 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Additive, FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Override, FinalDamage));
 }

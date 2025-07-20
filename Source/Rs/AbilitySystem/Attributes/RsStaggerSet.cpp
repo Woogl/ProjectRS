@@ -46,9 +46,6 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 	{
 		// Store a local copy of the amount of Stagger Gain done and clear the Stagger Gain attribute.
 		const float LocalDamage = GetStaggerDamage();
-
-		SetStaggerDamage(0.f);
-	
 		if (LocalDamage > 0.0f)
 		{
 			// Apply the Stagger change and then clamp it.

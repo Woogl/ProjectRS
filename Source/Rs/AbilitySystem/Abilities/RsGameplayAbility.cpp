@@ -328,13 +328,13 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 
 UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation()
 {
-	if (Montages.Num() == 0)
+	int32 RandomIndex = FMath::RandRange(0, Montages.Num() - 1);
+	if (Montages.IsValidIndex(RandomIndex))
 	{
-		return nullptr;
+		return Montages[RandomIndex];
 	}
 	
-	int32 RandomIndex = FMath::RandRange(0, Montages.Num() - 1);
-	return Montages[RandomIndex];
+	return nullptr;
 }
 
 void URsGameplayAbility::HandleMontageCompleted()

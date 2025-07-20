@@ -98,5 +98,5 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(PropertyName));
 	TotalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(URsHealthSet::GetHealthDamageAttribute(), EGameplayModOp::Additive, TotalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(URsHealthSet::GetHealthDamageAttribute(), EGameplayModOp::Override, TotalDamage));
 }
