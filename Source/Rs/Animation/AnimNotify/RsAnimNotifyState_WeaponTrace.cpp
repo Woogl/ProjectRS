@@ -112,7 +112,7 @@ FTransform URsAnimNotifyState_WeaponTrace::GetWeaponTransform() const
 	}
 	FTransform WorldTransform = WeaponComponent->GetComponentTransform();
 	FTransform OffsetNoScale = Offset;
-	OffsetNoScale.SetScale3D(FVector(1,1,1));
+	OffsetNoScale.SetScale3D(FVector::OneVector);
 	WorldTransform *= OffsetNoScale;
 	WorldTransform.SetLocation(WeaponComponent->Bounds.Origin + WorldTransform.TransformVector(Offset.GetLocation()));
 	return WorldTransform;
