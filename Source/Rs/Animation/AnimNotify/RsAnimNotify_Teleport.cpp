@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
@@ -19,6 +20,10 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	if (!MeshComp)
+	{
+		return;
+	}
 	AActor* Owner = MeshComp->GetOwner();
 	if (!Owner)
 	{
@@ -26,6 +31,8 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 	}
 
 	FVector NewLocation = Owner->GetActorLocation();
+	FRotator NewRotation = Owner->GetActorRotation();
+	AActor* TeleportTarget = nullptr;
 
 	switch (PositionMode)
 	{
@@ -38,7 +45,8 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 		break;
 
 	case ERsTeleportPosition::TargetLocalPosition:
-		if (AActor* TeleportTarget = FindTeleportTarget(Owner))
+		TeleportTarget = FindTeleportTarget(Owner);
+		if (TeleportTarget)
 		{
 			FRotator TargetRotation = TeleportTarget->GetActorRotation();
 			NewLocation = TeleportTarget->GetActorLocation() + TargetRotation.RotateVector(Position);
@@ -46,7 +54,17 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 		break;
 	}
 
-	Owner->SetActorLocation(NewLocation, true);
+	if (bLookTarget == true)
+	{
+		TeleportTarget = (TeleportTarget != nullptr) ? TeleportTarget : FindTeleportTarget(Owner);
+		if (TeleportTarget)
+		{
+			const FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
+			NewRotation.Yaw = LookRotation.Yaw;
+		}
+	}
+
+	Owner->TeleportTo(NewLocation, NewRotation);
 }
 
 AActor* URsAnimNotify_Teleport::FindTeleportTarget(AActor* Owner) const
