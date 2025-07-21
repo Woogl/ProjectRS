@@ -6,6 +6,8 @@
 #include "GameplayEffectTypes.h"
 #include "RsTargetingTypes.generated.h"
 
+#define ECC_RsAttack ECollisionChannel::ECC_GameTraceChannel1
+
 UENUM()
 enum class ERsTargetingShape : uint8
 {

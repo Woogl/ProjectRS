@@ -10,6 +10,7 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 
 void URsEffectDefinition_DamageBase::PostInitProperties()
 {
@@ -22,9 +23,30 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-	// Set Damage floater's location (Gameplay Cue)
-	// TODO: Set HitLoc from weapon to target
-	FHitResult HitResult(TargetASC->GetAvatarActor(), nullptr, TargetASC->GetAvatarActor()->GetActorLocation(), FVector());
+	
+	AActor* SourceActor = SourceASC->GetAvatarActor();
+	AActor* TargetActor = TargetASC->GetAvatarActor();
+	FHitResult HitResult(TargetActor, nullptr, TargetActor->GetActorLocation(), FVector());
+	if (!SourceActor || !TargetActor)
+	{
+		EffectContext.AddHitResult(HitResult);
+		return EffectContext;
+	}
+
+	FVector Start = SourceActor->GetActorLocation();
+	FVector End = TargetActor->GetActorLocation();
+	// TODO: RsWeapon class
+	if (USceneComponent* WeaponComponent = SourceActor->FindComponentByTag<USceneComponent>(TEXT("Weapon")))
+	{
+		Start = WeaponComponent->GetComponentLocation();
+	}
+	
+	bool bHit = SourceActor->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack);
+	if (!bHit)
+	{
+		HitResult = FHitResult(TargetActor, nullptr, End, FVector());
+	}
+
 	EffectContext.AddHitResult(HitResult);
 	return EffectContext;
 }
