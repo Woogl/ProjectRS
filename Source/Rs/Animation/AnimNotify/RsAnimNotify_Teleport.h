@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Position = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode == ERsTeleportPosition::TargetLocalPosition"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bLookTarget = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "PositionMode == ERsTeleportPosition::TargetLocalPosition"))

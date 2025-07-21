@@ -10,9 +10,24 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
+#if WITH_EDITOR
+	SocketNames = MeshComp->GetAllSocketNames();
+#endif // WITH_EDITOR
+	
+	PerformTargeting(MeshComp);
+}
+
+void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+	
+}
+
+bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
+{
 	if (!MeshComp)
 	{
-		return;
+		return false;
 	}
 
 	Targets.Reset();
@@ -27,13 +42,5 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 		}
 	}
 
-#if WITH_EDITOR
-	SocketNames = MeshComp->GetAllSocketNames();
-#endif // WITH_EDITOR
-}
-
-void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-	
+	return Targets.Num() > 0;
 }
