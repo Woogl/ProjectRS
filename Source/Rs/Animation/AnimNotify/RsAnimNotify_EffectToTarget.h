@@ -10,7 +10,7 @@ class URsEffectDefinition;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_EffectToTarget : public URsAnimNotify_Targeting
 {
 	GENERATED_BODY()

@@ -10,7 +10,7 @@ class ARsGhostTrail;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_GhostTrail : public UAnimNotify
 {
 	GENERATED_BODY()

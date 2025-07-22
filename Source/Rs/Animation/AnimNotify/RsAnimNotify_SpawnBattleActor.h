@@ -10,7 +10,7 @@ class ARsBattleActor;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_SpawnBattleActor : public UAnimNotify
 {
 	GENERATED_BODY()

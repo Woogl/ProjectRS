@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_PauseMontage : public UAnimNotify
 {
 	GENERATED_BODY()

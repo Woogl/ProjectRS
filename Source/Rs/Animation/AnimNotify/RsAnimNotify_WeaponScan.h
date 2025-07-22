@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_WeaponScan : public UAnimNotify
 {
 	GENERATED_BODY()

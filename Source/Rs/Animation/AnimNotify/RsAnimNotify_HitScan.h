@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_HitScan : public URsAnimNotify_Targeting
 {
 	GENERATED_BODY()

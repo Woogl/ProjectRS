@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_CameraMode : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()

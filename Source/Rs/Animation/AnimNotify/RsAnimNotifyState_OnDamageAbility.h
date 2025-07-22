@@ -14,7 +14,7 @@ struct FGameplayEffectSpecHandle;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_OnDamageAbility : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	bool bTriggerOnce = true;
 
-private:
+protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 

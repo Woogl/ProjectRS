@@ -15,7 +15,7 @@ class UInputAction;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_ComboAbility : public URsAnimNotifyState_AbilityBase
 {
 	GENERATED_BODY()
@@ -32,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(Categories="Ability"), Category="AnimNotify")
 	FGameplayTag AbilityTag;
 
-private:
+protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 

@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_Targeting : public UAnimNotify
 {
 	GENERATED_BODY()

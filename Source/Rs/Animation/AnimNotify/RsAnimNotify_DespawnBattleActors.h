@@ -10,7 +10,7 @@ class ARsBattleActor;
 /**
  * Despawn all actors of class managed by RsBattleActorComponent.
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_DespawnBattleActors : public UAnimNotify
 {
 	GENERATED_BODY()

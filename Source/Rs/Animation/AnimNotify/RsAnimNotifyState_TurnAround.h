@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_TurnAround : public URsAnimNotifyState_Targeting
 {
 	GENERATED_BODY()

@@ -10,7 +10,7 @@ class URsGameplayAbility;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_HitTrace : public URsAnimNotifyState_Targeting
 {
 	GENERATED_BODY()

@@ -11,7 +11,7 @@ class ARsProjectile;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotify_SpawnProjectile : public URsAnimNotify_Targeting
 {
 	GENERATED_BODY()
