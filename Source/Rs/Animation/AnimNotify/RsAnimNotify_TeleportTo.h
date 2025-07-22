@@ -4,19 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "RsAnimNotifyMisc.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Animation/AnimNotifies/AnimNotify.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
-#include "RsAnimNotifyState_MoveTo.generated.h"
+#include "RsAnimNotify_TeleportTo.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_MoveTo : public UAnimNotifyState
+class RS_API URsAnimNotify_TeleportTo : public UAnimNotify
 {
 	GENERATED_BODY()
 
 public:
+	URsAnimNotify_TeleportTo();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsPositionMode PositionMode = ERsPositionMode::TowardTarget;
 	
@@ -26,9 +28,12 @@ public:
 	// 0 or negative means no limit
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxMoveDistance = 0.f;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AcceptableRadius = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bLookTarget = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "PositionMode == ERsPositionMode::TargetLocalPosition || PositionMode == ERsPositionMode::TowardTarget"))
 	bool bFallbackToTargeting = false;
@@ -41,20 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsPositionMode::TargetLocalPosition"))
 	FRsTargetingSorter FallbackSorter;
-
-	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
-	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
+	
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 protected:
-	AActor* FindMoveTarget(AActor* Owner) const;
-	
-	TWeakObjectPtr<AActor> Target;
-
-	FVector StartLocation = FVector::ZeroVector;
-	float AcceptableRadiusSquared = 0.f;
-
-	float Duration = 1.f;
-	float Elapsed = 0.f;
-	
-	float GetNotifyProgress() const;
+	AActor* FindTeleportTarget(AActor* Owner) const;
 };

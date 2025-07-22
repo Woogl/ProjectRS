@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsAnimNotify_Teleport.h"
+#include "RsAnimNotify_TeleportTo.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -11,12 +11,12 @@
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
-URsAnimNotify_Teleport::URsAnimNotify_Teleport()
+URsAnimNotify_TeleportTo::URsAnimNotify_TeleportTo()
 {
 	bIsNativeBranchingPoint = true;
 }
 
-void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
@@ -30,36 +30,42 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 		return;
 	}
 
+	FVector CurrentLocation = Owner->GetActorLocation();
 	FVector NewLocation = Owner->GetActorLocation();
 	FRotator NewRotation = Owner->GetActorRotation();
 	AActor* TeleportTarget = nullptr;
-
-	switch (PositionMode)
+	
+	if (PositionMode == ERsPositionMode::LocalPosition_Target && TeleportTarget)
 	{
-	case ERsTeleportPosition::SourceLocalPosition:
-		NewLocation += Owner->GetActorTransform().TransformVector(Position);
-		break;
-
-	case ERsTeleportPosition::WorldPosition:
+		NewLocation = TeleportTarget->GetActorLocation() + TeleportTarget->GetActorTransform().TransformVector(Position);
+	}
+	else if (PositionMode == ERsPositionMode::LocalPosition_Source && TeleportTarget)
+	{
+		NewLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
+	}
+	else if (PositionMode == ERsPositionMode::WorldPosition)
+	{
 		NewLocation = Position;
-		break;
-
-	case ERsTeleportPosition::TargetLocalPosition:
-		TeleportTarget = FindTeleportTarget(Owner);
-		if (TeleportTarget)
-		{
-			FRotator TargetRotation = TeleportTarget->GetActorRotation();
-			NewLocation = TeleportTarget->GetActorLocation() + TargetRotation.RotateVector(Position);
-		}
-		break;
+	}
+	else if (PositionMode == ERsPositionMode::TowardTarget && TeleportTarget)
+	{
+		NewLocation = TeleportTarget->GetActorLocation();
 	}
 
+	if (MaxMoveDistance > 0.f)
+	{
+		if (FVector::DistSquared(CurrentLocation, NewLocation) > MaxMoveDistance * MaxMoveDistance)
+		{
+			NewLocation = CurrentLocation + (NewLocation - CurrentLocation).GetSafeNormal() * MaxMoveDistance;
+		}
+	}
+	
 	if (bLookTarget == true)
 	{
 		TeleportTarget = (TeleportTarget != nullptr) ? TeleportTarget : FindTeleportTarget(Owner);
 		if (TeleportTarget)
 		{
-			const FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
+			FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
 			NewRotation.Yaw = LookRotation.Yaw;
 		}
 	}
@@ -67,7 +73,7 @@ void URsAnimNotify_Teleport::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 	Owner->TeleportTo(NewLocation, NewRotation);
 }
 
-AActor* URsAnimNotify_Teleport::FindTeleportTarget(AActor* Owner) const
+AActor* URsAnimNotify_TeleportTo::FindTeleportTarget(AActor* Owner) const
 {
 	if (!Owner)
 	{
