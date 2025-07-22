@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotifyState_Targeting.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_TurnAround.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_TurnAround : public URsAnimNotifyState_Targeting
+class RS_API URsAnimNotifyState_TurnAround : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
@@ -19,11 +20,26 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxTurnAroundSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseLockOnTargetFirst = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingCollision Collision;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingFilter Filter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingSorter Sorter;
 	
 protected:
-	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
-	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
+	AActor* FindTurnTarget(AActor* Owner) const;
+	TWeakObjectPtr<AActor> TurnTarget;
+	
 	UPROPERTY(Transient)
 	bool bTurnComplete = false;
 };
