@@ -45,7 +45,7 @@ public:
 	FGameplayTagContainer AdditionalDamageTags;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
-	FGameplayTag HitReaction = FGameplayTag::RequestGameplayTag(TEXT("Ability.HitReaction"));
+	FGameplayTag HitReaction = FGameplayTag::RequestGameplayTag(TEXT("Ability.HitReaction.Normal"));
 	
 	FGameplayEffectContextHandle MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const;
 	void ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff);
@@ -202,6 +202,22 @@ class RS_API URsEffectDefinition_Lifesteal : public URsEffectDefinition
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageMultiplier = 0.1f;
+
+public:
+	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+};
+
+UCLASS(DisplayName = "HitStop")
+class RS_API URsEffectDefinition_HitStop : public URsEffectDefinition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SourceHitStopTime = 0.2f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TargetHitStopTime = 0.2f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

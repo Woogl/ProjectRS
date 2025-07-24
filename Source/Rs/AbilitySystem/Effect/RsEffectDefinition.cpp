@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
@@ -217,6 +218,30 @@ void URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceA
 
 		// Apply a dynamic instant Gameplay Effect
 		SourceASC->ApplyGameplayEffectToSelf(LifestealGE, 0.f, SourceASC->MakeEffectContext());
+	}
+}
+
+void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	if (SourceASC == nullptr || TargetASC == nullptr)
+	{
+		return;
+	}
+	
+	if (SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
+	{
+		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), SourceHitStopTime))
+		{
+			PauseMontageTask->ReadyForActivation();
+		}
+	}
+	
+	if (TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
+	{
+		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime))
+		{
+			PauseMontageTask->ReadyForActivation();
+		}
 	}
 }
 
