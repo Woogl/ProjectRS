@@ -7,6 +7,7 @@
 #include "AIController.h"
 #include "RsAIControllerBase.generated.h"
 
+class URsLockOnComponent;
 /**
  * 
  */
@@ -17,6 +18,9 @@ class RS_API ARsAIControllerBase : public AAIController, public IAbilitySystemIn
 	
 	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAIPerceptionComponent> AIPerception;*/
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<URsLockOnComponent> LockOnComponent;
 
 public:
 	ARsAIControllerBase();

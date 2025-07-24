@@ -8,6 +8,7 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotify_TeleportTo.generated.h"
 
+class ARsCharacterBase;
 /**
  * 
  */
@@ -33,22 +34,22 @@ public:
 	float AcceptableRadius = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseLockOnTargetFirst = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bLookTarget = false;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "PositionMode == ERsPositionMode::TargetLocalPosition || PositionMode == ERsPositionMode::TowardTarget"))
-	bool bFallbackToTargeting = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsPositionMode::TargetLocalPosition"))
-	FRsTargetingCollision FallbackCollision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingCollision Collision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsPositionMode::TargetLocalPosition"))
-	FRsTargetingFilter FallbackFilter;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingFilter Filter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fallback", meta = (EditCondition = "bFallbackToTargeting && PositionMode == ERsPositionMode::TargetLocalPosition"))
-	FRsTargetingSorter FallbackSorter;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingSorter Sorter;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 protected:
-	AActor* FindTeleportTarget(AActor* Owner) const;
+	AActor* FindTeleportTarget(ARsCharacterBase* Owner) const;
 };

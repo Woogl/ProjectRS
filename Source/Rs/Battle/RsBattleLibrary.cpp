@@ -9,6 +9,8 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
+#include "Rs/Camera/LockOn/RsLockOnComponent.h"
+#include "Rs/Character/RsCharacterBase.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
@@ -78,4 +80,24 @@ bool URsBattleLibrary::IsDead(const AActor* Target)
 		return ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()) <= 0.f;
 	}
 	return false;
+}
+
+AActor* URsBattleLibrary::GetLockOnTarget(ARsCharacterBase* Character)
+{
+	if (!Character)
+	{
+		return nullptr;
+	}
+	AController* Controller = Character->GetController();
+	if (!Controller)
+	{
+		return nullptr;
+	}
+	
+	if (URsLockOnComponent* LockOnComponent = Controller->FindComponentByClass<URsLockOnComponent>())
+	{
+		return LockOnComponent->GetLockOnTarget();
+	}
+
+	return nullptr;
 }

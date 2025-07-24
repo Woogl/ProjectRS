@@ -8,6 +8,7 @@
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "RsBattleLibrary.generated.h"
 
+class ARsCharacterBase;
 struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
@@ -34,4 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta = (DefaultToSelf = "Target"))
 	static bool IsDead(const AActor* Target);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static AActor* GetLockOnTarget(ARsCharacterBase* Character);
 };

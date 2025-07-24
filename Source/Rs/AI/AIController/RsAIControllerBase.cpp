@@ -7,10 +7,12 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsCharacterBase.h"
 
 ARsAIControllerBase::ARsAIControllerBase()
 {
+	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
 //	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 }
 

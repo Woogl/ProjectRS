@@ -54,16 +54,13 @@ bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		return true;
 	}
-	else
-	{
-		return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
-	}
+	
+	return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
 }
 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	if (CooldownGE)
+	if (UGameplayEffect* CooldownGE = GetCooldownGameplayEffect())
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);

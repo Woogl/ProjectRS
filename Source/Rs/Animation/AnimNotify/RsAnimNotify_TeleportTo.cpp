@@ -3,12 +3,9 @@
 
 #include "RsAnimNotify_TeleportTo.h"
 
-#include "AIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "GameFramework/Character.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/Camera/LockOn/RsLockOnComponent.h"
-#include "Rs/Player/RsPlayerController.h"
+#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_TeleportTo::URsAnimNotify_TeleportTo()
@@ -62,7 +59,7 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	
 	if (bLookTarget == true)
 	{
-		TeleportTarget = (TeleportTarget != nullptr) ? TeleportTarget : FindTeleportTarget(Owner);
+		TeleportTarget = (TeleportTarget != nullptr) ? TeleportTarget : FindTeleportTarget(Cast<ARsCharacterBase>(Owner));
 		if (TeleportTarget)
 		{
 			FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
@@ -73,45 +70,24 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	Owner->TeleportTo(NewLocation, NewRotation);
 }
 
-AActor* URsAnimNotify_TeleportTo::FindTeleportTarget(AActor* Owner) const
+AActor* URsAnimNotify_TeleportTo::FindTeleportTarget(ARsCharacterBase* Owner) const
 {
 	if (!Owner)
 	{
 		return nullptr;
 	}
-
+	
 	AActor* TeleportTarget = nullptr;
-	if (ACharacter* Character = Cast<ACharacter>(Owner))
+	
+	if (bUseLockOnTargetFirst)
 	{
-		if (AController* Controller = Character->GetController())
-		{
-			// PlayerCharacter: LockOnComponent
-			if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(Controller))
-			{
-				if (URsLockOnComponent* LockOnComponent = RsPlayerController->GetLockOnComponent())
-				{
-					TeleportTarget = LockOnComponent->GetLockOnTarget();
-				}
-			}
-			// EnemyCharacter: Blackboard
-			else if (AAIController* AIController = Cast<AAIController>(Controller))
-			{
-				if (UBlackboardComponent* BBComponent = AIController->GetBlackboardComponent())
-				{
-					if (UObject* BBObject = BBComponent->GetValueAsObject(TEXT("TargetActor")))
-					{
-						TeleportTarget = Cast<AActor>(BBObject);
-					}
-				}
-			}
-		}
+		TeleportTarget = URsBattleLibrary::GetLockOnTarget(Owner);
 	}
 
-	// Fallback: Targeting
-	if (bFallbackToTargeting && !TeleportTarget)
+	if (!TeleportTarget)
 	{
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), FallbackCollision, FallbackFilter, FallbackSorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Collision, Filter, Sorter, OutActors))
 		{
 			TeleportTarget = OutActors[0];
 		}

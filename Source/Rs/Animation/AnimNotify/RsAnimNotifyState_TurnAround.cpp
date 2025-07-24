@@ -3,12 +3,9 @@
 
 #include "RsAnimNotifyState_TurnAround.h"
 
-#include "AIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "GameFramework/Character.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/Camera/LockOn/RsLockOnComponent.h"
-#include "Rs/Player/RsPlayerController.h"
+#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_TurnAround::URsAnimNotifyState_TurnAround()
@@ -26,8 +23,11 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 
 	bTurnComplete = false;
 	TurnTarget.Reset();
-	
-	TurnTarget = FindTurnTarget(MeshComp->GetOwner());
+
+	if (ARsCharacterBase* Character = Cast<ARsCharacterBase>(MeshComp->GetOwner()))
+	{
+		TurnTarget = FindTurnTarget(Character);
+	}
 }
 
 void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -70,7 +70,7 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 	}
 }
 
-AActor* URsAnimNotifyState_TurnAround::FindTurnTarget(AActor* Owner) const
+AActor* URsAnimNotifyState_TurnAround::FindTurnTarget(ARsCharacterBase* Owner) const
 {
 	if (!Owner)
 	{
@@ -81,34 +81,9 @@ AActor* URsAnimNotifyState_TurnAround::FindTurnTarget(AActor* Owner) const
 	
 	if (bUseLockOnTargetFirst)
 	{
-		if (ACharacter* Character = Cast<ACharacter>(Owner))
-		{
-			if (AController* Controller = Character->GetController())
-			{
-				// PlayerCharacter: LockOnComponent
-				if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(Controller))
-				{
-					if (URsLockOnComponent* LockOnComponent = RsPlayerController->GetLockOnComponent())
-					{
-						FoundTarget = LockOnComponent->GetLockOnTarget();
-					}
-				}
-				// EnemyCharacter: Blackboard
-				else if (AAIController* AIController = Cast<AAIController>(Controller))
-				{
-					if (UBlackboardComponent* BBComponent = AIController->GetBlackboardComponent())
-					{
-						if (UObject* BBObject = BBComponent->GetValueAsObject(TEXT("TargetActor")))
-						{
-							FoundTarget = Cast<AActor>(BBObject);
-						}
-					}
-				}
-			}
-		}
+		FoundTarget = URsBattleLibrary::GetLockOnTarget(Owner);
 	}
 
-	// Fallback: Targeting
 	if (!FoundTarget)
 	{
 		TArray<AActor*> OutActors;
