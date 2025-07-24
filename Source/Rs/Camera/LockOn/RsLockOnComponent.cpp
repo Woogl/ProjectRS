@@ -184,11 +184,6 @@ void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
 {
 	LockOff();
 	
-	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
-	{
-		Blackboard->SetValueAsObject(TEXT("TargetActor"), nullptr);
-	}
-	
 	// Target will dead in next tick, so activate GA_LockOn next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
