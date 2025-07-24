@@ -148,7 +148,7 @@ bool URsLockOnComponent::TryTargetingLockOn()
 		if (APawn* ControlledPawn = Controller->GetPawn())
 		{
 			TArray<AActor*> OutActors;
-			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
+			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
 			{
 				return LockOn(OutActors[0]);
 			}
@@ -170,6 +170,14 @@ bool URsLockOnComponent::ToggleLockOn()
 AActor* URsLockOnComponent::GetLockOnTarget() const
 {
 	return LockOnTarget.Get();
+}
+
+void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
+{
+	TargetingShape = Shape;
+	TargetingCollision = Collision;
+	TargetingFilter = Filter;
+	TargetingSorter = Sorter;
 }
 
 void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)

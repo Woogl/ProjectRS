@@ -10,33 +10,31 @@ void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 	
+	PerformTargeting(MeshComp);
+
+#if WITH_EDITOR
+	SocketNames = MeshComp->GetAllSocketNames();
+#endif // WITH_EDITOR
+}
+
+bool URsAnimNotify_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
+{
 	if (!MeshComp)
 	{
-		return;
-	}
-	
-	UWorld* World = MeshComp->GetWorld();
-	if (!World)
-	{
-		return;
+		return false;
 	}
 
 	Targets.Reset();
 	
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	SourceTransform.AddToTranslation(SourceTransform.GetRotation().RotateVector(PositionOffset));
-	SourceTransform.ConcatenateRotation(FQuat(RotationOffset));
-	
-	TArray<AActor*> OutActors;
 	if (MeshComp->GetOwner())
 	{
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
+		TArray<AActor*> OutActors;
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Shape, Collision, Filter, Sorter, OutActors))
 		{
 			Targets = OutActors;
 		}
 	}
 
-#if WITH_EDITOR
-	SocketNames = MeshComp->GetAllSocketNames();
-#endif // WITH_EDITOR
+	return Targets.Num() > 0;
 }

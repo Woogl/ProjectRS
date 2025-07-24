@@ -26,6 +26,9 @@ public:
 	FRotator RotationOffset = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingShape Shape;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingCollision Collision;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")

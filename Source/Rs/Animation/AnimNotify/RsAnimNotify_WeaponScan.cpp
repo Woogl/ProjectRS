@@ -55,13 +55,15 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		return;
 	}
 	
+	FRsTargetingShape Shape;
+	Shape.ShapeType = ShapeType;
+	Shape.HalfExtent = WeaponComponent->Bounds.GetBox().GetExtent() * Offset.GetScale3D();
+	
 	FRsTargetingCollision Collision;
-	Collision.ShapeType = ShapeType;
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.HalfExtent = WeaponComponent->Bounds.GetBox().GetExtent() * Offset.GetScale3D();
 	
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Shape, Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)

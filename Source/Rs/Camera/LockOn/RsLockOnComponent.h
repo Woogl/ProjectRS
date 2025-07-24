@@ -35,10 +35,16 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
 	AActor* GetLockOnTarget() const;
+
+	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
+	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	FGameplayTag LockOnAbilityTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	FRsTargetingShape TargetingShape;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	FRsTargetingCollision TargetingCollision;

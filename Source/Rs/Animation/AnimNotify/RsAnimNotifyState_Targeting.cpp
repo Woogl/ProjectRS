@@ -36,7 +36,7 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	if (MeshComp->GetOwner())
 	{
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Collision, Filter, Sorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Shape, Collision, Filter, Sorter, OutActors))
 		{
 			Targets = OutActors;
 		}

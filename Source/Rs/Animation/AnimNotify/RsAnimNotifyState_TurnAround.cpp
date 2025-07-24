@@ -87,7 +87,7 @@ AActor* URsAnimNotifyState_TurnAround::FindTurnTarget(ARsCharacterBase* Owner) c
 	if (!FoundTarget)
 	{
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Collision, Filter, Sorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
 		{
 			FoundTarget = OutActors[0];
 		}

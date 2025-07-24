@@ -9,11 +9,28 @@
 #define ECC_RsAttack ECollisionChannel::ECC_GameTraceChannel1
 
 UENUM()
-enum class ERsTargetingShape : uint8
+enum class ERsTargetingShapeType : uint8
 {
 	Box,
 	Sphere,
 	Capsule,
+};
+
+USTRUCT(BlueprintType)
+struct FRsTargetingShape
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ERsTargetingShapeType ShapeType = ERsTargetingShapeType::Sphere;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
+	
+	FCollisionShape MakeShape() const;
+
+	FRsTargetingShape() {}
+	FRsTargetingShape(ERsTargetingShapeType ShapeType, FVector HalfExtent);
 };
 
 USTRUCT(BlueprintType)
@@ -24,16 +41,8 @@ struct FRsTargetingCollision
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsTargetingShape ShapeType = ERsTargetingShape::Sphere;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
-
-	FCollisionShape MakeShape() const;
-
-	FRsTargetingCollision() {}
-	FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent);
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// ECollisionChannel CollisionChannel = ECC_Visibility;
 };
 
 USTRUCT(BlueprintType)

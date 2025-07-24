@@ -3,25 +3,26 @@
 
 #include "RsTargetingTypes.h"
 
-FCollisionShape FRsTargetingCollision::MakeShape() const
+
+FCollisionShape FRsTargetingShape::MakeShape() const
 {
 	switch (ShapeType)
 	{
-	case ERsTargetingShape::Box:
+	case ERsTargetingShapeType::Box:
 		return FCollisionShape::MakeBox(HalfExtent);
 
-	case ERsTargetingShape::Sphere:
+	case ERsTargetingShapeType::Sphere:
 		return FCollisionShape::MakeSphere(FMath::Min3(HalfExtent.X, HalfExtent.Y, HalfExtent.Z));
 
-	case ERsTargetingShape::Capsule:
+	case ERsTargetingShapeType::Capsule:
 		return FCollisionShape::MakeCapsule(FMath::Min(HalfExtent.X, HalfExtent.Y), HalfExtent.Z);
 	}
 	
 	return FCollisionShape();
 }
 
-FRsTargetingCollision::FRsTargetingCollision(TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes, ERsTargetingShape ShapeType, FVector HalfExtent)
-: CollisionObjectTypes(CollisionObjectTypes), ShapeType(ShapeType), HalfExtent(HalfExtent)
+FRsTargetingShape::FRsTargetingShape(ERsTargetingShapeType ShapeType, FVector HalfExtent)
+: ShapeType(ShapeType), HalfExtent(HalfExtent)
 {
 }
 

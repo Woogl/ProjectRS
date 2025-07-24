@@ -58,9 +58,9 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 
 	LastTransform = GetWeaponTransform();
 	
-	Collision.ShapeType = ShapeType;
+	Shape.ShapeType = ShapeType;
+	Shape.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Offset.GetScale3D();
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Offset.GetScale3D();
 
 	HitTargets.Empty();
 }
@@ -80,7 +80,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	}
 	
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Shape, Collision, Filter, Sorter, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)

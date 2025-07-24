@@ -87,7 +87,7 @@ AActor* URsAnimNotify_TeleportTo::FindTeleportTarget(ARsCharacterBase* Owner) co
 	if (!TeleportTarget)
 	{
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Collision, Filter, Sorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
 		{
 			TeleportTarget = OutActors[0];
 		}

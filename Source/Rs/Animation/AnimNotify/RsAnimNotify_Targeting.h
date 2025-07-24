@@ -26,6 +26,9 @@ public:
 	FRotator RotationOffset = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	FRsTargetingShape Shape;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingCollision Collision;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
@@ -37,6 +40,8 @@ public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	
 protected:
+	bool PerformTargeting(USkeletalMeshComponent* MeshComp);
+	
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AActor*> Targets;
 

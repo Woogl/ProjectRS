@@ -32,7 +32,7 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	ERsTargetingShape ShapeType = ERsTargetingShape::Capsule;
+	ERsTargetingShapeType ShapeType = ERsTargetingShapeType::Capsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingFilter Filter;
@@ -64,4 +64,7 @@ protected:
 
 	UPROPERTY()
 	FRsTargetingCollision Collision;
+
+	UPROPERTY()
+	FRsTargetingShape Shape;
 };
