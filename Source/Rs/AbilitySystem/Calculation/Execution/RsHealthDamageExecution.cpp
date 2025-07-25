@@ -59,7 +59,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
 	{
-		// Don't trigger gameplay cue.
+		// Don't show damage floater.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
 		return;
 	}
@@ -92,18 +92,36 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Chceck DoT damage
 	float Duration = Spec.GetDuration();
 	float Period = Spec.GetPeriod();
-	bool bDotDamage = Duration > 0.f && Period > 0.f;
-	if (bDotDamage)
+	bool bIsDotDamage = Duration > 0.f && Period > 0.f;
+	if (bIsDotDamage)
 	{
-		float Tick = Duration / Period;
-		FinalDamage /= Tick;
+		float RemainingTime = Spec.GetSetByCallerMagnitude(DataName_RemainingTime, false, Duration);
+		if (RemainingTime < Duration - KINDA_SMALL_NUMBER)
+		{
+			float Tick = Duration / Period;
+			FinalDamage /= Tick;
+		}
+		else
+		{
+			FinalDamage = 0.f;
+			// Don't show damage floater.
+			OutExecutionOutput.MarkGameplayCuesHandledManually();
+		}
+
+		if (FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod())
+		{
+			float NextRemainingTime = FMath::Max(RemainingTime - Period, 0.f);
+			MutableSpec->SetSetByCallerMagnitude(DataName_RemainingTime, NextRemainingTime);
+			FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
+			ContextHandle->bIsDotDamage = true;
+		}
 	}
 
 	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
 	bool bCriticalHit = CriticalRate >= RandomValue;
 	// Disable critical when DoT damage
-	if (bCriticalHit && !bDotDamage)
+	if (bCriticalHit && bIsDotDamage)
 	{
 		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
 		FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
@@ -111,7 +129,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	}
 	
 	// Critical calc
-	FinalDamage *= ((bCriticalHit && !bDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
+	FinalDamage *= ((bCriticalHit && !bIsDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
 	// Defense rate calc
 	float DefenseConstant = URsGameSetting::Get()->DefenseConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));

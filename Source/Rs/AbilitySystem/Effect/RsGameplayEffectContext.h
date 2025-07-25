@@ -15,8 +15,8 @@ struct FRsGameplayEffectContext : public FGameplayEffectContext
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
 	bool bIsCriticalHit = false;
+	bool bIsDotDamage = false;
 	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 	virtual UScriptStruct* GetScriptStruct() const override;

@@ -18,4 +18,8 @@ public:
 	URsStaggerDamageExecution();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
+private:
+	UPROPERTY()
+	FName DataName_RemainingTime = TEXT("RemainingTime");
 };

@@ -73,6 +73,19 @@ bool URsBattleLibrary::IsCriticalHitEffect(FGameplayEffectContextHandle EffectCo
 	return false;
 }
 
+bool URsBattleLibrary::IsDotDamageEffect(FGameplayEffectContextHandle EffectContextHandle)
+{
+	if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())
+	{
+		if (EffectContext->GetScriptStruct() == FRsGameplayEffectContext::StaticStruct())
+		{
+			FRsGameplayEffectContext RsEffectContext = *static_cast<FRsGameplayEffectContext*>(EffectContextHandle.Get());
+			return RsEffectContext.bIsDotDamage;
+		}
+	}
+	return false;
+}
+
 bool URsBattleLibrary::IsDead(const AActor* Target)
 {
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
