@@ -53,6 +53,8 @@ FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectCon
 		HitResult = FHitResult(TargetActor, nullptr, End, FVector());
 	}
 
+	// TODO: Set RsWeapon class to effect causer
+	EffectContext.AddInstigator(SourceActor, nullptr);
 	EffectContext.AddHitResult(HitResult);
 	return EffectContext;
 }
@@ -90,9 +92,14 @@ void URsEffectDefinition_DamageBase::ApplyHitReaction(UAbilitySystemComponent* S
 		return;
 	}
 	
+	TSubclassOf<UGameplayEffect> HitReactionEffectClass = DeveloperSetting->HitReactionEffectClasses.FindRef(HitReaction);
+	if (!HitReactionEffectClass)
+	{
+		return;
+	}
+
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
-	// TODO: Switch GE_HitReaction types.
-	FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(DeveloperSetting->TriggerHitReactionEffectClass, 0.f, EffectContext);
+	FGameplayEffectSpecHandle HitReactionSpec = SourceASC->MakeOutgoingSpec(HitReactionEffectClass, 0.f, EffectContext);
 	if (HitReactionSpec.IsValid())
 	{
 		SET_SETBYCALLER_PROPERTY(HitReactionSpec, InvinciblePierce);

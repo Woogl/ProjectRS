@@ -42,6 +42,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | DoT Burst")
 	TSubclassOf<UGameplayEffect> DotBurstDamageEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Hit Reaction")
-	TSubclassOf<UGameplayEffect> TriggerHitReactionEffectClass;
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Hit Reaction", meta = (Categories = "Ability.HitReaction", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> HitReactionEffectClasses;
 };

@@ -40,7 +40,7 @@ public:
 	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
 	FGameplayTag LockOnAbilityTag;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")

@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "RsSendGameplayEventGEComponent"
 
-void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec,FPredictionKey& PredictionKey) const
+void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
 	if (!ensureMsgf(ActiveGEContainer.Owner, TEXT("OnGameplayEffectApplied is passed an ActiveGEContainer which lives within an ASC but that ASC was somehow null")))
 	{
@@ -19,6 +19,14 @@ void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiv
 		for (const FGameplayTag& EventTag : EventTags)
 		{
 			FGameplayEventData Payload;
+			Payload.EventTag = EventTag;
+			Payload.Instigator = GESpec.GetEffectContext().GetInstigator();
+			Payload.Target = GESpec.GetEffectContext().GetHitResult()->GetActor();
+			Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
+			Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
+			Payload.EventMagnitude = GESpec.GetLevel();
+			Payload.ContextHandle = GESpec.GetEffectContext();
+			
 			ActiveGEContainer.Owner->HandleGameplayEvent(EventTag, &Payload);
 		}
 	}
