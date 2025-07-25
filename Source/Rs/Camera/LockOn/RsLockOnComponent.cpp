@@ -16,6 +16,11 @@ URsLockOnComponent::URsLockOnComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+
+	TargetingShape.ShapeType = ERsTargetingShapeType::Sphere;
+	TargetingShape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
+	
+	TargetingSorter.SortByDistance = ERsSortingOrder::Ascending;
 }
 
 void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

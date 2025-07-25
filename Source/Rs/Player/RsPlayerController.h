@@ -48,7 +48,7 @@ public:
 	// IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
 
 	UFUNCTION(BlueprintCallable)

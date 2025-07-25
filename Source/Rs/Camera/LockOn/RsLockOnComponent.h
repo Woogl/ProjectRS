@@ -56,7 +56,7 @@ protected:
 	FRsTargetingSorter TargetingSorter;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	float MaxTargetDistance = 5000.f;
+	float MaxTargetDistance = 1500.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "RS|Widget")
 	TSubclassOf<UUserWidget> ReticleWidget;
