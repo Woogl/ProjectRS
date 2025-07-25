@@ -70,23 +70,23 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsNameplateComponent> NameplateComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
 
 	// Data used to initialize the Ability System Component.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "RS")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TArray<URsAbilitySet*> AbilitySets;
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
 	ERsTeamId TeamId = ERsTeamId::Neutral;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> Portrait;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 };

@@ -9,7 +9,7 @@
 
 URsHealthSet::URsHealthSet()
 {
-	MaxHealth = 0.f;
+	MaxHealth = 1.f;
 	CurrentHealth = 0.f;
 	HealthRegen = 0.f;
 	Shield = 0.f;

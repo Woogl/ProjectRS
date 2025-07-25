@@ -8,9 +8,9 @@
 
 URsStaggerSet::URsStaggerSet()
 {
-	MaxStagger = 0.f;
+	MaxStagger = 1.f;
 	CurrentStagger = 0.f;
-	StaggerRegen = 0.f;
+	StaggerDecay = 0.f;
 }
 
 void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -24,7 +24,7 @@ void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, floa
 	
 	else if (Attribute == GetCurrentStaggerAttribute())
 	{
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxStagger());
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStagger());
 	}
 }
 
@@ -50,18 +50,18 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 		{
 			// Apply the Stagger change and then clamp it.
 			const float NewStagger = GetCurrentStagger() + LocalDamage;
-			SetCurrentStagger(FMath::Clamp(NewStagger, 0.0f, GetMaxStagger()));
+			SetCurrentStagger(FMath::Clamp(NewStagger, 0.f, GetMaxStagger()));
 		}
 	}
 	
 	if (Data.EvaluatedData.Attribute == GetCurrentStaggerAttribute())
 	{
-		SetCurrentStagger(FMath::Clamp(GetCurrentStagger(), 0.0f, GetMaxStagger()));
+		SetCurrentStagger(FMath::Clamp(GetCurrentStagger(), 0.f, GetMaxStagger()));
 	}
 
-	else if (Data.EvaluatedData.Attribute == GetStaggerRegenAttribute())
+	else if (Data.EvaluatedData.Attribute == GetStaggerDecayAttribute())
 	{
-		SetStaggerRegen(FMath::Clamp(GetStaggerRegen(), 0.0f, GetMaxStagger()));
+		SetStaggerDecay(FMath::Clamp(GetStaggerDecay(), 0.f, GetMaxStagger()));
 	}
 }
 
@@ -79,7 +79,7 @@ void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 	// Owner Only
 	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, StaggerRegen, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, StaggerDecay, Params);
 }
 
 void URsStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
@@ -92,8 +92,8 @@ void URsStaggerSet::OnRep_MaxStagger(const FGameplayAttributeData& OldValue)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, MaxStagger, OldValue);
 }
 
-void URsStaggerSet::OnRep_StaggerRegen(const FGameplayAttributeData& OldValue)
+void URsStaggerSet::OnRep_StaggerDecay(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, StaggerRegen, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, StaggerDecay, OldValue);
 
 }

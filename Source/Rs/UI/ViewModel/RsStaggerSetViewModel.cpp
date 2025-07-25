@@ -21,11 +21,11 @@ void URsStaggerSetViewModel::Initialize()
 	{
 		SetMaxStagger(Model->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
 		SetCurrentStagger(Model->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
-		SetStaggerRegen(Model->GetNumericAttribute(URsStaggerSet::GetStaggerRegenAttribute()));
+		SetStaggerDecay(Model->GetNumericAttribute(URsStaggerSet::GetStaggerDecayAttribute()));
 		
 		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
 		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
 	}
 }
 
@@ -37,7 +37,7 @@ void URsStaggerSetViewModel::Deinitialize()
 	{
 		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
 		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerRegenAttribute()).RemoveAll(this);
+		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).RemoveAll(this);
 	}
 }
 
@@ -51,9 +51,9 @@ float URsStaggerSetViewModel::GetMaxStagger() const
 	return MaxStagger;
 }
 
-float URsStaggerSetViewModel::GetStaggerRegen() const
+float URsStaggerSetViewModel::GetStaggerDecay() const
 {
-	return StaggerRegen;
+	return StaggerDecay;
 }
 
 void URsStaggerSetViewModel::SetCurrentStagger(float NewCurrentStagger)
@@ -72,9 +72,9 @@ void URsStaggerSetViewModel::SetMaxStagger(float NewMaxStagger)
 	}
 }
 
-void URsStaggerSetViewModel::SetStaggerRegen(float NewStaggerRegen)
+void URsStaggerSetViewModel::SetStaggerDecay(float NewStaggerDecay)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(StaggerRegen, NewStaggerRegen);
+	UE_MVVM_SET_PROPERTY_VALUE(StaggerDecay, NewStaggerDecay);
 }
 
 float URsStaggerSetViewModel::GetStaggerPercent() const
@@ -101,5 +101,5 @@ void URsStaggerSetViewModel::CurrentStaggerChanged(const FOnAttributeChangeData&
 
 void URsStaggerSetViewModel::StaggerRegenChanged(const FOnAttributeChangeData& Data)
 {
-	SetStaggerRegen(Data.NewValue);
+	SetStaggerDecay(Data.NewValue);
 }

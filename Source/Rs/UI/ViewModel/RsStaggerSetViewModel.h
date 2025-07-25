@@ -30,11 +30,11 @@ protected:
 public:
 	float GetCurrentStagger() const;
 	float GetMaxStagger() const;
-	float GetStaggerRegen() const;
+	float GetStaggerDecay() const;
 	
 	void SetCurrentStagger(float NewCurrentStagger);
 	void SetMaxStagger(float NewMaxStagger);
-	void SetStaggerRegen(float NewStaggerRegen);
+	void SetStaggerDecay(float NewStaggerDecay);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetStaggerPercent() const;
@@ -47,7 +47,7 @@ private:
 	float MaxStagger;
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float StaggerRegen;
+	float StaggerDecay;
 
 	void MaxStaggerChanged(const FOnAttributeChangeData& Data);
 	void CurrentStaggerChanged(const FOnAttributeChangeData& Data);

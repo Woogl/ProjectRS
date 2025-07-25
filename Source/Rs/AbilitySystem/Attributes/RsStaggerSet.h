@@ -29,10 +29,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxStagger)
 	FGameplayAttributeData MaxStagger;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, MaxStagger)
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaggerRegen)
-	FGameplayAttributeData StaggerRegen;
-	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerRegen)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaggerDecay)
+	FGameplayAttributeData StaggerDecay;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerDecay)
 
 	// Applied to reduce the "CurrentStagger" value.
 	UPROPERTY(BlueprintReadOnly)
@@ -52,5 +52,5 @@ protected:
 	virtual void OnRep_MaxStagger(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
-	virtual void OnRep_StaggerRegen(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_StaggerDecay(const FGameplayAttributeData& OldValue);
 };
