@@ -46,4 +46,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
 	float DefenseConstant = 190.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
+	float GroggyDamageMultiplier = 1.6f;
 };

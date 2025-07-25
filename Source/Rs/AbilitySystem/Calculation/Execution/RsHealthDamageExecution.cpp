@@ -137,7 +137,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Groggy has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
 	{
-		FinalDamage *= 1.6f;
+		FinalDamage *= URsGameSetting::Get()->GroggyDamageMultiplier;
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();

@@ -96,9 +96,9 @@ const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(c
 {
 	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
 	{
-		if (const UGameplayEffectComponent* UIData = EffectDef->FindComponent(URsGameplayEffectUIDataComponent::StaticClass()))
+		if (const URsGameplayEffectUIDataComponent* UIData = EffectDef->FindComponent<URsGameplayEffectUIDataComponent>())
 		{
-			return Cast<URsGameplayEffectUIDataComponent>(UIData);
+			return UIData;
 		}
 	}
 	return nullptr;
