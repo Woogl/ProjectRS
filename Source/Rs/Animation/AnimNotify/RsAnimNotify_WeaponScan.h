@@ -32,6 +32,9 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	TArray<TEnumAsByte<ECollisionChannel>> CollisionChannels;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	ERsTargetingShapeType ShapeType = ERsTargetingShapeType::Capsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")

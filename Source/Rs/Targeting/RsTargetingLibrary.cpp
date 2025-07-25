@@ -92,20 +92,33 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, F
 	}
 
 	TArray<FOverlapResult> OverlapResults;
-	if (Collision.CollisionObjectTypes.Num() > 0)
+
+	// By collision object types
+	FCollisionObjectQueryParams ObjectParams;
+	for (auto Iter = Collision.CollisionObjectTypes.CreateConstIterator(); Iter; ++Iter)
 	{
-		FCollisionObjectQueryParams ObjectParams;
-		for (auto Iter = Collision.CollisionObjectTypes.CreateConstIterator(); Iter; ++Iter)
-		{
-			const ECollisionChannel& Channel = UCollisionProfile::Get()->ConvertToCollisionChannel(false, *Iter);
-			ObjectParams.AddObjectTypesToQuery(Channel);
-		}
+		const ECollisionChannel Channel = UCollisionProfile::Get()->ConvertToCollisionChannel(false, *Iter);
+		ObjectParams.AddObjectTypesToQuery(Channel);
+	}
+	if (ObjectParams.IsValid())
+	{
 		World->OverlapMultiByObjectType(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), ObjectParams, Shape.MakeShape());
 	}
-	
+
+	// By collision channels
+	for (TEnumAsByte<ECollisionChannel> Channel : Collision.CollisionChannels)
+	{
+		TArray<FOverlapResult> ChannelResults;
+		World->OverlapMultiByChannel(ChannelResults, Transform.GetLocation(), Transform.GetRotation(), Channel, Shape.MakeShape());
+		OverlapResults.Append(ChannelResults);
+	}
+
 	for (const FOverlapResult& OverlapResult : OverlapResults)
 	{
-		ResultActors.AddUnique(OverlapResult.GetActor());
+		if (AActor* Actor = OverlapResult.GetActor())
+		{
+			ResultActors.AddUnique(Actor);
+		}
 	}
 	
 	return ResultActors;

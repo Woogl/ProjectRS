@@ -41,8 +41,8 @@ struct FRsTargetingCollision
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// ECollisionChannel CollisionChannel = ECC_Visibility;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TEnumAsByte<ECollisionChannel>> CollisionChannels;
 };
 
 USTRUCT(BlueprintType)

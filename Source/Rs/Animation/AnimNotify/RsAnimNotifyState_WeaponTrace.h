@@ -32,6 +32,9 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	TArray<TEnumAsByte<ECollisionChannel>> CollisionChannels;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	ERsTargetingShapeType ShapeType = ERsTargetingShapeType::Capsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
@@ -45,7 +48,7 @@ public:
 	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxSubsteps = 4;
+	int32 MaxSubsteps = 5;
 
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

@@ -34,6 +34,8 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
+	PerformTargeting(MeshComp);
+
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		LastSocketTransform = MeshComp->GetSocketTransform(SocketName);
