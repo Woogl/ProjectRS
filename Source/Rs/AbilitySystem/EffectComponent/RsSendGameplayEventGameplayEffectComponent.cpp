@@ -14,21 +14,18 @@ void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiv
 		return;
 	}
 
-	if (!EventTags.IsEmpty())
+	if (EventTag.IsValid())
 	{
-		for (const FGameplayTag& EventTag : EventTags)
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = EventTag;
-			Payload.Instigator = GESpec.GetEffectContext().GetInstigator();
-			Payload.Target = GESpec.GetEffectContext().GetHitResult()->GetActor();
-			Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
-			Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
-			Payload.EventMagnitude = GESpec.GetLevel();
-			Payload.ContextHandle = GESpec.GetEffectContext();
+		FGameplayEventData Payload;
+		Payload.EventTag = EventTag;
+		Payload.Instigator = GESpec.GetEffectContext().GetInstigator();
+		Payload.Target = GESpec.GetEffectContext().GetHitResult()->GetActor();
+		Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
+		Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
+		Payload.EventMagnitude = GESpec.GetLevel();
+		Payload.ContextHandle = GESpec.GetEffectContext();
 			
-			ActiveGEContainer.Owner->HandleGameplayEvent(EventTag, &Payload);
-		}
+		ActiveGEContainer.Owner->HandleGameplayEvent(EventTag, &Payload);
 	}
 }
 
@@ -36,7 +33,7 @@ void URsSendGameplayEventGameplayEffectComponent::OnGameplayEffectApplied(FActiv
 EDataValidationResult URsSendGameplayEventGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
-	if (EventTags.IsEmpty())
+	if (!EventTag.IsValid())
 	{
 		Context.AddWarning(LOCTEXT("EventWithNoParams", "Sending Gameplay Event to Target with no params. It won't operate any GA."));
 		Result = EDataValidationResult::Invalid;

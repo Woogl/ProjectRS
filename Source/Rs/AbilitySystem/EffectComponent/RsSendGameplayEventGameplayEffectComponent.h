@@ -33,5 +33,5 @@ public:
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = Tags)
-	FGameplayTagContainer EventTags;
+	FGameplayTag EventTag;
 };
