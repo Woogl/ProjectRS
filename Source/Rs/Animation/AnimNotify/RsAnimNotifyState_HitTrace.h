@@ -25,7 +25,7 @@ public:
 	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxSubsteps = 4;
+	int32 MaxSubsteps = 5;
 
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

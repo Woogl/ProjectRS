@@ -61,6 +61,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	Shape.ShapeType = ShapeType;
 	Shape.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Offset.GetScale3D();
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
+	Collision.CollisionChannels = CollisionChannels;
 
 	HitTargets.Empty();
 }

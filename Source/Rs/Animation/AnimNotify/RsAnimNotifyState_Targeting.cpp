@@ -13,14 +13,6 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 #if WITH_EDITOR
 	SocketNames = MeshComp->GetAllSocketNames();
 #endif // WITH_EDITOR
-	
-	PerformTargeting(MeshComp);
-}
-
-void URsAnimNotifyState_Targeting::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-	
 }
 
 bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)

@@ -61,6 +61,7 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	
 	FRsTargetingCollision Collision;
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
+	Collision.CollisionChannels = CollisionChannels;
 	
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Shape, Collision, Filter, Sorter, ResultActors))

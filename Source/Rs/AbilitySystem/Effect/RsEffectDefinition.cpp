@@ -23,6 +23,11 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
+	if (!SourceASC || !TargetASC)
+	{
+		return FGameplayEffectContextHandle();
+	}
+	
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	
 	AActor* SourceActor = SourceASC->GetAvatarActor();
@@ -42,7 +47,7 @@ FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectCon
 		Start = WeaponComponent->GetComponentLocation();
 	}
 	
-	bool bHit = SourceActor->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack);
+	bool bHit = SourceActor->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
 	if (!bHit)
 	{
 		HitResult = FHitResult(TargetActor, nullptr, End, FVector());
