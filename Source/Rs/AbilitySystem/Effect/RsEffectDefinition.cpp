@@ -23,6 +23,11 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
+	if (!SourceASC || !TargetASC)
+	{
+		return FGameplayEffectContextHandle();
+	}
+	
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	
 	AActor* SourceActor = SourceASC->GetAvatarActor();
