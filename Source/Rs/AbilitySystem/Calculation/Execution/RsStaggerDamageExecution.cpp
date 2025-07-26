@@ -48,7 +48,7 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
 	{
-		// Don't show damage floater.
+		// Don't show hit VFX.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
 		return;
 	}
@@ -68,33 +68,45 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	float FinalDamage = BaseDamage;
 	
 	// Chceck DoT damage
-	float Duration = Spec.GetDuration();
-	float Period = Spec.GetPeriod();
-	bool bIsDotDamage = Duration > 0.f && Period > 0.f;
+	bool bIsDotDamage = Spec.Def && Spec.Def->DurationPolicy == EGameplayEffectDurationType::HasDuration;
 	if (bIsDotDamage)
 	{
-		float RemainingTime = Spec.GetSetByCallerMagnitude(DataName_RemainingTime, false, Duration);
-		if (RemainingTime < Duration - KINDA_SMALL_NUMBER)
+		HandleDotDamage(ExecutionParams, Spec, FinalDamage);
+		if (FinalDamage <= 0.f)
 		{
-			float Tick = Duration / Period;
-			FinalDamage /= Tick;
-		}
-		else
-		{
-			FinalDamage = 0.f;
-			// Don't show damage floater.
+			// Don't show hit VFX.
 			OutExecutionOutput.MarkGameplayCuesHandledManually();
-		}
-
-		if (FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod())
-		{
-			float NextRemainingTime = FMath::Max(RemainingTime - Period, 0.f);
-			MutableSpec->SetSetByCallerMagnitude(DataName_RemainingTime, NextRemainingTime);
-			FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
-			ContextHandle->bIsDotDamage = true;
 		}
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Override, FinalDamage));
+}
+
+void URsStaggerDamageExecution::HandleDotDamage(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, float& OutDamage) const
+{
+	float Duration = Spec.GetDuration();
+	float Period = Spec.GetPeriod();
+	if (Duration > 0.f && Period > 0.f)
+	{
+		float RemainingTime = Spec.GetSetByCallerMagnitude(DataName_RemainingTime, false, Duration);
+		if (RemainingTime < Duration - KINDA_SMALL_NUMBER)
+		{
+			float Tick = Duration / Period;
+			OutDamage /= Tick;
+		}
+		else
+		{
+			OutDamage = 0.f;
+		}
+
+		if (FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod())
+		{
+			FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
+			ContextHandle->bIsDotDamage = true;
+			// Update remaining time
+			float NextRemainingTime = FMath::Max(RemainingTime - Period, 0.f);
+			MutableSpec->SetSetByCallerMagnitude(DataName_RemainingTime, NextRemainingTime);
+		}
+	}
 }
