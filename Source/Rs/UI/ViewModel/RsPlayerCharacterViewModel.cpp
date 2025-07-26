@@ -133,10 +133,10 @@ FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 	{
 		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponent())
 		{
-			FGameplayTag QueryTag = URsGameSetting::Get()->SwitchMemberCooldownTag;
-			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(QueryTag.GetSingleTagContainer());
+			FGameplayTag CooldownTag = URsGameSetting::Get()->SwitchMemberCooldownTag;
+			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(CooldownTag.GetSingleTagContainer());
 			TArray<float> TimeRemaining = ASC->GetActiveEffectsTimeRemaining(EffectQuery);
-			if (TimeRemaining.Num() > 0)
+			if (TimeRemaining.IsValidIndex(0))
 			{
 				static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(1).SetMaximumFractionalDigits(1);
 				return FText::AsNumber(TimeRemaining[0], &Format);
