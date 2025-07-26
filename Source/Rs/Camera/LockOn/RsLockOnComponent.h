@@ -22,7 +22,7 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	bool LockOn(AActor* TargetActor);
+	bool LockOn(AActor* Target);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	void LockOff();
@@ -67,10 +67,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS|Widget")
 	FName ReticleWidgetSocket = FName("pelvis");
 
-	UFUNCTION()
-	void HandleDeathStarted(AActor* DeadActor);
-
 private:
+	UWidgetComponent* RespawnReticleWidget(AActor* Target);
+	
+	UFUNCTION()
+	void HandleTargetDeath(AActor* DeadActor);
+	
 	TWeakObjectPtr<AActor> LockOnTarget;
-	TWeakObjectPtr<UWidgetComponent> SpawnedReticleComponent;
+	TWeakObjectPtr<UWidgetComponent> SpawnedReticleWidget;
 };

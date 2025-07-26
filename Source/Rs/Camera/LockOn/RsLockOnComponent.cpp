@@ -51,55 +51,27 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 }
 
-bool URsLockOnComponent::LockOn(AActor* TargetActor)
+bool URsLockOnComponent::LockOn(AActor* Target)
 {
-	if (!TargetActor)
+	if (!Target)
 	{
 		return false;
 	}
 	
-	if (IRsLockOnInterface* LockOnInterface = Cast<IRsLockOnInterface>(TargetActor))
+	if (IRsLockOnInterface* LockOnInterface = Cast<IRsLockOnInterface>(Target))
 	{
-		if (LockOnInterface->Execute_IsLockableTarget(TargetActor) == false)
+		if (LockOnInterface->Execute_IsLockableTarget(Target) == false)
 		{
 			return false;
 		}
 	}
-
-	// Destroy old reticle widdget.
-	if (SpawnedReticleComponent.IsValid())
-	{
-		SpawnedReticleComponent.Get()->DestroyComponent();
-		SpawnedReticleComponent.Reset();
-	}
-
-	LockOnTarget = TargetActor;
-	if (!LockOnTarget.IsValid())
-	{
-		return false;
-	}
 	
-	// Create new reticle widget.
-	if (ReticleWidget)
-	{
-		SpawnedReticleComponent = NewObject<UWidgetComponent>(TargetActor);
-		if (SpawnedReticleComponent.IsValid())
-		{
-			SpawnedReticleComponent->SetWidgetClass(ReticleWidget);
-			SpawnedReticleComponent->SetWidgetSpace(EWidgetSpace::Screen);
-			SpawnedReticleComponent->SetDrawSize(ReticleDrawSize);
-			UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
-			USceneComponent* ParentComponent = (MeshComponent && ReticleWidgetSocket != NAME_None) ? MeshComponent : TargetActor->GetRootComponent();
-			FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, true);
-			SpawnedReticleComponent->AttachToComponent(ParentComponent, AttachmentRule, ReticleWidgetSocket);
-			SpawnedReticleComponent->SetVisibility(true);
-			SpawnedReticleComponent->RegisterComponent();
-		}
-	}
+	LockOnTarget = Target;
+	SpawnedReticleWidget = RespawnReticleWidget(Target);
 
 	if (URsHealthComponent* HealthComponent = LockOnTarget.Get()->FindComponentByClass<URsHealthComponent>())
 	{
-		HealthComponent->OnDeathStarted.AddUniqueDynamic(this, &ThisClass::HandleDeathStarted);
+		HealthComponent->OnDeathStarted.AddUniqueDynamic(this, &ThisClass::HandleTargetDeath);
 	}
 	
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
@@ -109,7 +81,7 @@ bool URsLockOnComponent::LockOn(AActor* TargetActor)
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
-		Blackboard->SetValueAsObject(TEXT("TargetActor"), TargetActor);
+		Blackboard->SetValueAsObject(TEXT("TargetActor"), Target);
 	}
 
 	SetComponentTickEnabled(true);
@@ -127,10 +99,10 @@ void URsLockOnComponent::LockOff()
 		LockOnTarget.Reset();
 	}
 
-	if (SpawnedReticleComponent.IsValid())
+	if (SpawnedReticleWidget.IsValid())
 	{
-		SpawnedReticleComponent.Get()->DestroyComponent();
-		SpawnedReticleComponent.Reset();
+		SpawnedReticleWidget.Get()->DestroyComponent();
+		SpawnedReticleWidget.Reset();
 	}
 	
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
@@ -185,7 +157,39 @@ void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetin
 	TargetingSorter = Sorter;
 }
 
-void URsLockOnComponent::HandleDeathStarted(AActor* DeadActor)
+UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
+{
+	if (!ReticleWidget || !Target)
+	{
+		return nullptr;
+	}
+	
+	// Destroy old reticle widdget.
+	if (UWidgetComponent* OldReticleWidget = SpawnedReticleWidget.Get())
+	{
+		OldReticleWidget->DestroyComponent();
+		SpawnedReticleWidget.Reset();
+	}
+
+	// Create new reticle widget.
+	if (UWidgetComponent* NewReticleWidget = NewObject<UWidgetComponent>(Target))
+	{
+		NewReticleWidget->SetWidgetClass(ReticleWidget);
+		NewReticleWidget->SetWidgetSpace(EWidgetSpace::Screen);
+		NewReticleWidget->SetDrawSize(ReticleDrawSize);
+		UMeshComponent* MeshComponent = Target->FindComponentByClass<UMeshComponent>();
+		USceneComponent* ParentComponent = (MeshComponent && ReticleWidgetSocket != NAME_None) ? MeshComponent : Target->GetRootComponent();
+		FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, true);
+		NewReticleWidget->AttachToComponent(ParentComponent, AttachmentRule, ReticleWidgetSocket);
+		NewReticleWidget->SetVisibility(true);
+		NewReticleWidget->RegisterComponent();
+		return NewReticleWidget;
+	}
+	
+	return nullptr;
+}
+
+void URsLockOnComponent::HandleTargetDeath(AActor* DeadActor)
 {
 	LockOff();
 	
