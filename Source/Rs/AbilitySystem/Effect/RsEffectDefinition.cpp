@@ -250,7 +250,7 @@ void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC
 	
 	if (TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
 	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime))
+		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime, TargetHitStopTime))
 		{
 			PauseMontageTask->ReadyForActivation();
 		}
