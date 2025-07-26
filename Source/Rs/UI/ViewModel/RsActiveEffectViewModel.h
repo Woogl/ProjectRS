@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
 #include "RsViewModelBase.h"
+#include "Components/SlateWrapperTypes.h"
 #include "Rs/AbilitySystem/EffectComponent/RsGameplayEffectUIDataComponent.h"
 #include "RsActiveEffectViewModel.generated.h"
 
@@ -25,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static URsActiveEffectViewModel* CreateRsActiveEffectViewModel(FActiveGameplayEffectHandle EffectHandle);
 
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetVisibility() const;
+	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	int32 GetStack() const;
 	
@@ -61,19 +65,14 @@ public:
 	FOnViewModelDisabled OnViewModelDisabled;
 
 private:
-	bool IsStackable;
-	
-	UPROPERTY(FieldNotify, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	ESlateVisibility Visibility;
+	const FActiveGameplayEffect* GetActiveEffect() const;
 
+	bool IsStackable = false;
+	
+	TWeakObjectPtr<const URsGameplayEffectUIDataComponent> CachedUIData;
+	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
+	FActiveGameplayEffectHandle CachedEffectHandle;
+	
 	TArray<const FActiveGameplayEffect*> ExtraModels;
 	int32 Stack = 1;
-	
-	UPROPERTY()
-	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
-	
-	const FActiveGameplayEffect* CachedModel;
-
-	UPROPERTY()
-	const URsGameplayEffectUIDataComponent* CachedUIData;
 };
