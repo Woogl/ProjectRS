@@ -5,10 +5,10 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "CommonHardwareVisibilityBorder.h"
 #include "RsAbilityViewModel.h"
 #include "RsEnergySetViewModel.h"
 #include "RsHealthSetViewModel.h"
+#include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
@@ -21,6 +21,28 @@ URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacte
 	URsPlayerCharacterViewModel* ViewModel = NewObject<URsPlayerCharacterViewModel>(Model);
 	ViewModel->Initialize();
 	return ViewModel;
+}
+
+bool URsPlayerCharacterViewModel::TrySwitchMember()
+{
+	ARsCharacterBase* Model = CachedModel.Get();
+	if (!Model)
+	{
+		return false;
+	}
+	URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(this);
+	if (!PartyComponent)
+	{
+		return false;
+	}
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController)
+	{
+		return false;
+	}
+	
+	int32 MemberIndex = GetPartyMemberIndex();
+	return PartyComponent->TrySwitchPartyMember(PlayerController, MemberIndex);
 }
 
 void URsPlayerCharacterViewModel::Initialize()

@@ -10,77 +10,93 @@
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 
+URsPartyComponent* URsPartyLibrary::GetPartyComponent(UObject* WorldContextObject)
+{
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
+		{
+			return RsPlayerController->GetPartyComponent();
+		}
+	}
+	return nullptr;
+}
+
 ARsPlayerCharacter* URsPartyLibrary::GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
+	if (!PartyComponent)
 	{
-		return RsPlayerController->GetPartyComponent()->GetPartyMember(MemberIndex);
+		return nullptr;
 	}
-	
-	return nullptr;
+	return PartyComponent->GetPartyMember(MemberIndex);
 }
 
 TArray<ARsPlayerCharacter*> URsPartyLibrary::GetPartyMembers(UObject* WorldContextObject)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
+	if (!PartyComponent)
 	{
-		return RsPlayerController->GetPartyComponent()->GetPartyMembers();
+		return TArray<ARsPlayerCharacter*>();
 	}
-	
-	return TArray<ARsPlayerCharacter*>();
+	return PartyComponent->GetPartyMembers();
 }
 
 int32 URsPartyLibrary::FindPartyMemberIndex(ARsPlayerCharacter* Member)
 {
 	TArray<ARsPlayerCharacter*> PartyMembers = GetPartyMembers(Member);
-	if (PartyMembers.Num() > 0)
-	{
-		return PartyMembers.Find(Member);
-	}
-	
-	return INDEX_NONE;
+	return PartyMembers.Find(Member);
 }
 
 bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
+	if (!PartyComponent)
 	{
-		return RsPlayerController->GetPartyComponent()->SwitchPartyMember(RsPlayerController, NewMemberIndex);
+		return false;
 	}
-	
-	return false;
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	return PartyComponent->SwitchPartyMember(PlayerController, NewMemberIndex);
 }
 
 void URsPartyLibrary::AddPartyMember(ARsPlayerCharacter* NewMember)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(NewMember);
+	if (!PartyComponent)
 	{
-		RsPlayerController->GetPartyComponent()->AddPartyMember(NewMember);
+		return;
 	}
+	PartyComponent->AddPartyMember(NewMember);
 }
 
 void URsPartyLibrary::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(MemberToRemove, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(MemberToRemove);
+	if (!PartyComponent)
 	{
-		RsPlayerController->GetPartyComponent()->RemovePartyMember(MemberToRemove);
+		return;
 	}
+	PartyComponent->RemovePartyMember(MemberToRemove);
 }
 
 void URsPartyLibrary::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32 MemberIndex)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(NewMember, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(NewMember);
+	if (!PartyComponent)
 	{
-		RsPlayerController->GetPartyComponent()->InsertPartyMemberAt(NewMember, MemberIndex);
+		return;
 	}
+	PartyComponent->InsertPartyMemberAt(NewMember, MemberIndex);
 }
 
 void URsPartyLibrary::RemovePartyMemberAt(UObject* WorldContextObject, int32 MemberIndex)
 {
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
+	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
+	if (!PartyComponent)
 	{
-		RsPlayerController->GetPartyComponent()->RemovePartyMemberAt(MemberIndex);
+		return;
 	}
+	PartyComponent->RemovePartyMemberAt(MemberIndex);
 }
 
 void URsPartyLibrary::JoinPartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> NewMemberClass)

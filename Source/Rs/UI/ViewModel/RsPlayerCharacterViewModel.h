@@ -20,6 +20,9 @@ class RS_API URsPlayerCharacterViewModel : public URsCharacterViewModel, public 
 public:
 	UFUNCTION(BlueprintCallable)
 	static URsPlayerCharacterViewModel* CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model);
+
+	UFUNCTION(BlueprintCallable)
+	bool TrySwitchMember();
 	
 protected:
 	virtual void Initialize() override;

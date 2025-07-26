@@ -3,11 +3,12 @@
 
 #include "RsPartyComponent.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "RsPartySubsystem.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
-#include "Rs/Player/RsPlayerController.h"
 #include "Rs/UI/RsUILibrary.h"
 
 URsPartyComponent::URsPartyComponent()
@@ -111,7 +112,23 @@ void URsPartyComponent::SpawnPartyMembers()
 	}
 }
 
-bool URsPartyComponent::SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex)
+bool URsPartyComponent::TrySwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex)
+{
+	if (APawn* ControllingPawn = PlayerController->GetPawn())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ControllingPawn))
+		{
+			if (SwitchPartyMemberAbilityTags.IsValidIndex(MemberIndex))
+			{
+				FGameplayTag AbilityTag = SwitchPartyMemberAbilityTags[MemberIndex];
+				return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+			}
+		}
+	}
+	return false;
+}
+
+bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex)
 {
 	if (ARsPlayerCharacter* NewPartyMember = GetPartyMember(MemberIndex))
 	{

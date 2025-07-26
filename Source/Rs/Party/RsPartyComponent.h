@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "RsPartyComponent.generated.h"
 
@@ -32,8 +33,12 @@ public:
 	void RemovePartyMemberAt(int32 MemberIndex);
 
 	void SpawnPartyMembers();
-	bool SwitchPartyMember(ARsPlayerController* PlayerController, int32 MemberIndex);
-	
+	bool TrySwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex);
+	bool SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex);
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
+	TArray<FGameplayTag> SwitchPartyMemberAbilityTags;
+
 protected:
 	virtual void BeginPlay() override;
 	
