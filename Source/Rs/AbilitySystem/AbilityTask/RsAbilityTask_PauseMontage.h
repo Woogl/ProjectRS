@@ -23,7 +23,7 @@ public:
 	FOnPauseMontageFinished OnFinished;
 
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration = 0.25f);
+	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration = 0.2f, float MontageSkipTime = 0.f);
 
 protected:
 	virtual void Activate() override;
@@ -34,4 +34,5 @@ protected:
 private:
 	FTimerHandle Timer;
 	float Duration;
+	float MontageSkipTime;
 };
