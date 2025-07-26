@@ -183,11 +183,6 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 			}
 		}
 	}
-
-	if ((Filter.MaxTargetCount > 0) && (FilteredResult.Num() > Filter.MaxTargetCount))
-	{
-		FilteredResult.SetNum(Filter.MaxTargetCount);
-	}
 	
 	return FilteredResult;
 }

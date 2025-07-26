@@ -60,16 +60,13 @@ struct FRsTargetingFilter
 	bool bIncludeHostileTeam = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxTargetCount = 0;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTagRequirements TargetRequirements;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> ActorsToIgnore;
 
 	FRsTargetingFilter() {}
-	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, int32 MaxTargetCount, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore);
+	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore);
 };
 
 UENUM()
