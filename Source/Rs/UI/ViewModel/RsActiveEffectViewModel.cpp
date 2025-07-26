@@ -94,7 +94,7 @@ void URsActiveEffectViewModel::AddExtraModel(FActiveGameplayEffectHandle OtherEf
 
 const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(const FActiveGameplayEffect& Effect)
 {
-	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
+	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def.Get())
 	{
 		if (const URsGameplayEffectUIDataComponent* UIData = EffectDef->FindComponent<URsGameplayEffectUIDataComponent>())
 		{
