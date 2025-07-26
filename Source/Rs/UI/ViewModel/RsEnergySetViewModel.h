@@ -17,7 +17,7 @@ class RS_API URsEnergySetViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsEnergySetViewModel* CreateEnergySetViewModel(UAbilitySystemComponent* ASC);
 
 protected:

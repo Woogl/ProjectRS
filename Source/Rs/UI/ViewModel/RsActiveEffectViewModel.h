@@ -23,7 +23,7 @@ public:
 
 	URsActiveEffectViewModel();
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsActiveEffectViewModel* CreateRsActiveEffectViewModel(FActiveGameplayEffectHandle EffectHandle);
 
 	UFUNCTION(FieldNotify, BlueprintPure)

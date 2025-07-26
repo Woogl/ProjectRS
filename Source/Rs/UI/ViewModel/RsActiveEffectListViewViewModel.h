@@ -18,7 +18,7 @@ class RS_API URsActiveEffectListViewViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsActiveEffectListViewViewModel* CreateActiveEffectListViewViewModel(UAbilitySystemComponent* ASC);
 
 protected:

@@ -18,7 +18,7 @@ class RS_API URsStaggerSetViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsStaggerSetViewModel* CreateStaggerSetViewModel(UAbilitySystemComponent* ASC);
 
 protected:

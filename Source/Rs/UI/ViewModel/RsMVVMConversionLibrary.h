@@ -14,9 +14,9 @@ class RS_API URsMVVMConversionLibrary : public UMVVMConversionLibrary
 {
 	GENERATED_BODY()
 	
-	UFUNCTION(BlueprintPure, Category = "RS", meta = (DisplayName = "Number (Float -> Text)"))
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Number (Float -> Text)"))
 	static FText FloatToText(float Number, int32 FractionDigits);
 	
-	UFUNCTION(BlueprintPure, Category = "RS", meta = (DisplayName = "Number (Int -> Text)"))
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Number (Int -> Text)"))
 	static FText IntegerToText(int32 Number);
 };
