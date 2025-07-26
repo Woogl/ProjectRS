@@ -73,4 +73,7 @@ private:
 	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
 	
 	const FActiveGameplayEffect* CachedModel;
+
+	UPROPERTY()
+	const URsGameplayEffectUIDataComponent* CachedUIData;
 };

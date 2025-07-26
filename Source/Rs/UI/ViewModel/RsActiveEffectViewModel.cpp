@@ -17,12 +17,16 @@ URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewMode
 {
 	UAbilitySystemComponent* ASC = EffectHandle.GetOwningAbilitySystemComponent();
 	const FActiveGameplayEffect* Effect = ASC->GetActiveGameplayEffect(EffectHandle);
-	if (ASC && Effect && FindRsUIData(*Effect))
+	if (ASC && Effect)
 	{
 		URsActiveEffectViewModel* ViewModel = NewObject<URsActiveEffectViewModel>(ASC);
 		ViewModel->CachedModel = Effect;
-		ViewModel->Initialize();
-		return ViewModel;
+		ViewModel->CachedUIData = FindRsUIData(*Effect);
+		if (ViewModel->CachedUIData)
+		{
+			ViewModel->Initialize();
+			return ViewModel;
+		}
 	}
 	return nullptr;
 }
@@ -53,34 +57,28 @@ float URsActiveEffectViewModel::GetEffectProgress() const
 
 UObject* URsActiveEffectViewModel::GetIcon() const
 {
-	if (CachedASC.Get() && CachedModel)
+	if (CachedModel && CachedUIData)
 	{
-		if (const URsGameplayEffectUIDataComponent* UIData = FindRsUIData(*CachedModel))
-		{
-			return UIData->Icon;
-		}
+		return CachedUIData->Icon;
 	}
 	return nullptr;
 }
 
 FText URsActiveEffectViewModel::GetDescription() const
 {
-	if (CachedASC.Get() && CachedModel)
+	if (CachedModel && CachedUIData)
 	{
-		if (const URsGameplayEffectUIDataComponent* UIData = FindRsUIData(*CachedModel))
-		{
-			return UIData->Description;
-		}
+		return CachedUIData->Description;
 	}
 	return FText();
 }
 
 void URsActiveEffectViewModel::AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle)
 {
-	if (CachedASC.Get() && CachedModel)
+	if (CachedModel && CachedUIData)
 	{
 		const FActiveGameplayEffect* OtherModelEffect = CachedASC->GetActiveGameplayEffect(OtherEffectHandle);
-		if (FindRsUIData(*CachedModel) == FindRsUIData(*OtherModelEffect))
+		if (CachedUIData == FindRsUIData(*OtherModelEffect))
 		{
 			ExtraModels.Add(OtherModelEffect);
 			CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRenewed);
@@ -96,9 +94,12 @@ const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(c
 {
 	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def.Get())
 	{
-		if (const URsGameplayEffectUIDataComponent* UIData = EffectDef->FindComponent<URsGameplayEffectUIDataComponent>())
+		if (!Effect.IsPendingRemove)
 		{
-			return UIData;
+			if (const URsGameplayEffectUIDataComponent* UIData = EffectDef->FindComponent<URsGameplayEffectUIDataComponent>())
+			{
+				return UIData;
+			}
 		}
 	}
 	return nullptr;
@@ -137,6 +138,7 @@ void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo&
 	else if (ExtraModels.Num() > 0)
 	{
 		CachedModel = ExtraModels[0];
+		CachedUIData = FindRsUIData(*CachedModel);
 		ExtraModels.RemoveAt(0);
 	}
 	else
