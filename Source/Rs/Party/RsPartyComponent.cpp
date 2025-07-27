@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "RsPartySubsystem.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
@@ -112,22 +113,6 @@ void URsPartyComponent::SpawnPartyMembers()
 	}
 }
 
-bool URsPartyComponent::TrySwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex)
-{
-	if (APawn* ControllingPawn = PlayerController->GetPawn())
-	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ControllingPawn))
-		{
-			if (SwitchPartyMemberAbilityTags.IsValidIndex(MemberIndex))
-			{
-				FGameplayTag AbilityTag = SwitchPartyMemberAbilityTags[MemberIndex];
-				return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
-			}
-		}
-	}
-	return false;
-}
-
 bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex)
 {
 	if (ARsPlayerCharacter* NewPartyMember = GetPartyMember(MemberIndex))
@@ -151,6 +136,28 @@ bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, i
 		}
 	}
 	
+	return false;
+}
+
+bool URsPartyComponent::TrySwitchMemberAbility(int32 MemberIndex)
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PlayerController)
+	{
+		return false;
+	}
+	
+	if (APawn* ControllingPawn = PlayerController->GetPawn())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ControllingPawn))
+		{
+			if (SwitchPartyMemberAbilityTags.IsValidIndex(MemberIndex))
+			{
+				FGameplayTag AbilityTag = SwitchPartyMemberAbilityTags[MemberIndex];
+				return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+			}
+		}
+	}
 	return false;
 }
 

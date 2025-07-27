@@ -14,6 +14,15 @@ URsPartyViewModel* URsPartyViewModel::CreateRsPartyViewModel(URsPartyComponent* 
 	return ViewModel;
 }
 
+bool URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)
+{
+	if (URsPartyComponent* Model = CachedModel.Get())
+	{
+		return Model->TrySwitchMemberAbility(MemberIndex);
+	}
+	return false;
+}
+
 void URsPartyViewModel::Initialize()
 {
 	Super::Initialize();

@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
 
+	UFUNCTION(BlueprintCallable)
+	bool TrySwitchMemberAbility(int32 MemberIndex);
+
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;

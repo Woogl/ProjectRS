@@ -23,28 +23,6 @@ URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacte
 	return ViewModel;
 }
 
-bool URsPlayerCharacterViewModel::TrySwitchMember()
-{
-	ARsCharacterBase* Model = CachedModel.Get();
-	if (!Model)
-	{
-		return false;
-	}
-	URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(this);
-	if (!PartyComponent)
-	{
-		return false;
-	}
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (!PlayerController)
-	{
-		return false;
-	}
-	
-	int32 MemberIndex = GetPartyMemberIndex();
-	return PartyComponent->TrySwitchPartyMember(PlayerController, MemberIndex);
-}
-
 void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();

@@ -33,8 +33,9 @@ public:
 	void RemovePartyMemberAt(int32 MemberIndex);
 
 	void SpawnPartyMembers();
-	bool TrySwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex);
 	bool SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex);
+
+	bool TrySwitchMemberAbility(int32 MemberIndex);
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
 	TArray<FGameplayTag> SwitchPartyMemberAbilityTags;
