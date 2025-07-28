@@ -43,8 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static AActor* GetLockOnTarget(ARsCharacterBase* Character);
 
-	// Player: Use existing locked-on target if available.
-	// AI: Search new target.
+	// Player use manual targeting, AI uses dynamic targeting.
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static AActor* AcquireTargetByControllerType(ARsCharacterBase* Owner, FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 };
