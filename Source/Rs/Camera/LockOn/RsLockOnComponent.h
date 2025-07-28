@@ -55,6 +55,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	float MaxTargetDistance = 1500.f;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "RS|AI")
+	FName BlackBoardValueName = FName("TargetActor");
+	
 	UPROPERTY(EditDefaultsOnly, Category = "RS|Widget")
 	TSubclassOf<UUserWidget> ReticleWidget;
 

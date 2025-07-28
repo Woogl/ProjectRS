@@ -81,7 +81,7 @@ bool URsLockOnComponent::LockOn(AActor* Target)
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
-		Blackboard->SetValueAsObject(TEXT("TargetActor"), Target);
+		Blackboard->SetValueAsObject(BlackBoardValueName, Target);
 	}
 
 	SetComponentTickEnabled(true);
@@ -112,7 +112,7 @@ void URsLockOnComponent::LockOff()
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
-		Blackboard->SetValueAsObject(TEXT("TargetActor"), nullptr);
+		Blackboard->SetValueAsObject(BlackBoardValueName, nullptr);
 	}
 	
 	SetComponentTickEnabled(false);
