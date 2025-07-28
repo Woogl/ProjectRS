@@ -22,6 +22,7 @@ void URsAnimNotify_EffectToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 			FGameplayEventData Payload;
 			Payload.EventTag = EventTag;
 			Payload.Instigator = Owner;
+			Payload.Target = Owner;
 			ASC->HandleGameplayEvent(EventTag, &Payload);
 		}
 	}
