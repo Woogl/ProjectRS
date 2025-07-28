@@ -83,10 +83,16 @@ struct FRsTargetingSorter
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsSortingOrder SortByDistance = ERsSortingOrder::None;
+	ERsSortingOrder ByDistance = ERsSortingOrder::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ERsSortingOrder ByTag = ERsSortingOrder::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "ByTag != ERsSortingOrder::None"))
+	FGameplayTag SortingTag;
 
 	FRsTargetingSorter() {}
-	FRsTargetingSorter(ERsSortingOrder SortByDistance);
+	FRsTargetingSorter(ERsSortingOrder ByDistance, ERsSortingOrder ByTag, FGameplayTag SortingTag);
 };
 
 USTRUCT(BlueprintType)

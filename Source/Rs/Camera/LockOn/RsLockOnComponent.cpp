@@ -20,7 +20,7 @@ URsLockOnComponent::URsLockOnComponent()
 	TargetingShape.ShapeType = ERsTargetingShapeType::Sphere;
 	TargetingShape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
 	
-	TargetingSorter.SortByDistance = ERsSortingOrder::Ascending;
+	TargetingSorter.ByDistance = ERsSortingOrder::Ascending;
 }
 
 void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

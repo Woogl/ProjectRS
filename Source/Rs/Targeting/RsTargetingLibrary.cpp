@@ -191,10 +191,10 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 {
 	TArray<AActor*> SortedResult = InActors;
 
-	if (Sorter.SortByDistance != ERsSortingOrder::None && Owner)
+	if (Sorter.ByDistance != ERsSortingOrder::None && Owner)
 	{
 		const FVector OwnerLocation = Owner->GetActorLocation();
-		const ERsSortingOrder Order = Sorter.SortByDistance;
+		const ERsSortingOrder Order = Sorter.ByDistance;
 		SortedResult.Sort([OwnerLocation, Order](const AActor& A, const AActor& B)
 		{
 			if (Order == ERsSortingOrder::Ascending)
@@ -204,6 +204,31 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 			else if (Order == ERsSortingOrder::Descending)
 			{
 				return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) > FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
+			}
+			else
+			{
+				return false;
+			}
+		});
+	}
+
+	if (Sorter.ByTag != ERsSortingOrder::None && Sorter.SortingTag.IsValid())
+	{
+		FGameplayTag SortingTag = Sorter.SortingTag;
+		const ERsSortingOrder Order = Sorter.ByTag;
+		SortedResult.Sort([SortingTag, Order](const AActor& A, const AActor& B)
+		{
+			const IGameplayTagAssetInterface* ATagInterface = Cast<IGameplayTagAssetInterface>(&A);
+			const IGameplayTagAssetInterface* BTagInterface = Cast<IGameplayTagAssetInterface>(&B);
+			bool AHasTag = ATagInterface && ATagInterface->HasMatchingGameplayTag(SortingTag);
+			bool BHasTag = BTagInterface && BTagInterface->HasMatchingGameplayTag(SortingTag);
+			if (Order == ERsSortingOrder::Ascending)
+			{
+				return AHasTag < BHasTag;
+			}
+			else if (Order == ERsSortingOrder::Descending)
+			{
+				return AHasTag > BHasTag;
 			}
 			else
 			{
