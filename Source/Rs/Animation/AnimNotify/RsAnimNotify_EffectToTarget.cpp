@@ -3,9 +3,8 @@
 
 #include "RsAnimNotify_EffectToTarget.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 
 URsAnimNotify_EffectToTarget::URsAnimNotify_EffectToTarget()
 {
@@ -22,10 +21,11 @@ void URsAnimNotify_EffectToTarget::Notify(USkeletalMeshComponent* MeshComp, UAni
 		{
 			for (AActor* Target : Targets)
 			{
-				if (UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
-				{
-					EffectDefinition->ApplyEffect(SourceASC, TargetASC);
-				}
+				FGameplayEventData Payload;
+				Payload.EventTag = EventTag;
+				Payload.Instigator = Owner;
+				Payload.Target = Target;
+				SourceASC->HandleGameplayEvent(EventTag, &Payload);
 			}
 		}
 	}

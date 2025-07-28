@@ -3,9 +3,8 @@
 
 #include "RsAnimNotify_EffectToSelf.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 
 URsAnimNotify_EffectToSelf::URsAnimNotify_EffectToSelf()
 {
@@ -20,7 +19,10 @@ void URsAnimNotify_EffectToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
-			EffectDefinition->ApplyEffect(ASC, ASC);
+			FGameplayEventData Payload;
+			Payload.EventTag = EventTag;
+			Payload.Instigator = Owner;
+			ASC->HandleGameplayEvent(EventTag, &Payload);
 		}
 	}
 }

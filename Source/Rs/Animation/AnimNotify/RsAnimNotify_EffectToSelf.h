@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "RsAnimNotify_EffectToSelf.generated.h"
 
@@ -18,8 +19,8 @@ class RS_API URsAnimNotify_EffectToSelf : public UAnimNotify
 public:
 	URsAnimNotify_EffectToSelf();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effect")
-	URsEffectDefinition* EffectDefinition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Category="AnimNotify"))
+	FGameplayTag EventTag;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };
