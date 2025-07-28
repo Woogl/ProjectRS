@@ -134,6 +134,7 @@ AActor* URsBattleLibrary::AcquireTargetByControllerType(ARsCharacterBase* Owner,
 	
 	if (!FoundTarget || !bIsPlayer)
 	{
+		// Player: Search new target if lock on target is null.
 		// AI: Search new target.
 		TArray<AActor*> OutActors;
 		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
