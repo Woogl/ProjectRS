@@ -6,7 +6,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_TeleportTo::URsAnimNotify_TeleportTo()
 {
@@ -28,15 +27,25 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	}
 
 	FVector CurrentLocation = Owner->GetActorLocation();
-	FVector NewLocation = Owner->GetActorLocation();
+	FVector NewLocation = CurrentLocation;
 	FRotator NewRotation = Owner->GetActorRotation();
-	AActor* TeleportTarget = nullptr;
+	
+	AActor* TeleportTarget;
+	ARsCharacterBase* Character = Cast<ARsCharacterBase>(Owner);
+	if (!bKeepExistingTarget)
+	{
+		TeleportTarget = URsBattleLibrary::AcquireTargetByControllerType(Character, Shape, Collision, Filter, Sorter);
+	}
+	else
+	{
+		TeleportTarget = URsBattleLibrary::GetLockOnTarget(Character);
+	}
 	
 	if (PositionMode == ERsPositionMode::LocalPosition_Target && TeleportTarget)
 	{
 		NewLocation = TeleportTarget->GetActorLocation() + TeleportTarget->GetActorTransform().TransformVector(Position);
 	}
-	else if (PositionMode == ERsPositionMode::LocalPosition_Source && TeleportTarget)
+	else if (PositionMode == ERsPositionMode::LocalPosition_Source)
 	{
 		NewLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
 	}
@@ -57,41 +66,11 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		}
 	}
 	
-	if (bLookTarget == true)
+	if (bLookTarget && TeleportTarget)
 	{
-		TeleportTarget = (TeleportTarget != nullptr) ? TeleportTarget : FindTeleportTarget(Cast<ARsCharacterBase>(Owner));
-		if (TeleportTarget)
-		{
-			FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
-			NewRotation.Yaw = LookRotation.Yaw;
-		}
+		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
+		NewRotation.Yaw = LookRotation.Yaw;
 	}
 
 	Owner->TeleportTo(NewLocation, NewRotation);
-}
-
-AActor* URsAnimNotify_TeleportTo::FindTeleportTarget(ARsCharacterBase* Owner) const
-{
-	if (!Owner)
-	{
-		return nullptr;
-	}
-	
-	AActor* TeleportTarget = nullptr;
-	
-	if (bUseLockOnTargetFirst)
-	{
-		TeleportTarget = URsBattleLibrary::GetLockOnTarget(Owner);
-	}
-
-	if (!TeleportTarget)
-	{
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
-		{
-			TeleportTarget = OutActors[0];
-		}
-	}
-
-	return TeleportTarget;
 }

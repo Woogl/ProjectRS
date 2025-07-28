@@ -11,6 +11,7 @@
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsCharacterBase.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
@@ -113,4 +114,42 @@ AActor* URsBattleLibrary::GetLockOnTarget(ARsCharacterBase* Character)
 	}
 
 	return nullptr;
+}
+
+AActor* URsBattleLibrary::AcquireTargetByControllerType(ARsCharacterBase* Owner, FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
+{
+	if (!Owner)
+	{
+		return nullptr;
+	}
+
+	AActor* FoundTarget = nullptr;
+	bool bIsPlayer = Owner->IsPlayerControlled();
+	
+	if (bIsPlayer)
+	{
+		// Player: Use lock on target if available.
+		FoundTarget = GetLockOnTarget(Owner);
+	}
+	
+	if (!FoundTarget || !bIsPlayer)
+	{
+		// AI: Search new target.
+		TArray<AActor*> OutActors;
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
+		{
+			FoundTarget = OutActors[0];
+		}
+	}
+
+	// AI : Lock on new target.
+	if (!bIsPlayer && FoundTarget)
+	{
+		if (URsLockOnComponent* LockOnComponent = Owner->FindComponentByClass<URsLockOnComponent>())
+		{
+			LockOnComponent->LockOn(FoundTarget);
+		}
+	}
+
+	return FoundTarget;
 }

@@ -88,3 +88,24 @@ struct FRsTargetingSorter
 	FRsTargetingSorter() {}
 	FRsTargetingSorter(ERsSortingOrder SortByDistance);
 };
+
+USTRUCT(BlueprintType)
+struct FRsTargetingParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRsTargetingShape Shape;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRsTargetingCollision Collision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRsTargetingFilter Filter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRsTargetingSorter Sorter;
+
+	FRsTargetingParams() {}
+	FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
+};

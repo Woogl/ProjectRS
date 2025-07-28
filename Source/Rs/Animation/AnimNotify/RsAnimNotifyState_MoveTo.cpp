@@ -5,7 +5,6 @@
 
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/Targeting/RsTargetingLibrary.h"
 
 void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
@@ -24,7 +23,14 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	{
 		if (ARsCharacterBase* Character = Cast<ARsCharacterBase>(Owner))
 		{
-			Target = FindMoveTarget(Character);
+			if (!bKeepExistingTarget)
+			{
+				Target = URsBattleLibrary::AcquireTargetByControllerType(Character, Shape, Collision, Filter, Sorter);
+			}
+			else
+			{
+				Target = URsBattleLibrary::GetLockOnTarget(Character);
+			}
 		}
 	}
 
@@ -77,32 +83,6 @@ void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 		FVector NewLocation = FMath::Lerp(Owner->GetActorLocation(), TargetLocation, GetNotifyProgress());
 		Owner->SetActorLocation(NewLocation, true);
 	}
-}
-
-AActor* URsAnimNotifyState_MoveTo::FindMoveTarget(ARsCharacterBase* Owner) const
-{
-	if (!Owner)
-	{
-		return nullptr;
-	}
-
-	AActor* TeleportTarget = nullptr;
-	
-	if (bUseLockOnTargetFirst)
-	{
-		TeleportTarget = URsBattleLibrary::GetLockOnTarget(Owner);
-	}
-	
-	if (!TeleportTarget)
-	{
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
-		{
-			TeleportTarget = OutActors[0];
-		}
-	}
-
-	return TeleportTarget;
 }
 
 float URsAnimNotifyState_MoveTo::GetNotifyProgress() const

@@ -31,8 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AcceptableRadius = 0.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bUseLockOnTargetFirst = true;
+	// Use the existing target and skip targeting.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	bool bKeepExistingTarget = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingShape Shape;
@@ -50,8 +51,6 @@ public:
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
 protected:
-	AActor* FindMoveTarget(ARsCharacterBase* Owner) const;
-	
 	TWeakObjectPtr<AActor> Target;
 
 	FVector StartLocation = FVector::ZeroVector;

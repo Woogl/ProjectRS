@@ -149,14 +149,6 @@ AActor* URsLockOnComponent::GetLockOnTarget() const
 	return LockOnTarget.Get();
 }
 
-void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
-{
-	TargetingShape = Shape;
-	TargetingCollision = Collision;
-	TargetingFilter = Filter;
-	TargetingSorter = Sorter;
-}
-
 UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 {
 	if (!ReticleWidget || !Target)

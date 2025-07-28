@@ -6,7 +6,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_TurnAround::URsAnimNotifyState_TurnAround()
 {
@@ -26,7 +25,14 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 
 	if (ARsCharacterBase* Character = Cast<ARsCharacterBase>(MeshComp->GetOwner()))
 	{
-		TurnTarget = FindTurnTarget(Character);
+		if (!bKeepExistingTarget)
+		{
+			TurnTarget = URsBattleLibrary::AcquireTargetByControllerType(Character, Shape, Collision, Filter, Sorter);
+		}
+		else
+		{
+			TurnTarget = URsBattleLibrary::GetLockOnTarget(Character);
+		}
 	}
 }
 
@@ -68,30 +74,4 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 	{
 		bTurnComplete = true;
 	}
-}
-
-AActor* URsAnimNotifyState_TurnAround::FindTurnTarget(ARsCharacterBase* Owner) const
-{
-	if (!Owner)
-	{
-		return nullptr;
-	}
-
-	AActor* FoundTarget = nullptr;
-	
-	if (bUseLockOnTargetFirst)
-	{
-		FoundTarget = URsBattleLibrary::GetLockOnTarget(Owner);
-	}
-
-	if (!FoundTarget)
-	{
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
-		{
-			FoundTarget = OutActors[0];
-		}
-	}
-
-	return FoundTarget;
 }

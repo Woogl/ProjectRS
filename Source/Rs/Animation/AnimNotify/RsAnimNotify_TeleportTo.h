@@ -33,10 +33,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AcceptableRadius = 0.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bUseLockOnTargetFirst = true;
+	// Use the existing target and skip targeting.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	bool bKeepExistingTarget = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	bool bLookTarget = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
@@ -52,7 +53,4 @@ public:
 	FRsTargetingSorter Sorter;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
-
-protected:
-	AActor* FindTeleportTarget(ARsCharacterBase* Owner) const;
 };

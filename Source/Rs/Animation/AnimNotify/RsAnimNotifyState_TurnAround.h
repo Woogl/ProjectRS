@@ -22,9 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxTurnAroundSpeed = 300.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bUseLockOnTargetFirst = true;
-
+	// Use the existing target and skip targeting.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
+	bool bKeepExistingTarget = false;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingShape Shape;
 
@@ -41,9 +42,6 @@ protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
-	AActor* FindTurnTarget(ARsCharacterBase* Owner) const;
 	TWeakObjectPtr<AActor> TurnTarget;
-	
-	UPROPERTY(Transient)
 	bool bTurnComplete = false;
 };

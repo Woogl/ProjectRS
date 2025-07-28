@@ -6,6 +6,7 @@
 #include "ActiveGameplayEffectHandle.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsBattleLibrary.generated.h"
 
 class ARsCharacterBase;
@@ -41,4 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
 	static AActor* GetLockOnTarget(ARsCharacterBase* Character);
+
+	// Player: Use existing locked-on target if available.
+	// AI: Search new target.
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
+	static AActor* AcquireTargetByControllerType(ARsCharacterBase* Owner, FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 };

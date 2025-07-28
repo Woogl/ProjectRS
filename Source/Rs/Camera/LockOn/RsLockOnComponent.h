@@ -35,9 +35,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
 	AActor* GetLockOnTarget() const;
-
-	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
