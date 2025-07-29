@@ -10,17 +10,31 @@ void URsActivatableWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 
-	if (PauseControl == ERsWidgetPauseMode::GamePause)
+	if (APlayerController* Player = GetOwningPlayer())
 	{
-		UGameplayStatics::SetGamePaused(GetOwningPlayer(), true);
+		if (PauseControl == ERsWidgetPauseMode::GamePause)
+		{
+			UGameplayStatics::SetGamePaused(Player, true);
+		}
+		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
+		{
+			UGameplayStatics::SetGlobalTimeDilation(Player, TimeDilation);
+		}
 	}
 }
 
 void URsActivatableWidget::NativeOnDeactivated()
 {
-	if (PauseControl == ERsWidgetPauseMode::GamePause)
+	if (APlayerController* Player = GetOwningPlayer())
 	{
-		UGameplayStatics::SetGamePaused(GetOwningPlayer(), false);
+		if (PauseControl == ERsWidgetPauseMode::GamePause)
+		{
+			UGameplayStatics::SetGamePaused(Player, false);
+		}
+		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
+		{
+			UGameplayStatics::SetGlobalTimeDilation(Player, 1.f);
+		}
 	}
 	
 	Super::NativeOnDeactivated();

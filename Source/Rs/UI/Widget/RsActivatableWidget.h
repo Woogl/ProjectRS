@@ -20,6 +20,7 @@ enum class ERsWidgetPauseMode : uint8
 {
 	Default,
 	GamePause,
+	TimeDilation,
 };
 
 /**
@@ -43,4 +44,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	ERsWidgetPauseMode PauseControl = ERsWidgetPauseMode::Default;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "PauseControl == ERsWidgetPauseMode::TimeDilation", EditConditionHides))
+	float TimeDilation = 0.01f;
 };
