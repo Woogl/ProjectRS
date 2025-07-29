@@ -5,7 +5,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/Character/RsCharacterBase.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_TurnAround::URsAnimNotifyState_TurnAround()
 {
@@ -15,32 +15,36 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (!MeshComp || !MeshComp->GetOwner())
+	if (!MeshComp)
 	{
 		return;
 	}
-
-	bTurnComplete = false;
-	TurnTarget.Reset();
-
-	if (ARsCharacterBase* Character = Cast<ARsCharacterBase>(MeshComp->GetOwner()))
+	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner)
 	{
-		if (!bKeepExistingTarget)
+		return;
+	}
+	
+	// Use current lock on target.
+	TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	// Search new target if current lock on target is not available.
+	if (!TurnTarget.IsValid())
+	{
+		TArray<AActor*> OutTargets;
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutTargets))
 		{
-			TurnTarget = URsBattleLibrary::AcquireTargetByControllerType(Character, Shape, Collision, Filter, Sorter);
-		}
-		else
-		{
-			TurnTarget = URsBattleLibrary::GetLockOnTarget(Character);
+			TurnTarget = OutTargets[0];
 		}
 	}
+	
+	bShouldTurn = TurnTarget.IsValid();
 }
 
 void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if (bTurnComplete == true || MeshComp == nullptr)
+	if (bShouldTurn == false || MeshComp == nullptr)
 	{
 		return;
 	}
@@ -70,8 +74,8 @@ void URsAnimNotifyState_TurnAround::NotifyTick(USkeletalMeshComponent* MeshComp,
 	FRotator NewRotation = FRotator(CurrentRotation.Pitch, NewYaw, CurrentRotation.Roll);
 	Owner->SetActorRotation(NewRotation);
 
-	if (bTurnComplete == false && FMath::IsNearlyEqual(NewRotation.Yaw, TargetRotation.Yaw))
+	if (bShouldTurn == true && FMath::IsNearlyEqual(NewRotation.Yaw, TargetRotation.Yaw))
 	{
-		bTurnComplete = true;
+		bShouldTurn = false;
 	}
 }

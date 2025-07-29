@@ -21,19 +21,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsPositionMode PositionMode = ERsPositionMode::TowardTarget;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode != ERsPositionMode::TowardTarget"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode != ERsPositionMode::TowardTarget", EditConditionHides))
 	FVector Position = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode == ERsPositionMode::TowardTarget", EditConditionHides))
+	float AcceptableRadius = 0.f;
 
 	// 0 or negative means no limit
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxMoveDistance = 0.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AcceptableRadius = 0.f;
-	
-	// Use the existing target and skip targeting.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	bool bKeepExistingTarget = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingShape Shape;
@@ -58,6 +54,8 @@ protected:
 
 	float Duration = 1.f;
 	float Elapsed = 0.f;
+
+	bool bShouldMove = true;
 	
 	float GetNotifyProgress() const;
 };

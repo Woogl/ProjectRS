@@ -41,9 +41,5 @@ public:
 	static bool IsDead(const AActor* Target);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static AActor* GetLockOnTarget(ARsCharacterBase* Character);
-
-	// Player use manual targeting, AI uses dynamic targeting.
-	UFUNCTION(BlueprintCallable, Category = "RS Battle Library")
-	static AActor* AcquireTargetByControllerType(ARsCharacterBase* Owner, FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
+	static AActor* GetLockOnTarget(APawn* Character);
 };

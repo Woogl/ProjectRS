@@ -51,6 +51,14 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 }
 
+void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
+{
+	TargetingShape = Shape;
+	TargetingCollision = Collision;
+	TargetingFilter = Filter;
+	TargetingSorter = Sorter;
+}
+
 bool URsLockOnComponent::LockOn(AActor* Target)
 {
 	if (!Target)

@@ -20,6 +20,8 @@ public:
 	URsLockOnComponent();
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	bool LockOn(AActor* Target);

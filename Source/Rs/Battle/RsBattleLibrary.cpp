@@ -10,8 +10,6 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
-#include "Rs/Character/RsCharacterBase.h"
-#include "Rs/Targeting/RsTargetingLibrary.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
@@ -96,13 +94,13 @@ bool URsBattleLibrary::IsDead(const AActor* Target)
 	return false;
 }
 
-AActor* URsBattleLibrary::GetLockOnTarget(ARsCharacterBase* Character)
+AActor* URsBattleLibrary::GetLockOnTarget(APawn* Pawn)
 {
-	if (!Character)
+	if (!Pawn)
 	{
 		return nullptr;
 	}
-	AController* Controller = Character->GetController();
+	AController* Controller = Pawn->GetController();
 	if (!Controller)
 	{
 		return nullptr;
@@ -114,43 +112,4 @@ AActor* URsBattleLibrary::GetLockOnTarget(ARsCharacterBase* Character)
 	}
 
 	return nullptr;
-}
-
-AActor* URsBattleLibrary::AcquireTargetByControllerType(ARsCharacterBase* Owner, FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
-{
-	if (!Owner)
-	{
-		return nullptr;
-	}
-
-	AActor* FoundTarget = nullptr;
-	bool bIsPlayer = Owner->IsPlayerControlled();
-	
-	if (bIsPlayer)
-	{
-		// Player: Use lock on target if available.
-		FoundTarget = GetLockOnTarget(Owner);
-	}
-	
-	if (!FoundTarget || !bIsPlayer)
-	{
-		// Player: Search new target if lock on target is null.
-		// AI: Search new target.
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetActorTransform(), Shape, Collision, Filter, Sorter, OutActors))
-		{
-			FoundTarget = OutActors[0];
-		}
-	}
-
-	// AI : Lock on new target.
-	if (!bIsPlayer && FoundTarget)
-	{
-		if (URsLockOnComponent* LockOnComponent = Owner->FindComponentByClass<URsLockOnComponent>())
-		{
-			LockOnComponent->LockOn(FoundTarget);
-		}
-	}
-
-	return FoundTarget;
 }

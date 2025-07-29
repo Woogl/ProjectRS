@@ -5,7 +5,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/Character/RsCharacterBase.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_TeleportTo::URsAnimNotify_TeleportTo()
 {
@@ -30,15 +30,16 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	FVector NewLocation = CurrentLocation;
 	FRotator NewRotation = Owner->GetActorRotation();
 	
-	AActor* TeleportTarget;
-	ARsCharacterBase* Character = Cast<ARsCharacterBase>(Owner);
-	if (!bKeepExistingTarget)
+	// Use current lock on target.
+	AActor* TeleportTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	// Search new target if current lock on target is not available.
+	if (!TeleportTarget)
 	{
-		TeleportTarget = URsBattleLibrary::AcquireTargetByControllerType(Character, Shape, Collision, Filter, Sorter);
-	}
-	else
-	{
-		TeleportTarget = URsBattleLibrary::GetLockOnTarget(Character);
+		TArray<AActor*> OutTargets;
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutTargets))
+		{
+			TeleportTarget = OutTargets[0];
+		}
 	}
 	
 	if (PositionMode == ERsPositionMode::LocalPosition_Target && TeleportTarget)
@@ -63,6 +64,15 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		if (FVector::DistSquared(CurrentLocation, NewLocation) > MaxMoveDistance * MaxMoveDistance)
 		{
 			NewLocation = CurrentLocation + (NewLocation - CurrentLocation).GetSafeNormal() * MaxMoveDistance;
+		}
+	}
+
+	if (PositionMode == ERsPositionMode::TowardTarget && TeleportTarget)
+	{
+		if (FVector::DistSquared(CurrentLocation, NewLocation) > AcceptableRadius * AcceptableRadius)
+		{
+			FVector Direction = (NewLocation - CurrentLocation).GetSafeNormal();
+			NewLocation = TeleportTarget->GetActorLocation() - Direction * AcceptableRadius;
 		}
 	}
 	

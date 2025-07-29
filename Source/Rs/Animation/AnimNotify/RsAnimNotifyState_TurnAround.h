@@ -21,10 +21,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxTurnAroundSpeed = 300.f;
-
-	// Use the existing target and skip targeting.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	bool bKeepExistingTarget = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingShape Shape;
@@ -43,5 +39,5 @@ protected:
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
 	TWeakObjectPtr<AActor> TurnTarget;
-	bool bTurnComplete = false;
+	bool bShouldTurn = true;
 };
