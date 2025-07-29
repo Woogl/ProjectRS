@@ -35,12 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static TArray<AActor*> PerformSorting(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingSorter& Sorter);
 	
-	// Use Gameplay Targeting System plugin.
+	// Use gameplay targeting system plugin.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
-	static bool ShouldDrawDebugShape(UWorld* World, bool bDrawDebug = false);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
 	static void DrawDebugShape(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color);
