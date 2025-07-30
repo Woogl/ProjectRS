@@ -9,16 +9,22 @@
  * 
  */
 USTRUCT(BlueprintType)
-struct FRsStateChangeMessage
+struct FRsLinkSkillMessage
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* Source;
+	AActor* Target;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ActivatationCount;
 }; 
 
 USTRUCT(BlueprintType)
-struct FRsGameplayMessage
+struct FRsParryAbleMessage
 {
 	GENERATED_BODY()
-};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* Target;
+}; 

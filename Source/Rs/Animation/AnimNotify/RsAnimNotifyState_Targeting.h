@@ -36,15 +36,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingSorter Sorter;
+
+	UFUNCTION(BlueprintPure, Category = "Targeting")
+	TArray<AActor*> GetTargets() { return Targets;};
 	
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Targeting")
 	bool PerformTargeting(USkeletalMeshComponent* MeshComp);
 	
 	UPROPERTY()
 	TArray<AActor*> Targets;
-
+	
 #if WITH_EDITOR
 	UFUNCTION()
 	TArray<FName> GetSocketNames() const { return SocketNames; }
