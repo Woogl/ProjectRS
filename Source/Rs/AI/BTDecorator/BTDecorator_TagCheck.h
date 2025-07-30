@@ -28,9 +28,16 @@ protected:
 	virtual void OnCeaseRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Tags To Check (if exists, return true)"))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Actor to Check"))
+	FBlackboardKeySelector Actor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Tags to Check (if exists, return true)"))
 	FGameplayTagContainer Tags;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EGameplayContainerMatchType MatchType;
+	
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;

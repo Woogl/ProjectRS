@@ -4,19 +4,30 @@
 #include "BTDecorator_TagCheck.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 
 UBTDecorator_TagCheck::UBTDecorator_TagCheck()
 {
 	bNotifyBecomeRelevant = true;
 	bNotifyCeaseRelevant = true;
+	Actor.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UBTDecorator_TagCheck, Actor), AActor::StaticClass());
+	Actor.SelectedKeyName = FBlackboard::KeySelf;
+	MatchType = EGameplayContainerMatchType::All;
 }
 
 bool UBTDecorator_TagCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
-	if (ASC.IsValid() && ASC->HasAllMatchingGameplayTags(Tags))
+	if (ASC.IsValid())
 	{
-		return true;
+		switch (MatchType)
+		{
+		case EGameplayContainerMatchType::All:
+			return ASC->HasAllMatchingGameplayTags(Tags);
+
+		case EGameplayContainerMatchType::Any:
+			return ASC->HasAnyMatchingGameplayTags(Tags);
+		}
 	}
 	return false;
 }
@@ -32,12 +43,19 @@ void UBTDecorator_TagCheck::OnTagAddedOrRemoved(const FGameplayTag, int32 Stack,
 void UBTDecorator_TagCheck::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::OnBecomeRelevant(OwnerComp, NodeMemory);
-	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerComp.GetAIOwner()->GetPawn());
-	if (ASC.IsValid())
+	if (const UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent())
 	{
-		for (const FGameplayTag& Tag : Tags)
+		AActor* TargetActor = Cast<AActor>(BlackboardComp->GetValue<UBlackboardKeyType_Object>(Actor.GetSelectedKeyID()));
+		if (TargetActor)
 		{
-			ASC->RegisterGameplayTagEvent(Tag).AddUObject(this, &UBTDecorator_TagCheck::OnTagAddedOrRemoved, &OwnerComp);
+			ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+			if (ASC.IsValid())
+			{
+				for (const FGameplayTag& Tag : Tags)
+				{
+					ASC->RegisterGameplayTagEvent(Tag).AddUObject(this, &UBTDecorator_TagCheck::OnTagAddedOrRemoved, &OwnerComp);
+				}
+			}
 		}
 	}
 }
