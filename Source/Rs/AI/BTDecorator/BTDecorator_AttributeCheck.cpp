@@ -6,6 +6,10 @@
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
 
+UBTDecorator_AttributeCheck::UBTDecorator_AttributeCheck()
+{
+}
+
 bool UBTDecorator_AttributeCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerComp.GetAIOwner());
@@ -16,20 +20,43 @@ bool UBTDecorator_AttributeCheck::CalculateRawConditionValue(UBehaviorTreeCompon
 
 		if (FoundResult)
 		{
-			switch (Operator)
+			if (ThresholdValueType == EThresholdValueType::Numeric)
 			{
-			case EAttributeInequalityOperator::Equal:
-				return FMath::IsNearlyEqual(FoundValue, Value, 0.4);
-			case EAttributeInequalityOperator::Less:
-				return FoundValue < Value;
-			case EAttributeInequalityOperator::LessEqual:
-				return FoundValue <= Value;
-			case EAttributeInequalityOperator::Greater:
-				return FoundValue > Value;
-			case EAttributeInequalityOperator::GreaterEqual:
-				return FoundValue >= Value;
+				return Compare(FoundValue, Threshold);
+			}
+
+			float CompareValue = ASC->GetGameplayAttributeValue(ThresholdAttribute, FoundResult);
+			if (FoundResult)
+			{
+				switch (ThresholdValueType)
+				{
+				case EThresholdValueType::Attribute:
+					return Compare(FoundValue, CompareValue);
+				case EThresholdValueType::AttributeRatio:
+					return Compare(FoundValue / CompareValue, Threshold);
+				default:
+					break;
+				}
 			}
 		}
+	}
+	return false;
+}
+
+bool UBTDecorator_AttributeCheck::Compare(float TargetValue, float ThresholdValue) const
+{
+	switch (Operator)
+	{
+	case EAttributeInequalityOperator::Equal:
+		return FMath::IsNearlyEqual(TargetValue, ThresholdValue, 0.4);
+	case EAttributeInequalityOperator::Less:
+		return TargetValue < ThresholdValue;
+	case EAttributeInequalityOperator::LessEqual:
+		return TargetValue <= ThresholdValue;
+	case EAttributeInequalityOperator::Greater:
+		return TargetValue > ThresholdValue;
+	case EAttributeInequalityOperator::GreaterEqual:
+		return TargetValue >= ThresholdValue;
 	}
 	return false;
 }
