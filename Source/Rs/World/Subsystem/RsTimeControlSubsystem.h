@@ -14,7 +14,6 @@ struct FTimeControlRequest
 
 	ERsTimeControlPriority Priority = ERsTimeControlPriority::VFX;
 	float Dilation = 0.f;
-	
 	float StartTime = 0.f;
 	float Duration = 0.f;
 
