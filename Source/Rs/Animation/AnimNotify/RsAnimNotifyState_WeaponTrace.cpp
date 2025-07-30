@@ -13,6 +13,16 @@ URsAnimNotifyState_WeaponTrace::URsAnimNotifyState_WeaponTrace()
 	bIsNativeBranchingPoint = true;
 }
 
+FString URsAnimNotifyState_WeaponTrace::GetNotifyName_Implementation() const
+{
+	if (EventTag.IsValid())
+	{
+		FString EventTagString = EventTag.ToString();
+		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
+	}
+	return Super::GetNotifyName_Implementation();
+}
+
 void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
@@ -91,10 +101,10 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 				{
 					FGameplayEventData Payload;
-					Payload.EventTag = DamageEvent;
+					Payload.EventTag = EventTag;
 					Payload.Instigator = Owner;
 					Payload.Target = Target;
-					ASC->HandleGameplayEvent(DamageEvent, &Payload);
+					ASC->HandleGameplayEvent(EventTag, &Payload);
 				}
 				HitTargets.Emplace(Target);
 			}

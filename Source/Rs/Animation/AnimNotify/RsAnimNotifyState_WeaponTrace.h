@@ -19,6 +19,8 @@ class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 public:
 	URsAnimNotifyState_WeaponTrace();
 
+	virtual FString GetNotifyName_Implementation() const override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	ERsWeaponRecognitionMethod WeaponRecognition = ERsWeaponRecognitionMethod::ByMeshComponent;
 	
@@ -44,7 +46,7 @@ public:
 	FRsTargetingSorter Sorter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
-	FGameplayTag DamageEvent;
+	FGameplayTag EventTag;
 	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -20,7 +20,7 @@ public:
 	virtual FString GetNotifyName_Implementation() const override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
-	FGameplayTag DamageEvent;
+	FGameplayTag EventTag;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

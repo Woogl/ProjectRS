@@ -22,9 +22,9 @@ URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 
 FString URsAnimNotifyState_HitTrace::GetNotifyName_Implementation() const
 {
-	if (DamageEvent.IsValid())
+	if (EventTag.IsValid())
 	{
-		FString EventTagString = DamageEvent.ToString();
+		FString EventTagString = EventTag.ToString();
 		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
 	}
 	return Super::GetNotifyName_Implementation();
@@ -80,10 +80,10 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 				{
 					//CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
 					FGameplayEventData Payload;
-					Payload.EventTag = DamageEvent;
+					Payload.EventTag = EventTag;
 					Payload.Instigator = MeshComp->GetOwner();
 					Payload.Target = Target;
-					ASC->HandleGameplayEvent(DamageEvent, &Payload);
+					ASC->HandleGameplayEvent(EventTag, &Payload);
 				}
 				HitTargets.Emplace(Target);
 			}

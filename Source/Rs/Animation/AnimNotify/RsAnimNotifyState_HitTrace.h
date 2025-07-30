@@ -21,7 +21,7 @@ public:
 	virtual FString GetNotifyName_Implementation() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
-	FGameplayTag DamageEvent;
+	FGameplayTag EventTag;
 	
 	// Maximum number of traces per tick. It will prevents gaps that could cause missed hits.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
