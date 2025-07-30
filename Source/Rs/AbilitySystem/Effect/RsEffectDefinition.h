@@ -207,7 +207,7 @@ public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
-UCLASS(DisplayName = "HitStop")
+UCLASS(DisplayName = "Hit Stop")
 class RS_API URsEffectDefinition_HitStop : public URsEffectDefinition
 {
 	GENERATED_BODY()

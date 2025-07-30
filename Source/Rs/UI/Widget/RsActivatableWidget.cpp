@@ -4,7 +4,7 @@
 #include "RsActivatableWidget.h"
 
 #include "Input/CommonUIActionRouterBase.h"
-#include "Kismet/GameplayStatics.h"
+#include "Rs/World/RsWorldTimeLibrary.h"
 
 void URsActivatableWidget::NativeOnActivated()
 {
@@ -14,11 +14,11 @@ void URsActivatableWidget::NativeOnActivated()
 	{
 		if (PauseControl == ERsWidgetPauseMode::GamePause)
 		{
-			UGameplayStatics::SetGamePaused(Player, true);
+			URsWorldTimeLibrary::RequestTimePause(Player, ERsTimeControlPriority::UI);
 		}
 		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
 		{
-			UGameplayStatics::SetGlobalTimeDilation(Player, TimeDilation);
+			URsWorldTimeLibrary::RequestTimeDilation(Player, ERsTimeControlPriority::UI, TimeDilation);
 		}
 	}
 }
@@ -29,11 +29,11 @@ void URsActivatableWidget::NativeOnDeactivated()
 	{
 		if (PauseControl == ERsWidgetPauseMode::GamePause)
 		{
-			UGameplayStatics::SetGamePaused(Player, false);
+			URsWorldTimeLibrary::RequestTimeResume(Player, ERsTimeControlPriority::UI);
 		}
 		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
 		{
-			UGameplayStatics::SetGlobalTimeDilation(Player, 1.f);
+			URsWorldTimeLibrary::RequestTimeResume(Player, ERsTimeControlPriority::UI);
 		}
 	}
 	
