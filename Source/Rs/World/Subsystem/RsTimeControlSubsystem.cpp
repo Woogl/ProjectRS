@@ -50,7 +50,7 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 		return;
 	}
 
-	// Select the request with the highest priority and most recently start.
+	// Select the highest-priority request. If priorities same, select the latest one.
 	const FTimeControlRequest* RequestToApply = &Requests[0];
 	for (int32 i = 1; i < Requests.Num(); ++i)
 	{
