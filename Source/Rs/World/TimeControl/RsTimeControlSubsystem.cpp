@@ -19,6 +19,13 @@ bool FTimeControlRequest::IsEnd(float CurrentTime) const
 	return CurrentTime >= GetEndTime();
 }
 
+void URsTimeControlSubsystem::Deinitialize()
+{
+	ClearRequests();
+	
+	Super::Deinitialize();
+}
+
 TStatId URsTimeControlSubsystem::GetStatId() const
 {
 	return TStatId();

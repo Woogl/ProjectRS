@@ -30,6 +30,8 @@ class RS_API URsTimeControlSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	virtual void Deinitialize() override;
+	
 	virtual TStatId GetStatId() const override;
 	virtual void Tick(float DeltaTime) override;
 	
