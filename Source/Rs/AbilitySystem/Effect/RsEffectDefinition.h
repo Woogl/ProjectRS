@@ -42,7 +42,7 @@ public:
 	int32 SuperArmorPierce;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Effect.Damage"))
-	FGameplayTagContainer AdditionalDamageTags;
+	FGameplayTagContainer DamageTags;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Ability.HitReaction"))
 	FGameplayTag HitReaction = FGameplayTag::RequestGameplayTag(TEXT("Ability.HitReaction.Normal"));

@@ -26,8 +26,8 @@ FRsTargetingShape::FRsTargetingShape(ERsTargetingShapeType ShapeType, FVector Ha
 {
 }
 
-FRsTargetingFilter::FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore)
-	: bIncludeSelf(bIncludeSelf), bIncludeFriendlyTeam(bIncludeFriendlyTeam), bIncludeHostileTeam(bIncludeHostileTeam), TargetRequirements(TargetRequirements), ActorsToIgnore(ActorsToIgnore)
+FRsTargetingFilter::FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TagRequirements, TArray<AActor*> ActorsToIgnore)
+	: bIncludeSelf(bIncludeSelf), bIncludeFriendlyTeam(bIncludeFriendlyTeam), bIncludeHostileTeam(bIncludeHostileTeam), TagRequirements(TagRequirements), ActorsToIgnore(ActorsToIgnore)
 {
 }
 

@@ -178,7 +178,7 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 			{
 				FGameplayTagContainer OutTags;
 				TagInterface->GetOwnedGameplayTags(OutTags);
-				if (Filter.TargetRequirements.RequirementsMet(OutTags) == false)
+				if (Filter.TagRequirements.RequirementsMet(OutTags) == false)
 				{
 					FilteredResult.RemoveAt(i);
 					continue;

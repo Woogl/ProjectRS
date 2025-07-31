@@ -60,13 +60,13 @@ struct FRsTargetingFilter
 	bool bIncludeHostileTeam = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTagRequirements TargetRequirements;
+	FGameplayTagRequirements TagRequirements;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> ActorsToIgnore;
 
 	FRsTargetingFilter() {}
-	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TargetRequirements, TArray<AActor*> ActorsToIgnore);
+	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TagRequirements, TArray<AActor*> ActorsToIgnore);
 };
 
 UENUM()
@@ -88,7 +88,7 @@ struct FRsTargetingSorter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsSortingOrder ByTag = ERsSortingOrder::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "ByTag != ERsSortingOrder::None"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "ByTag != ERsSortingOrder::None", EditConditionHides))
 	FGameplayTag SortingTag;
 
 	FRsTargetingSorter() {}

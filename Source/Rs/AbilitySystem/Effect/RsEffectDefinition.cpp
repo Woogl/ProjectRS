@@ -66,7 +66,7 @@ void URsEffectDefinition_DamageBase::ApplyInstantDamage(UAbilitySystemComponent*
 	if (DamageSpec.IsValid())
 	{
 		SET_SETBYCALLER_PROPERTY(DamageSpec, InvinciblePierce);
-		DamageSpec.Data->AppendDynamicAssetTags(AdditionalDamageTags);
+		DamageSpec.Data->AppendDynamicAssetTags(DamageTags);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*DamageSpec.Data, TargetASC);
 	}
 }
@@ -80,7 +80,7 @@ void URsEffectDefinition_DamageBase::ApplyDotDamage(UAbilitySystemComponent* Sou
 		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
 		DotDamageSpec.Data->Period = Period;
 		SET_SETBYCALLER_PROPERTY(DotDamageSpec, InvinciblePierce);
-		DotDamageSpec.Data->AppendDynamicAssetTags(AdditionalDamageTags);
+		DotDamageSpec.Data->AppendDynamicAssetTags(DamageTags);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*DotDamageSpec.Data, TargetASC);
 	}
 }
@@ -146,7 +146,7 @@ void URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* So
 	{
 		SET_SETBYCALLER_PROPERTY(DotBurstDamageSpec, InvinciblePierce);
 		SET_SETBYCALLER_PROPERTY(DotBurstDamageSpec, DamageMultiplierPerDotStacks);
-		DotBurstDamageSpec.Data->AppendDynamicAssetTags(AdditionalDamageTags);
+		DotBurstDamageSpec.Data->AppendDynamicAssetTags(DamageTags);
 		SourceASC->ApplyGameplayEffectSpecToTarget(*DotBurstDamageSpec.Data, TargetASC);
 	}
 	
