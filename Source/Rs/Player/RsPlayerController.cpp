@@ -3,6 +3,7 @@
 
 #include "RsPlayerController.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "AIController.h"
 #include "EnhancedInputComponent.h"
@@ -47,12 +48,14 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 	{
 		GameplayCameraComponent->ActivateCameraForPlayerController(this);
 	}
+	GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Actor.PlayerControlled"));
 }
 
 void ARsPlayerController::OnUnPossess()
 {
 	APawn* ReleasedPawn = GetPawn();
 	
+	GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Actor.PlayerControlled"));
 	Super::OnUnPossess();
 
 	// Reuse the cached Friendly AI Controller.
