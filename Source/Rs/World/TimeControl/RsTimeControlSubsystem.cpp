@@ -50,11 +50,20 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 		return;
 	}
 
-	// Select the highest-priority request. If priorities same, select the latest one.
 	const FTimeControlRequest* RequestToApply = nullptr;
 	for (const auto& [Key, Request] : Requests)
 	{
-		if (RequestToApply == nullptr || Request.Priority < RequestToApply->Priority || (Request.Priority == RequestToApply->Priority && Request.StartTime > RequestToApply->StartTime))
+		if (RequestToApply == nullptr)
+		{
+			RequestToApply = &Request;
+		}
+		// Select the highest-priority request.
+		else if (Request.Priority > RequestToApply->Priority)
+		{
+			RequestToApply = &Request;
+		}
+		// If priorities same, select the latest one.
+		else if (Request.Priority == RequestToApply->Priority && Request.StartTime > RequestToApply->StartTime)
 		{
 			RequestToApply = &Request;
 		}
