@@ -4,7 +4,7 @@
 #include "RsActivatableWidget.h"
 
 #include "Input/CommonUIActionRouterBase.h"
-#include "Rs/World/RsWorldTimeLibrary.h"
+#include "Rs/World/TimeControl/RsTimeControlLibrary.h"
 
 void URsActivatableWidget::NativeOnActivated()
 {
@@ -14,11 +14,11 @@ void URsActivatableWidget::NativeOnActivated()
 	{
 		if (PauseControl == ERsWidgetPauseMode::GamePause)
 		{
-			URsWorldTimeLibrary::RequestTimePause(Player, ERsTimeControlPriority::UI);
+			URsTimeControlLibrary::RequestTimePause(Player, GetFNameSafe(this), ERsTimeControlPriority::UI);
 		}
 		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
 		{
-			URsWorldTimeLibrary::RequestTimeDilation(Player, ERsTimeControlPriority::UI, TimeDilation);
+			URsTimeControlLibrary::RequestTimeDilation(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, TimeDilation);
 		}
 	}
 }
@@ -29,11 +29,11 @@ void URsActivatableWidget::NativeOnDeactivated()
 	{
 		if (PauseControl == ERsWidgetPauseMode::GamePause)
 		{
-			URsWorldTimeLibrary::RequestTimeResume(Player, ERsTimeControlPriority::UI);
+			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this));
 		}
 		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
 		{
-			URsWorldTimeLibrary::RequestTimeResume(Player, ERsTimeControlPriority::UI);
+			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this));
 		}
 	}
 	

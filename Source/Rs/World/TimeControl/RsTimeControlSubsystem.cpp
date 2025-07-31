@@ -32,11 +32,11 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 	float CurrentDilation = UGameplayStatics::GetGlobalTimeDilation(GetWorld());
 
 	// Remove expired requests.
-	for (int32 i = Requests.Num() - 1; i >= 0; --i)
+	for (auto It = Requests.CreateIterator(); It; ++It)
 	{
-		if (Requests[i].IsEnd(CurrentTime))
+		if (It.Value().IsEnd(CurrentTime))
 		{
-			Requests.RemoveAt(i);
+			It.RemoveCurrent();
 		}
 	}
 
@@ -51,11 +51,10 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 	}
 
 	// Select the highest-priority request. If priorities same, select the latest one.
-	const FTimeControlRequest* RequestToApply = &Requests[0];
-	for (int32 i = 1; i < Requests.Num(); ++i)
+	const FTimeControlRequest* RequestToApply = nullptr;
+	for (const auto& [Key, Request] : Requests)
 	{
-		const FTimeControlRequest& Request = Requests[i];
-		if (Request.Priority < RequestToApply->Priority || (Request.Priority == RequestToApply->Priority && Request.StartTime > RequestToApply->StartTime))
+		if (RequestToApply == nullptr || Request.Priority < RequestToApply->Priority || (Request.Priority == RequestToApply->Priority && Request.StartTime > RequestToApply->StartTime))
 		{
 			RequestToApply = &Request;
 		}
@@ -68,23 +67,12 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 	}
 }
 
-void URsTimeControlSubsystem::RequestTimePause(ERsTimeControlPriority Priority)
+void URsTimeControlSubsystem::RequestTimePause(FName RequestKey, ERsTimeControlPriority Priority)
 {
-	RequestTimeDilation(Priority, 0.f, -1.f);
+	RequestTimeDilation(RequestKey, Priority, 0.f, -1.f);
 }
 
-void URsTimeControlSubsystem::RequestTimeResume(ERsTimeControlPriority Priority)
-{
-	for (int32 i = Requests.Num() - 1; i >= 0; --i)
-	{
-		if (Requests[i].Priority >= Priority)
-		{
-			Requests.RemoveAt(i);
-		}
-	}
-}
-
-void URsTimeControlSubsystem::RequestTimeDilation(ERsTimeControlPriority Priority, float Dilation, float Duration)
+void URsTimeControlSubsystem::RequestTimeDilation(FName RequestKey, ERsTimeControlPriority Priority, float Dilation, float Duration)
 {
 	FTimeControlRequest Request;
 	Request.Priority = Priority;
@@ -92,5 +80,16 @@ void URsTimeControlSubsystem::RequestTimeDilation(ERsTimeControlPriority Priorit
 	Request.StartTime = GetWorld()->GetTimeSeconds();
 	Request.Duration = Duration;
 	
-	Requests.Add(Request);
+	Requests.Add(RequestKey, Request);
+}
+
+void URsTimeControlSubsystem::RequestTimeResume(FName RequestKey)
+{
+	Requests.Remove(RequestKey);
+}
+
+void URsTimeControlSubsystem::ClearRequests()
+{
+	Requests.Empty();
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 }

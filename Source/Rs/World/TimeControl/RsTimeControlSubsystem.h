@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Rs/World/RsWorldTimeLibrary.h"
+#include "RsTimeControlLibrary.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RsTimeControlSubsystem.generated.h"
 
@@ -33,11 +33,12 @@ public:
 	virtual TStatId GetStatId() const override;
 	virtual void Tick(float DeltaTime) override;
 	
-	void RequestTimePause(ERsTimeControlPriority Priority);
-	void RequestTimeResume(ERsTimeControlPriority Priority);
-	void RequestTimeDilation(ERsTimeControlPriority Priority, float Dilation, float Duration);
+	void RequestTimePause(FName RequestKey, ERsTimeControlPriority Priority);
+	void RequestTimeDilation(FName RequestKey, ERsTimeControlPriority Priority, float Dilation, float Duration);
+	void RequestTimeResume(FName RequestKey);
+	void ClearRequests();
 
 private:
 	UPROPERTY()
-	TArray<FTimeControlRequest> Requests;
+	TMap<FName, FTimeControlRequest> Requests;
 };
