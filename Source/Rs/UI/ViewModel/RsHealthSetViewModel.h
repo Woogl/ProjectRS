@@ -52,6 +52,9 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool IsDead() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FLinearColor GetColorByHealth() const;
 	
 private:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))

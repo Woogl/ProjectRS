@@ -72,6 +72,7 @@ void URsHealthSetViewModel::SetCurrentHealth(float NewCurrentHealth)
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealth);
 	}
 }
 
@@ -141,6 +142,15 @@ bool URsHealthSetViewModel::IsDead() const
 		return URsBattleLibrary::IsDead(Model->GetAvatarActor());
 	}
 	return false;
+}
+
+FLinearColor URsHealthSetViewModel::GetColorByHealth() const
+{
+	if (IsDead() == true)
+	{
+		return FLinearColor(0.2f, 0.2f, 0.2f);	
+	}
+	return FLinearColor::White;
 }
 
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
