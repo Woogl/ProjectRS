@@ -21,5 +21,8 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeDilation;
+	float TimeDilation = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BlendTime = 0.f;
 };
