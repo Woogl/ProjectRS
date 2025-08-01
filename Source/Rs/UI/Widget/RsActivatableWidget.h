@@ -47,4 +47,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "PauseControl == ERsWidgetPauseMode::TimeDilation", EditConditionHides))
 	float TimeDilation = 0.01f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "PauseControl == ERsWidgetPauseMode::TimeDilation", EditConditionHides))
+	float BlendTime = 0.f;
 };
