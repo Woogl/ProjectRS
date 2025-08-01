@@ -9,10 +9,10 @@
 UENUM(BlueprintType)
 enum class ERsWidgetInputMode : uint8
 {
-	Default,
-	GameAndMenu,
-	Game,
-	Menu
+	Default		UMETA(ToolTip = "Input not set."),
+	Game		UMETA(ToolTip = "Input from game only. Hides mouse cursor."),
+	GameAndMenu	UMETA(ToolTip = "Input from both game and UI. Hides mouse cursor. Look input ignored."),
+	Menu		UMETA(ToolTip = "Input from UI only. Shows mouse cursor. Move and look input ignored.")
 };
 
 UENUM(BlueprintType)
@@ -24,7 +24,7 @@ enum class ERsWidgetPauseMode : uint8
 };
 
 /**
- * An activatable widget that automatically drives the desired input config when activated
+ * 
  */
 UCLASS(Abstract, Blueprintable)
 class RS_API URsActivatableWidget : public UCommonActivatableWidget
@@ -38,7 +38,6 @@ public:
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
 protected:
-	/** The desired input mode to use while this UI is activated, for example do you want key presses to still reach the game/player controller? */
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	ERsWidgetInputMode InputConfig = ERsWidgetInputMode::Default;
 

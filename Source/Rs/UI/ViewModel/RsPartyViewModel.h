@@ -40,13 +40,29 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	ESlateVisibility GetPartyMemberVisibility_2() const;
 
+	UFUNCTION(FieldNotify, BlueprintPure)
+	URsPlayerCharacterViewModel* GetPreviousPartyMemberViewModel() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	URsPlayerCharacterViewModel* GetControlledPartyMemberViewModel() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	URsPlayerCharacterViewModel* GetNextPartyMemberViewModel() const;
+
 private:
+	UFUNCTION()
+	void HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
+	
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 
+	void SetControlledPartyMemberIndex(int32 Index);
 	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
+
+	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	int32 ControlledPartyMemberIndex = 0;
 	
 	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;

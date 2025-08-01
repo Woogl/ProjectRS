@@ -5,6 +5,8 @@
 
 #include "CommonHardwareVisibilityBorder.h"
 #include "RsPlayerCharacterViewModel.h"
+#include "Kismet/GameplayStatics.h"
+#include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 
 URsPartyViewModel* URsPartyViewModel::CreateRsPartyViewModel(URsPartyComponent* PartyComponent)
@@ -51,6 +53,11 @@ void URsPartyViewModel::Initialize()
 			}
 		}
 	}
+
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePossessedPawnChanged);
+	}
 }
 
 void URsPartyViewModel::Deinitialize()
@@ -61,6 +68,11 @@ void URsPartyViewModel::Deinitialize()
 	{
 		Model->OnAddPartyMember.RemoveAll(this);
 		Model->OnRemovePartyMember.RemoveAll(this);
+	}
+
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
 	}
 }
 
@@ -89,6 +101,69 @@ ESlateVisibility URsPartyViewModel::GetPartyMemberVisibility_2() const
 		return ESlateVisibility::Visible;
 	}
 	return ESlateVisibility::Hidden;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetPreviousPartyMemberViewModel() const
+{
+	if (ControlledPartyMemberIndex == 0)
+	{
+		return PartyMemberViewModel_2;
+	}
+	else if (ControlledPartyMemberIndex == 1)
+	{
+		return PartyMemberViewModel_0;
+	}
+	else if (ControlledPartyMemberIndex == 2)
+	{
+		return PartyMemberViewModel_1;
+	}
+	return nullptr;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetControlledPartyMemberViewModel() const
+{
+	if (ControlledPartyMemberIndex == 0)
+	{
+		return PartyMemberViewModel_0;
+	}
+	else if (ControlledPartyMemberIndex == 1)
+	{
+		return PartyMemberViewModel_1;
+	}
+	else if (ControlledPartyMemberIndex == 2)
+	{
+		return PartyMemberViewModel_2;
+	}
+	return nullptr;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetNextPartyMemberViewModel() const
+{
+	if (ControlledPartyMemberIndex == 0)
+	{
+		return PartyMemberViewModel_1;
+	}
+	else if (ControlledPartyMemberIndex == 1)
+	{
+		return PartyMemberViewModel_2;
+	}
+	else if (ControlledPartyMemberIndex == 2)
+	{
+		return PartyMemberViewModel_0;
+	}
+	return nullptr;
+}
+
+void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
+{
+	if (URsPartyComponent* Model = CachedModel.Get())
+	{
+		int32 Index = Model->GetPartyMembers().Find(Cast<ARsPlayerCharacter>(NewPawn));
+		if (Index != INDEX_NONE)
+		{
+			SetControlledPartyMemberIndex(Index);
+		}
+	}
 }
 
 void URsPartyViewModel::HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex)
@@ -121,6 +196,16 @@ void URsPartyViewModel::HandleRemovePartyMember(ARsPlayerCharacter* PartyMember,
 	else if (MemberIndex == 2)
 	{
 		SetPartyMemberViewModel_2(nullptr);
+	}
+}
+
+void URsPartyViewModel::SetControlledPartyMemberIndex(int32 Index)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(ControlledPartyMemberIndex, Index))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPreviousPartyMemberViewModel);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetControlledPartyMemberViewModel);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetNextPartyMemberViewModel);
 	}
 }
 
