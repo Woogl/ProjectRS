@@ -30,7 +30,7 @@ public:
 	void LockOff();
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	bool TryTargetingLockOn();
+	bool TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	bool ToggleLockOn();
@@ -39,9 +39,6 @@ public:
 	AActor* GetLockOnTarget() const;
 	
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
-	FGameplayTag LockOnAbilityTag;
-
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	FRsTargetingShape TargetingShape;
 

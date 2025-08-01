@@ -30,7 +30,7 @@ void URsAnimNotify_LockOn::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	if (World->WorldType == EWorldType::EditorPreview)
 	{
 		TArray<AActor*> OutActors;
-		URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutActors);
+		URsTargetingLibrary::DrawDebugShape(Owner, Owner->GetTransform(), Shape, Collision, FColor::Red);
 	}
 #endif // WITH_EDITOR
 	
@@ -49,8 +49,7 @@ void URsAnimNotify_LockOn::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 		}
 		if (URsLockOnComponent* LockOnComponent = Controller->FindComponentByClass<URsLockOnComponent>())
 		{
-			LockOnComponent->SetTargetingParams(Shape, Collision, Filter, Sorter);
-			LockOnComponent->TryTargetingLockOn();
+			LockOnComponent->TryTargetingLockOn(Shape, Collision, Filter, Sorter);
 		}
 	}
 }

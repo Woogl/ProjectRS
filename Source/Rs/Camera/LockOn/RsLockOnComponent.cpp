@@ -3,7 +3,6 @@
 
 #include "RsLockOnComponent.h"
 
-#include "AbilitySystemGlobals.h"
 #include "RsLockOnInterface.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -126,14 +125,14 @@ void URsLockOnComponent::LockOff()
 	SetComponentTickEnabled(false);
 }
 
-bool URsLockOnComponent::TryTargetingLockOn()
+bool URsLockOnComponent::TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
 {
 	if (AController* Controller = Cast<AController>(GetOwner()))
 	{
 		if (APawn* ControlledPawn = Controller->GetPawn())
 		{
 			TArray<AActor*> OutActors;
-			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter, OutActors))
+			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), Shape, Collision, Filter, Sorter, OutActors))
 			{
 				return LockOn(OutActors[0]);
 			}
@@ -146,7 +145,7 @@ bool URsLockOnComponent::ToggleLockOn()
 {
 	if (GetLockOnTarget() == nullptr)
 	{
-		return TryTargetingLockOn();
+		return TryTargetingLockOn(TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter);
 	}
 	LockOff();
 	return false;
@@ -193,13 +192,10 @@ void URsLockOnComponent::HandleTargetDeath(AActor* DeadActor)
 {
 	LockOff();
 	
-	// Target will dead in next tick, so activate GA_LockOn next tick.
+	// Target will dead in next tick, so try lock on next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
-		{
-			ASC->TryActivateAbilitiesByTag(LockOnAbilityTag.GetSingleTagContainer());
-		}
+		TryTargetingLockOn(TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter);
 	});
 }
 
