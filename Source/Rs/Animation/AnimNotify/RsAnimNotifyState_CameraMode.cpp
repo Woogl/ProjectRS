@@ -20,5 +20,5 @@ void URsAnimNotifyState_CameraMode::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	URsCameraLibrary::SwitchCameraMode(MeshComp, ERsCameraRig::ThirdPerson, ERsCharacterFacingMode::MovementDirection);
+	URsCameraLibrary::SwitchCameraMode(MeshComp, ERsCameraRig::FreeCam, ERsCharacterFacingMode::MovementDirection);
 }

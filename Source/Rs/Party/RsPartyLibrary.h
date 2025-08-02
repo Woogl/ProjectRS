@@ -19,7 +19,7 @@ class RS_API URsPartyLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintPure, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static URsPartyComponent* GetPartyComponent(UObject* WorldContextObject);
 	
 	/** Party member getter */

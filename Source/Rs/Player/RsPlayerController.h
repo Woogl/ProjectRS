@@ -49,7 +49,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
+	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
 
 	UFUNCTION(BlueprintCallable)
 	URsPartyComponent* GetPartyComponent() const;

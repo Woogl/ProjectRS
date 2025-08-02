@@ -17,7 +17,7 @@ class RS_API URsAnimNotifyState_CameraMode : public URsAnimNotifyState_AbilityBa
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AnimNotify")
-	ERsCameraRig CameraRig = ERsCameraRig::ThirdPerson;
+	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AnimNotify")
 	ERsCharacterFacingMode FacingMode = ERsCharacterFacingMode::MovementDirection;

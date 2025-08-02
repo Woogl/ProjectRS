@@ -23,7 +23,7 @@ void URsAbilityTask_CameraMode::Activate()
 
 void URsAbilityTask_CameraMode::OnDestroy(bool AbilityIsEnding)
 {
-	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), ERsCameraRig::ThirdPerson, ERsCharacterFacingMode::MovementDirection);
+	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), ERsCameraRig::FreeCam, ERsCharacterFacingMode::MovementDirection);
 	
 	Super::OnDestroy(AbilityIsEnding);
 }

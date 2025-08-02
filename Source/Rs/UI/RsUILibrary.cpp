@@ -6,8 +6,31 @@
 #include "PrimaryGameLayout.h"
 #include "Input/CommonUIActionRouterBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "ViewModel/RsViewModelBase.h"
+#include "Rs/RsLogChannels.h"
 #include "Subsystem/RsUIManagerSubsystem.h"
+#include "View/MVVMView.h"
 #include "Widget/RsHUDLayout.h"
+
+URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TMap<FName, URsViewModelBase*> ViewModels)
+{
+	if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Layer, WidgetClass))
+	{
+		if (UMVVMView* View = Cast<UMVVMView>(SceneWidget->GetExtension<UMVVMView>()))
+		{
+			for (const auto& [ViewModelName, ViewModelObject] : ViewModels)
+			{
+				bool bSuccess = View->SetViewModel(ViewModelName, ViewModelObject);
+				if (!bSuccess)
+				{
+					UE_LOG(RsLog, Warning, TEXT("Invalid ViewModel: %s in %s"), *ViewModelName.ToString(), *WidgetClass->GetName());
+				}
+			}
+		}
+		return Cast<URsActivatableWidget>(SceneWidget);
+	}
+	return nullptr;
+}
 
 void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
 {

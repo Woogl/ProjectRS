@@ -114,7 +114,7 @@ void URsLockOnComponent::LockOff()
 	
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
-		RsPlayerController->CameraRig = ERsCameraRig::ThirdPerson;
+		RsPlayerController->CameraRig = ERsCameraRig::FreeCam;
 	}
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))

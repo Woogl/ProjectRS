@@ -7,7 +7,7 @@
 UENUM(BlueprintType)
 enum class ERsCameraRig : uint8
 {
-	ThirdPerson,
+	FreeCam,
 	ShoulderView,
 	LockOn,
 	LinkSkill,

@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsUILibrary.generated.h"
 
-struct FGameplayTagContainer;
+class URsViewModelBase;
+class URsActivatableWidget;
 class URsHUDLayout;
-class UMVVMViewModelBase;
 /**
  * 
  */
@@ -18,6 +19,9 @@ class RS_API URsUILibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
+	static URsActivatableWidget* PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TMap<FName, URsViewModelBase*> ViewModels);
+	
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static void ShowGameHUD(UObject* WorldContextObject, UPARAM(meta=(Categories="UI.Layer"))FGameplayTagContainer Layers);
 
