@@ -31,7 +31,7 @@ float FTimeControlRequest::GetDilation(float CurrentTime) const
 	}
 
 	// During dilation
-	if (CurrentTime < EndTime - BlendTime)
+	if (BlendTime <= 0.f || CurrentTime < EndTime - BlendTime)
 	{
 		return TargetDilation;
 	}
