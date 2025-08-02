@@ -7,30 +7,43 @@
 
 float FTimeControlRequest::GetEndTime() const
 {
+	if (Duration < 0.f)
+	{
+		return FLT_MAX;
+	}
 	return StartTime + Duration;
 }
 
 bool FTimeControlRequest::IsEnd(float CurrentTime) const
 {
-	if (Duration < 0.f)
-	{
-		return false;
-	}
 	return CurrentTime >= GetEndTime();
 }
 
 float FTimeControlRequest::GetDilation(float CurrentTime) const
 {
-	if (CurrentTime < StartTime)
+	float EndTime = GetEndTime();
+	
+	// Blend in
+	if (BlendTime > 0.f && CurrentTime < StartTime + BlendTime)
 	{
-		return 1.f;
+		float Alpha = FMath::Clamp((CurrentTime - StartTime) / BlendTime, 0.f, 1.f);
+		return FMath::Lerp(1.f, TargetDilation, Alpha);
 	}
-	else if (BlendTime <= 0.f)
+
+	// During dilation
+	if (CurrentTime < EndTime - BlendTime)
 	{
 		return TargetDilation;
 	}
-	float Alpha = FMath::Clamp((CurrentTime - StartTime) / BlendTime, 0.f, 1.f);
-	return FMath::Lerp(1.f, TargetDilation, Alpha);
+
+	// Blend Out
+	if (BlendTime > 0.f && CurrentTime < EndTime)
+	{
+		float Alpha = FMath::Clamp((CurrentTime - (EndTime - BlendTime)) / BlendTime, 0.f, 1.f);
+		return FMath::Lerp(TargetDilation, 1.f, Alpha);
+	}
+	
+	return 1.f;
 }
 
 void URsTimeControlSubsystem::Deinitialize()

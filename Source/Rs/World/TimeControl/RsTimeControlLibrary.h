@@ -10,9 +10,9 @@ UENUM(BlueprintType)
 enum class ERsTimeControlPriority : uint8
 {
 	None	UMETA(Hidden),
-	VFX,	// Lowest priority. Used for visual effects like combat slow-motion or cinematic pauses. 
-	UI,		// Medium priority. Used for UI-driven time control.
-	System,	// Highest priority. Used for critical gameplay or engine-level time control that must override others.
+	VFX		UMETA(Tooltip = "Lowest priority. Used for visual effects like combat slow-motion or cinematic pauses."), 
+	UI		UMETA(Tooltip = "Medium priority. Used for UI-driven time control."),
+	System	UMETA(Tooltip = "Highest priority. Used for critical gameplay or engine-level time control that must override others."),
 };
 
 /**
