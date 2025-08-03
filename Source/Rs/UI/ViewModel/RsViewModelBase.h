@@ -20,4 +20,10 @@ public:
 protected:
 	virtual void Initialize() {};
 	virtual void Deinitialize() {};
+
+	template<typename T>
+	T* GetModel()
+	{
+		return GetTypedOuter<T>();
+	}
 };
