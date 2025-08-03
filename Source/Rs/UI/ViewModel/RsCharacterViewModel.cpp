@@ -3,6 +3,7 @@
 
 #include "RsCharacterViewModel.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "CommonHardwareVisibilityBorder.h"
 #include "RsActiveEffectListViewViewModel.h"
@@ -16,6 +17,18 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 	URsCharacterViewModel* ViewModel = NewObject<URsCharacterViewModel>(Character);
 	ViewModel->Initialize();
 	return ViewModel;
+}
+
+bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)
+{
+	if (ARsCharacterBase* Model = CachedModel.Get())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+		{
+			return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+		}
+	}
+	return false;
 }
 
 void URsCharacterViewModel::Initialize()

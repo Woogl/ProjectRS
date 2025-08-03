@@ -161,6 +161,16 @@ bool URsPartyComponent::TrySwitchMemberAbility(int32 MemberIndex)
 	return false;
 }
 
+AActor* URsPartyComponent::GetLinkSkillTarget() const
+{
+	return LinkSkillTarget;
+}
+
+void URsPartyComponent::SetLinkSkillTarget(AActor* NewTarget)
+{
+	LinkSkillTarget = NewTarget;
+}
+
 void URsPartyComponent::BeginPlay()
 {
 	Super::BeginPlay();

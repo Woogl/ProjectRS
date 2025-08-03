@@ -91,10 +91,10 @@ void URsUILibrary::ShowCursor(UObject* WorldContextObject)
 	
 	if (UCommonUIActionRouterBase* UIActionRouter = LocalPlayer->GetSubsystem<UCommonUIActionRouterBase>())
 	{
-		FUIInputConfig InputConfig(UIActionRouter->GetActiveInputMode(), EMouseCaptureMode::CaptureDuringMouseDown, false);
-		InputConfig.bIgnoreLookInput = true;
-		InputConfig.bIgnoreMoveInput = true;
-		UIActionRouter->SetActiveUIInputConfig(InputConfig);
+		FUIInputConfig Config(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture);
+		Config.bIgnoreMoveInput = true;
+		Config.bIgnoreLookInput = true;
+		UIActionRouter->SetActiveUIInputConfig(Config);
 	}
 	PlayerController->bShowMouseCursor = true;
 }

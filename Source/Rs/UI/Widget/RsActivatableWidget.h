@@ -16,7 +16,7 @@ enum class ERsWidgetInputMode : uint8
 };
 
 UENUM(BlueprintType)
-enum class ERsWidgetPauseMode : uint8
+enum class ERsWidgetTimeControl : uint8
 {
 	Default,
 	GamePause,
@@ -42,11 +42,11 @@ protected:
 	ERsWidgetInputMode InputConfig = ERsWidgetInputMode::Default;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	ERsWidgetPauseMode PauseControl = ERsWidgetPauseMode::Default;
+	ERsWidgetTimeControl TimeControl = ERsWidgetTimeControl::Default;
 
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "PauseControl == ERsWidgetPauseMode::TimeDilation", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
 	float TimeDilation = 0.01f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "PauseControl == ERsWidgetPauseMode::TimeDilation", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
 	float BlendTime = 0.f;
 };

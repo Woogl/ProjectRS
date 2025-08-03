@@ -39,10 +39,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (Categories = "Ability"))
 	TArray<FGameplayTag> SwitchPartyMemberAbilityTags;
+	
+	AActor* GetLinkSkillTarget() const;
+	void SetLinkSkillTarget(AActor* NewTarget);
 
 protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(VisibleAnywhere)
 	TArray<ARsPlayerCharacter*> PartyMembers;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<AActor> LinkSkillTarget;
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "RsViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
@@ -21,6 +22,9 @@ class RS_API URsCharacterViewModel : public URsViewModelBase
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Character);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
+	bool TryActivateAbility(FGameplayTag AbilityTag);
 
 protected:
 	virtual void Initialize() override;

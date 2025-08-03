@@ -12,11 +12,11 @@ void URsActivatableWidget::NativeOnActivated()
 
 	if (APlayerController* Player = GetOwningPlayer())
 	{
-		if (PauseControl == ERsWidgetPauseMode::GamePause)
+		if (TimeControl == ERsWidgetTimeControl::GamePause)
 		{
 			URsTimeControlLibrary::RequestTimePause(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, BlendTime);
 		}
-		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
+		else if (TimeControl == ERsWidgetTimeControl::TimeDilation)
 		{
 			URsTimeControlLibrary::RequestTimeDilation(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, TimeDilation, -1.f, BlendTime);
 		}
@@ -27,11 +27,11 @@ void URsActivatableWidget::NativeOnDeactivated()
 {
 	if (APlayerController* Player = GetOwningPlayer())
 	{
-		if (PauseControl == ERsWidgetPauseMode::GamePause)
+		if (TimeControl == ERsWidgetTimeControl::GamePause)
 		{
 			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this), BlendTime);
 		}
-		else if (PauseControl == ERsWidgetPauseMode::TimeDilation)
+		else if (TimeControl == ERsWidgetTimeControl::TimeDilation)
 		{
 			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this), BlendTime);
 		}
