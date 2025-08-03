@@ -12,11 +12,14 @@ UBTTask_LockOn::UBTTask_LockOn()
 
 EBTNodeResult::Type UBTTask_LockOn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	if (URsLockOnComponent* LockOnComponent = OwnerComp.GetAIOwner()->FindComponentByClass<URsLockOnComponent>())
+	if (IsValid(&OwnerComp) && OwnerComp.GetAIOwner())
 	{
-		if (LockOnComponent->TryTargetingLockOn(Shape, Collision, Filter, Sorter))
+		if (URsLockOnComponent* LockOnComponent = OwnerComp.GetAIOwner()->FindComponentByClass<URsLockOnComponent>())
 		{
-			return EBTNodeResult::Succeeded;
+			if (LockOnComponent->TryTargetingLockOn(Shape, Collision, Filter, Sorter))
+			{
+				return EBTNodeResult::Succeeded;
+			}
 		}
 	}
 	return EBTNodeResult::Failed;
