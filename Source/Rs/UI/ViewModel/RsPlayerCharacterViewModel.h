@@ -6,6 +6,8 @@
 #include "RsCharacterViewModel.h"
 #include "RsPlayerCharacterViewModel.generated.h"
 
+enum class ERsLinkSkillType : uint8;
+class ARsEnemyCharacter;
 class URsAbilityViewModel;
 class URsEnergySetViewModel;
 class ARsPlayerCharacter;
@@ -47,6 +49,12 @@ public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetPartySwitchCooldownRemaining() const;
 
+	UFUNCTION(FieldNotify, BlueprintPure)
+	bool CanActivateLinkSkill() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ESlateVisibility GetLinkSkillVisibility() const;
+
 	// FTickableGameObject
 	// Display cooldown updated every frame.
 	virtual void Tick(float DeltaTime) override;
@@ -58,6 +66,7 @@ private:
 
 	void HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex);
+	void HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount);
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;

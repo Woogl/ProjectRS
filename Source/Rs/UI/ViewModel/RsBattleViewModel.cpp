@@ -7,13 +7,8 @@
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsEnemyCharacter.h"
 
-URsBattleViewModel* URsBattleViewModel::CreateRsBattleViewModel(UWorld* World)
+URsBattleViewModel* URsBattleViewModel::CreateRsBattleViewModel(URsBattleSubsystem* BattleSubsystem)
 {
-	if (!World)
-	{
-		return nullptr;
-	}
-	URsBattleSubsystem* BattleSubsystem = World->GetSubsystem<URsBattleSubsystem>();
 	if (!BattleSubsystem)
 	{
 		return nullptr;
@@ -47,6 +42,15 @@ void URsBattleViewModel::Deinitialize()
 	}
 }
 
+bool URsBattleViewModel::GetIsLinkSkillReady() const
+{
+	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	{
+		return Model->IsLinkSkillReady();
+	}
+	return false;
+}
+
 void URsBattleViewModel::HandleBossFight(ARsEnemyCharacter* Boss)
 {
 	BossViewModel = URsCharacterViewModel::CreateRsCharacterViewModel(Boss);
@@ -55,10 +59,7 @@ void URsBattleViewModel::HandleBossFight(ARsEnemyCharacter* Boss)
 
 void URsBattleViewModel::HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
 {
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(bIsLinkSkillReady, Model->IsLinkSkillReady());
-	}
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIsLinkSkillReady);
 }
 
 void URsBattleViewModel::SetBossViewModel(URsCharacterViewModel* InBossViewModel)

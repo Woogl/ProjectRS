@@ -19,7 +19,6 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 	if (CurrentAbility.IsValid())
 	{
 		// Handle damage received.
-		FGameplayTargetDataFilterHandle FilterHandle;
 		FGameplayTagRequirements Requirements;
 		WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(CurrentAbility.Get(), ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
 		WaitAppliedTask->OnApplied.AddDynamic(this, &ThisClass::HandleReceiveDamage);

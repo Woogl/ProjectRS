@@ -22,7 +22,7 @@ protected:
 	virtual void Deinitialize() {};
 
 	template<typename T>
-	T* GetModel()
+	T* GetModel() const
 	{
 		return GetTypedOuter<T>();
 	}

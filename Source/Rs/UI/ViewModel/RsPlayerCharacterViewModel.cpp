@@ -11,6 +11,8 @@
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
@@ -57,6 +59,15 @@ void URsPlayerCharacterViewModel::Initialize()
 				PartyComponent->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 			}
 		}
+
+		// Listen link skill ready
+		if (UWorld* World = GetWorld())
+		{
+			if (URsBattleSubsystem* BattleSubsystem = World->GetSubsystem<URsBattleSubsystem>())
+			{
+				BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
+			}
+		}
 	}
 }
 
@@ -71,6 +82,14 @@ void URsPlayerCharacterViewModel::Deinitialize()
 		{
 			PartyComponent->OnAddPartyMember.RemoveAll(this);
 			PartyComponent->OnRemovePartyMember.RemoveAll(this);
+		}
+	}
+	
+	if (UWorld* World = GetWorld())
+	{
+		if (URsBattleSubsystem* BattleSubsystem = World->GetSubsystem<URsBattleSubsystem>())
+		{
+			BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
 		}
 	}
 }
@@ -146,6 +165,32 @@ FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 	return FText::GetEmpty();
 }
 
+bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
+{
+	if (IsPlayerControlled())
+	{
+		return false;
+	}
+	if (URsBattleLibrary::IsDead(CachedModel.Get()))
+	{
+		return false;
+	}
+	if (URsBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<URsBattleSubsystem>())
+	{
+		return BattleSubsystem->IsLinkSkillReady();
+	}
+	return false;
+}
+
+ESlateVisibility URsPlayerCharacterViewModel::GetLinkSkillVisibility() const
+{
+	if (CanActivateLinkSkill())
+	{
+		return ESlateVisibility::SelfHitTestInvisible;
+	}
+	return ESlateVisibility::Collapsed;
+}
+
 void URsPlayerCharacterViewModel::Tick(float DeltaTime)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
@@ -192,4 +237,10 @@ void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* Re
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
 	}
+}
+
+void URsPlayerCharacterViewModel::HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
+{
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CanActivateLinkSkill);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetLinkSkillVisibility);
 }

@@ -6,12 +6,13 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "RsBattleSubsystem.generated.h"
 
+class URsActivatableWidget;
 class ARsEnemyCharacter;
 
 UENUM(BlueprintType)
 enum class ERsLinkSkillType : uint8
 {
-	Parrying,
+	Parry,
 	Triple,
 };
 
@@ -34,7 +35,8 @@ public:
 	FOnLinkSkillReady OnLinkSkillReady;
 
 	ARsEnemyCharacter* GetLinkSkillTarget() const;
-	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType);
+	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType, int32 ActiveCount);
+	void RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy);
 
 	bool IsLinkSkillReady() const;
 	void DecrementLinkSkillCount();
@@ -43,5 +45,5 @@ private:
 	TWeakObjectPtr<ARsEnemyCharacter> BossInBattle;
 	TWeakObjectPtr<ARsEnemyCharacter> LinkSkillTarget;
 
-	int32 LinkSkillCount = 0;
+	int32 LinkSkillActiveCount = 0;
 };

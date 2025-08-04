@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UCommonActivatableWidget> GameHUDClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UCommonActivatableWidget> TripleLinkSkillWidget;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
 	float DefenseConstant = 190.f;
 
