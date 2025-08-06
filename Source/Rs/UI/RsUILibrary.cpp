@@ -12,22 +12,85 @@
 #include "View/MVVMView.h"
 #include "Widget/RsHUDLayout.h"
 
-URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TMap<FName, URsViewModelBase*> ViewModels)
+URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
 {
 	if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Layer, WidgetClass))
 	{
-		if (UMVVMView* View = Cast<UMVVMView>(SceneWidget->GetExtension<UMVVMView>()))
+		for (URsViewModelBase* ViewModel : ViewModels)
 		{
-			for (const auto& [ViewModelName, ViewModelObject] : ViewModels)
+			if (ViewModel)
 			{
-				bool bSuccess = View->SetViewModel(ViewModelName, ViewModelObject);
+				bool bSuccess = SetViewModelByClass(SceneWidget, ViewModel);
 				if (!bSuccess)
 				{
-					UE_LOG(RsLog, Warning, TEXT("Invalid ViewModel: %s in %s"), *ViewModelName.ToString(), *WidgetClass->GetName());
+					UE_LOG(RsLog, Warning, TEXT("Invalid ViewModel: %s in %s"), *ViewModel->GetClass()->GetName(), *WidgetClass->GetName());
 				}
 			}
 		}
 		return Cast<URsActivatableWidget>(SceneWidget);
+	}
+	return nullptr;
+}
+
+
+bool URsUILibrary::SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* ViewModel)
+{
+	if (!Widget)
+	{
+		return false;
+	}
+	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
+	{
+		return View->SetViewModelByClass(ViewModel);
+	}
+	return false;
+}
+
+bool URsUILibrary::SetViewModelByName(UUserWidget* Widget, FName ViewModelName, URsViewModelBase* ViewModel)
+{
+	if (!Widget)
+	{
+		return false;
+	}
+	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
+	{
+		return View->SetViewModel(ViewModelName, ViewModel);
+	}
+	return false;
+}
+
+URsViewModelBase* URsUILibrary::GetViewModel(UUserWidget* Widget, FName ViewModelName)
+{
+	if (!Widget)
+	{
+		return nullptr;
+	}
+	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
+	{
+		if (TScriptInterface<INotifyFieldValueChanged> ViewModel = View->GetViewModel(ViewModelName))
+		{
+			return Cast<URsViewModelBase>(ViewModel.GetObject());
+		}
+	}
+	return nullptr;
+}
+
+URsViewModelBase* URsUILibrary::GetViewModelByClass(UUserWidget* Widget, TSubclassOf<URsViewModelBase> ViewModelClass)
+{
+	if (!Widget)
+	{
+		return nullptr;
+	}
+	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
+	{
+		const TArrayView<const FMVVMView_Source> ViewSources = View->GetSources();
+		for (const FMVVMView_Source& ViewSource : ViewSources)
+		{
+			if (ViewSource.Source && ViewSource.Source.GetClass()->IsChildOf(ViewModelClass))
+			{
+				return Cast<URsViewModelBase>(ViewSource.Source);
+			}
+		}
 	}
 	return nullptr;
 }

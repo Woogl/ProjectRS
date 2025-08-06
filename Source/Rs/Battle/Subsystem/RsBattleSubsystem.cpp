@@ -3,16 +3,14 @@
 
 #include "RsBattleSubsystem.h"
 
-#include "CommonUIExtensions.h"
-#include "Kismet/GameplayStatics.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/Character/RsEnemyCharacter.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
+#include "Rs/UI/RsUILibrary.h"
 #include "Rs/UI/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
 #include "Rs/UI/Widget/RsActivatableWidget.h"
-#include "View/MVVMView.h"
 
 ARsEnemyCharacter* URsBattleSubsystem::GetBossInBattle() const
 {
@@ -36,30 +34,31 @@ void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSki
 	if (LinkSkillTarget.IsValid())
 	{
 		LinkSkillActiveCount = ActiveCount;
+		AciveLinkSkillType = LinkSkillType;
 		
 		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && ActiveCount > 0)
 		{
-			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
+			float TimerDuration = URsGameSetting::Get()->TripleLinkSkillDuration;
+			
+			ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+			TSubclassOf<URsActivatableWidget> WidgetClass = TSubclassOf<URsActivatableWidget>(URsGameSetting::Get()->TripleLinkSkillWidget);
+			TArray<URsViewModelBase*> ViewModels;
+			ViewModels.Add(URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)));
+			ViewModels.Add(URsBattleViewModel::CreateRsBattleViewModel(this));
+			if (URsActivatableWidget* TripleLinkSkillWidget = URsUILibrary::PushSceneWidgetToLayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClass, ViewModels))
 			{
-				ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-				if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->TripleLinkSkillWidget))
-				{
-					if (UMVVMView* View = Cast<UMVVMView>(SceneWidget->GetExtension<UMVVMView>()))
-					{
-						if (URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)))
-						{
-							View->SetViewModelByClass(PartyViewModel);
-						}
-						if (URsBattleViewModel* BattleViewModel = URsBattleViewModel::CreateRsBattleViewModel(this))
-						{
-							View->SetViewModelByClass(BattleViewModel);
-						}
-					}
-				}
+				TimerDuration = TimerDuration * TripleLinkSkillWidget->TimeDilation;
 			}
+			GetWorld()->GetTimerManager().SetTimer(ResetTimerHandle, this, &ThisClass::ResetLinkSkillTarget, TimerDuration);
 		}
 	}
-	OnLinkSkillReady.Broadcast(Enemy, LinkSkillType, ActiveCount);
+	else
+	{
+		LinkSkillActiveCount = 0;
+		AciveLinkSkillType = ERsLinkSkillType::None;
+	}
+	
+	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), AciveLinkSkillType, LinkSkillActiveCount);
 }
 
 void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
@@ -73,7 +72,19 @@ void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
 	{
 		LinkSkillTarget.Reset();
 		LinkSkillActiveCount = 0;
+
+		OnLinkSkillReady.Broadcast(nullptr, ERsLinkSkillType::None, 0);
 	}
+}
+
+void URsBattleSubsystem::ResetLinkSkillTarget()
+{
+	LinkSkillTarget.Reset();
+	LinkSkillActiveCount = 0;
+	AciveLinkSkillType = ERsLinkSkillType::None;
+	GetWorld()->GetTimerManager().ClearTimer(ResetTimerHandle);
+
+	OnLinkSkillReady.Broadcast(nullptr, ERsLinkSkillType::None, 0);
 }
 
 bool URsBattleSubsystem::IsLinkSkillReady() const
@@ -84,4 +95,8 @@ bool URsBattleSubsystem::IsLinkSkillReady() const
 void URsBattleSubsystem::DecrementLinkSkillCount()
 {
 	LinkSkillActiveCount = FMath::Max(LinkSkillActiveCount - 1, 0);
+	if (LinkSkillActiveCount == 0)
+	{
+		OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), ERsLinkSkillType::None, 0);
+	}
 }

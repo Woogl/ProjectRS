@@ -18,10 +18,23 @@ class RS_API URsUILibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
-public:
+public: // MVVM
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
-	static URsActivatableWidget* PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TMap<FName, URsViewModelBase*> ViewModels);
-	
+	static URsActivatableWidget* PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
+
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
+	static bool SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* ViewModel);
+
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
+	static bool SetViewModelByName(UUserWidget* Widget, FName Name, URsViewModelBase* ViewModel);
+
+	UFUNCTION()
+	static URsViewModelBase* GetViewModel(UUserWidget* Widget, FName ViewModelName);
+
+	UFUNCTION()
+	static URsViewModelBase* GetViewModelByClass(UUserWidget* Widget, TSubclassOf<URsViewModelBase> ViewModelClass);
+
+public: // Game HUD
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static void ShowGameHUD(UObject* WorldContextObject, UPARAM(meta=(Categories="UI.Layer"))FGameplayTagContainer Layers);
 

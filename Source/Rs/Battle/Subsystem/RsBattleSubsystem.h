@@ -12,6 +12,7 @@ class ARsEnemyCharacter;
 UENUM(BlueprintType)
 enum class ERsLinkSkillType : uint8
 {
+	None,
 	Parry,
 	Triple,
 };
@@ -37,13 +38,16 @@ public:
 	ARsEnemyCharacter* GetLinkSkillTarget() const;
 	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType, int32 ActiveCount);
 	void RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy);
+	void ResetLinkSkillTarget();
 
 	bool IsLinkSkillReady() const;
 	void DecrementLinkSkillCount();
 
 private:
 	TWeakObjectPtr<ARsEnemyCharacter> BossInBattle;
+	
 	TWeakObjectPtr<ARsEnemyCharacter> LinkSkillTarget;
-
+	ERsLinkSkillType AciveLinkSkillType = ERsLinkSkillType::None;
 	int32 LinkSkillActiveCount = 0;
+	FTimerHandle ResetTimerHandle;
 };

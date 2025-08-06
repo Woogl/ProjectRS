@@ -36,17 +36,16 @@ public:
 	virtual void NativeOnDeactivated() override;
 
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
-
-protected:
+	
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	ERsWidgetInputMode InputConfig = ERsWidgetInputMode::Default;
 
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS")
 	ERsWidgetTimeControl TimeControl = ERsWidgetTimeControl::Default;
 
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
 	float TimeDilation = 0.01f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
 	float BlendTime = 0.f;
 };
