@@ -31,6 +31,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
 	static int32 FindPartyMemberIndex(ARsPlayerCharacter* Member);
+
+	UFUNCTION(BlueprintCallable, Category = "Rs Party Library")
+	static int32 GetAlivePartyMemberCount(UObject* WorldContextObject);
 	
 	/** Party member setter */
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
@@ -55,7 +58,6 @@ public:
 	static void LeavePartyMember(ULocalPlayer* LocalPlayer, TSubclassOf<ARsPlayerCharacter> MemberClassToRemove);
 
 	/** Global party member effect */
-
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static void ApplyPartyEffect(UObject* WorldContextObject, TSubclassOf<UGameplayEffect> EffectClass);
 
@@ -63,7 +65,6 @@ public:
 	static void ApplyPartyEffectSpec(UObject* WorldContextObject, FGameplayEffectSpec EffectSpec);
 
 	/** Global party member ability */
-
 	UFUNCTION(BlueprintCallable, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
 	static void ActivatePartyAbility(UObject* WorldContextObject, FGameplayTag AbilityTag);
 

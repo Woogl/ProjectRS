@@ -19,7 +19,7 @@ void URsAnimNotifyState_TriggerParryLinkSkill::NotifyBegin(USkeletalMeshComponen
 	{
 		if (URsBattleSubsystem* BattleSubsystem = MeshComp->GetWorld()->GetSubsystem<URsBattleSubsystem>())
 		{
-			BattleSubsystem->SetLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()), ERsLinkSkillType::Parry, 1);
+			BattleSubsystem->SetLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()), ERsLinkSkillType::Parry);
 		}
 		
 		// TODO: Gameplay Cue

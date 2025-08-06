@@ -18,7 +18,7 @@ enum class ERsLinkSkillType : uint8
 };
 
 /**
- * Subsystem for managing combat information.
+ * Subsystem for managing battle information.
  */
 UCLASS()
 class RS_API URsBattleSubsystem : public UWorldSubsystem
@@ -36,7 +36,7 @@ public:
 	FOnLinkSkillReady OnLinkSkillReady;
 
 	ARsEnemyCharacter* GetLinkSkillTarget() const;
-	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType, int32 ActiveCount);
+	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType);
 	void RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy);
 	void ResetLinkSkillTarget();
 

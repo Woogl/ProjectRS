@@ -7,6 +7,7 @@
 #include "RsPartyComponent.h"
 #include "RsPartySubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Player/RsPlayerController.h"
 
@@ -46,6 +47,19 @@ int32 URsPartyLibrary::FindPartyMemberIndex(ARsPlayerCharacter* Member)
 {
 	TArray<ARsPlayerCharacter*> PartyMembers = GetPartyMembers(Member);
 	return PartyMembers.Find(Member);
+}
+
+int32 URsPartyLibrary::GetAlivePartyMemberCount(UObject* WorldContextObject)
+{
+	int32 Count = 0;
+	for (ARsPlayerCharacter* PartyMember : GetPartyMembers(WorldContextObject))
+	{
+		if (!URsBattleLibrary::IsDead(PartyMember))
+		{
+			Count++;
+		}
+	}
+	return Count;
 }
 
 bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMemberIndex)

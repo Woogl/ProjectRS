@@ -63,7 +63,7 @@ void URsAnimNotifyState_TriggerTripleLinkSkill::HandleReceiveDamage(AActor* Sour
 	{
 		if (ARsEnemyCharacter* Enemy = Cast<ARsEnemyCharacter>(Avatar))
 		{
-			BattleSubsystem->SetLinkSkillTarget(Enemy, ERsLinkSkillType::Triple, 3);
+			BattleSubsystem->SetLinkSkillTarget(Enemy, ERsLinkSkillType::Triple);
 		}
 	}
 }
@@ -80,7 +80,7 @@ void URsAnimNotifyState_TriggerTripleLinkSkill::HandleBlockDamage(FGameplayEffec
 	{
 		if (ARsEnemyCharacter* Enemy = Cast<ARsEnemyCharacter>(Avatar))
 		{
-			BattleSubsystem->SetLinkSkillTarget(Enemy, ERsLinkSkillType::Triple, 3);
+			BattleSubsystem->SetLinkSkillTarget(Enemy, ERsLinkSkillType::Triple);
 		}
 	}
 }

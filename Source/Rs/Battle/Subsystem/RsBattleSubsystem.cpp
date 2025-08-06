@@ -28,15 +28,22 @@ ARsEnemyCharacter* URsBattleSubsystem::GetLinkSkillTarget() const
 	return LinkSkillTarget.Get();
 }
 
-void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType, int32 ActiveCount)
+void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType)
 {
 	LinkSkillTarget = Enemy;
-	if (LinkSkillTarget.IsValid())
+	if (LinkSkillTarget.IsValid() && LinkSkillType != ERsLinkSkillType::None && URsPartyLibrary::GetAlivePartyMemberCount(this) > 1)
 	{
-		LinkSkillActiveCount = ActiveCount;
 		AciveLinkSkillType = LinkSkillType;
+		if (AciveLinkSkillType == ERsLinkSkillType::Parry)
+		{
+			LinkSkillActiveCount = 1;
+		}
+		else if (AciveLinkSkillType == ERsLinkSkillType::Triple)
+		{
+			LinkSkillActiveCount = 3;
+		}
 		
-		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && ActiveCount > 0)
+		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && LinkSkillActiveCount > 0)
 		{
 			float TimerDuration = URsGameSetting::Get()->TripleLinkSkillDuration;
 			
