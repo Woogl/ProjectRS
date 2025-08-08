@@ -26,6 +26,8 @@ class RS_API URsBattleSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossFight, ARsEnemyCharacter*);
 	FOnBossFight OnBossFight;
 	
@@ -44,10 +46,7 @@ public:
 	void DecrementLinkSkillCount();
 
 private:
-	TWeakObjectPtr<ARsEnemyCharacter> BossInBattle;
-	
+	TWeakObjectPtr<ARsEnemyCharacter> BossInBattle;	
 	TWeakObjectPtr<ARsEnemyCharacter> LinkSkillTarget;
-	ERsLinkSkillType AciveLinkSkillType = ERsLinkSkillType::None;
-	int32 LinkSkillActiveCount = 0;
-	FTimerHandle ResetTimerHandle;
+	int32 AvailableLinkSkillCount = 0;
 };

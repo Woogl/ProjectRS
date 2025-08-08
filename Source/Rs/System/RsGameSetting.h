@@ -52,7 +52,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
 	float GroggyDamageMultiplier = 1.6f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
-	float TripleLinkSkillDuration = 3.f;
 };

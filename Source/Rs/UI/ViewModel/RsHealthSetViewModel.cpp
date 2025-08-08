@@ -148,7 +148,7 @@ FLinearColor URsHealthSetViewModel::GetColorByHealth() const
 {
 	if (IsDead() == true)
 	{
-		return FLinearColor(0.2f, 0.2f, 0.2f);	
+		return FLinearColor(0.15f, 0.15f, 0.15f);	
 	}
 	return FLinearColor::White;
 }

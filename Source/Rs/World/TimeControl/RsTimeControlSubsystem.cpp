@@ -134,8 +134,8 @@ void URsTimeControlSubsystem::RequestTimeResume(FName RequestKey, float BlendTim
 	FTimeControlRequest ResumeRequest;
 	ResumeRequest.StartTime = GetWorld()->GetTimeSeconds();
 	ResumeRequest.Duration = BlendTime;
-	ResumeRequest.BlendTime = BlendTime;
 	ResumeRequest.TargetDilation = 1.f;
+	ResumeRequest.BlendTime = BlendTime;
 	if (FTimeControlRequest* Request = Requests.Find(RequestKey))
 	{
 		ResumeRequest.Priority = Request->Priority;

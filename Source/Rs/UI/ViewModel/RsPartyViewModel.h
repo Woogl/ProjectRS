@@ -23,11 +23,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool TrySwitchMemberAbility(int32 MemberIndex);
-
-protected:
+	
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
+protected:
 	TWeakObjectPtr<URsPartyComponent> CachedModel;
 
 public:

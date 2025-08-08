@@ -32,6 +32,14 @@ void URsPartyViewModel::Initialize()
 	CachedModel = Cast<URsPartyComponent>(GetOuter());
 	if (URsPartyComponent* Model = CachedModel.Get())
 	{
+		if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0))
+		{
+			if (ARsPlayerCharacter* RsCharacter = Cast<ARsPlayerCharacter>(PlayerCharacter))
+			{
+				ControlledPartyMemberIndex = Model->GetPartyMembers().Find(RsCharacter);
+			}
+		}
+		
 		Model->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
 		Model->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 

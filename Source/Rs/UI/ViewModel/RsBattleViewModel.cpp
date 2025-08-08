@@ -3,21 +3,15 @@
 
 #include "RsBattleViewModel.h"
 
+#include "CommonHardwareVisibilityBorder.h"
 #include "RsCharacterViewModel.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsEnemyCharacter.h"
+#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
 
-URsBattleViewModel* URsBattleViewModel::CreateRsBattleViewModel(URsBattleSubsystem* BattleSubsystem)
+URsBattleViewModel* URsBattleViewModel::GetRsBattleViewModel(URsBattleSubsystem* BattleSubsystem)
 {
-	if (!BattleSubsystem)
-	{
-		return nullptr;
-	}
-	if (URsBattleViewModel* ViewModel = NewObject<URsBattleViewModel>(BattleSubsystem))
-	{
-		ViewModel->Initialize();
-	}
-	return nullptr;
+	return URsMVVMGameSubsystem::GetOrCreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
 }
 
 void URsBattleViewModel::Initialize()
@@ -60,6 +54,7 @@ void URsBattleViewModel::HandleBossFight(ARsEnemyCharacter* Boss)
 void URsBattleViewModel::HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIsLinkSkillReady);
+	OnLinkSkillReady.Broadcast(LinkSkillCount);
 }
 
 void URsBattleViewModel::SetBossViewModel(URsCharacterViewModel* InBossViewModel)

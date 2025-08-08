@@ -3,14 +3,23 @@
 
 #include "RsBattleSubsystem.h"
 
+#include "CommonUIExtensions.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/Character/RsEnemyCharacter.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
 #include "Rs/UI/RsUILibrary.h"
+#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
 #include "Rs/UI/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
 #include "Rs/UI/Widget/RsActivatableWidget.h"
+
+void URsBattleSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	URsMVVMGameSubsystem::GetOrCreateSingletonViewModel<URsBattleViewModel>(this);
+}
 
 ARsEnemyCharacter* URsBattleSubsystem::GetBossInBattle() const
 {
@@ -33,39 +42,34 @@ void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSki
 	LinkSkillTarget = Enemy;
 	if (LinkSkillTarget.IsValid() && LinkSkillType != ERsLinkSkillType::None && URsPartyLibrary::GetAlivePartyMemberCount(this) > 1)
 	{
-		AciveLinkSkillType = LinkSkillType;
-		if (AciveLinkSkillType == ERsLinkSkillType::Parry)
+		if (LinkSkillType == ERsLinkSkillType::Parry)
 		{
-			LinkSkillActiveCount = 1;
+			AvailableLinkSkillCount = 1;
 		}
-		else if (AciveLinkSkillType == ERsLinkSkillType::Triple)
+		else if (LinkSkillType == ERsLinkSkillType::Triple)
 		{
-			LinkSkillActiveCount = 3;
+			AvailableLinkSkillCount = 3;
 		}
 		
-		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && LinkSkillActiveCount > 0)
+		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && AvailableLinkSkillCount > 0)
 		{
-			float TimerDuration = URsGameSetting::Get()->TripleLinkSkillDuration;
-			
 			ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 			TSubclassOf<URsActivatableWidget> WidgetClass = TSubclassOf<URsActivatableWidget>(URsGameSetting::Get()->TripleLinkSkillWidget);
 			TArray<URsViewModelBase*> ViewModels;
 			ViewModels.Add(URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)));
-			ViewModels.Add(URsBattleViewModel::CreateRsBattleViewModel(this));
+			ViewModels.Add(URsBattleViewModel::GetRsBattleViewModel(this));
 			if (URsActivatableWidget* TripleLinkSkillWidget = URsUILibrary::PushSceneWidgetToLayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClass, ViewModels))
 			{
-				TimerDuration = TimerDuration * TripleLinkSkillWidget->TimeDilation;
+				TripleLinkSkillWidget->OnDeactivated().AddUObject(this, &ThisClass::ResetLinkSkillTarget);
 			}
-			GetWorld()->GetTimerManager().SetTimer(ResetTimerHandle, this, &ThisClass::ResetLinkSkillTarget, TimerDuration);
 		}
 	}
 	else
 	{
-		LinkSkillActiveCount = 0;
-		AciveLinkSkillType = ERsLinkSkillType::None;
+		AvailableLinkSkillCount = 0;
 	}
 	
-	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), AciveLinkSkillType, LinkSkillActiveCount);
+	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LinkSkillType, AvailableLinkSkillCount);
 }
 
 void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
@@ -78,7 +82,7 @@ void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
 	if (LinkSkillTarget == Enemy)
 	{
 		LinkSkillTarget.Reset();
-		LinkSkillActiveCount = 0;
+		AvailableLinkSkillCount = 0;
 
 		OnLinkSkillReady.Broadcast(nullptr, ERsLinkSkillType::None, 0);
 	}
@@ -87,22 +91,20 @@ void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
 void URsBattleSubsystem::ResetLinkSkillTarget()
 {
 	LinkSkillTarget.Reset();
-	LinkSkillActiveCount = 0;
-	AciveLinkSkillType = ERsLinkSkillType::None;
-	GetWorld()->GetTimerManager().ClearTimer(ResetTimerHandle);
+	AvailableLinkSkillCount = 0;
 
 	OnLinkSkillReady.Broadcast(nullptr, ERsLinkSkillType::None, 0);
 }
 
 bool URsBattleSubsystem::IsLinkSkillReady() const
 {
-	return LinkSkillActiveCount > 0 && LinkSkillTarget.IsValid();
+	return AvailableLinkSkillCount > 0 && LinkSkillTarget.IsValid();
 }
 
 void URsBattleSubsystem::DecrementLinkSkillCount()
 {
-	LinkSkillActiveCount = FMath::Max(LinkSkillActiveCount - 1, 0);
-	if (LinkSkillActiveCount == 0)
+	AvailableLinkSkillCount = FMath::Max(AvailableLinkSkillCount - 1, 0);
+	if (AvailableLinkSkillCount == 0)
 	{
 		OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), ERsLinkSkillType::None, 0);
 	}

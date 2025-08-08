@@ -14,8 +14,8 @@ struct FTimeControlRequest
 	
 	float StartTime = 0.f;
 	float Duration = 0.f;
-	float BlendTime = 0.f;
 	float TargetDilation = 0.f;
+	float BlendTime = 0.f;
 	ERsTimeControlPriority Priority = ERsTimeControlPriority::None;
 	
 	float GetEndTime() const;
