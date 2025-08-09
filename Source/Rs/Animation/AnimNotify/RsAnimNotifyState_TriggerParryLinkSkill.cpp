@@ -17,7 +17,7 @@ void URsAnimNotifyState_TriggerParryLinkSkill::NotifyBegin(USkeletalMeshComponen
 
 	if (PerformTargeting(MeshComp))
 	{
-		if (URsBattleSubsystem* BattleSubsystem = MeshComp->GetWorld()->GetSubsystem<URsBattleSubsystem>())
+		if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(MeshComp))
 		{
 			BattleSubsystem->SetLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()), ERsLinkSkillType::Parry);
 		}
@@ -30,7 +30,7 @@ void URsAnimNotifyState_TriggerParryLinkSkill::NotifyEnd(USkeletalMeshComponent*
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (URsBattleSubsystem* BattleSubsystem = MeshComp->GetWorld()->GetSubsystem<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(MeshComp))
 	{
 		BattleSubsystem->RemoveLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()));
 	}

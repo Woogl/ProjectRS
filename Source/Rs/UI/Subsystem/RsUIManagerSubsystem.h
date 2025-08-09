@@ -6,6 +6,8 @@
 #include "GameUIManagerSubsystem.h"
 #include "RsUIManagerSubsystem.generated.h"
 
+enum class ERsLinkSkillType : uint8;
+class ARsEnemyCharacter;
 class URsHUDLayout;
 class UCommonActivatableWidget;
 /**
@@ -19,10 +21,11 @@ class RS_API URsUIManagerSubsystem : public UGameUIManagerSubsystem
 public:
 	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer) override;
 	
-	URsHUDLayout* GetGameHUD();
+	URsHUDLayout* GetGameHUD() const;
 
 private:
 	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
+	void HandleLinkSkillReady(ARsEnemyCharacter* Target, ERsLinkSkillType Type, int32 AvailableCount);
 
 	// NOTE: MVVM settings are not saved when this file is set in DefaultGame.ini
 	// UPROPERTY(config, EditAnywhere)
@@ -30,4 +33,6 @@ private:
 
 	UPROPERTY(Transient)
 	URsHUDLayout* RsHUDInstance = nullptr;
+	
+	FDelegateHandle LinkSkillReadyHandle;
 };

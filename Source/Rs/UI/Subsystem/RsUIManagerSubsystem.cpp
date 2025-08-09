@@ -8,8 +8,13 @@
 #include "CommonUIExtensions.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
+#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
+#include "Rs/UI/RsUILibrary.h"
+#include "Rs/UI/ViewModel/RsBattleViewModel.h"
+#include "Rs/UI/ViewModel/RsPartyViewModel.h"
 #include "Rs/UI/ViewModel/RsPlayerCharacterViewModel.h"
 #include "Rs/UI/Widget/RsHUDLayout.h"
 #include "View/MVVMView.h"
@@ -21,10 +26,19 @@ void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 	if (LocalPlayer)
 	{
 		LocalPlayer->CallAndRegister_OnPlayerPawnSet(UCommonLocalPlayer::FPlayerPawnSetDelegate::FDelegate::CreateUObject(this, &ThisClass::RegisterGameHUD));
+
+		// Bind only first time.
+		if (!LinkSkillReadyHandle.IsValid())
+		{
+			if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+			{
+				LinkSkillReadyHandle = BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
+			}
+		}
 	}
 }
 
-URsHUDLayout* URsUIManagerSubsystem::GetGameHUD()
+URsHUDLayout* URsUIManagerSubsystem::GetGameHUD() const
 {
 	return RsHUDInstance;
 }
@@ -67,6 +81,35 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 				{
 					View->SetViewModelByClass(PCViewModel);
 				}
+			}
+		}
+	}
+}
+
+void URsUIManagerSubsystem::HandleLinkSkillReady(ARsEnemyCharacter* Target, ERsLinkSkillType Type, int32 AvailableCount)
+{
+	ULocalPlayer* LocalPlayer = GetGameInstance()->GetFirstGamePlayer();
+	if (!LocalPlayer)
+	{
+		return;
+	}
+
+	if (!Target || Type == ERsLinkSkillType::None || AvailableCount == 0 || URsPartyLibrary::GetAlivePartyMemberCount(LocalPlayer) <= 1)
+	{
+		return;
+	}
+	
+	if (UCommonActivatableWidget* TripleLinkSkillWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->TripleLinkSkillWidget))
+	{
+		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+		{
+			if (URsBattleViewModel* BattleViewModel = URsBattleViewModel::GetRsBattleViewModel(BattleSubsystem))
+			{
+				URsUILibrary::SetViewModelByClass(TripleLinkSkillWidget, BattleViewModel);
+			}
+			if (URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)))
+			{
+				URsUILibrary::SetViewModelByClass(TripleLinkSkillWidget, PartyViewModel);
 			}
 		}
 	}

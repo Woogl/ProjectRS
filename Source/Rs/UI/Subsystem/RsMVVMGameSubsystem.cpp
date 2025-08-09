@@ -7,6 +7,10 @@
 
 URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(UObject* WorldContext)
 {
+	if (!WorldContext)
+	{
+		return nullptr;
+	}
 	if (UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContext))
 	{
 		return GameInstance->GetSubsystem<URsMVVMGameSubsystem>();

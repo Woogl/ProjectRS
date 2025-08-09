@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/WorldSubsystem.h"
+#include "Subsystems/LocalPlayerSubsystem.h"
 #include "RsBattleSubsystem.generated.h"
 
-class URsActivatableWidget;
 class ARsEnemyCharacter;
 
 UENUM(BlueprintType)
@@ -21,12 +20,12 @@ enum class ERsLinkSkillType : uint8
  * Subsystem for managing battle information.
  */
 UCLASS()
-class RS_API URsBattleSubsystem : public UWorldSubsystem
+class RS_API URsBattleSubsystem : public ULocalPlayerSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	static URsBattleSubsystem* Get(UObject* WorldContext);
 	
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossFight, ARsEnemyCharacter*);
 	FOnBossFight OnBossFight;

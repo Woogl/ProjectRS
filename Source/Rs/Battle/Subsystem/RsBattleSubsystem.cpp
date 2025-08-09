@@ -3,22 +3,20 @@
 
 #include "RsBattleSubsystem.h"
 
-#include "CommonUIExtensions.h"
-#include "Rs/RsGameplayTags.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsEnemyCharacter.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/System/RsGameSetting.h"
-#include "Rs/UI/RsUILibrary.h"
-#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
-#include "Rs/UI/ViewModel/RsBattleViewModel.h"
-#include "Rs/UI/ViewModel/RsPartyViewModel.h"
-#include "Rs/UI/Widget/RsActivatableWidget.h"
 
-void URsBattleSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+URsBattleSubsystem* URsBattleSubsystem::Get(UObject* WorldContext)
 {
-	Super::Initialize(Collection);
-
-	URsMVVMGameSubsystem::GetOrCreateSingletonViewModel<URsBattleViewModel>(this);
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContext, 0))
+	{
+		if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
+		{
+			return LocalPlayer->GetSubsystem<URsBattleSubsystem>();
+		}
+	}
+	return nullptr;
 }
 
 ARsEnemyCharacter* URsBattleSubsystem::GetBossInBattle() const
@@ -50,19 +48,6 @@ void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSki
 		{
 			AvailableLinkSkillCount = 3;
 		}
-		
-		if (URsGameSetting::Get()->TripleLinkSkillWidget != nullptr && AvailableLinkSkillCount > 0)
-		{
-			ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-			TSubclassOf<URsActivatableWidget> WidgetClass = TSubclassOf<URsActivatableWidget>(URsGameSetting::Get()->TripleLinkSkillWidget);
-			TArray<URsViewModelBase*> ViewModels;
-			ViewModels.Add(URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)));
-			ViewModels.Add(URsBattleViewModel::GetRsBattleViewModel(this));
-			if (URsActivatableWidget* TripleLinkSkillWidget = URsUILibrary::PushSceneWidgetToLayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClass, ViewModels))
-			{
-				TripleLinkSkillWidget->OnDeactivated().AddUObject(this, &ThisClass::ResetLinkSkillTarget);
-			}
-		}
 	}
 	else
 	{
@@ -74,7 +59,7 @@ void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSki
 
 void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
 {
-	if (!Enemy || !LinkSkillTarget.IsValid())
+	if (!Enemy)
 	{
 		return;
 	}
@@ -83,7 +68,6 @@ void URsBattleSubsystem::RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy)
 	{
 		LinkSkillTarget.Reset();
 		AvailableLinkSkillCount = 0;
-
 		OnLinkSkillReady.Broadcast(nullptr, ERsLinkSkillType::None, 0);
 	}
 }

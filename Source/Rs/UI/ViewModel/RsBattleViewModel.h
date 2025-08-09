@@ -25,13 +25,18 @@ public:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
+	void DecrementLinkSkillCount();
+
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
+	void RemoveLinkSkillTarget(ARsEnemyCharacter* OldTarget);
+
 public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool GetIsLinkSkillReady() const;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLinkSkillReady_ViewModel, int32, AvailableCount);
-	UPROPERTY(BlueprintAssignable)
-	FOnLinkSkillReady_ViewModel OnLinkSkillReady;
+	UFUNCTION(FieldNotify, BlueprintPure)
+	ARsEnemyCharacter* GetLinkSkillTarget() const;
 	
 private:
 	void HandleBossFight(ARsEnemyCharacter* Boss);

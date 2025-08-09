@@ -61,12 +61,9 @@ void URsPlayerCharacterViewModel::Initialize()
 		}
 
 		// Listen link skill ready
-		if (UWorld* World = GetWorld())
+		if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(this))
 		{
-			if (URsBattleSubsystem* BattleSubsystem = World->GetSubsystem<URsBattleSubsystem>())
-			{
-				BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
-			}
+			BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
 		}
 	}
 }
@@ -85,12 +82,9 @@ void URsPlayerCharacterViewModel::Deinitialize()
 		}
 	}
 	
-	if (UWorld* World = GetWorld())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(this))
 	{
-		if (URsBattleSubsystem* BattleSubsystem = World->GetSubsystem<URsBattleSubsystem>())
-		{
-			BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
-		}
+		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
 	}
 }
 
@@ -175,7 +169,7 @@ bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 	{
 		return false;
 	}
-	if (URsBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(CachedModel.Get()))
 	{
 		return BattleSubsystem->IsLinkSkillReady();
 	}

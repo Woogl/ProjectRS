@@ -59,7 +59,7 @@ void URsAnimNotifyState_TriggerTripleLinkSkill::HandleReceiveDamage(AActor* Sour
 	}
 	
 	AActor* Avatar = OwnerASC->GetAvatarActor();
-	if (URsBattleSubsystem* BattleSubsystem = Avatar->GetWorld()->GetSubsystem<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(Source))
 	{
 		if (ARsEnemyCharacter* Enemy = Cast<ARsEnemyCharacter>(Avatar))
 		{
@@ -76,7 +76,7 @@ void URsAnimNotifyState_TriggerTripleLinkSkill::HandleBlockDamage(FGameplayEffec
 	}
 
 	AActor* Avatar = OwnerASC->GetAvatarActor();
-	if (URsBattleSubsystem* BattleSubsystem = Avatar->GetWorld()->GetSubsystem<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(Avatar))
 	{
 		if (ARsEnemyCharacter* Enemy = Cast<ARsEnemyCharacter>(Avatar))
 		{

@@ -3,7 +3,6 @@
 
 #include "RsBattleViewModel.h"
 
-#include "CommonHardwareVisibilityBorder.h"
 #include "RsCharacterViewModel.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsEnemyCharacter.h"
@@ -11,6 +10,10 @@
 
 URsBattleViewModel* URsBattleViewModel::GetRsBattleViewModel(URsBattleSubsystem* BattleSubsystem)
 {
+	if (!BattleSubsystem)
+	{
+		return nullptr;
+	}
 	return URsMVVMGameSubsystem::GetOrCreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
 }
 
@@ -36,6 +39,22 @@ void URsBattleViewModel::Deinitialize()
 	}
 }
 
+void URsBattleViewModel::DecrementLinkSkillCount()
+{
+	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	{
+		Model->DecrementLinkSkillCount();
+	}
+}
+
+void URsBattleViewModel::RemoveLinkSkillTarget(ARsEnemyCharacter* OldTarget)
+{
+	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	{
+		Model->RemoveLinkSkillTarget(OldTarget);
+	}
+}
+
 bool URsBattleViewModel::GetIsLinkSkillReady() const
 {
 	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
@@ -43,6 +62,15 @@ bool URsBattleViewModel::GetIsLinkSkillReady() const
 		return Model->IsLinkSkillReady();
 	}
 	return false;
+}
+
+ARsEnemyCharacter* URsBattleViewModel::GetLinkSkillTarget() const
+{
+	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	{
+		return Model->GetLinkSkillTarget();
+	}
+	return nullptr;
 }
 
 void URsBattleViewModel::HandleBossFight(ARsEnemyCharacter* Boss)
@@ -54,7 +82,7 @@ void URsBattleViewModel::HandleBossFight(ARsEnemyCharacter* Boss)
 void URsBattleViewModel::HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIsLinkSkillReady);
-	OnLinkSkillReady.Broadcast(LinkSkillCount);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetLinkSkillTarget);
 }
 
 void URsBattleViewModel::SetBossViewModel(URsCharacterViewModel* InBossViewModel)

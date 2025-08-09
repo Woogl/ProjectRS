@@ -27,16 +27,13 @@ template <typename T>
 T* URsMVVMGameSubsystem::GetOrCreateSingletonViewModel(UObject* Model)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");
-	if (!Model)
+	
+	URsMVVMGameSubsystem* RsMVVMSubsystem = URsMVVMGameSubsystem::Get(Model);
+	if (!RsMVVMSubsystem)
 	{
 		return nullptr;
 	}
-	URsMVVMGameSubsystem* Subsystem = URsMVVMGameSubsystem::Get(Model);
-	if (!Subsystem)
-	{
-		return nullptr;
-	}
-	UMVVMViewModelCollectionObject* ViewModelCollection = Subsystem->GetViewModelCollection();
+	UMVVMViewModelCollectionObject* ViewModelCollection = RsMVVMSubsystem->GetViewModelCollection();
 	if (!ViewModelCollection)
 	{
 		return nullptr;
@@ -53,8 +50,7 @@ T* URsMVVMGameSubsystem::GetOrCreateSingletonViewModel(UObject* Model)
 	{
 		CreatedViewModel->Initialize();
 		FMVVMViewModelContext Context(CreatedViewModel->GetClass(), CreatedViewModel->GetFName());
-		Subsystem->GetViewModelCollection()->AddViewModelInstance(Context, CreatedViewModel);	
-			
+		RsMVVMSubsystem->GetViewModelCollection()->AddViewModelInstance(Context, CreatedViewModel);	
 		return CreatedViewModel;
 	}
 	
