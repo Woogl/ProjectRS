@@ -10,6 +10,8 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
+#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
+#include "Subsystem/RsBattleSubsystem.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
 {
@@ -112,4 +114,29 @@ AActor* URsBattleLibrary::GetLockOnTarget(APawn* Pawn)
 	}
 
 	return nullptr;
+}
+
+ARsEnemyCharacter* URsBattleLibrary::GetLinkSkillTarget(UObject* WorldContextObject)
+{
+	UWorld* World = WorldContextObject->GetWorld();
+	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	{
+		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+		{
+			return BattleSubsystem->GetLinkSkillTarget();
+		}
+	}
+	return nullptr;
+}
+
+void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType Type)
+{
+	UWorld* World = WorldContextObject->GetWorld();
+	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	{
+		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+		{
+			BattleSubsystem->SetLinkSkillTarget(LinkSkillTarget, Type);
+		}
+	}
 }

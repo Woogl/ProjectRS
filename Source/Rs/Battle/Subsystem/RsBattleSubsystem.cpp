@@ -37,23 +37,31 @@ ARsEnemyCharacter* URsBattleSubsystem::GetLinkSkillTarget() const
 
 void URsBattleSubsystem::SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType)
 {
-	LinkSkillTarget = Enemy;
-	if (LinkSkillTarget.IsValid() && LinkSkillType != ERsLinkSkillType::None && URsPartyLibrary::GetAlivePartyMemberCount(this) > 1)
+	if (!Enemy || URsPartyLibrary::GetAlivePartyMemberCount(this) <= 1)
 	{
-		if (LinkSkillType == ERsLinkSkillType::Parry)
+		AvailableLinkSkillCount = 0;
+	}
+	else if (LinkSkillType == ERsLinkSkillType::Triple)
+	{
+		if (!LinkSkillTarget.IsValid())
 		{
-			AvailableLinkSkillCount = 1;
+			AvailableLinkSkillCount = 3;
 		}
-		else if (LinkSkillType == ERsLinkSkillType::Triple)
+		else if (LinkSkillTarget == Enemy)
+		{
+			AvailableLinkSkillCount == FMath::Max(AvailableLinkSkillCount - 1, 0);
+		}
+		else
 		{
 			AvailableLinkSkillCount = 3;
 		}
 	}
-	else
+	else if (LinkSkillType == ERsLinkSkillType::Parry)
 	{
-		AvailableLinkSkillCount = 0;
+		AvailableLinkSkillCount = 1;
 	}
 	
+	LinkSkillTarget = Enemy;
 	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LinkSkillType, AvailableLinkSkillCount);
 }
 

@@ -94,7 +94,7 @@ void URsUIManagerSubsystem::HandleLinkSkillReady(ARsEnemyCharacter* Target, ERsL
 		return;
 	}
 
-	if (!Target || Type == ERsLinkSkillType::None || AvailableCount == 0 || URsPartyLibrary::GetAlivePartyMemberCount(LocalPlayer) <= 1)
+	if (!Target || AvailableCount == 0 || URsPartyLibrary::GetAlivePartyMemberCount(LocalPlayer) <= 1)
 	{
 		return;
 	}
