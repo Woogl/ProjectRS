@@ -32,6 +32,26 @@ URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* L
 	return nullptr;
 }
 
+bool URsUILibrary::SetViewModelByName(UUserWidget* Widget, FName ViewModelName, URsViewModelBase* ViewModel)
+{
+	if (!Widget)
+	{
+		return false;
+	}
+	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
+	{
+		bool bSuccess = View->SetViewModel(ViewModelName, ViewModel);
+		if (bSuccess)
+		{
+			if (UBlueprintGeneratedClass* WBPClass = Cast<UBlueprintGeneratedClass>(Widget->GetClass()))
+			{
+				WBPClass->BindDynamicDelegates(WBPClass, Widget);
+			}
+		}
+		return bSuccess;
+	}
+	return false;
+}
 
 bool URsUILibrary::SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* ViewModel)
 {
@@ -41,25 +61,20 @@ bool URsUILibrary::SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* Vi
 	}
 	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
 	{
-		return View->SetViewModelByClass(ViewModel);
+		bool bSuccess = View->SetViewModelByClass(ViewModel);
+		if (bSuccess)
+		{
+			if (UBlueprintGeneratedClass* WBPClass = Cast<UBlueprintGeneratedClass>(Widget->GetClass()))
+			{
+				WBPClass->BindDynamicDelegates(WBPClass, Widget);
+			}
+		}
+		return bSuccess;
 	}
 	return false;
 }
 
-bool URsUILibrary::SetViewModelByName(UUserWidget* Widget, FName ViewModelName, URsViewModelBase* ViewModel)
-{
-	if (!Widget)
-	{
-		return false;
-	}
-	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
-	{
-		return View->SetViewModel(ViewModelName, ViewModel);
-	}
-	return false;
-}
-
-URsViewModelBase* URsUILibrary::GetViewModel(UUserWidget* Widget, FName ViewModelName)
+URsViewModelBase* URsUILibrary::GetViewModelByName(UUserWidget* Widget, FName ViewModelName)
 {
 	if (!Widget)
 	{

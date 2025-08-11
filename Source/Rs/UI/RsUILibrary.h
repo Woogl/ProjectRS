@@ -23,15 +23,15 @@ public: // MVVM
 	static URsActivatableWidget* PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
+	static bool SetViewModelByName(UUserWidget* Widget, FName Name, URsViewModelBase* ViewModel);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
 	static bool SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* ViewModel);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
-	static bool SetViewModelByName(UUserWidget* Widget, FName Name, URsViewModelBase* ViewModel);
+	static URsViewModelBase* GetViewModelByName(UUserWidget* Widget, FName ViewModelName);
 
-	UFUNCTION()
-	static URsViewModelBase* GetViewModel(UUserWidget* Widget, FName ViewModelName);
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
 	static URsViewModelBase* GetViewModelByClass(UUserWidget* Widget, TSubclassOf<URsViewModelBase> ViewModelClass);
 
 public: // Game HUD
