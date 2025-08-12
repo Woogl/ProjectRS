@@ -10,7 +10,6 @@
 #include "RsBattleLibrary.generated.h"
 
 enum class ERsLinkSkillType : uint8;
-class ARsEnemyCharacter;
 class ARsCharacterBase;
 struct FGameplayEffectContextHandle;
 struct FGameplayEffectSpecHandle;
@@ -45,9 +44,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static AActor* GetLockOnTarget(APawn* Character);
 
+	/** Link skill */
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library", meta=(WorldContext="WorldContextObject"))
-	static ARsEnemyCharacter* GetLinkSkillTarget(UObject* WorldContextObject);
+	static void GetLinkSkillInfo(UObject* WorldContextObject, ARsCharacterBase*& LinkSkillTarget, ERsLinkSkillType& LinkSkillType, int32& AvailableCount);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta=(WorldContext="WorldContextObject"))
-	static void SetLinkSkillTarget(UObject* WorldContextObject, ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType Type);
+	static void SetLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Battle Library", meta=(WorldContext="WorldContextObject"))
+	static void DecrementLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type);
 };

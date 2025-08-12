@@ -6,12 +6,11 @@
 #include "Subsystems/LocalPlayerSubsystem.h"
 #include "RsBattleSubsystem.generated.h"
 
-class ARsEnemyCharacter;
+class ARsCharacterBase;
 
 UENUM(BlueprintType)
 enum class ERsLinkSkillType : uint8
 {
-	None,
 	Parry,
 	Triple,
 };
@@ -27,25 +26,30 @@ class RS_API URsBattleSubsystem : public ULocalPlayerSubsystem
 public:
 	static URsBattleSubsystem* Get(UObject* WorldContext);
 	
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossFight, ARsEnemyCharacter*);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossFight, ARsCharacterBase*);
 	FOnBossFight OnBossFight;
 	
-	ARsEnemyCharacter* GetBossInBattle() const;
-	void SetBossInBattle(ARsEnemyCharacter* Boss);
+	ARsCharacterBase* GetBossInBattle() const;
+	void SetBossInBattle(ARsCharacterBase* Boss);
 
-	DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnLinkSkillReady, ARsEnemyCharacter*, ERsLinkSkillType, int32);
+	DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnLinkSkillReady, ARsCharacterBase*, ERsLinkSkillType, int32);
 	FOnLinkSkillReady OnLinkSkillReady;
-
-	ARsEnemyCharacter* GetLinkSkillTarget() const;
-	void SetLinkSkillTarget(ARsEnemyCharacter* Enemy, ERsLinkSkillType LinkSkillType);
-	void RemoveLinkSkillTarget(ARsEnemyCharacter* Enemy);
-	void ResetLinkSkillTarget();
-
+	
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnLinkSkillFinish, ERsLinkSkillType);
+	FOnLinkSkillFinish OnLinkSkillFinish;
+	
+	void SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType);
+	void DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType);
+	void FinishLinkSkill();
+	
 	bool IsLinkSkillReady() const;
-	void DecrementLinkSkillCount();
+	ARsCharacterBase* GetLinkSkillTarget() const;
+	ERsLinkSkillType GetLastLinkSkillType() const;
+	int32 GetAvailableLinkSkillCount() const;
 
 private:
-	TWeakObjectPtr<ARsEnemyCharacter> BossInBattle;	
-	TWeakObjectPtr<ARsEnemyCharacter> LinkSkillTarget;
+	TWeakObjectPtr<ARsCharacterBase> BossInBattle;	
+	TWeakObjectPtr<ARsCharacterBase> LinkSkillTarget;
 	int32 AvailableLinkSkillCount = 0;
+	ERsLinkSkillType LastLinkSkillType = ERsLinkSkillType::Parry;
 };

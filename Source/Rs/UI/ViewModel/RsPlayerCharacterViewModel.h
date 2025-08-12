@@ -7,7 +7,6 @@
 #include "RsPlayerCharacterViewModel.generated.h"
 
 enum class ERsLinkSkillType : uint8;
-class ARsEnemyCharacter;
 class URsAbilityViewModel;
 class URsEnergySetViewModel;
 class ARsPlayerCharacter;
@@ -66,7 +65,8 @@ private:
 
 	void HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex);
-	void HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount);
+	void HandleLinkSkillReady(ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount);
+	void HandleLinkSkillFinish(ERsLinkSkillType LinkSkillType);
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;

@@ -86,7 +86,7 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	}
 }
 
-void URsUIManagerSubsystem::HandleLinkSkillReady(ARsEnemyCharacter* Target, ERsLinkSkillType Type, int32 AvailableCount)
+void URsUIManagerSubsystem::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Type, int32 AvailableCount)
 {
 	ULocalPlayer* LocalPlayer = GetGameInstance()->GetFirstGamePlayer();
 	if (!LocalPlayer)

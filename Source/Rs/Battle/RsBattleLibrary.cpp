@@ -10,7 +10,6 @@
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
-#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
 #include "Subsystem/RsBattleSubsystem.h"
 
 FGameplayEffectSpecHandle URsBattleLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
@@ -116,20 +115,21 @@ AActor* URsBattleLibrary::GetLockOnTarget(APawn* Pawn)
 	return nullptr;
 }
 
-ARsEnemyCharacter* URsBattleLibrary::GetLinkSkillTarget(UObject* WorldContextObject)
+void URsBattleLibrary::GetLinkSkillInfo(UObject* WorldContextObject, ARsCharacterBase*& LinkSkillTarget, ERsLinkSkillType& LinkSkillType, int32& AvailableCount)
 {
 	UWorld* World = WorldContextObject->GetWorld();
 	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
 	{
 		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
 		{
-			return BattleSubsystem->GetLinkSkillTarget();
+			LinkSkillTarget = BattleSubsystem->GetLinkSkillTarget();
+			LinkSkillType = BattleSubsystem->GetLastLinkSkillType();
+			AvailableCount = BattleSubsystem->GetAvailableLinkSkillCount();
 		}
 	}
-	return nullptr;
 }
 
-void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType Type)
+void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
 {
 	UWorld* World = WorldContextObject->GetWorld();
 	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
@@ -137,6 +137,18 @@ void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsEnemyC
 		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
 		{
 			BattleSubsystem->SetLinkSkillTarget(LinkSkillTarget, Type);
+		}
+	}
+}
+
+void URsBattleLibrary::DecrementLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
+{
+	UWorld* World = WorldContextObject->GetWorld();
+	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	{
+		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+		{
+			BattleSubsystem->DecrementLinkSkillCount(LinkSkillTarget, Type);
 		}
 	}
 }

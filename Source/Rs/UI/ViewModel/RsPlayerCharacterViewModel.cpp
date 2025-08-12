@@ -64,6 +64,7 @@ void URsPlayerCharacterViewModel::Initialize()
 		if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(this))
 		{
 			BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
+			BattleSubsystem->OnLinkSkillFinish.AddUObject(this, &ThisClass::HandleLinkSkillFinish);
 		}
 	}
 }
@@ -85,12 +86,13 @@ void URsPlayerCharacterViewModel::Deinitialize()
 	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(this))
 	{
 		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
+		BattleSubsystem->OnLinkSkillFinish.RemoveAll(this);
 	}
 }
 
 int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
 {
-	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	if (ARsPlayerCharacter* Model = GetModel<ARsPlayerCharacter>())
 	{
 		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(CachedModel.Get());
 		return PartyMembers.Find(Cast<ARsPlayerCharacter>(Model));
@@ -124,7 +126,7 @@ bool URsPlayerCharacterViewModel::IsPartyMember() const
 
 bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 {
-	if (ARsPlayerCharacter* Model = Cast<ARsPlayerCharacter>(GetOuter()))
+	if (ARsPlayerCharacter* Model = GetModel<ARsPlayerCharacter>())
 	{
 		return UGameplayStatics::GetPlayerController(GetWorld(), 0) == Model->GetController();
 	}
@@ -197,7 +199,7 @@ TStatId URsPlayerCharacterViewModel::GetStatId() const
 
 void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
 {
-	if (OldPawn == GetOuter() || NewPawn == GetOuter())
+	if (OldPawn == CachedModel.Get() || NewPawn == CachedModel.Get())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
@@ -207,7 +209,7 @@ void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* New
 
 void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex)
 {
-	if (AddedMember == GetOuter())
+	if (AddedMember == CachedModel.Get())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
@@ -221,7 +223,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 
 void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex)
 {
-	if (RemovedMember == GetOuter())
+	if (RemovedMember == CachedModel.Get())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
@@ -233,7 +235,13 @@ void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* Re
 	}
 }
 
-void URsPlayerCharacterViewModel::HandleLinkSkillReady(ARsEnemyCharacter* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
+void URsPlayerCharacterViewModel::HandleLinkSkillReady(ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount)
+{
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CanActivateLinkSkill);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetLinkSkillVisibility);
+}
+
+void URsPlayerCharacterViewModel::HandleLinkSkillFinish(ERsLinkSkillType LinkSkillType)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CanActivateLinkSkill);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetLinkSkillVisibility);

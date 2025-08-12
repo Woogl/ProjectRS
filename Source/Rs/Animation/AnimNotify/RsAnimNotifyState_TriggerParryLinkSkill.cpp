@@ -32,7 +32,7 @@ void URsAnimNotifyState_TriggerParryLinkSkill::NotifyEnd(USkeletalMeshComponent*
 
 	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(MeshComp))
 	{
-		BattleSubsystem->RemoveLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()));
+		BattleSubsystem->DecrementLinkSkillCount(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()), ERsLinkSkillType::Parry);
 	}
 
 	// TODO: Gameplay Cue
