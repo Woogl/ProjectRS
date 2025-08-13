@@ -11,8 +11,8 @@ enum class ERsWidgetInputMode : uint8
 {
 	Default		UMETA(ToolTip = "Input not set."),
 	Game		UMETA(ToolTip = "Input from game only. Hides mouse cursor."),
-	GameAndMenu	UMETA(ToolTip = "Input from both game and UI. Hides mouse cursor. Look input ignored."),
-	Menu		UMETA(ToolTip = "Input from UI only. Shows mouse cursor. Move and look input ignored.")
+	GameAndMenu	UMETA(ToolTip = "Input from both game and UI. Hides mouse cursor."),
+	Menu		UMETA(ToolTip = "Input from UI only. Shows mouse cursor.")
 };
 
 UENUM(BlueprintType)
