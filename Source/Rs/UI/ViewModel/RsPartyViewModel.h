@@ -41,13 +41,22 @@ public:
 	ESlateVisibility GetPartyMemberVisibility_2() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	URsPlayerCharacterViewModel* GetPreviousPartyMemberViewModel() const;
+	URsPlayerCharacterViewModel* GetCurrentPartyMember() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	URsPlayerCharacterViewModel* GetControlledPartyMemberViewModel() const;
+	URsPlayerCharacterViewModel* GetPrevPartyMember() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	URsPlayerCharacterViewModel* GetNextPartyMemberViewModel() const;
+	URsPlayerCharacterViewModel* GetNextPartyMember() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	URsPlayerCharacterViewModel* GetPrevAlivePartyMember() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	URsPlayerCharacterViewModel* GetNextAlivePartyMember() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	int32 GetCurrentPartyMemberIndex() const;
 
 private:
 	UFUNCTION()
@@ -56,13 +65,11 @@ private:
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 
-	void SetControlledPartyMemberIndex(int32 Index);
+	void SyncPartyMembers(int32 Index);
+	
 	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
-
-	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	int32 ControlledPartyMemberIndex = 0;
 	
 	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;

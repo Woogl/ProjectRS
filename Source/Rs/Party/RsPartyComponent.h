@@ -26,6 +26,16 @@ public:
 	ARsPlayerCharacter* GetPartyMember(int32 MemberIndex) const;
 	TArray<ARsPlayerCharacter*> GetPartyMembers() const;
 	
+	int32 GetPartyMemberIndex(ARsPlayerCharacter* Character) const;
+	int32 GetCurrentMemberIndex() const;
+
+	ARsPlayerCharacter* GetCurrentPartyMember() const;
+	ARsPlayerCharacter* GetPrevPartyMember() const;
+	ARsPlayerCharacter* GetNextPartyMember() const;
+	
+	ARsPlayerCharacter* GetPrevAlivePartyMember() const;
+	ARsPlayerCharacter* GetNextAlivePartyMember() const;
+	
 	void AddPartyMember(ARsPlayerCharacter* NewMember);
 	void RemovePartyMember(ARsPlayerCharacter* MemberToRemove);
 

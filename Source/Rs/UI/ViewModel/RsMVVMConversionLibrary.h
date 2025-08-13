@@ -19,4 +19,7 @@ class RS_API URsMVVMConversionLibrary : public UMVVMConversionLibrary
 	
 	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Number (Int -> Text)"))
 	static FText IntegerToText(int32 Number);
+
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Timer (MM:SS:MS)"))
+	static FText SecondToTimer(float Second);
 };

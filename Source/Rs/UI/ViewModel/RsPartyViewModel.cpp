@@ -32,14 +32,6 @@ void URsPartyViewModel::Initialize()
 	CachedModel = Cast<URsPartyComponent>(GetOuter());
 	if (URsPartyComponent* Model = CachedModel.Get())
 	{
-		if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0))
-		{
-			if (ARsPlayerCharacter* RsCharacter = Cast<ARsPlayerCharacter>(PlayerCharacter))
-			{
-				ControlledPartyMemberIndex = Model->GetPartyMembers().Find(RsCharacter);
-			}
-		}
-		
 		Model->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
 		Model->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 
@@ -111,55 +103,91 @@ ESlateVisibility URsPartyViewModel::GetPartyMemberVisibility_2() const
 	return ESlateVisibility::Hidden;
 }
 
-URsPlayerCharacterViewModel* URsPartyViewModel::GetPreviousPartyMemberViewModel() const
+URsPlayerCharacterViewModel* URsPartyViewModel::GetCurrentPartyMember() const
 {
-	if (ControlledPartyMemberIndex == 0)
-	{
-		return PartyMemberViewModel_2;
-	}
-	else if (ControlledPartyMemberIndex == 1)
+	int32 CurrentIndex = GetCurrentPartyMemberIndex();
+	if (CurrentIndex == 0)
 	{
 		return PartyMemberViewModel_0;
 	}
-	else if (ControlledPartyMemberIndex == 2)
+	else if (CurrentIndex == 1)
 	{
 		return PartyMemberViewModel_1;
 	}
-	return nullptr;
-}
-
-URsPlayerCharacterViewModel* URsPartyViewModel::GetControlledPartyMemberViewModel() const
-{
-	if (ControlledPartyMemberIndex == 0)
-	{
-		return PartyMemberViewModel_0;
-	}
-	else if (ControlledPartyMemberIndex == 1)
-	{
-		return PartyMemberViewModel_1;
-	}
-	else if (ControlledPartyMemberIndex == 2)
+	else if (CurrentIndex == 2)
 	{
 		return PartyMemberViewModel_2;
 	}
 	return nullptr;
 }
 
-URsPlayerCharacterViewModel* URsPartyViewModel::GetNextPartyMemberViewModel() const
+URsPlayerCharacterViewModel* URsPartyViewModel::GetPrevPartyMember() const
 {
-	if (ControlledPartyMemberIndex == 0)
-	{
-		return PartyMemberViewModel_1;
-	}
-	else if (ControlledPartyMemberIndex == 1)
+	int32 CurrentIndex = GetCurrentPartyMemberIndex();
+	if (CurrentIndex == 0)
 	{
 		return PartyMemberViewModel_2;
 	}
-	else if (ControlledPartyMemberIndex == 2)
+	else if (CurrentIndex == 1)
+	{
+		return PartyMemberViewModel_0;
+	}
+	else if (CurrentIndex == 2)
+	{
+		return PartyMemberViewModel_1;
+	}
+	return nullptr;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetNextPartyMember() const
+{
+	int32 CurrentIndex = GetCurrentPartyMemberIndex();
+	if (CurrentIndex == 0)
+	{
+		return PartyMemberViewModel_1;
+	}
+	else if (CurrentIndex == 1)
+	{
+		return PartyMemberViewModel_2;
+	}
+	else if (CurrentIndex == 2)
 	{
 		return PartyMemberViewModel_0;
 	}
 	return nullptr;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetPrevAlivePartyMember() const
+{
+	if (URsPartyComponent* Model = CachedModel.Get())
+	{
+		if (ARsPlayerCharacter* Character = Model->GetPrevAlivePartyMember())
+		{
+			return URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Character);
+		}
+	}
+	return nullptr;
+}
+
+URsPlayerCharacterViewModel* URsPartyViewModel::GetNextAlivePartyMember() const
+{
+	if (URsPartyComponent* Model = CachedModel.Get())
+	{
+		if (ARsPlayerCharacter* Character = Model->GetNextAlivePartyMember())
+		{
+			return URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Character);
+		}
+	}
+	return nullptr;
+}
+
+int32 URsPartyViewModel::GetCurrentPartyMemberIndex() const
+{
+	if (URsPartyComponent* Model = CachedModel.Get())
+	{
+		return Model->GetCurrentMemberIndex();
+	}
+	return INDEX_NONE;
 }
 
 void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
@@ -169,7 +197,7 @@ void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPaw
 		int32 Index = Model->GetPartyMembers().Find(Cast<ARsPlayerCharacter>(NewPawn));
 		if (Index != INDEX_NONE)
 		{
-			SetControlledPartyMemberIndex(Index);
+			SyncPartyMembers(Index);
 		}
 	}
 }
@@ -207,14 +235,12 @@ void URsPartyViewModel::HandleRemovePartyMember(ARsPlayerCharacter* PartyMember,
 	}
 }
 
-void URsPartyViewModel::SetControlledPartyMemberIndex(int32 Index)
+void URsPartyViewModel::SyncPartyMembers(int32 Index)
 {
-	if (UE_MVVM_SET_PROPERTY_VALUE(ControlledPartyMemberIndex, Index))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPreviousPartyMemberViewModel);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetControlledPartyMemberViewModel);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetNextPartyMemberViewModel);
-	}
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMemberIndex);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMember);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPrevPartyMember);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetNextPartyMember);
 }
 
 void URsPartyViewModel::SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel)

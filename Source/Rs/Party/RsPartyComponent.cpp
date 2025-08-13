@@ -37,6 +37,72 @@ TArray<ARsPlayerCharacter*> URsPartyComponent::GetPartyMembers() const
 	return PartyMembers;
 }
 
+int32 URsPartyComponent::GetPartyMemberIndex(ARsPlayerCharacter* Character) const
+{
+	return PartyMembers.Find(Character);
+}
+
+int32 URsPartyComponent::GetCurrentMemberIndex() const
+{
+	if (ACharacter* CurrentCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		return GetPartyMemberIndex(Cast<ARsPlayerCharacter>(CurrentCharacter));
+	}
+	return INDEX_NONE;
+}
+
+ARsPlayerCharacter* URsPartyComponent::GetCurrentPartyMember() const
+{
+	int32 CurrentIndex = GetCurrentMemberIndex();
+	return PartyMembers[CurrentIndex];
+}
+
+ARsPlayerCharacter* URsPartyComponent::GetPrevPartyMember() const
+{
+	int32 CurrentIndex = GetCurrentMemberIndex();
+	int32 PrevIndex = ((CurrentIndex + PartyMembers.Num()) - 1) % PartyMembers.Num();
+	return PartyMembers[PrevIndex];
+}
+
+ARsPlayerCharacter* URsPartyComponent::GetNextPartyMember() const
+{
+	int32 CurrentIndex = GetCurrentMemberIndex();
+	int32 NextIndex = ((CurrentIndex + PartyMembers.Num()) + 1) % PartyMembers.Num();
+	return PartyMembers[NextIndex];
+}
+
+ARsPlayerCharacter* URsPartyComponent::GetPrevAlivePartyMember() const
+{
+	int32 MemberSize = PartyMembers.Num();
+	int32 CurrentIndex = GetCurrentMemberIndex();
+	for (int32 i = 1; i < MemberSize; ++i)
+	{
+		int32 TargetIndex = (CurrentIndex - i + MemberSize) % MemberSize;
+		ARsPlayerCharacter* Member = GetPartyMember(TargetIndex);
+		if (!URsBattleLibrary::IsDead(Member))
+		{
+			return Member;
+		}
+	}
+	return nullptr;
+}
+
+ARsPlayerCharacter* URsPartyComponent::GetNextAlivePartyMember() const
+{
+	int32 MemberSize = PartyMembers.Num();
+	int32 CurrentIndex = GetCurrentMemberIndex();
+	for (int32 i = 1; i < MemberSize; ++i)
+	{
+		int32 TargetIndex = (CurrentIndex + i) % MemberSize;
+		ARsPlayerCharacter* Member = GetPartyMember(TargetIndex);
+		if (!URsBattleLibrary::IsDead(Member))
+		{
+			return Member;
+		}
+	}
+	return nullptr;
+}
+
 void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 {
 	if (!PartyMembers.Contains(NewMember))

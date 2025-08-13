@@ -32,13 +32,12 @@ void URsBattleSubsystem::SetBossInBattle(ARsCharacterBase* Boss)
 
 void URsBattleSubsystem::SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType)
 {
-	if (!Target)
+	int32 AlivePartyMemberCount = URsPartyLibrary::GetAlivePartyMemberCount(this);
+	if (!Target || AlivePartyMemberCount <= 1)
 	{
 		FinishLinkSkill();
 		return;
 	}
-
-	int32 AlivePartyMemberCount = URsPartyLibrary::GetAlivePartyMemberCount(this);
 	
 	if (LinkSkillType == ERsLinkSkillType::Triple)
 	{
