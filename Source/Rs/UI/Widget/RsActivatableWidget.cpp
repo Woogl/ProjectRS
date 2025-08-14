@@ -18,7 +18,7 @@ void URsActivatableWidget::NativeOnActivated()
 		}
 		else if (TimeControl == ERsWidgetTimeControl::TimeDilation)
 		{
-			URsTimeControlLibrary::RequestTimeDilation(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, TimeDilation, -1.f, BlendTime);
+			URsTimeControlLibrary::RequestTimeDilation(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, TimeDilation, FLT_MAX, BlendTime);
 		}
 	}
 }

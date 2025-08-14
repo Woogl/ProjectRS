@@ -114,7 +114,7 @@ void URsTimeControlSubsystem::Tick(float DeltaTime)
 
 void URsTimeControlSubsystem::RequestTimePause(FName RequestKey, ERsTimeControlPriority Priority, float BlendTime)
 {
-	RequestTimeDilation(RequestKey, Priority, 0.f, -1.f, BlendTime);
+	RequestTimeDilation(RequestKey, Priority, 0.f, FLT_MAX, BlendTime);
 }
 
 void URsTimeControlSubsystem::RequestTimeDilation(FName RequestKey, ERsTimeControlPriority Priority, float Dilation, float Duration, float BlendTime)
