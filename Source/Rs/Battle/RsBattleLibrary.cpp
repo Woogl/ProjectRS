@@ -117,38 +117,26 @@ AActor* URsBattleLibrary::GetLockOnTarget(APawn* Pawn)
 
 void URsBattleLibrary::GetLinkSkillInfo(UObject* WorldContextObject, ARsCharacterBase*& LinkSkillTarget, ERsLinkSkillType& LinkSkillType, int32& AvailableCount)
 {
-	UWorld* World = WorldContextObject->GetWorld();
-	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
 	{
-		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
-		{
-			LinkSkillTarget = BattleSubsystem->GetLinkSkillTarget();
-			LinkSkillType = BattleSubsystem->GetLastLinkSkillType();
-			AvailableCount = BattleSubsystem->GetAvailableLinkSkillCount();
-		}
+		LinkSkillTarget = BattleSubsystem->GetLinkSkillTarget();
+		LinkSkillType = BattleSubsystem->GetLastLinkSkillType();
+		AvailableCount = BattleSubsystem->GetAvailableLinkSkillCount();
 	}
 }
 
 void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
 {
-	UWorld* World = WorldContextObject->GetWorld();
-	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
 	{
-		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
-		{
-			BattleSubsystem->SetLinkSkillTarget(LinkSkillTarget, Type);
-		}
+		BattleSubsystem->SetLinkSkillTarget(LinkSkillTarget, Type);
 	}
 }
 
 void URsBattleLibrary::DecrementLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
 {
-	UWorld* World = WorldContextObject->GetWorld();
-	if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
 	{
-		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
-		{
-			BattleSubsystem->DecrementLinkSkillCount(LinkSkillTarget, Type);
-		}
+		BattleSubsystem->DecrementLinkSkillCount(LinkSkillTarget, Type);
 	}
 }

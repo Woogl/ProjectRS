@@ -39,12 +39,22 @@ void URsUILibrary::PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGamep
 	{
 		RootLayout->PushWidgetToLayerStackAsync<URsActivatableWidget>(Layer, bSuspendInputUntilComplete, SoftWidgetClass, [ViewModels](EAsyncWidgetLayerState State, URsActivatableWidget* Widget)
 		{
-			if (Widget && State == EAsyncWidgetLayerState::Initialize)
+			if (!Widget)
 			{
+				return;
+			}
+			switch (State)
+			{
+			case EAsyncWidgetLayerState::Initialize:
 				for (URsViewModelBase* ViewModel : ViewModels)
 				{
 					SetViewModelByClass(Widget, ViewModel);
 				}
+				break;
+			case EAsyncWidgetLayerState::AfterPush:
+				break;
+			case EAsyncWidgetLayerState::Canceled:
+				break;
 			}
 		});
 	}
