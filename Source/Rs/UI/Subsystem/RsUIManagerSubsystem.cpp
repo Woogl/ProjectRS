@@ -6,12 +6,13 @@
 #include "CommonActivatableWidget.h"
 #include "CommonLocalPlayer.h"
 #include "CommonUIExtensions.h"
+#include "PrimaryGameLayout.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/System/RsGameSetting.h"
+#include "Rs/System/RsDeveloperSetting.h"
 #include "Rs/UI/RsUILibrary.h"
 #include "Rs/UI/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
@@ -56,17 +57,17 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 		return;
 	}
 	
-	if (URsGameSetting::Get()->GameHUDClass == nullptr)
+	if (URsDeveloperSetting::Get()->GameHUD.IsNull())
 	{
-		UE_LOG(RsLog, Error, TEXT("Game HUD Class is null! See DA_GameSetting!"));
-		//UE_LOG(RsLog, Error, TEXT("Game HUD Class is null! See DefaultGame.ini!"));
+		UE_LOG(RsLog, Error, TEXT("GameHUD is null! See RsDeveloperSetting!"));
 		return;
 	}
 
 	// Create Game HUD instance first only.
 	if (RsHUDInstance == nullptr)
 	{
-		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->GameHUDClass);
+		UClass* WidgetClassLoaded = URsDeveloperSetting::Get()->GameHUD.LoadSynchronous();
+		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClassLoaded);
 		RsHUDInstance = Cast<URsHUDLayout>(HUDInstance);
 	}
 
@@ -98,20 +99,13 @@ void URsUIManagerSubsystem::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLi
 	{
 		return;
 	}
-	
-	if (UCommonActivatableWidget* TripleLinkSkillWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, URsGameSetting::Get()->TripleLinkSkillWidget))
+
+	UClass* TripleLinkSkillWidgetClass = URsDeveloperSetting::Get()->TripleLinkSkillWidget.Get();
+	if (TripleLinkSkillWidgetClass)
 	{
-		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
-		{
-			if (URsBattleViewModel* BattleViewModel = URsBattleViewModel::GetRsBattleViewModel(BattleSubsystem))
-			{
-				URsUILibrary::SetViewModelByClass(TripleLinkSkillWidget, BattleViewModel);
-			}
-			if (URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this)))
-			{
-				URsUILibrary::SetViewModelByClass(TripleLinkSkillWidget, PartyViewModel);
-			}
-		}
+		URsBattleViewModel* BattleViewModel = URsBattleViewModel::GetRsBattleViewModel(LocalPlayer->GetSubsystem<URsBattleSubsystem>());
+		URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this));
+		URsUILibrary::PushSceneWidgetToLayerAsync(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, true, TripleLinkSkillWidgetClass, { BattleViewModel, PartyViewModel });
 	}
 }
 

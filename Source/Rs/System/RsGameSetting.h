@@ -7,7 +7,6 @@
 #include "Engine/DataAsset.h"
 #include "RsGameSetting.generated.h"
 
-class UCommonActivatableWidget;
 /**
  * Golbal game setting datas for Project RS
  * Datas in this class is always loaded in memory.
@@ -39,13 +38,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Effect")
 	FGameplayTag SwitchMemberCooldownTag;
-
-	// NOTE: MVVM settings are not saved when this file is set in DefaultGame.ini
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UCommonActivatableWidget> GameHUDClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UCommonActivatableWidget> TripleLinkSkillWidget;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
 	float DefenseConstant = 190.f;

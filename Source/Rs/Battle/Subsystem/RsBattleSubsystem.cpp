@@ -7,13 +7,16 @@
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
-URsBattleSubsystem* URsBattleSubsystem::Get(UObject* WorldContext)
+URsBattleSubsystem* URsBattleSubsystem::Get(const UObject* WorldContext)
 {
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContext, 0))
+	if (GEngine)
 	{
-		if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
+		if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull))
 		{
-			return LocalPlayer->GetSubsystem<URsBattleSubsystem>();
+			if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+			{
+				return LocalPlayer->GetSubsystem<URsBattleSubsystem>();
+			}
 		}
 	}
 	return nullptr;

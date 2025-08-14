@@ -24,7 +24,7 @@ class RS_API URsBattleSubsystem : public ULocalPlayerSubsystem
 	GENERATED_BODY()
 
 public:
-	static URsBattleSubsystem* Get(UObject* WorldContext);
+	static URsBattleSubsystem* Get(const UObject* WorldContext);
 	
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossFight, ARsCharacterBase*);
 	FOnBossFight OnBossFight;

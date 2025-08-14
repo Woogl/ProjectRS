@@ -27,10 +27,6 @@ private:
 	void RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
 	void HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Type, int32 AvailableCount);
 
-	// NOTE: MVVM settings are not saved when this file is set in DefaultGame.ini
-	// UPROPERTY(config, EditAnywhere)
-	// TSubclassOf<UCommonActivatableWidget> GameHUDClass;
-
 	UPROPERTY(Transient)
 	URsHUDLayout* RsHUDInstance = nullptr;
 	

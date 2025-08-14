@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
-URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(UObject* WorldContext)
+URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 {
 	if (!WorldContext)
 	{

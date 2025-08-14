@@ -8,6 +8,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "RsDeveloperSetting.generated.h"
 
+class URsActivatableWidget;
 class UGameplayEffect;
 class UAttributeSet;
 /**
@@ -44,4 +45,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Damage | Hit Reaction", meta = (Categories = "Ability.HitReaction", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> HitReactionEffectClasses;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "UI")
+	TSoftClassPtr<URsActivatableWidget> GameHUD;
+
+	UPROPERTY(config, EditDefaultsOnly, Category = "UI")
+	TSoftClassPtr<URsActivatableWidget> TripleLinkSkillWidget;
 };

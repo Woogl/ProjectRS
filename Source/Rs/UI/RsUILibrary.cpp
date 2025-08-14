@@ -11,8 +11,9 @@
 #include "Subsystem/RsUIManagerSubsystem.h"
 #include "View/MVVMView.h"
 #include "Widget/RsHUDLayout.h"
+#include "Widget/RsActivatableWidget.h"
 
-URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
+URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
 {
 	if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Layer, WidgetClass))
 	{
@@ -30,6 +31,23 @@ URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(const ULocalPlayer* L
 		return Cast<URsActivatableWidget>(SceneWidget);
 	}
 	return nullptr;
+}
+
+void URsUILibrary::PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels)
+{
+	if (UPrimaryGameLayout* RootLayout = UPrimaryGameLayout::GetPrimaryGameLayout(LocalPlayer))
+	{
+		RootLayout->PushWidgetToLayerStackAsync<URsActivatableWidget>(Layer, bSuspendInputUntilComplete, SoftWidgetClass, [ViewModels](EAsyncWidgetLayerState State, URsActivatableWidget* Widget)
+		{
+			if (Widget && State == EAsyncWidgetLayerState::Initialize)
+			{
+				for (URsViewModelBase* ViewModel : ViewModels)
+				{
+					SetViewModelByClass(Widget, ViewModel);
+				}
+			}
+		});
+	}
 }
 
 bool URsUILibrary::SetViewModelByName(UUserWidget* Widget, FName ViewModelName, URsViewModelBase* ViewModel)
@@ -110,37 +128,19 @@ URsViewModelBase* URsUILibrary::GetViewModelByClass(UUserWidget* Widget, TSubcla
 	return nullptr;
 }
 
-void URsUILibrary::ShowGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
+void URsUILibrary::ShowGameHUD(UObject* WorldContextObject)
 {
-	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
+	if (URsHUDLayout* GameHUD = GetGameHUD(WorldContextObject))
 	{
-		for (const FGameplayTag& Layer : Layers)
-		{
-			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
-			{
-				if (UCommonActivatableWidget* ActiveWidget = LayerWidget->GetActiveWidget())
-				{
-					ActiveWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-				}
-			}
-		}
+		GameHUD->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
 }
 
-void URsUILibrary::HideGameHUD(UObject* WorldContextObject, FGameplayTagContainer Layers)
+void URsUILibrary::HideGameHUD(UObject* WorldContextObject)
 {
-	if (UPrimaryGameLayout* GameHUD = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(WorldContextObject))
+	if (URsHUDLayout* GameHUD = GetGameHUD(WorldContextObject))
 	{
-		for (const FGameplayTag& Layer : Layers)
-		{
-			if (UCommonActivatableWidgetContainerBase* LayerWidget = GameHUD->GetLayerWidget(Layer))
-			{
-				if (UCommonActivatableWidget* ActiveWidget = LayerWidget->GetActiveWidget())
-				{
-					ActiveWidget->SetVisibility(ESlateVisibility::Hidden);
-				}
-			}
-		}
+		GameHUD->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

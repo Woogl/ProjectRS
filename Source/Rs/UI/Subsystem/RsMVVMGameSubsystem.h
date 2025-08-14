@@ -17,7 +17,7 @@ class RS_API URsMVVMGameSubsystem : public UMVVMGameSubsystem
 	GENERATED_BODY()
 
 public:
-	static URsMVVMGameSubsystem* Get(UObject* WorldContext);
+	static URsMVVMGameSubsystem* Get(const UObject* WorldContext);
 	
 	template <class T>
 	static T* GetOrCreateSingletonViewModel(UObject* Model);
