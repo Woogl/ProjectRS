@@ -3,6 +3,7 @@
 
 #include "RsCameraLibrary.h"
 
+#include "Animations/CameraAnimationCameraModifier.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -53,8 +54,19 @@ void URsCameraLibrary::SwitchCharacterFacingMode(const UObject* WorldContextObje
 	}
 }
 
-void URsCameraLibrary::SwitchCameraMode(const UObject* WorldContextObject, ERsCameraRig CameraRig, ERsCharacterFacingMode FacingMode)
+void URsCameraLibrary::PlayCameraAnimation(const UObject* WorldContextObject, UCameraAnimationSequence* CameraAnimation, FCameraAnimationParams Params)
 {
-	SwitchCameraRig(WorldContextObject, CameraRig);
-	SwitchCharacterFacingMode(WorldContextObject, FacingMode);
+	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifier(WorldContextObject, 0))
+	{
+		CameraModifier->PlayCameraAnimation(CameraAnimation, Params);
+	}
 }
+
+void URsCameraLibrary::StopCameraAnimation(const UObject* WorldContextObject, UCameraAnimationSequence* CameraAnimation, bool bImmediate)
+{
+	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifier(WorldContextObject, 0))
+	{
+		CameraModifier->StopAllCameraAnimationsOf(CameraAnimation, bImmediate);
+	}
+}
+

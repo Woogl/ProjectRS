@@ -18,12 +18,14 @@ void URsAbilityTask_CameraMode::Activate()
 {
 	Super::Activate();
 
-	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), CameraRig, FacingMode);
+	URsCameraLibrary::SwitchCameraRig(GetOwnerActor(), CameraRig);
+	URsCameraLibrary::SwitchCharacterFacingMode(GetOwnerActor(), FacingMode);
 }
 
 void URsAbilityTask_CameraMode::OnDestroy(bool AbilityIsEnding)
 {
-	URsCameraLibrary::SwitchCameraMode(GetOwnerActor(), ERsCameraRig::FreeCam, ERsCharacterFacingMode::MovementDirection);
+	URsCameraLibrary::SwitchCameraRig(GetOwnerActor(), ERsCameraRig::FreeCam);
+	URsCameraLibrary::SwitchCharacterFacingMode(GetOwnerActor(), ERsCharacterFacingMode::MovementDirection);
 	
 	Super::OnDestroy(AbilityIsEnding);
 }
