@@ -7,13 +7,9 @@
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
 
-URsBattleViewModel* URsBattleViewModel::GetRsBattleViewModel(URsBattleSubsystem* BattleSubsystem)
+URsBattleViewModel* URsBattleViewModel::GetRsBattleViewModel(UObject* WorldContext)
 {
-	if (!BattleSubsystem)
-	{
-		return nullptr;
-	}
-	return URsMVVMGameSubsystem::GetOrCreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
+	return URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(WorldContext);
 }
 
 void URsBattleViewModel::Initialize()

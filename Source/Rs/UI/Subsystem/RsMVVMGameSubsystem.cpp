@@ -3,7 +3,13 @@
 
 #include "RsMVVMGameSubsystem.h"
 
+#include "CommonLocalPlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "Rs/Party/RsPartyComponent.h"
+#include "Rs/Party/RsPartyLibrary.h"
+#include "Rs/UI/ViewModel/RsBattleViewModel.h"
+#include "Rs/UI/ViewModel/RsPartyViewModel.h"
 
 URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 {
@@ -16,4 +22,25 @@ URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 		return GameInstance->GetSubsystem<URsMVVMGameSubsystem>();
 	}
 	return nullptr;
+}
+
+void URsMVVMGameSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
+{
+	if (LocalPlayer && !PlayerAddedDelegateHandle.IsValid())
+	{
+		PlayerAddedDelegateHandle = LocalPlayer->CallAndRegister_OnPlayerPawnSet(UCommonLocalPlayer::FPlayerPawnSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels));
+	}
+}
+
+void URsMVVMGameSubsystem::CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
+{
+	if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+	{
+		CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
+	}
+
+	if (URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(Pawn))
+	{
+		CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+	}
 }

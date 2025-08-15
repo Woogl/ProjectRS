@@ -17,6 +17,7 @@ class RS_API URsGameInstance : public UCommonGameInstance
 	
 public:
 	virtual void Init() override;
+	virtual int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
 	
 	const URsGameSetting* GetRsGameSetting() const;
 

@@ -7,6 +7,7 @@
 #include "CommonLocalPlayer.h"
 #include "CommonUIExtensions.h"
 #include "PrimaryGameLayout.h"
+#include "RsMVVMGameSubsystem.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
@@ -45,7 +46,7 @@ URsHUDLayout* URsUIManagerSubsystem::GetGameHUD() const
 
 void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
 {
-	if (LocalPlayer == nullptr || Pawn == nullptr)
+	if (!LocalPlayer || !Pawn)
 	{
 		return;
 	}
@@ -64,7 +65,7 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	}
 
 	// Create Game HUD instance first only.
-	if (RsHUDInstance == nullptr)
+	if (!RsHUDInstance)
 	{
 		UClass* WidgetClassLoaded = GameHUDClass.LoadSynchronous();
 		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClassLoaded);
@@ -103,7 +104,8 @@ void URsUIManagerSubsystem::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLi
 	UClass* TripleLinkSkillWidgetClass = GetDefault<URsUIManagerSettings>()->TripleLinkSkillWidgetClass.Get();
 	if (TripleLinkSkillWidgetClass)
 	{
-		URsBattleViewModel* BattleViewModel = URsBattleViewModel::GetRsBattleViewModel(LocalPlayer->GetSubsystem<URsBattleSubsystem>());
+		URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Target);
+		//URsPartyViewModel* PartyViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(Target);
 		URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this));
 		URsUILibrary::PushSceneWidgetToLayerAsync(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, true, TripleLinkSkillWidgetClass, { BattleViewModel, PartyViewModel });
 	}

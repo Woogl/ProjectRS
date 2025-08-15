@@ -7,6 +7,7 @@
 #include "Rs/RsLogChannels.h"
 #include "RsMVVMGameSubsystem.generated.h"
 
+class UCommonLocalPlayer;
 class URsViewModelBase;
 /**
  * 
@@ -18,13 +19,21 @@ class RS_API URsMVVMGameSubsystem : public UMVVMGameSubsystem
 
 public:
 	static URsMVVMGameSubsystem* Get(const UObject* WorldContext);
+	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
+	void CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
 	
 	template <class T>
-	static T* GetOrCreateSingletonViewModel(UObject* Model);
+	static T* CreateSingletonViewModel(UObject* Model);
+
+	template <class T>
+	static T* GetSingletonViewModel(const UObject* WorldContext);
+
+private:
+	FDelegateHandle PlayerAddedDelegateHandle;
 };
 
 template <typename T>
-T* URsMVVMGameSubsystem::GetOrCreateSingletonViewModel(UObject* Model)
+T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");
 	
@@ -49,11 +58,37 @@ T* URsMVVMGameSubsystem::GetOrCreateSingletonViewModel(UObject* Model)
 	if (T* CreatedViewModel = NewObject<T>(Model))
 	{
 		CreatedViewModel->Initialize();
-		FMVVMViewModelContext Context(CreatedViewModel->GetClass(), CreatedViewModel->GetFName());
+		FMVVMViewModelContext Context(CreatedViewModel->GetClass(), CreatedViewModel->GetClass()->GetFName());
 		RsMVVMSubsystem->GetViewModelCollection()->AddViewModelInstance(Context, CreatedViewModel);	
 		return CreatedViewModel;
 	}
 	
-	UE_LOG(RsLog, Warning, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+	UE_LOG(RsLog, Error, TEXT("Failed to CreateSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+	return nullptr;
+}
+
+template <class T>
+T* URsMVVMGameSubsystem::GetSingletonViewModel(const UObject* WorldContext)
+{
+	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");
+	
+	URsMVVMGameSubsystem* RsMVVMSubsystem = URsMVVMGameSubsystem::Get(WorldContext);
+	if (!RsMVVMSubsystem)
+	{
+		return nullptr;
+	}
+	UMVVMViewModelCollectionObject* ViewModelCollection = RsMVVMSubsystem->GetViewModelCollection();
+	if (!ViewModelCollection)
+	{
+		return nullptr;
+	}
+
+	// Get registered view model if available.
+	if (UMVVMViewModelBase* RegisteredViewModel = ViewModelCollection->FindFirstViewModelInstanceOfType(T::StaticClass()))
+	{
+		return Cast<T>(RegisteredViewModel);
+	}
+
+	UE_LOG(RsLog, Error, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
 	return nullptr;
 }
