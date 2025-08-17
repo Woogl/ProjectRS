@@ -18,7 +18,6 @@
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
 #include "Rs/UI/ViewModel/RsPlayerCharacterViewModel.h"
 #include "Rs/UI/Widget/RsHUDLayout.h"
-#include "View/MVVMView.h"
 
 void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 {
@@ -67,23 +66,21 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	// Create Game HUD instance first only.
 	if (!RsHUDInstance)
 	{
-		UClass* WidgetClassLoaded = GameHUDClass.LoadSynchronous();
-		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, WidgetClassLoaded);
+		UClass* LoadedWidgetClass = GameHUDClass.LoadSynchronous();
+		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, LoadedWidgetClass);
 		RsHUDInstance = Cast<URsHUDLayout>(HUDInstance);
 	}
 
 	// Set the view model to Game HUD instance.
 	if (RsHUDInstance)
 	{
-		if (ARsPlayerCharacter* OwnerCharacter = Cast<ARsPlayerCharacter>(Pawn))
+		if (URsPlayerCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Cast<ARsPlayerCharacter>(Pawn)))
 		{
-			if (URsPlayerCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(OwnerCharacter))
-			{
-				if (UMVVMView* View = Cast<UMVVMView>(RsHUDInstance->GetExtension<UMVVMView>()))
-				{
-					View->SetViewModelByClass(PCViewModel);
-				}
-			}
+			URsUILibrary::SetViewModelByClass(RsHUDInstance, PCViewModel);
+		}
+		if (URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Pawn))
+		{
+			URsUILibrary::SetViewModelByClass(RsHUDInstance, BattleViewModel);
 		}
 	}
 }
@@ -105,8 +102,7 @@ void URsUIManagerSubsystem::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLi
 	if (TripleLinkSkillWidgetClass)
 	{
 		URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Target);
-		//URsPartyViewModel* PartyViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(Target);
-		URsPartyViewModel* PartyViewModel = URsPartyViewModel::CreateRsPartyViewModel(URsPartyLibrary::GetPartyComponent(this));
+		URsPartyViewModel* PartyViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(Target);
 		URsUILibrary::PushSceneWidgetToLayerAsync(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, true, TripleLinkSkillWidgetClass, { BattleViewModel, PartyViewModel });
 	}
 }

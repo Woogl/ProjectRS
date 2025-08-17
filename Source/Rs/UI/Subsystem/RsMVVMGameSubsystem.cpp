@@ -34,13 +34,19 @@ void URsMVVMGameSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 
 void URsMVVMGameSubsystem::CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
 {
-	if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+	if (LocalPlayer && !GetSingletonViewModel<URsBattleViewModel>(Pawn, false))
 	{
-		CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
+		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
+		{
+			CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
+		}
 	}
 
-	if (URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(Pawn))
+	if (Pawn && !GetSingletonViewModel<URsPartyViewModel>(LocalPlayer, false))
 	{
-		CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+		if (URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(Pawn))
+		{
+			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+		}
 	}
 }

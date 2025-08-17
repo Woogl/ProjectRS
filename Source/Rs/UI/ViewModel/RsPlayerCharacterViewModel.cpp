@@ -204,6 +204,8 @@ void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* New
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(CanActivateLinkSkill);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetLinkSkillVisibility);
 	}
 }
 

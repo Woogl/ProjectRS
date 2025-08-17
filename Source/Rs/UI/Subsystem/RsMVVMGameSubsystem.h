@@ -23,17 +23,17 @@ public:
 	void CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
 	
 	template <class T>
-	static T* CreateSingletonViewModel(UObject* Model);
+	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
 
 	template <class T>
-	static T* GetSingletonViewModel(const UObject* WorldContext);
+	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 private:
 	FDelegateHandle PlayerAddedDelegateHandle;
 };
 
 template <typename T>
-T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model)
+T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");
 	
@@ -62,13 +62,16 @@ T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model)
 		RsMVVMSubsystem->GetViewModelCollection()->AddViewModelInstance(Context, CreatedViewModel);	
 		return CreatedViewModel;
 	}
-	
-	UE_LOG(RsLog, Error, TEXT("Failed to CreateSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+
+	if (bWarnIfNotFound)
+	{
+		UE_LOG(RsLog, Warning, TEXT("Failed to CreateSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+	}
 	return nullptr;
 }
 
 template <class T>
-T* URsMVVMGameSubsystem::GetSingletonViewModel(const UObject* WorldContext)
+T* URsMVVMGameSubsystem::GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");
 	
@@ -89,6 +92,9 @@ T* URsMVVMGameSubsystem::GetSingletonViewModel(const UObject* WorldContext)
 		return Cast<T>(RegisteredViewModel);
 	}
 
-	UE_LOG(RsLog, Error, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+	if (bWarnIfNotFound)
+	{
+		UE_LOG(RsLog, Warning, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(T::StaticClass()));
+	}
 	return nullptr;
 }
