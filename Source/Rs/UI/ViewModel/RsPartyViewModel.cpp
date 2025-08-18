@@ -8,12 +8,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
 
-URsPartyViewModel* URsPartyViewModel::CreateRsPartyViewModel(URsPartyComponent* PartyComponent)
+URsPartyViewModel* URsPartyViewModel::GetPartyViewModel(UObject* WorldContext)
 {
-	URsPartyViewModel* ViewModel = NewObject<URsPartyViewModel>(PartyComponent);
-	ViewModel->Initialize();
-	return ViewModel;
+	return URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(WorldContext);
 }
 
 bool URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)

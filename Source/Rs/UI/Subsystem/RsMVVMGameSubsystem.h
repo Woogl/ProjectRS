@@ -18,9 +18,12 @@ class RS_API URsMVVMGameSubsystem : public UMVVMGameSubsystem
 	GENERATED_BODY()
 
 public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	static URsMVVMGameSubsystem* Get(const UObject* WorldContext);
+	
 	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
-	void CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
+	void CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
+	void CreateSingletonViewModels_Pawn(UCommonLocalPlayer* LocalPlayer, APawn* Pawn);
 	
 	template <class T>
 	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);

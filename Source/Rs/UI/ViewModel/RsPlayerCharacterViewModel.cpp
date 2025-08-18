@@ -167,13 +167,21 @@ bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 	{
 		return false;
 	}
-	if (URsBattleLibrary::IsDead(CachedModel.Get()))
+	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(CachedModel.Get());
+	if (!BattleSubsystem || !BattleSubsystem->IsLinkSkillReady())
 	{
 		return false;
 	}
-	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(CachedModel.Get()))
+	if (UAbilitySystemComponent* ASC = CachedModel.Get()->GetAbilitySystemComponent())
 	{
-		return BattleSubsystem->IsLinkSkillReady();
+		FGameplayTagContainer LinkSkillTag = URsGameSetting::Get()->LinkSkillTag.GetSingleTagContainer();
+		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LinkSkillTag, false))
+		{
+			if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(LinkSkillAbility->GetClass()))
+			{
+				return LinkSkillAbility->CanActivateAbility(Spec->Handle, LinkSkillAbility->GetCurrentActorInfo());
+			}
+		}
 	}
 	return false;
 }

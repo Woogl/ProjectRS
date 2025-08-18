@@ -7,9 +7,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/UI/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
+
+void URsMVVMGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	// URsGameInstance* RsGameInstance = CastChecked<URsGameInstance>(GetGameInstance());
+	// RsGameInstance->AddLocalPlayer()
+}
 
 URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 {
@@ -26,27 +33,41 @@ URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 
 void URsMVVMGameSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 {
-	if (LocalPlayer && !PlayerAddedDelegateHandle.IsValid())
+	if (!LocalPlayer)
 	{
-		PlayerAddedDelegateHandle = LocalPlayer->CallAndRegister_OnPlayerPawnSet(UCommonLocalPlayer::FPlayerPawnSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels));
+		return;
+	}
+
+	LocalPlayer->CallAndRegister_OnPlayerControllerSet(UCommonLocalPlayer::FPlayerControllerSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels_PlayerController));
+	LocalPlayer->CallAndRegister_OnPlayerPawnSet(UCommonLocalPlayer::FPlayerPawnSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels_Pawn));
+}
+
+void URsMVVMGameSubsystem::CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController)
+{
+	if (!LocalPlayer || !PlayerController || !PlayerController->IsLocalController())
+	{
+		return;
+	}
+	if (!GetSingletonViewModel<URsPartyViewModel>(LocalPlayer, false))
+	{
+		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
+		{
+			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+		}
 	}
 }
 
-void URsMVVMGameSubsystem::CreateSingletonViewModels(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
+void URsMVVMGameSubsystem::CreateSingletonViewModels_Pawn(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
 {
-	if (LocalPlayer && !GetSingletonViewModel<URsBattleViewModel>(Pawn, false))
+	if (!LocalPlayer || !Pawn)
+	{
+		return;
+	}
+	if (!GetSingletonViewModel<URsBattleViewModel>(Pawn, false))
 	{
 		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
 		{
 			CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
-		}
-	}
-
-	if (Pawn && !GetSingletonViewModel<URsPartyViewModel>(LocalPlayer, false))
-	{
-		if (URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(Pawn))
-		{
-			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
 		}
 	}
 }

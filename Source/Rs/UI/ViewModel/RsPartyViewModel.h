@@ -18,8 +18,8 @@ class RS_API URsPartyViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsPartyViewModel* CreateRsPartyViewModel(URsPartyComponent* PartyComponent);
+	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel", meta=(WorldContext="WorldContext"))
+	static URsPartyViewModel* GetPartyViewModel(UObject* WorldContext);
 
 	UFUNCTION(BlueprintCallable)
 	bool TrySwitchMemberAbility(int32 MemberIndex);
