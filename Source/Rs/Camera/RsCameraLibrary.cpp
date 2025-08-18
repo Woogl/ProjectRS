@@ -3,6 +3,8 @@
 
 #include "RsCameraLibrary.h"
 
+#include "CameraAnimationSequence.h"
+#include "RsCameraAnimationActor.h"
 #include "Animations/CameraAnimationCameraModifier.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/Character.h"
@@ -54,19 +56,38 @@ void URsCameraLibrary::SwitchCharacterFacingMode(const UObject* WorldContextObje
 	}
 }
 
-void URsCameraLibrary::PlayCameraAnimation(const UObject* WorldContextObject, UCameraAnimationSequence* CameraAnimation, FCameraAnimationParams Params)
+ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(APlayerController* PlayerController, UCameraAnimationSequence* Sequence, FCameraAnimationParams Params)
 {
-	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifier(WorldContextObject, 0))
+	if (!PlayerController || !Sequence)
 	{
-		CameraModifier->PlayCameraAnimation(CameraAnimation, Params);
+		return nullptr;
 	}
+	
+	if (UWorld* World = PlayerController->GetWorld())
+	{
+		if (ARsCameraAnimationActor* CameraActor = World->SpawnActorDeferred<ARsCameraAnimationActor>(ARsCameraAnimationActor::StaticClass(), FTransform::Identity))
+		{
+			CameraActor->Sequence = Sequence;
+			CameraActor->Params = Params;
+			CameraActor->PlayerController = PlayerController;
+			CameraActor->OriginalViewTarget = PlayerController->GetViewTarget();
+
+			FTransform SpawnTransform = PlayerController->GetPawn()->GetActorTransform();
+			FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
+			SpawnTransform.SetLocation(SpawnLocation);
+			CameraActor->FinishSpawning(SpawnTransform);
+			
+			return CameraActor;
+		}
+	}
+	return nullptr;
 }
 
-void URsCameraLibrary::StopCameraAnimation(const UObject* WorldContextObject, UCameraAnimationSequence* CameraAnimation, bool bImmediate)
+void URsCameraLibrary::StopCameraAnimationSequence(APlayerController* PlayerController, UCameraAnimationSequence* Sequence, bool bImmediate)
 {
-	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifier(WorldContextObject, 0))
+	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
-		CameraModifier->StopAllCameraAnimationsOf(CameraAnimation, bImmediate);
+		CameraModifier->StopAllCameraAnimationsOf(Sequence, bImmediate);
 	}
 }
 
