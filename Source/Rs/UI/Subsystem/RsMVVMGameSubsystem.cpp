@@ -10,14 +10,6 @@
 #include "Rs/UI/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/ViewModel/RsPartyViewModel.h"
 
-void URsMVVMGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-	Super::Initialize(Collection);
-
-	// URsGameInstance* RsGameInstance = CastChecked<URsGameInstance>(GetGameInstance());
-	// RsGameInstance->AddLocalPlayer()
-}
-
 URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 {
 	if (!WorldContext)
@@ -39,7 +31,6 @@ void URsMVVMGameSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 	}
 
 	LocalPlayer->CallAndRegister_OnPlayerControllerSet(UCommonLocalPlayer::FPlayerControllerSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels_PlayerController));
-	LocalPlayer->CallAndRegister_OnPlayerPawnSet(UCommonLocalPlayer::FPlayerPawnSetDelegate::FDelegate::CreateUObject(this, &ThisClass::CreateSingletonViewModels_Pawn));
 }
 
 void URsMVVMGameSubsystem::CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController)
@@ -48,26 +39,20 @@ void URsMVVMGameSubsystem::CreateSingletonViewModels_PlayerController(UCommonLoc
 	{
 		return;
 	}
-	if (!GetSingletonViewModel<URsPartyViewModel>(LocalPlayer, false))
-	{
-		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
-		{
-			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
-		}
-	}
-}
-
-void URsMVVMGameSubsystem::CreateSingletonViewModels_Pawn(UCommonLocalPlayer* LocalPlayer, APawn* Pawn)
-{
-	if (!LocalPlayer || !Pawn)
-	{
-		return;
-	}
-	if (!GetSingletonViewModel<URsBattleViewModel>(Pawn, false))
+	
+	if (!GetSingletonViewModel<URsBattleViewModel>(PlayerController, false))
 	{
 		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
 		{
 			CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
+		}
+	}
+	
+	if (!GetSingletonViewModel<URsPartyViewModel>(PlayerController, false))
+	{
+		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
+		{
+			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
 		}
 	}
 }
