@@ -76,6 +76,11 @@ ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(APlayerCo
 			FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
 			SpawnTransform.SetLocation(SpawnLocation);
 			CameraActor->FinishSpawning(SpawnTransform);
+
+			if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
+			{
+				RsPlayerController->CurrentAnimatonCameraActor = CameraActor;
+			}
 			
 			return CameraActor;
 		}
@@ -88,6 +93,17 @@ void URsCameraLibrary::StopCameraAnimationSequence(APlayerController* PlayerCont
 	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
 		CameraModifier->StopAllCameraAnimationsOf(Sequence, bImmediate);
+	}
+	
+	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
+	{
+		if (ARsCameraAnimationActor* CameraActor = RsPlayerController->CurrentAnimatonCameraActor.Get())
+		{
+			if (CameraActor->Sequence == Sequence)
+			{
+				CameraActor->Destroy();
+			}
+		}
 	}
 }
 

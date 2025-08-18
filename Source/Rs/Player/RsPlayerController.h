@@ -8,6 +8,7 @@
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
+class ARsCameraAnimationActor;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -47,6 +48,9 @@ public:
 
 	// IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UPROPERTY()
+	TWeakObjectPtr<ARsCameraAnimationActor> CurrentAnimatonCameraActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
