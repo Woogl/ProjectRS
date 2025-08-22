@@ -21,6 +21,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 
+	UFUNCTION(BlueprintCallable)
+	void ResetCameraAnimation();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn="true"))
 	TObjectPtr<UCameraAnimationSequence> Sequence;
 

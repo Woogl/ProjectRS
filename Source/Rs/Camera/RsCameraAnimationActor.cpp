@@ -25,7 +25,7 @@ void ARsCameraAnimationActor::BeginPlay()
 	FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
 	SpawnTransform.SetLocation(SpawnLocation);
 
-	PlayerController->SetViewTarget(this);
+	PlayerController->SetViewTargetWithBlend(this, Params.EaseInDuration);
 	
 	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
@@ -43,20 +43,28 @@ void ARsCameraAnimationActor::BeginPlay()
 
 void ARsCameraAnimationActor::Destroyed()
 {
-	if (!PlayerController)
+	ResetCameraAnimation();
+	
+	Super::Destroyed();
+}
+
+void ARsCameraAnimationActor::ResetCameraAnimation()
+{
+	if (!IsValid(PlayerController))
 	{
+		Super::Destroyed();
 		return;
 	}
 	
 	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
-		Modifier->StopCameraAnimation(CameraAnimationHandle, true);
+		bool bStopImmediately = Params.EaseOutDuration == 0.f;
+		Modifier->StopCameraAnimation(CameraAnimationHandle, bStopImmediately);
 	}
 	
-	if (OriginalViewTarget)
+	if (IsValid(OriginalViewTarget))
 	{
+		PlayerController->SetViewTargetWithBlend(OriginalViewTarget, Params.EaseOutDuration);
 		PlayerController->SetViewTarget(OriginalViewTarget);
 	}
-	
-	Super::Destroyed();
 }

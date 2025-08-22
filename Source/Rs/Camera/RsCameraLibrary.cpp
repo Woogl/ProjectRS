@@ -56,7 +56,7 @@ void URsCameraLibrary::SwitchCharacterFacingMode(const UObject* WorldContextObje
 	}
 }
 
-ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(APlayerController* PlayerController, UCameraAnimationSequence* Sequence, FCameraAnimationParams Params)
+ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, FCameraAnimationParams Params)
 {
 	if (!PlayerController || !Sequence)
 	{
@@ -71,16 +71,12 @@ ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(APlayerCo
 			CameraActor->Params = Params;
 			CameraActor->PlayerController = PlayerController;
 			CameraActor->OriginalViewTarget = PlayerController->GetViewTarget();
+			PlayerController->CurrentAnimatonCameraActor = CameraActor;
 
 			FTransform SpawnTransform = PlayerController->GetPawn()->GetActorTransform();
 			FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
 			SpawnTransform.SetLocation(SpawnLocation);
 			CameraActor->FinishSpawning(SpawnTransform);
-
-			if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
-			{
-				RsPlayerController->CurrentAnimatonCameraActor = CameraActor;
-			}
 			
 			return CameraActor;
 		}
@@ -88,21 +84,18 @@ ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(APlayerCo
 	return nullptr;
 }
 
-void URsCameraLibrary::StopCameraAnimationSequence(APlayerController* PlayerController, UCameraAnimationSequence* Sequence, bool bImmediate)
+void URsCameraLibrary::StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, bool bImmediate)
 {
 	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
 		CameraModifier->StopAllCameraAnimationsOf(Sequence, bImmediate);
 	}
 	
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
+	if (ARsCameraAnimationActor* CameraActor = PlayerController->CurrentAnimatonCameraActor.Get())
 	{
-		if (ARsCameraAnimationActor* CameraActor = RsPlayerController->CurrentAnimatonCameraActor.Get())
+		if (CameraActor->Sequence == Sequence)
 		{
-			if (CameraActor->Sequence == Sequence)
-			{
-				CameraActor->Destroy();
-			}
+			CameraActor->Destroy();
 		}
 	}
 }
