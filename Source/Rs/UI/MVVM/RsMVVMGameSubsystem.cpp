@@ -7,8 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/UI/ViewModel/RsBattleViewModel.h"
-#include "Rs/UI/ViewModel/RsPartyViewModel.h"
+#include "Rs/UI/MVVM/ViewModel/RsBattleViewModel.h"
+#include "Rs/UI/MVVM/ViewModel/RsPartyViewModel.h"
 
 URsMVVMGameSubsystem* URsMVVMGameSubsystem::Get(const UObject* WorldContext)
 {

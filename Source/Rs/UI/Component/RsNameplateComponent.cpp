@@ -6,7 +6,7 @@
 #include "Extensions/UserWidgetExtension.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
-#include "Rs/UI/ViewModel/RsCharacterViewModel.h"
+#include "Rs/UI/MVVM/ViewModel/RsCharacterViewModel.h"
 #include "View/MVVMView.h"
 
 URsNameplateComponent::URsNameplateComponent()

@@ -21,7 +21,6 @@ public:
 	static URsMVVMGameSubsystem* Get(const UObject* WorldContext);
 	
 	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
-	void CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
 	
 	template <class T>
 	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
@@ -30,6 +29,7 @@ public:
 	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 private:
+	void CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
 	FDelegateHandle PlayerAddedDelegateHandle;
 };
 

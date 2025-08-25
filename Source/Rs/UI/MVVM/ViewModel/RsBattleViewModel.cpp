@@ -5,7 +5,7 @@
 
 #include "RsCharacterViewModel.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
-#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
+#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 URsBattleViewModel* URsBattleViewModel::GetBattleViewModel(UObject* WorldContext)
 {

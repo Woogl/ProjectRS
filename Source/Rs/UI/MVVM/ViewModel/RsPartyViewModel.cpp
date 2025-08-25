@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
+#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 URsPartyViewModel* URsPartyViewModel::GetPartyViewModel(UObject* WorldContext)
 {

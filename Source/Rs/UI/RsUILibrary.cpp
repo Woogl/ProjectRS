@@ -6,7 +6,7 @@
 #include "PrimaryGameLayout.h"
 #include "Input/CommonUIActionRouterBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "ViewModel/RsViewModelBase.h"
+#include "MVVM/ViewModel/RsViewModelBase.h"
 #include "Rs/RsLogChannels.h"
 #include "Subsystem/RsUIManagerSubsystem.h"
 #include "View/MVVMView.h"

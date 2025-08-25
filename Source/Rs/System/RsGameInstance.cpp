@@ -6,7 +6,7 @@
 #include "CommonLocalPlayer.h"
 #include "RsGameSetting.h"
 #include "Engine/AssetManager.h"
-#include "Rs/UI/Subsystem/RsMVVMGameSubsystem.h"
+#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 void URsGameInstance::Init()
 {
