@@ -6,30 +6,35 @@
 #include "CameraAnimationSequence.h"
 #include "MovieScene.h"
 #include "Camera/CameraComponent.h"
+#include "Rs/Player/RsPlayerController.h"
 
 ARsCameraAnimationActor::ARsCameraAnimationActor()
 {
 	GetCameraComponent()->SetConstraintAspectRatio(false);
 }
 
-void ARsCameraAnimationActor::BeginPlay()
+void ARsCameraAnimationActor::PlayCameraAnimation(ARsPlayerController* InPlayerController, UCameraAnimationSequence* InSequence, FCameraAnimationParams InParams)
 {
-	Super::BeginPlay();
-
-	if (!PlayerController || !Sequence || !PlayerController->GetPawn())
+	if (!InSequence || !InPlayerController || !InPlayerController->GetPawn())
 	{
 		return;
 	}
 
+	PlayerController = InPlayerController;
+	OriginalViewTarget = InPlayerController->GetViewTarget();
+	Sequence = InSequence;
+	Params = InParams;
+
 	FTransform SpawnTransform = PlayerController->GetPawn()->GetActorTransform();
 	FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
-	SpawnTransform.SetLocation(SpawnLocation);
-
-	PlayerController->SetViewTargetWithBlend(this, Params.EaseInDuration);
+	SpawnTransform.SetLocation(SpawnLocation); SetActorTransform(SpawnTransform);
 	
+	PlayerController->SetViewTargetWithBlend(this, Params.EaseInDuration);
+	PlayerController->CurrentAnimatonCameraActor = this;
+
 	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
-		CameraAnimationHandle = Modifier->PlayCameraAnimation(Sequence, Params);
+		CameraAnimationHandle = CameraAnimationHandle = Modifier->PlayCameraAnimation(Sequence, Params);
 	}
 	
 	if (!Params.bLoop)
@@ -37,34 +42,33 @@ void ARsCameraAnimationActor::BeginPlay()
 		FFrameNumber PlaybackFrames = Sequence->GetMovieScene()->GetPlaybackRange().Size<FFrameNumber>();
 		float PlayLength = Sequence->GetMovieScene()->GetTickResolution().AsSeconds(PlaybackFrames);
 		PlayLength = PlayLength / Params.PlayRate;
-		SetLifeSpan(PlayLength);
+		FTimerHandle TimerHandle;
+		PlayerController->GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::HandleFinishTimer, PlayLength);
 	}
-}
-
-void ARsCameraAnimationActor::Destroyed()
-{
-	ResetCameraAnimation();
-	
-	Super::Destroyed();
 }
 
 void ARsCameraAnimationActor::ResetCameraAnimation()
 {
-	if (!IsValid(PlayerController))
+	if (!PlayerController || !OriginalViewTarget)
 	{
-		Super::Destroyed();
 		return;
 	}
 	
 	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
-		bool bStopImmediately = Params.EaseOutDuration == 0.f;
-		Modifier->StopCameraAnimation(CameraAnimationHandle, bStopImmediately);
+		Modifier->StopCameraAnimation(CameraAnimationHandle, true);
+		PlayerController->SetViewTargetWithBlend(OriginalViewTarget, Params.EaseOutDuration);
 	}
 	
-	if (IsValid(OriginalViewTarget))
-	{
-		PlayerController->SetViewTargetWithBlend(OriginalViewTarget, Params.EaseOutDuration);
-		PlayerController->SetViewTarget(OriginalViewTarget);
-	}
+	SetLifeSpan(1.f);
+}
+
+UCameraAnimationSequence* ARsCameraAnimationActor::GetSequence() const
+{
+	return Sequence;
+}
+
+void ARsCameraAnimationActor::HandleFinishTimer()
+{
+	ResetCameraAnimation();
 }

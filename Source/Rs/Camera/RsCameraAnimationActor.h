@@ -7,6 +7,7 @@
 #include "Camera/CameraActor.h"
 #include "RsCameraAnimationActor.generated.h"
 
+class ARsPlayerController;
 class UCameraAnimationSequence;
 /**
  * 
@@ -18,24 +19,28 @@ class RS_API ARsCameraAnimationActor : public ACameraActor
 
 public:
 	ARsCameraAnimationActor();
-	virtual void BeginPlay() override;
-	virtual void Destroyed() override;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayCameraAnimation(ARsPlayerController* InPlayerController, UCameraAnimationSequence* InSequence, FCameraAnimationParams InParams);
 
 	UFUNCTION(BlueprintCallable)
 	void ResetCameraAnimation();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn="true"))
-	TObjectPtr<UCameraAnimationSequence> Sequence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn="true"))
-	FCameraAnimationParams Params;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn="true"))
-	TObjectPtr<AActor> OriginalViewTarget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn="true"))
-	TObjectPtr<APlayerController> PlayerController;
+	UCameraAnimationSequence* GetSequence() const;
 
 private:
+	UPROPERTY()
+	TObjectPtr<UCameraAnimationSequence> Sequence;
+
+	UPROPERTY()
+	FCameraAnimationParams Params;
+
+	UPROPERTY()
+	TObjectPtr<AActor> OriginalViewTarget;
+	
+	UPROPERTY()
+	TObjectPtr<ARsPlayerController> PlayerController;
+	
+	void HandleFinishTimer();
 	FCameraAnimationHandle CameraAnimationHandle;
 };

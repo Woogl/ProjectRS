@@ -65,37 +65,20 @@ ARsCameraAnimationActor* URsCameraLibrary::PlayCameraAnimationSequence(ARsPlayer
 	
 	if (UWorld* World = PlayerController->GetWorld())
 	{
-		if (ARsCameraAnimationActor* CameraActor = World->SpawnActorDeferred<ARsCameraAnimationActor>(ARsCameraAnimationActor::StaticClass(), FTransform::Identity))
-		{
-			CameraActor->Sequence = Sequence;
-			CameraActor->Params = Params;
-			CameraActor->PlayerController = PlayerController;
-			CameraActor->OriginalViewTarget = PlayerController->GetViewTarget();
-			PlayerController->CurrentAnimatonCameraActor = CameraActor;
-
-			FTransform SpawnTransform = PlayerController->GetPawn()->GetActorTransform();
-			FVector SpawnLocation = SpawnTransform.GetLocation() - FVector(0.f, 0.f, PlayerController->GetPawn()->GetDefaultHalfHeight());
-			SpawnTransform.SetLocation(SpawnLocation);
-			CameraActor->FinishSpawning(SpawnTransform);
-			
-			return CameraActor;
-		}
+		ARsCameraAnimationActor* CameraActor = World->SpawnActor<ARsCameraAnimationActor>(ARsCameraAnimationActor::StaticClass());
+		CameraActor->PlayCameraAnimation(PlayerController, Sequence, Params);
+		return CameraActor;
 	}
 	return nullptr;
 }
 
-void URsCameraLibrary::StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, bool bImmediate)
+void URsCameraLibrary::StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence)
 {
-	if (UCameraAnimationCameraModifier* CameraModifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
-	{
-		CameraModifier->StopAllCameraAnimationsOf(Sequence, bImmediate);
-	}
-	
 	if (ARsCameraAnimationActor* CameraActor = PlayerController->CurrentAnimatonCameraActor.Get())
 	{
-		if (CameraActor->Sequence == Sequence)
+		if (CameraActor->GetSequence() == Sequence)
 		{
-			CameraActor->Destroy();
+			CameraActor->ResetCameraAnimation();
 		}
 	}
 }

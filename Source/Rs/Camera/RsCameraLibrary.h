@@ -36,5 +36,5 @@ public:
 	static ARsCameraAnimationActor* PlayCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, FCameraAnimationParams Params);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library")
-	static void StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, bool bImmediate = false);
+	static void StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence);
 };
