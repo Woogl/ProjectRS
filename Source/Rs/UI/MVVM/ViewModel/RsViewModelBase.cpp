@@ -9,3 +9,8 @@ void URsViewModelBase::BeginDestroy()
 
 	Deinitialize();
 }
+
+void URsViewModelBase::SetModel(UObject* InModel)
+{
+	Model = InModel;
+}

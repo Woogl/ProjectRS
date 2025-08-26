@@ -9,6 +9,7 @@
 URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(UAbilitySystemComponent* ASC)
 {
 	URsHealthSetViewModel* ViewModel = NewObject<URsHealthSetViewModel>(ASC);
+	ViewModel->SetModel(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -17,18 +18,17 @@ void URsHealthSetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		SetMaxHealth(Model->GetNumericAttribute(URsHealthSet::GetMaxHealthAttribute()));
-		SetCurrentHealth(Model->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()));
-		SetHealthRegen(Model->GetNumericAttribute(URsHealthSet::GetHealthRegenAttribute()));
-		SetShield(Model->GetNumericAttribute(URsHealthSet::GetShieldAttribute()));
+		SetMaxHealth(ASC->GetNumericAttribute(URsHealthSet::GetMaxHealthAttribute()));
+		SetCurrentHealth(ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()));
+		SetHealthRegen(ASC->GetNumericAttribute(URsHealthSet::GetHealthRegenAttribute()));
+		SetShield(ASC->GetNumericAttribute(URsHealthSet::GetShieldAttribute()));
 		
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::CurrentHealthChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).AddUObject(this, &ThisClass::HealthRegenChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).AddUObject(this, &ThisClass::ShieldChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::CurrentHealthChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).AddUObject(this, &ThisClass::HealthRegenChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).AddUObject(this, &ThisClass::ShieldChanged);
 	}
 }
 
@@ -36,12 +36,12 @@ void URsHealthSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetShieldAttribute()).RemoveAll(this);
 	}
 }
 
@@ -137,9 +137,9 @@ FText URsHealthSetViewModel::GetMaxHealthText() const
 
 bool URsHealthSetViewModel::IsDead() const
 {
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		return URsBattleLibrary::IsDead(Model->GetAvatarActor());
+		return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
 	}
 	return false;
 }

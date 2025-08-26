@@ -16,11 +16,11 @@ void URsBattleViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
 	{
-		Model->OnBossFight.AddUObject(this, &ThisClass::HandleBossFight);
-		Model->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
-		Model->OnLinkSkillFinish.AddUObject(this, &ThisClass::HandleLinkSkillFinish);
+		BattleSubsystem->OnBossFight.AddUObject(this, &ThisClass::HandleBossFight);
+		BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
+		BattleSubsystem->OnLinkSkillFinish.AddUObject(this, &ThisClass::HandleLinkSkillFinish);
 	}
 }
 
@@ -28,36 +28,36 @@ void URsBattleViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
 	{
-		Model->OnBossFight.RemoveAll(this);
-		Model->OnLinkSkillReady.RemoveAll(this);
-		Model->OnLinkSkillFinish.RemoveAll(this);
+		BattleSubsystem->OnBossFight.RemoveAll(this);
+		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
+		BattleSubsystem->OnLinkSkillFinish.RemoveAll(this);
 	}
 }
 
 void URsBattleViewModel::DecrementLinkSkillCount(ARsCharacterBase* CurrentTarget, ERsLinkSkillType LinkSkillType)
 {
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
 	{
-		Model->DecrementLinkSkillCount(CurrentTarget, LinkSkillType);
+		BattleSubsystem->DecrementLinkSkillCount(CurrentTarget, LinkSkillType);
 	}
 }
 
 bool URsBattleViewModel::GetIsLinkSkillReady() const
 {
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
 	{
-		return Model->IsLinkSkillReady();
+		return BattleSubsystem->IsLinkSkillReady();
 	}
 	return false;
 }
 
 ARsCharacterBase* URsBattleViewModel::GetLinkSkillTarget() const
 {
-	if (URsBattleSubsystem* Model = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
 	{
-		return Model->GetLinkSkillTarget();
+		return BattleSubsystem->GetLinkSkillTarget();
 	}
 	return nullptr;
 }

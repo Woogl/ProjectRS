@@ -27,13 +27,11 @@ protected:
 
 	void OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle);
 	void OnEffectRemoved(URsActiveEffectViewModel* DisabledViewModel);
+	
 protected:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	ESlateVisibility Visibility;
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TArray<TObjectPtr<URsActiveEffectViewModel>> ActiveEffectViewModels;
-	
-	UPROPERTY()
-	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
 };

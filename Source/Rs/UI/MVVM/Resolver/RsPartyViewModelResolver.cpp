@@ -1,7 +1,7 @@
 // Copyright 2025 Team BH.
 
 
-#include "RsViewModelResolver.h"
+#include "RsPartyViewModelResolver.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -9,7 +9,7 @@
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 #include "Rs/UI/MVVM/ViewModel/RsPartyViewModel.h"
 
-UObject* URsViewModelPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
+UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
 {
 	ULocalPlayer* LocalPlayer = UserWidget->GetOwningLocalPlayer();
 	if (!LocalPlayer)
@@ -23,10 +23,9 @@ UObject* URsViewModelPartyViewModelResolver::CreateInstance(const UClass* Expect
 		return nullptr;
 	}
 	
-	URsPartyViewModel* ExistingViewModel = Subsystem->GetSingletonViewModel<URsPartyViewModel>(LocalPlayer);
-	if (!ExistingViewModel)
+	if (URsPartyViewModel* ExistingViewModel = Subsystem->GetSingletonViewModel<URsPartyViewModel>(LocalPlayer))
 	{
-		return nullptr;
+		return ExistingViewModel;
 	}
 
 	URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(LocalPlayer);

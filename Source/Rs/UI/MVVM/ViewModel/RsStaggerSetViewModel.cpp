@@ -8,6 +8,7 @@
 URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(UAbilitySystemComponent* ASC)
 {
 	URsStaggerSetViewModel* ViewModel = NewObject<URsStaggerSetViewModel>(ASC);
+	ViewModel->SetModel(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -16,16 +17,15 @@ void URsStaggerSetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		SetMaxStagger(Model->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
-		SetCurrentStagger(Model->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
-		SetStaggerDecay(Model->GetNumericAttribute(URsStaggerSet::GetStaggerDecayAttribute()));
+		SetMaxStagger(ASC->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
+		SetCurrentStagger(ASC->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
+		SetStaggerDecay(ASC->GetNumericAttribute(URsStaggerSet::GetStaggerDecayAttribute()));
 		
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
 	}
 }
 
@@ -33,11 +33,11 @@ void URsStaggerSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).RemoveAll(this);
 	}
 }
 

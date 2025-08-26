@@ -25,8 +25,6 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
-
 public:
 	float GetCurrentHealth() const;
 	float GetMaxHealth() const;

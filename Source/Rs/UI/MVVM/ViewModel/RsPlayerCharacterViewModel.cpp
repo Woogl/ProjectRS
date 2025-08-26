@@ -11,16 +11,16 @@
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/System/RsGameSetting.h"
 
-URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* Model)
+URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* PlayerCharacter)
 {
-	URsPlayerCharacterViewModel* ViewModel = NewObject<URsPlayerCharacterViewModel>(Model);
+	URsPlayerCharacterViewModel* ViewModel = NewObject<URsPlayerCharacterViewModel>(PlayerCharacter);
+	ViewModel->SetModel(PlayerCharacter);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -29,9 +29,9 @@ void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* PlayerCharacter = GetModel<ARsCharacterBase>())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PlayerCharacter))
 		{
 			EnergySetViewModel = URsEnergySetViewModel::CreateEnergySetViewModel(ASC);
 			
@@ -73,7 +73,7 @@ void URsPlayerCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(CachedModel.Get(), 0))
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetModel<ARsCharacterBase>(), 0))
 	{
 		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
 		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
@@ -92,10 +92,10 @@ void URsPlayerCharacterViewModel::Deinitialize()
 
 int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
 {
-	if (ARsPlayerCharacter* Model = GetModel<ARsPlayerCharacter>())
+	if (ARsPlayerCharacter* Character = GetModel<ARsPlayerCharacter>())
 	{
-		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(CachedModel.Get());
-		return PartyMembers.Find(Cast<ARsPlayerCharacter>(Model));
+		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(GetModel<ARsCharacterBase>());
+		return PartyMembers.Find(Cast<ARsPlayerCharacter>(Character));
 	}
 	return INDEX_NONE;
 }
@@ -126,9 +126,9 @@ bool URsPlayerCharacterViewModel::IsPartyMember() const
 
 bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 {
-	if (ARsPlayerCharacter* Model = GetModel<ARsPlayerCharacter>())
+	if (ARsPlayerCharacter* PlayerCharacter = GetModel<ARsPlayerCharacter>())
 	{
-		return UGameplayStatics::GetPlayerController(GetWorld(), 0) == Model->GetController();
+		return UGameplayStatics::GetPlayerController(GetWorld(), 0) == PlayerCharacter->GetController();
 	}
 	return false;
 }
@@ -144,9 +144,9 @@ ESlateVisibility URsPlayerCharacterViewModel::GetDetailInfoVisibility() const
 
 FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 {
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* PlayerCharacter = GetModel<ARsCharacterBase>())
 	{
-		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponent())
+		if (UAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent())
 		{
 			FGameplayTag CooldownTag = URsGameSetting::Get()->SwitchMemberCooldownTag;
 			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(CooldownTag.GetSingleTagContainer());
@@ -167,12 +167,12 @@ bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 	{
 		return false;
 	}
-	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(CachedModel.Get());
+	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(GetModel<ARsCharacterBase>());
 	if (!BattleSubsystem || !BattleSubsystem->IsLinkSkillReady())
 	{
 		return false;
 	}
-	if (UAbilitySystemComponent* ASC = CachedModel.Get()->GetAbilitySystemComponent())
+	if (UAbilitySystemComponent* ASC = GetModel<ARsCharacterBase>()->GetAbilitySystemComponent())
 	{
 		FGameplayTagContainer LinkSkillTag = URsGameSetting::Get()->LinkSkillTag.GetSingleTagContainer();
 		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LinkSkillTag, false))
@@ -207,7 +207,13 @@ TStatId URsPlayerCharacterViewModel::GetStatId() const
 
 void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
 {
-	if (OldPawn == CachedModel.Get() || NewPawn == CachedModel.Get())
+	ARsCharacterBase* Character = GetModel<ARsCharacterBase>();
+	if (!Character)
+	{
+		return;
+	}
+	
+	if (OldPawn == Character || NewPawn == Character)
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsPlayerControlled);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDetailInfoVisibility);
@@ -219,7 +225,7 @@ void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* New
 
 void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex)
 {
-	if (AddedMember == CachedModel.Get())
+	if (AddedMember == GetModel<ARsCharacterBase>())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
@@ -233,7 +239,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 
 void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex)
 {
-	if (RemovedMember == CachedModel.Get())
+	if (RemovedMember == GetModel<ARsCharacterBase>())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);

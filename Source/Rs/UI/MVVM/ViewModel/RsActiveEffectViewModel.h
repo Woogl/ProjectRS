@@ -20,7 +20,6 @@ class RS_API URsActiveEffectViewModel : public URsViewModelBase, public FTickabl
 	GENERATED_BODY()
 
 public:
-
 	URsActiveEffectViewModel();
 	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")

@@ -15,15 +15,16 @@
 URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsCharacterBase* Character)
 {
 	URsCharacterViewModel* ViewModel = NewObject<URsCharacterViewModel>(Character);
+	ViewModel->SetModel(Character);
 	ViewModel->Initialize();
 	return ViewModel;
 }
 
 bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)
 {
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
 			return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 		}
@@ -35,10 +36,9 @@ void URsCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 
-	CachedModel = Cast<ARsCharacterBase>(GetOuter());
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Model))
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
 			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(ASC));
 			UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(ASC));
@@ -54,18 +54,18 @@ void URsCharacterViewModel::Deinitialize()
 
 FText URsCharacterViewModel::GetCharacterName() const
 {
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
-		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Model));
+		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 	}
 	return FText::GetEmpty();
 }
 
 UObject* URsCharacterViewModel::GetPortrait() const
 {
-	if (ARsCharacterBase* Model = CachedModel.Get())
+	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
-		return Model->Portrait;
+		return Character->Portrait;
 	}
 	return nullptr;
 }

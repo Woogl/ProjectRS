@@ -17,9 +17,9 @@ URsPartyViewModel* URsPartyViewModel::GetPartyViewModel(UObject* WorldContext)
 
 bool URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)
 {
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		return Model->TrySwitchMemberAbility(MemberIndex);
+		return PartyComponent->TrySwitchMemberAbility(MemberIndex);
 	}
 	return false;
 }
@@ -28,13 +28,12 @@ void URsPartyViewModel::Initialize()
 {
 	Super::Initialize();
 
-	CachedModel = Cast<URsPartyComponent>(GetOuter());
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		Model->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
-		Model->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
+		PartyComponent->OnAddPartyMember.AddUObject(this, &ThisClass::HandleAddPartyMember);
+		PartyComponent->OnRemovePartyMember.AddUObject(this, &ThisClass::HandleRemovePartyMember);
 
-		TArray<ARsPlayerCharacter*> PartyMembers = Model->GetPartyMembers();
+		TArray<ARsPlayerCharacter*> PartyMembers = PartyComponent->GetPartyMembers();
 		for (int32 i = 0; i < PartyMembers.Num(); ++i)
 		{
 			URsPlayerCharacterViewModel* CharacterViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(PartyMembers[i]);
@@ -63,10 +62,10 @@ void URsPartyViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		Model->OnAddPartyMember.RemoveAll(this);
-		Model->OnRemovePartyMember.RemoveAll(this);
+		PartyComponent->OnAddPartyMember.RemoveAll(this);
+		PartyComponent->OnRemovePartyMember.RemoveAll(this);
 	}
 
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
@@ -158,9 +157,9 @@ URsPlayerCharacterViewModel* URsPartyViewModel::GetNextPartyMember() const
 
 URsPlayerCharacterViewModel* URsPartyViewModel::GetPrevAlivePartyMember() const
 {
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		if (ARsPlayerCharacter* Character = Model->GetPrevAlivePartyMember())
+		if (ARsPlayerCharacter* Character = PartyComponent->GetPrevAlivePartyMember())
 		{
 			return URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Character);
 		}
@@ -170,9 +169,9 @@ URsPlayerCharacterViewModel* URsPartyViewModel::GetPrevAlivePartyMember() const
 
 URsPlayerCharacterViewModel* URsPartyViewModel::GetNextAlivePartyMember() const
 {
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		if (ARsPlayerCharacter* Character = Model->GetNextAlivePartyMember())
+		if (ARsPlayerCharacter* Character = PartyComponent->GetNextAlivePartyMember())
 		{
 			return URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Character);
 		}
@@ -182,18 +181,18 @@ URsPlayerCharacterViewModel* URsPartyViewModel::GetNextAlivePartyMember() const
 
 int32 URsPartyViewModel::GetCurrentPartyMemberIndex() const
 {
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		return Model->GetCurrentMemberIndex();
+		return PartyComponent->GetCurrentMemberIndex();
 	}
 	return INDEX_NONE;
 }
 
 void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
-	if (URsPartyComponent* Model = CachedModel.Get())
+	if (URsPartyComponent* PartyComponent = GetModel<URsPartyComponent>())
 	{
-		int32 Index = Model->GetPartyMembers().Find(Cast<ARsPlayerCharacter>(NewPawn));
+		int32 Index = PartyComponent->GetPartyMembers().Find(Cast<ARsPlayerCharacter>(NewPawn));
 		if (Index != INDEX_NONE)
 		{
 			SyncPartyMembers(Index);

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MVVMGameSubsystem.h"
 #include "Rs/RsLogChannels.h"
+#include "ViewModel/RsViewModelBase.h"
 #include "RsMVVMGameSubsystem.generated.h"
 
 class UCommonLocalPlayer;
@@ -30,6 +31,7 @@ public:
 
 private:
 	void CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
+	
 	FDelegateHandle PlayerAddedDelegateHandle;
 };
 
@@ -49,16 +51,9 @@ T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model, bool bWarnIfNo
 		return nullptr;
 	}
 
-	// Get registered view model if available.
-	if (UMVVMViewModelBase* RegisteredViewModel = ViewModelCollection->FindFirstViewModelInstanceOfType(T::StaticClass()))
-	{
-		return Cast<T>(RegisteredViewModel);
-	}
-
 	// Crete new view model and register.
-	if (T* CreatedViewModel = NewObject<T>(Model))
+	if (T* CreatedViewModel = URsViewModelBase::CreateViewModel<T>(Model))
 	{
-		CreatedViewModel->Initialize();
 		FMVVMViewModelContext Context(CreatedViewModel->GetClass(), CreatedViewModel->GetClass()->GetFName());
 		RsMVVMSubsystem->GetViewModelCollection()->AddViewModelInstance(Context, CreatedViewModel);	
 		return CreatedViewModel;

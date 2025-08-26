@@ -27,9 +27,6 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	UPROPERTY()
-	TWeakObjectPtr<URsGameplayAbility> CachedModel;
-
 public:
 	float GetCooldownDuration() const;
 	float GetCooldownRemaining() const;

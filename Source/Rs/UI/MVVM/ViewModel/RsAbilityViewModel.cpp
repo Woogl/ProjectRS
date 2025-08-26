@@ -12,17 +12,18 @@
 URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Ability)
 {
 	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Ability);
+	ViewModel->SetModel(Ability);
 	ViewModel->Initialize();
 	return ViewModel;
 }
 
 void URsAbilityViewModel::TryActivateAbility()
 {
-	if (URsGameplayAbility* Model = CachedModel.Get())
+	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
 	{
-		if (UAbilitySystemComponent* ASC = Model->GetAbilitySystemComponentFromActorInfo())
+		if (UAbilitySystemComponent* ASC = Ability->GetAbilitySystemComponentFromActorInfo())
 		{
-			ASC->TryActivateAbility(Model->GetCurrentAbilitySpecHandle());
+			ASC->TryActivateAbility(Ability->GetCurrentAbilitySpecHandle());
 		}
 	}
 }
@@ -31,14 +32,13 @@ void URsAbilityViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	CachedModel = Cast<URsGameplayAbility>(GetOuter());
-	if (URsGameplayAbility* Model = CachedModel.Get())
+	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
 	{
-		SetCooldownDuration(Model->CooldownDuration);
-		SetCurrentRechargeStacks(Model->GetCurrentRechargeStacks());
-		SetMaxRechargeStacks(Model->MaxRechargeStacks);
+		SetCooldownDuration(Ability->CooldownDuration);
+		SetCurrentRechargeStacks(Ability->GetCurrentRechargeStacks());
+		SetMaxRechargeStacks(Ability->MaxRechargeStacks);
 		
-		Model->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
+		Ability->OnRechargeStacksChanged.AddUObject(this, &ThisClass::HandleRechargeStacksChanged);
 	}
 }
 
@@ -46,9 +46,9 @@ void URsAbilityViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (URsGameplayAbility* Model = CachedModel.Get())
+	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
 	{
-		Model->OnRechargeStacksChanged.RemoveAll(this);
+		Ability->OnRechargeStacksChanged.RemoveAll(this);
 	}
 }
 
@@ -149,16 +149,16 @@ bool URsAbilityViewModel::IsRechargeable() const
 
 FText URsAbilityViewModel::GetInputKeyText() const
 {
-	URsGameplayAbility* Model = CachedModel.Get();
-	if (Model && Model->ActivationInputAction)
+	URsGameplayAbility* Ability = GetModel<URsGameplayAbility>();
+	if (Ability && Ability->ActivationInputAction)
 	{
-		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Model->GetAvatarCharacter()))
+		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Ability->GetAvatarCharacter()))
 		{
 			if (UInputMappingContext* MappingContext = PlayerCharacter->GetDefaultMappingContext())
 			{
 				for (const FEnhancedActionKeyMapping& Mapping : MappingContext->GetMappings())
 				{
-					if (Mapping.Action == Model->ActivationInputAction)
+					if (Mapping.Action == Ability->ActivationInputAction)
 					{
 						return Mapping.Key.GetDisplayName(false);
 					}
@@ -171,9 +171,9 @@ FText URsAbilityViewModel::GetInputKeyText() const
 
 UObject* URsAbilityViewModel::GetSkillIcon() const
 {
-	if (URsGameplayAbility* Model = CachedModel.Get())
+	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
 	{
-		return Model->SkillIcon;
+		return Ability->SkillIcon;
 	}
 	return nullptr;
 }
@@ -194,9 +194,9 @@ void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
 
 void URsAbilityViewModel::Tick(float DeltaTime)
 {
-	if (URsGameplayAbility* Model = CachedModel.Get())
+	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
 	{
-		SetCooldownRemaining(Model->GetCooldownTimeRemaining());
+		SetCooldownRemaining(Ability->GetCooldownTimeRemaining());
 	}
 }
 

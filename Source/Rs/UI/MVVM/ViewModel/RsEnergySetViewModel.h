@@ -24,8 +24,6 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	TWeakObjectPtr<UAbilitySystemComponent> CachedModel;
-
 public:
 	float GetCurrentEnergy() const;
 	float GetMaxEnergy() const;

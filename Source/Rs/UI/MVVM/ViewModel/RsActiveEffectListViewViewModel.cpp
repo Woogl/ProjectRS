@@ -3,12 +3,12 @@
 
 #include "RsActiveEffectListViewViewModel.h"
 #include "AbilitySystemComponent.h"
-#include "CommonHardwareVisibilityBorder.h"
 #include "RsActiveEffectViewModel.h"
 
 URsActiveEffectListViewViewModel* URsActiveEffectListViewViewModel::CreateActiveEffectListViewViewModel(UAbilitySystemComponent* ASC)
 {
 	URsActiveEffectListViewViewModel* ViewModel = NewObject<URsActiveEffectListViewViewModel>(ASC);
+	ViewModel->SetModel(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -16,18 +16,23 @@ URsActiveEffectListViewViewModel* URsActiveEffectListViewViewModel::CreateActive
 void URsActiveEffectListViewViewModel::Initialize()
 {
 	Super::Initialize();
-
-	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (CachedModel.IsValid())
-		{
+	
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	{
 		UE_MVVM_SET_PROPERTY_VALUE(Visibility, ESlateVisibility::SelfHitTestInvisible);
-		CachedModel.Get()->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
+		ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
 	}
 }
 
 void URsActiveEffectListViewViewModel::Deinitialize()
 {
 	Super::Deinitialize();
+	
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Visibility, ESlateVisibility::SelfHitTestInvisible);
+		ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
+	}
 }
 
 void URsActiveEffectListViewViewModel::OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)
@@ -37,7 +42,7 @@ void URsActiveEffectListViewViewModel::OnEffectAdded(UAbilitySystemComponent* AS
 		FGameplayTagContainer EffectTags;
 		EffectSpec.GetAllAssetTags(EffectTags);
 		// if same effect exists already
-		if (CachedModel.Get()->GetActiveEffectsWithAllTags(EffectTags).Num() > 1)
+		if (GetModel<UAbilitySystemComponent>()->GetActiveEffectsWithAllTags(EffectTags).Num() > 1)
 		{
 			// stack update for every existing viewmodels
 			for (URsActiveEffectViewModel* ActiveEffectViewModel : ActiveEffectViewModels)

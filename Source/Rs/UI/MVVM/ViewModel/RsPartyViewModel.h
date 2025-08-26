@@ -27,9 +27,6 @@ public:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-protected:
-	TWeakObjectPtr<URsPartyComponent> CachedModel;
-
 public:
 	UFUNCTION(FieldNotify, BlueprintPure)
 	ESlateVisibility GetPartyMemberVisibility_0() const;

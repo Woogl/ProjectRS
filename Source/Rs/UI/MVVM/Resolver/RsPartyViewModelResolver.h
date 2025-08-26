@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "View/MVVMViewModelContextResolver.h"
-#include "RsViewModelResolver.generated.h"
+#include "RsPartyViewModelResolver.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsViewModelPartyViewModelResolver : public UMVVMViewModelContextResolver
+class RS_API URsPartyViewModelResolver : public UMVVMViewModelContextResolver
 {
 	GENERATED_BODY()
 

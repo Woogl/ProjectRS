@@ -30,8 +30,6 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	TWeakObjectPtr<ARsCharacterBase> CachedModel;
-
 public:
 	UFUNCTION(BlueprintPure)
 	FText GetCharacterName() const;

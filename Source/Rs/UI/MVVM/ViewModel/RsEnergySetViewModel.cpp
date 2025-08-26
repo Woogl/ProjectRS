@@ -8,6 +8,7 @@
 URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(UAbilitySystemComponent* ASC)
 {
 	URsEnergySetViewModel* ViewModel = NewObject<URsEnergySetViewModel>(ASC);
+	ViewModel->SetModel(ASC);
 	ViewModel->Initialize();
 	return ViewModel;
 }
@@ -16,14 +17,13 @@ void URsEnergySetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	CachedModel = Cast<UAbilitySystemComponent>(GetOuter());
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		SetMaxEnergy(Model->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
-		SetCurrentEnergy(Model->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
+		SetMaxEnergy(ASC->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
+		SetCurrentEnergy(ASC->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
 		
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
 	}
 }
 
@@ -31,10 +31,10 @@ void URsEnergySetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* Model = CachedModel.Get())
+	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
 	{
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
-		Model->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
 	}
 }
 
