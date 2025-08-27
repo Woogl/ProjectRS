@@ -21,6 +21,14 @@
 				"UMG",
 				"DeveloperSettings"
 			]
+		},
+		{
+			"Name": "RsEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UnrealEd"
+			]
 		}
 	],
 	"Plugins": [
