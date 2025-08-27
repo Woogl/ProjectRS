@@ -26,8 +26,6 @@ public:
 protected:
 	virtual void Initialize() {};
 	virtual void Deinitialize() {};
-	
-	void SetModel(UObject* InModel);
 
 	UPROPERTY()
 	TWeakObjectPtr<UObject> Model;
@@ -42,8 +40,8 @@ T* URsViewModelBase::CreateViewModel(UObject* Model)
 		return nullptr;
 	}
 	T* ViewModel = NewObject<T>(Model);
-	ViewModel->SetModel(Model);
-	ViewModel->Initialize();
+	ViewModel->Model = Model;
+	static_cast<URsViewModelBase*>(ViewModel)->Initialize();
 	return ViewModel;
 }
 

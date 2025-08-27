@@ -7,10 +7,7 @@
 
 URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsStaggerSetViewModel* ViewModel = NewObject<URsStaggerSetViewModel>(ASC);
-	ViewModel->SetModel(ASC);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsStaggerSetViewModel>(ASC);
 }
 
 void URsStaggerSetViewModel::Initialize()

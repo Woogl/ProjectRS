@@ -7,10 +7,7 @@
 
 URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsEnergySetViewModel* ViewModel = NewObject<URsEnergySetViewModel>(ASC);
-	ViewModel->SetModel(ASC);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsEnergySetViewModel>(ASC);
 }
 
 void URsEnergySetViewModel::Initialize()

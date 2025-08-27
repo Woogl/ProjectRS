@@ -8,10 +8,7 @@
 
 URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(UAbilitySystemComponent* ASC)
 {
-	URsHealthSetViewModel* ViewModel = NewObject<URsHealthSetViewModel>(ASC);
-	ViewModel->SetModel(ASC);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsHealthSetViewModel>(ASC);
 }
 
 void URsHealthSetViewModel::Initialize()

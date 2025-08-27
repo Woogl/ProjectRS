@@ -40,19 +40,13 @@ void URsMVVMGameSubsystem::CreateSingletonViewModels_PlayerController(UCommonLoc
 		return;
 	}
 	
-	if (!GetSingletonViewModel<URsBattleViewModel>(PlayerController, false))
+	if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
 	{
-		if (URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>())
-		{
-			CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
-		}
+		CreateSingletonViewModel<URsBattleViewModel>(BattleSubsystem);
 	}
-	
-	if (!GetSingletonViewModel<URsPartyViewModel>(PlayerController, false))
+
+	if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
 	{
-		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
-		{
-			CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
-		}
+		CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
 	}
 }

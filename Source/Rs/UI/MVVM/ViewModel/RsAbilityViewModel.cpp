@@ -11,10 +11,7 @@
 
 URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAbility* Ability)
 {
-	URsAbilityViewModel* ViewModel = NewObject<URsAbilityViewModel>(Ability);
-	ViewModel->SetModel(Ability);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsAbilityViewModel>(Ability);
 }
 
 void URsAbilityViewModel::TryActivateAbility()

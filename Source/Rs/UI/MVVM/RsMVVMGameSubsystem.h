@@ -23,10 +23,10 @@ public:
 	
 	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
 	
-	template <class T>
+	template <typename  T>
 	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
 
-	template <class T>
+	template <typename T>
 	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 private:
@@ -66,7 +66,7 @@ T* URsMVVMGameSubsystem::CreateSingletonViewModel(UObject* Model, bool bWarnIfNo
 	return nullptr;
 }
 
-template <class T>
+template <typename T>
 T* URsMVVMGameSubsystem::GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::Value, "T must derive from URsViewModelBase");

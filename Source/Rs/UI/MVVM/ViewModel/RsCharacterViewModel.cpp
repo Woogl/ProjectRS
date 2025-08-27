@@ -14,10 +14,7 @@
 
 URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsCharacterBase* Character)
 {
-	URsCharacterViewModel* ViewModel = NewObject<URsCharacterViewModel>(Character);
-	ViewModel->SetModel(Character);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsCharacterViewModel>(Character);
 }
 
 bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)

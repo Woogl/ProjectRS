@@ -19,10 +19,7 @@
 
 URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* PlayerCharacter)
 {
-	URsPlayerCharacterViewModel* ViewModel = NewObject<URsPlayerCharacterViewModel>(PlayerCharacter);
-	ViewModel->SetModel(PlayerCharacter);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsPlayerCharacterViewModel>(PlayerCharacter);
 }
 
 void URsPlayerCharacterViewModel::Initialize()

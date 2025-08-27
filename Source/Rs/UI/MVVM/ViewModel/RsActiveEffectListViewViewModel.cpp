@@ -7,10 +7,7 @@
 
 URsActiveEffectListViewViewModel* URsActiveEffectListViewViewModel::CreateActiveEffectListViewViewModel(UAbilitySystemComponent* ASC)
 {
-	URsActiveEffectListViewViewModel* ViewModel = NewObject<URsActiveEffectListViewViewModel>(ASC);
-	ViewModel->SetModel(ASC);
-	ViewModel->Initialize();
-	return ViewModel;
+	return CreateViewModel<URsActiveEffectListViewViewModel>(ASC);
 }
 
 void URsActiveEffectListViewViewModel::Initialize()
