@@ -8,7 +8,6 @@
 #include "ViewModel/RsViewModelBase.h"
 #include "RsMVVMGameSubsystem.generated.h"
 
-class UCommonLocalPlayer;
 class URsViewModelBase;
 /**
  * 
@@ -21,8 +20,6 @@ class RS_API URsMVVMGameSubsystem : public UMVVMGameSubsystem
 public:
 	static URsMVVMGameSubsystem* Get(const UObject* WorldContext);
 	
-	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
-	
 	template <typename  T>
 	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
 
@@ -30,8 +27,6 @@ public:
 	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 private:
-	void CreateSingletonViewModels_PlayerController(UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
-	
 	FDelegateHandle PlayerAddedDelegateHandle;
 };
 

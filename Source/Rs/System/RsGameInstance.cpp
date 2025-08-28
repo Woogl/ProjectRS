@@ -3,10 +3,8 @@
 
 #include "RsGameInstance.h"
 
-#include "CommonLocalPlayer.h"
 #include "RsGameSetting.h"
 #include "Engine/AssetManager.h"
-#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 void URsGameInstance::Init()
 {
@@ -35,13 +33,6 @@ void URsGameInstance::Init()
 	const FSoftObjectPath AssetPath = AssetManager.GetPrimaryAssetPath(AssetId);
 	TSoftObjectPtr<URsGameSetting> GameSettingPtr(AssetPath);
 	RsGameSetting = GameSettingPtr.LoadSynchronous();
-}
-
-int32 URsGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId)
-{
-	GetSubsystem<URsMVVMGameSubsystem>()->NotifyPlayerAdded(Cast<UCommonLocalPlayer>(NewPlayer));
-	
-	return Super::AddLocalPlayer(NewPlayer, UserId);
 }
 
 const URsGameSetting* URsGameInstance::GetRsGameSetting() const
