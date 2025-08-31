@@ -26,6 +26,8 @@ public:
 	void SetupAbilityInputBindings();
 	void TearDownAbilityInputBindings();
 
+	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* OwningActor);
+
 private:
 	// Handles to the granted abilities.
 	UPROPERTY()

@@ -3,6 +3,7 @@
 
 #include "RsAbilitySystemComponent.h"
 
+#include "AbilitySystemGlobals.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -114,5 +115,14 @@ void URsAbilitySystemComponent::TearDownAbilityInputBindings()
 			}
 		}
 	}
+}
+
+URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(AActor* OwningActor)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor))
+	{
+		return Cast<URsAbilitySystemComponent>(ASC);
+	}
+	return nullptr;
 }
 
