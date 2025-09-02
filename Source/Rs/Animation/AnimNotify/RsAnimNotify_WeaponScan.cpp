@@ -73,8 +73,9 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	Collision.CollisionObjectTypes = CollisionObjectTypes;
 	Collision.CollisionChannels = CollisionChannels;
 	
+	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Shape, Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Params, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)

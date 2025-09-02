@@ -26,11 +26,11 @@ namespace RsTargetingGlobals
 	}
 }
 
-bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
-	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Shape, Collision);
-	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Filter);
-	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Sorter);
+	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, Params.Collision);
+	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
+	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Params.Sorter);
 	ResultActors = SortedActors;
 	bool bSuccess = ResultActors.Num() > 0;
 
@@ -39,14 +39,14 @@ bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, 
 		if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true)
 		{
 			FColor Color = bSuccess ? FColor::Green : FColor::Red;
-			DrawDebugShape(World, Transform, Shape, Collision, Color);
+			DrawDebugShape(World, Transform, Params.Shape, Params.Collision, Color);
 		}
 	}
 	
 	return bSuccess;
 }
 
-bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
 	UWorld* World = Owner->GetWorld();
 	if (!World)
@@ -59,7 +59,7 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	float DeltaDistance = FVector::Dist(StartLoc, EndLoc);
 
 	// Calculate substep num based on distance.
-	FVector ShapeExtent = Shape.MakeShape().GetExtent();
+	FVector ShapeExtent = Params.Shape.MakeShape().GetExtent();
 	int32 SubstepNum = FMath::CeilToInt(DeltaDistance / FMath::Min3(ShapeExtent.X, ShapeExtent.Y, ShapeExtent.Z));
 	SubstepNum = FMath::Min(SubstepNum, MaxSubsteps);
 	
@@ -70,22 +70,22 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 		float Alpha = static_cast<float>(i) / SubstepNum;
 		FTransform SubstepTransform;
 		SubstepTransform.Blend(Start, End, Alpha);
-		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Shape, Collision);
+		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Params.Shape, Params.Collision);
 		OverlappedSet.Append(SubstepOverlappedActors);
 		if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true)
 		{
-			DrawDebugShape(World, SubstepTransform, Shape, Collision, FColor::Red);
+			DrawDebugShape(World, SubstepTransform, Params.Shape, Params.Collision, FColor::Red);
 		}
 	}
 
-	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedSet.Array(), Owner, Filter);
-	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Sorter);
+	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedSet.Array(), Owner, Params.Filter);
+	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Params.Sorter);
 	ResultActors = SortedActors;
 	bool bSuccess = ResultActors.Num() > 0;
 
 	if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true && bSuccess)
 	{
-		DrawDebugShape(World, Start, Shape, Collision, FColor::Green);
+		DrawDebugShape(World, Start, Params.Shape, Params.Collision, FColor::Green);
 	}
 	
 	return bSuccess;

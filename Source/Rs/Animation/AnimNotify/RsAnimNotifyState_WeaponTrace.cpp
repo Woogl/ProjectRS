@@ -89,9 +89,10 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	{
 		return;
 	}
-	
+
+	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Shape, Collision, Filter, Sorter, ResultActors))
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Params, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)

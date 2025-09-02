@@ -131,8 +131,9 @@ bool URsLockOnComponent::TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetin
 	{
 		if (APawn* ControlledPawn = Controller->GetPawn())
 		{
+			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 			TArray<AActor*> OutActors;
-			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), Shape, Collision, Filter, Sorter, OutActors))
+			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), Params, OutActors))
 			{
 				return LockOn(OutActors[0]);
 			}

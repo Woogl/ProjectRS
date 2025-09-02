@@ -69,7 +69,8 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	CurrentSocketTransform.SetRotation(RotationOffset.Quaternion() * CurrentSocketTransform.GetRotation());
 
 	TArray<AActor*> ResultActors;
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, MaxSubsteps, Shape, Collision, Filter, Sorter, ResultActors))
+	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, MaxSubsteps, Params, ResultActors))
 	{
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)

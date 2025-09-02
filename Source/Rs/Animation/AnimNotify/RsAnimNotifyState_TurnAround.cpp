@@ -30,8 +30,9 @@ void URsAnimNotifyState_TurnAround::NotifyBegin(USkeletalMeshComponent* MeshComp
 	// Search new target if current lock on target is not available.
 	if (!TurnTarget.IsValid())
 	{
+		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutTargets))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
 		{
 			TurnTarget = OutTargets[0];
 		}

@@ -27,8 +27,9 @@ bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* Mesh
 	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
 	if (MeshComp->GetOwner())
 	{
+		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Shape, Collision, Filter, Sorter, OutActors))
+		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Params, OutActors))
 		{
 			Targets = OutActors;
 		}

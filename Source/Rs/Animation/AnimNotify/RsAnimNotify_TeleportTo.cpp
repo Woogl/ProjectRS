@@ -35,8 +35,9 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	// Search new target if current lock on target is not available.
 	if (!TeleportTarget)
 	{
+		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutTargets))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
 		{
 			TeleportTarget = OutTargets[0];
 		}

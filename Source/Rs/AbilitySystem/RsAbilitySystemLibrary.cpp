@@ -4,6 +4,7 @@
 #include "RsAbilitySystemLibrary.h"
 
 #include "AbilitySystemComponent.h"
+#include "RsAbilitySystemComponent.h"
 #include "Abilities/RsGameplayAbility.h"
 #include "Rs/RsLogChannels.h"
 
@@ -67,12 +68,7 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	}
 }
 
-FRsEffectCoefficient URsAbilitySystemLibrary::MakeEffectCoefficient_MagnitudeOnly(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude)
+URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
 {
-	return FRsEffectCoefficient(EffectClass, Magnitude);
-}
-
-FRsEffectCoefficient URsAbilitySystemLibrary::MakeEffectCoefficient_MagnitudeAndDuration(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude, float Duration)
-{
-	return FRsEffectCoefficient(EffectClass, Magnitude, Duration);
+	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
 }

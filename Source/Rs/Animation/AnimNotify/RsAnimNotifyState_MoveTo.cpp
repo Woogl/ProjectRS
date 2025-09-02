@@ -26,8 +26,9 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 		// Search new target if current lock on target is not available.
 		if (!Target.IsValid())
 		{
+			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 			TArray<AActor*> OutTargets;
-			if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Shape, Collision, Filter, Sorter, OutTargets))
+			if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
 			{
 				Target = OutTargets[0];
 			}

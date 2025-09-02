@@ -8,6 +8,7 @@
 #include "Effect/RsEffectCoefficient.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
+class URsAbilitySystemComponent;
 class UGameplayAbility;
 class URsGameplayAbility;
 class UAbilitySystemComponent;
@@ -43,9 +44,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
-	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
-	static FRsEffectCoefficient MakeEffectCoefficient_MagnitudeOnly(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude);
-	
-	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
-	static FRsEffectCoefficient MakeEffectCoefficient_MagnitudeAndDuration(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude, float Duration);
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
+	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
 };
