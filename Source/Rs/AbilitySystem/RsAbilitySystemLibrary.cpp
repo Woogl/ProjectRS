@@ -8,6 +8,11 @@
 #include "Abilities/RsGameplayAbility.h"
 #include "Rs/RsLogChannels.h"
 
+URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
+{
+	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
+}
+
 UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
 	if (AbilitySystemComponent == nullptr)
@@ -66,9 +71,4 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	{
 		FoundRsAbility->SetCooldownRemaining(NewRemaining);
 	}
-}
-
-URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
-{
-	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
 }
