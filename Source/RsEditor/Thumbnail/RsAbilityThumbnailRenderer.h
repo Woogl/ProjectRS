@@ -18,6 +18,4 @@ class RSEDITOR_API URsAbilityThumbnailRenderer : public UTextureThumbnailRendere
 public:
 	virtual void Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget*, FCanvas* Canvas, bool bAdditionalViewFamily) override;
 	virtual bool CanVisualizeAsset(UObject* Object) override;
-	
-	USlateBrushAsset* MakeBrushAsset(UObject* ResourceObject);
 };
