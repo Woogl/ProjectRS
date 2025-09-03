@@ -6,7 +6,6 @@
 #include "ThumbnailRendering/TextureThumbnailRenderer.h"
 #include "RsAbilityThumbnailRenderer.generated.h"
 
-class USlateBrushAsset;
 /**
  * 
  */
