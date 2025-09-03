@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Effect/RsGameplayEffectContainer.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
 class URsAbilitySystemComponent;

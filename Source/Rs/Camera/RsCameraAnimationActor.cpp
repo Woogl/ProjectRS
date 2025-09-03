@@ -56,8 +56,9 @@ void ARsCameraAnimationActor::ResetCameraAnimation()
 	
 	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
 	{
-		Modifier->StopCameraAnimation(CameraAnimationHandle, true);
-		PlayerController->SetViewTargetWithBlend(OriginalViewTarget, Params.EaseOutDuration);
+		Modifier->StopCameraAnimation(CameraAnimationHandle, false);
+		PlayerController->SetViewTarget(OriginalViewTarget);
+		PlayerController->UpdateCameraManager(0);
 	}
 	
 	SetLifeSpan(1.f);

@@ -11,7 +11,6 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
-#include "Rs/Targeting/RsTargetingTypes.h"
 
 void URsEffectDefinition_DamageBase::PostInitProperties()
 {
