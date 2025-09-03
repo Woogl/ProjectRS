@@ -20,6 +20,27 @@ URsGameplayAbility::URsGameplayAbility()
 	StatesContainer = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
 }
 
+ARsCharacterBase* URsGameplayAbility::GetAvatarCharacter() const
+{
+	if (AActor* AvatarActor = GetAvatarActorFromActorInfo())
+	{
+		return Cast<ARsCharacterBase>(AvatarActor);
+	}
+	return nullptr;
+}
+
+AController* URsGameplayAbility::GetController() const
+{
+	if (CurrentActorInfo)
+	{
+		if (AController* PController = CurrentActorInfo->PlayerController.Get())
+		{
+			return PController;
+		}
+	}
+	return nullptr;
+}
+
 void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	// Don't apply cooldown while recharging.
@@ -99,6 +120,11 @@ void URsGameplayAbility::SetCooldownRemaining(float NewRemaining)
 	}
 }
 
+int32 URsGameplayAbility::GetCurrentRechargeStacks() const
+{
+	return CurrentRechargeStacks;
+}
+
 void URsGameplayAbility::ModifyCurrentRechargeStacks(int32 Diff)
 {
 	CurrentRechargeStacks = FMath::Clamp(CurrentRechargeStacks + Diff, 0, MaxRechargeStacks);
@@ -160,9 +186,6 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
-
-	// Set the "Avatar Character" reference.
-	AvatarCharacter = Cast<ARsCharacterBase>(ActorInfo->AvatarActor);
 
 	// Set up Bindings for Enhanced Input.
 	SetupEnhancedInputBindings(ActorInfo, Spec);
@@ -358,12 +381,7 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 			}
 		}
 	}
-
-	// TODO: Refactor post ability event
-	if (EventData.EventTag.ToString().Contains(TEXT("Hit")))
-	{
-		StatesContainer->SetValue<bool>(FName("HasHitTarget"), true);
-	}
+	
 	K2_OnAbilityEvent(EventData);
 }
 

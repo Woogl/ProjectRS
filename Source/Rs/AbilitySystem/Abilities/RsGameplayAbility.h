@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputAction.h"
 #include "RsAbilityEventInfo.h"
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
+class UInputAction;
 class URsGenericContainer;
 class ARsCharacterBase;
 
@@ -47,11 +47,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount;
-
-	// Returns the "Avatar Character" associated with this Gameplay Ability.
-	// Will return null if the Avatar Actor does not derive from Character.
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	ARsCharacterBase* GetAvatarCharacter() const { return AvatarCharacter.Get(); }
+	ARsCharacterBase* GetAvatarCharacter() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual AController* GetController() const;
 
 	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	
@@ -66,7 +67,7 @@ public:
 	void SetCooldownRemaining(float NewRemaining);
 
 	UFUNCTION(BlueprintPure, Category = "Cooldowns")
-	int32 GetCurrentRechargeStacks() const { return CurrentRechargeStacks; }
+	int32 GetCurrentRechargeStacks() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void ModifyCurrentRechargeStacks(int32 Diff);
@@ -80,17 +81,7 @@ public:
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
-	// Contains state values. Useful for storing data between anim notifies.
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<URsGenericContainer> StatesContainer;
-
-	const TArray<FRsAbilityEventInfo>& GetAbilityEvents() const { return AbilityEvents; }
-	
 protected:
-	// Keep a pointer to "Avatar Character" so we don't have to cast to Character in instanced abilities owned by a Character derived class.
-	TWeakObjectPtr<ARsCharacterBase> AvatarCharacter = nullptr;
-	
-	// Think of this as "BeginPlay".
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -141,6 +132,10 @@ protected:
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimMontage> MontageToPlay;
+
+	// Contains state values. Useful for storing data between anim notifies.
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<URsGenericContainer> StatesContainer;
 	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;

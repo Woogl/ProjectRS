@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
-#include "Rs/System/RsGenericContainer.h"
 
 URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
 {
@@ -23,16 +22,6 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 		{
 			if (UGameplayAbility* CurrentAbility = OwnerASC->GetAnimatingAbility())
 			{
-				if (bHasHitTarget == true)
-				{
-					if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(CurrentAbility))
-					{
-						if (RsAbility->StatesContainer->GetValue<bool>(FName("HasHitTarget")) == false)
-						{
-							return;
-						}
-					}
-				}
 				if (bCancelCurrentAbility == true)
 				{
 					CurrentAbility->K2_CancelAbility();
