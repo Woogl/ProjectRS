@@ -13,7 +13,7 @@ void FRsEditorModule::StartupModule()
 
 void FRsEditorModule::ShutdownModule()
 {
-    
+	UThumbnailManager::Get().UnregisterCustomRenderer(URsGameplayAbility::StaticClass());
 }
 
 #undef LOCTEXT_NAMESPACE
