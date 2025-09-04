@@ -3,50 +3,42 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsViewModelBase.h"
+#include "RsAttributeSetViewModelBase.h"
 #include "RsStaggerSetViewModel.generated.h"
 
-class UAbilitySystemComponent;
+class URsStaggerSet;
 struct FOnAttributeChangeData;
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsStaggerSetViewModel : public URsViewModelBase
+class RS_API URsStaggerSetViewModel : public URsAttributeSetViewModelBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsStaggerSetViewModel* CreateStaggerSetViewModel(UAbilitySystemComponent* ASC);
+	static URsStaggerSetViewModel* CreateStaggerSetViewModel(URsStaggerSet* StaggerSet);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
 public:
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCurrentStagger() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetMaxStagger() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetStaggerDecay() const;
-	
-	void SetCurrentStagger(float NewCurrentStagger);
-	void SetMaxStagger(float NewMaxStagger);
-	void SetStaggerDecay(float NewStaggerDecay);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetStaggerPercent() const;
 	
 private:
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float CurrentStagger;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float MaxStagger;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float StaggerDecay;
-
 	void MaxStaggerChanged(const FOnAttributeChangeData& Data);
 	void CurrentStaggerChanged(const FOnAttributeChangeData& Data);
 	void StaggerRegenChanged(const FOnAttributeChangeData& Data);

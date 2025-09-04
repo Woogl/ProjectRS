@@ -5,7 +5,7 @@
 
 void URsViewModelBase::BeginDestroy()
 {
-	Super::BeginDestroy();
-
 	Deinitialize();
+	
+	Super::BeginDestroy();
 }

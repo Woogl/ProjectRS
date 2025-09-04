@@ -3,38 +3,40 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsViewModelBase.h"
+#include "RsAttributeSetViewModelBase.h"
 #include "RsHealthSetViewModel.generated.h"
 
-class UAbilitySystemComponent;
+class URsHealthSet;
 struct FOnAttributeChangeData;
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsHealthSetViewModel : public URsViewModelBase
+class RS_API URsHealthSetViewModel : public URsAttributeSetViewModelBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsHealthSetViewModel* CreateHealthSetViewModel(UAbilitySystemComponent* ASC);
+	static URsHealthSetViewModel* CreateHealthSetViewModel(URsHealthSet* HealthSet);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
 public:
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCurrentHealth() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetMaxHealth() const;
-	float GetHealthRegen() const;
-	float GetShield() const;
 	
-	void SetCurrentHealth(float NewCurrentHealth);
-	void SetMaxHealth(float NewMaxHealth);
-	void SetHealthRegen(float NewHealthRegen);
-	void SetShield(float NewShield);
+	UFUNCTION(FieldNotify, BlueprintPure)
+	float GetHealthRegen() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	float GetShield() const;
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetHealthPercent() const;
@@ -55,18 +57,6 @@ public:
 	FLinearColor GetColorByHealth() const;
 	
 private:
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float CurrentHealth;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float MaxHealth;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float HealthRegen;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float Shield;
-
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void CurrentHealthChanged(const FOnAttributeChangeData& Data);
 	void HealthRegenChanged(const FOnAttributeChangeData& Data);

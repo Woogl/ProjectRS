@@ -45,4 +45,25 @@ class RS_API URsAttributeSetBase : public UAttributeSet
 
 protected:
 	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
+
+public:
+	template <typename T>
+	static T* GetAttributeSet(UAbilitySystemComponent* ASC);
 };
+
+template <typename T>
+T* URsAttributeSetBase::GetAttributeSet(UAbilitySystemComponent* ASC)
+{
+	static_assert(TIsDerivedFrom<T, URsAttributeSetBase>::IsDerived, "T must derive from URsAttributeSetBase");
+	if (ASC)
+	{
+		for (UAttributeSet* AttributeSet : ASC->GetSpawnedAttributes())
+		{
+			if (T* Typed = Cast<T>(AttributeSet))
+			{
+				return Typed;
+			}
+		}
+	}
+	return nullptr;
+}

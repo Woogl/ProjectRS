@@ -3,50 +3,38 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsViewModelBase.h"
+#include "RsAttributeSetViewModelBase.h"
 #include "RsEnergySetViewModel.generated.h"
 
-class UAbilitySystemComponent;
+class URsEnergySet;
 struct FOnAttributeChangeData;
 /**
  * 
  */
 UCLASS()
-class RS_API URsEnergySetViewModel : public URsViewModelBase
+class RS_API URsEnergySetViewModel : public URsAttributeSetViewModelBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsEnergySetViewModel* CreateEnergySetViewModel(UAbilitySystemComponent* ASC);
+	static URsEnergySetViewModel* CreateEnergySetViewModel(URsEnergySet* EnergySet);
 
 protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
 public:
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCurrentEnergy() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetMaxEnergy() const;
-	float GetEnergyRegen() const;
-	
-	void SetCurrentEnergy(float NewCurrentEnergy);
-	void SetMaxEnergy(float NewMaxEnergy);
-	void SetEnergyRegen(float NewEnergyRegen);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetEnergyPercent() const;
 	
 private:
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float CurrentEnergy;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float MaxEnergy;
-
-	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
-	float EnergyRegen;
-
 	void MaxEnergyChanged(const FOnAttributeChangeData& Data);
 	void CurrentEnergyChanged(const FOnAttributeChangeData& Data);
-	void EnergyRegenChanged(const FOnAttributeChangeData& Data);
 };

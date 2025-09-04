@@ -10,6 +10,8 @@
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/Character/RsCharacterBase.h"
 
 URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsCharacterBase* Character)
@@ -19,7 +21,7 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 
 bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)
 {
-	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
@@ -33,12 +35,18 @@ void URsCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
-			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(ASC));
-			UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(ASC));
+			if (URsHealthSet* HealthSet = URsAttributeSetBase::GetAttributeSet<URsHealthSet>(ASC))
+			{
+				UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(HealthSet));
+			}
+			if (URsStaggerSet* StaggerSet = URsAttributeSetBase::GetAttributeSet<URsStaggerSet>(ASC))
+			{
+				UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
+			}
 			UE_MVVM_SET_PROPERTY_VALUE(ActiveEffectListViewViewModel, URsActiveEffectListViewViewModel::CreateActiveEffectListViewViewModel(ASC));
 		}
 	}
@@ -47,11 +55,12 @@ void URsCharacterViewModel::Initialize()
 void URsCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
+	
 }
 
 FText URsCharacterViewModel::GetCharacterName() const
 {
-	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
 		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 	}
@@ -60,7 +69,7 @@ FText URsCharacterViewModel::GetCharacterName() const
 
 UObject* URsCharacterViewModel::GetPortrait() const
 {
-	if (ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
 	{
 		return Character->Portrait;
 	}

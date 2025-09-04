@@ -5,21 +5,17 @@
 
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
-URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(UAbilitySystemComponent* ASC)
+URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(URsStaggerSet* StaggerSet)
 {
-	return CreateViewModel<URsStaggerSetViewModel>(ASC);
+	return CreateViewModel<URsStaggerSetViewModel>(StaggerSet);
 }
 
 void URsStaggerSetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (ASC.IsValid())
 	{
-		SetMaxStagger(ASC->GetNumericAttribute(URsStaggerSet::GetMaxStaggerAttribute()));
-		SetCurrentStagger(ASC->GetNumericAttribute(URsStaggerSet::GetCurrentStaggerAttribute()));
-		SetStaggerDecay(ASC->GetNumericAttribute(URsStaggerSet::GetStaggerDecayAttribute()));
-		
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).AddUObject(this, &ThisClass::StaggerRegenChanged);
@@ -30,7 +26,7 @@ void URsStaggerSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
@@ -40,45 +36,36 @@ void URsStaggerSetViewModel::Deinitialize()
 
 float URsStaggerSetViewModel::GetCurrentStagger() const
 {
-	return CurrentStagger;
+	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
+	{
+		return StaggerSet->GetCurrentStagger();
+	}
+	return 0.f;
 }
 
 float URsStaggerSetViewModel::GetMaxStagger() const
 {
-	return MaxStagger;
+	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
+	{
+		return StaggerSet->GetMaxStagger();
+	}
+	return 0.f;
 }
 
 float URsStaggerSetViewModel::GetStaggerDecay() const
 {
-	return StaggerDecay;
-}
-
-void URsStaggerSetViewModel::SetCurrentStagger(float NewCurrentStagger)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentStagger, NewCurrentStagger))
+	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaggerPercent);
+		return StaggerSet->GetStaggerDecay();
 	}
-}
-
-void URsStaggerSetViewModel::SetMaxStagger(float NewMaxStagger)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(MaxStagger, NewMaxStagger))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaggerPercent);
-	}
-}
-
-void URsStaggerSetViewModel::SetStaggerDecay(float NewStaggerDecay)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(StaggerDecay, NewStaggerDecay);
+	return 0.f;
 }
 
 float URsStaggerSetViewModel::GetStaggerPercent() const
 {
-	if (MaxStagger != 0)
+	if (GetMaxStagger() != 0)
 	{
-		return CurrentStagger / MaxStagger;
+		return GetCurrentStagger() / GetMaxStagger();
 	}
 	else
 	{
@@ -88,15 +75,17 @@ float URsStaggerSetViewModel::GetStaggerPercent() const
 
 void URsStaggerSetViewModel::MaxStaggerChanged(const FOnAttributeChangeData& Data)
 {
-	SetMaxStagger(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxStagger);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaggerPercent);
 }
 
 void URsStaggerSetViewModel::CurrentStaggerChanged(const FOnAttributeChangeData& Data)
 {
-	SetCurrentStagger(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentStagger);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaggerPercent);
 }
 
 void URsStaggerSetViewModel::StaggerRegenChanged(const FOnAttributeChangeData& Data)
 {
-	SetStaggerDecay(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaggerDecay);
 }

@@ -5,20 +5,17 @@
 
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 
-URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(UAbilitySystemComponent* ASC)
+URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(URsEnergySet* EnergySet)
 {
-	return CreateViewModel<URsEnergySetViewModel>(ASC);
+	return CreateViewModel<URsEnergySetViewModel>(EnergySet);
 }
 
 void URsEnergySetViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (ASC.IsValid())
 	{
-		SetMaxEnergy(ASC->GetNumericAttribute(URsEnergySet::GetMaxEnergyAttribute()));
-		SetCurrentEnergy(ASC->GetNumericAttribute(URsEnergySet::GetCurrentEnergyAttribute()));
-		
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
 	}
@@ -28,7 +25,7 @@ void URsEnergySetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
@@ -37,45 +34,27 @@ void URsEnergySetViewModel::Deinitialize()
 
 float URsEnergySetViewModel::GetCurrentEnergy() const
 {
-	return CurrentEnergy;
+	if (URsEnergySet* EnergySet = GetModel<URsEnergySet>())
+	{
+		return EnergySet->GetCurrentEnergy();
+	}
+	return 0.f;
 }
 
 float URsEnergySetViewModel::GetMaxEnergy() const
 {
-	return CurrentEnergy;
-}
-
-float URsEnergySetViewModel::GetEnergyRegen() const
-{
-	return EnergyRegen;
-}
-
-void URsEnergySetViewModel::SetCurrentEnergy(float NewCurrentEnergy)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentEnergy, NewCurrentEnergy))
+	if (URsEnergySet* EnergySet = GetModel<URsEnergySet>())
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
+		return EnergySet->GetMaxEnergy();
 	}
-}
-
-void URsEnergySetViewModel::SetMaxEnergy(float NewMaxEnergy)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(MaxEnergy, NewMaxEnergy))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
-	}
-}
-
-void URsEnergySetViewModel::SetEnergyRegen(float NewEnergyRegen)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(EnergyRegen, NewEnergyRegen);
+	return 0.f;
 }
 
 float URsEnergySetViewModel::GetEnergyPercent() const
 {
-	if (MaxEnergy != 0)
+	if (GetMaxEnergy() != 0)
 	{
-		return CurrentEnergy / MaxEnergy;
+		return GetCurrentEnergy() / GetMaxEnergy();
 	}
 	else
 	{
@@ -85,15 +64,12 @@ float URsEnergySetViewModel::GetEnergyPercent() const
 
 void URsEnergySetViewModel::MaxEnergyChanged(const FOnAttributeChangeData& Data)
 {
-	SetMaxEnergy(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxEnergy);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
 }
 
 void URsEnergySetViewModel::CurrentEnergyChanged(const FOnAttributeChangeData& Data)
 {
-	SetCurrentEnergy(Data.NewValue);
-}
-
-void URsEnergySetViewModel::EnergyRegenChanged(const FOnAttributeChangeData& Data)
-{
-	SetEnergyRegen(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentEnergy);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
 }

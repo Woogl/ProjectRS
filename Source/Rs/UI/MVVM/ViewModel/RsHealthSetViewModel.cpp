@@ -6,22 +6,17 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 
-URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(UAbilitySystemComponent* ASC)
+URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(URsHealthSet* HealthSet)
 {
-	return CreateViewModel<URsHealthSetViewModel>(ASC);
+	return CreateViewModel<URsHealthSetViewModel>(HealthSet);
 }
 
 void URsHealthSetViewModel::Initialize()
 {
 	Super::Initialize();
-	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+
+	if (ASC.IsValid())
 	{
-		SetMaxHealth(ASC->GetNumericAttribute(URsHealthSet::GetMaxHealthAttribute()));
-		SetCurrentHealth(ASC->GetNumericAttribute(URsHealthSet::GetCurrentHealthAttribute()));
-		SetHealthRegen(ASC->GetNumericAttribute(URsHealthSet::GetHealthRegenAttribute()));
-		SetShield(ASC->GetNumericAttribute(URsHealthSet::GetShieldAttribute()));
-		
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::CurrentHealthChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetHealthRegenAttribute()).AddUObject(this, &ThisClass::HealthRegenChanged);
@@ -32,8 +27,8 @@ void URsHealthSetViewModel::Initialize()
 void URsHealthSetViewModel::Deinitialize()
 {
 	Super::Deinitialize();
-	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+
+	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
@@ -44,63 +39,45 @@ void URsHealthSetViewModel::Deinitialize()
 
 float URsHealthSetViewModel::GetCurrentHealth() const
 {
-	return CurrentHealth;
+	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	{
+		return HealthSet->GetCurrentHealth();
+	}
+	return 0.f;
 }
 
 float URsHealthSetViewModel::GetMaxHealth() const
 {
-	return MaxHealth;
+	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	{
+		return HealthSet->GetMaxHealth();
+	}
+	return 0.f;
 }
 
 float URsHealthSetViewModel::GetHealthRegen() const
 {
-	return HealthRegen;
+	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	{
+		return HealthSet->GetHealthRegen();
+	}
+	return 0.f;
 }
 
 float URsHealthSetViewModel::GetShield() const
 {
-	return Shield;
-}
-
-void URsHealthSetViewModel::SetCurrentHealth(float NewCurrentHealth)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, NewCurrentHealth))
+	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealth);
+		return HealthSet->GetShield();
 	}
-}
-
-void URsHealthSetViewModel::SetMaxHealth(float NewMaxHealth)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, NewMaxHealth))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealthText);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
-	}
-}
-
-void URsHealthSetViewModel::SetHealthRegen(float NewHealthRegen)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(HealthRegen, NewHealthRegen);
-}
-
-void URsHealthSetViewModel::SetShield(float NewShield)
-{
-	if (UE_MVVM_SET_PROPERTY_VALUE(Shield, NewShield))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
-	}
+	return 0.f;
 }
 
 float URsHealthSetViewModel::GetHealthPercent() const
 {
-	if (MaxHealth != 0)
+	if (GetMaxHealth() != 0)
 	{
-		return CurrentHealth / MaxHealth;
+		return GetCurrentHealth() / GetMaxHealth();
 	}
 	else
 	{
@@ -110,9 +87,9 @@ float URsHealthSetViewModel::GetHealthPercent() const
 
 float URsHealthSetViewModel::GetShieldPercent() const
 {
-	if (MaxHealth != 0)
+	if (GetMaxHealth() != 0)
 	{
-		return Shield / MaxHealth;
+		return GetShield() / GetMaxHealth();
 	}
 	else
 	{
@@ -123,22 +100,18 @@ float URsHealthSetViewModel::GetShieldPercent() const
 FText URsHealthSetViewModel::GetCurrentHealthText() const
 {
 	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
-	return FText::AsNumber(CurrentHealth, &Format);
+	return FText::AsNumber(GetCurrentHealth(), &Format);
 }
 
 FText URsHealthSetViewModel::GetMaxHealthText() const
 {
 	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
-	return FText::AsNumber(MaxHealth, &Format);
+	return FText::AsNumber(GetMaxHealth(), &Format);
 }
 
 bool URsHealthSetViewModel::IsDead() const
 {
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
-	{
-		return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
-	}
-	return false;
+	return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
 }
 
 FLinearColor URsHealthSetViewModel::GetColorByHealth() const
@@ -152,20 +125,28 @@ FLinearColor URsHealthSetViewModel::GetColorByHealth() const
 
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
-	SetMaxHealth(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealth);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealthText);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 }
 
 void URsHealthSetViewModel::CurrentHealthChanged(const FOnAttributeChangeData& Data)
 {
-	SetCurrentHealth(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealth);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealth);
 }
 
 void URsHealthSetViewModel::HealthRegenChanged(const FOnAttributeChangeData& Data)
 {
-	SetHealthRegen(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthRegen);
 }
 
 void URsHealthSetViewModel::ShieldChanged(const FOnAttributeChangeData& Data)
 {
-	SetShield(Data.NewValue);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShield);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
 }
