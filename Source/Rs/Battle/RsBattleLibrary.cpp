@@ -120,7 +120,7 @@ void URsBattleLibrary::GetLinkSkillInfo(UObject* WorldContextObject, ARsCharacte
 	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
 	{
 		LinkSkillTarget = BattleSubsystem->GetLinkSkillTarget();
-		LinkSkillType = BattleSubsystem->GetLastLinkSkillType();
+		LinkSkillType = BattleSubsystem->GetLinkSkillType();
 		AvailableCount = BattleSubsystem->GetAvailableLinkSkillCount();
 	}
 }

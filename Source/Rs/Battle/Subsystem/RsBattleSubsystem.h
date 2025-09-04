@@ -11,6 +11,7 @@ class ARsCharacterBase;
 UENUM(BlueprintType)
 enum class ERsLinkSkillType : uint8
 {
+	None,
 	Parry,
 	Triple,
 };
@@ -38,18 +39,18 @@ public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnLinkSkillFinish, ERsLinkSkillType);
 	FOnLinkSkillFinish OnLinkSkillFinish;
 	
-	void SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType);
-	void DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType);
+	void SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType InLinkSkillType);
+	void DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLinkSkillType InLinkSkillType);
 	void FinishLinkSkill();
 	
 	bool IsLinkSkillReady() const;
 	ARsCharacterBase* GetLinkSkillTarget() const;
-	ERsLinkSkillType GetLastLinkSkillType() const;
+	ERsLinkSkillType GetLinkSkillType() const;
 	int32 GetAvailableLinkSkillCount() const;
 
 private:
 	TWeakObjectPtr<ARsCharacterBase> BossInBattle;	
 	TWeakObjectPtr<ARsCharacterBase> LinkSkillTarget;
 	int32 AvailableLinkSkillCount = 0;
-	ERsLinkSkillType LastLinkSkillType = ERsLinkSkillType::Parry;
+	ERsLinkSkillType LinkSkillType = ERsLinkSkillType::None;
 };

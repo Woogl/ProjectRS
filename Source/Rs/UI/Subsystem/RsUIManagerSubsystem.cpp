@@ -78,10 +78,6 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 		{
 			URsUILibrary::SetViewModelByClass(RsHUDInstance, PCViewModel);
 		}
-		if (URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Pawn))
-		{
-			URsUILibrary::SetViewModelByClass(RsHUDInstance, BattleViewModel);
-		}
 	}
 }
 
@@ -98,16 +94,19 @@ void URsUIManagerSubsystem::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLi
 		return;
 	}
 
-	TSoftClassPtr<URsActivatableWidget> TripleLinkSkillWidgetClass = GetDefault<URsUIManagerSettings>()->TripleLinkSkillWidgetClass;
-	if (!TripleLinkSkillWidgetClass.IsNull())
+	if (Type == ERsLinkSkillType::Triple)
 	{
-		URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Target);
-		URsPartyViewModel* PartyViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(Target);
-		URsUILibrary::PushSceneWidgetToLayerAsync(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, true, TripleLinkSkillWidgetClass, { BattleViewModel, PartyViewModel });
-	}
-	else
-	{
-		UE_LOG(RsLog, Error, TEXT("TripleLinkSkillWidgetClass is null! See RsUIManagerSetting!"));
+		TSoftClassPtr<URsActivatableWidget> TripleLinkSkillWidgetClass = GetDefault<URsUIManagerSettings>()->TripleLinkSkillWidgetClass;
+		if (!TripleLinkSkillWidgetClass.IsNull())
+		{
+			URsBattleViewModel* BattleViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(Target);
+			URsPartyViewModel* PartyViewModel = URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(Target);
+			URsUILibrary::PushSceneWidgetToLayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, TripleLinkSkillWidgetClass.LoadSynchronous(), { BattleViewModel, PartyViewModel });
+		}
+		else
+		{
+			UE_LOG(RsLog, Error, TEXT("TripleLinkSkillWidgetClass is null! See RsUIManagerSetting!"));
+		}
 	}
 }
 

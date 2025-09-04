@@ -54,14 +54,14 @@ void ARsCameraAnimationActor::ResetCameraAnimation()
 		return;
 	}
 	
-	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifierFromPlayerController(PlayerController))
+	if (UCameraAnimationCameraModifier* Modifier = UCameraAnimationCameraModifier::GetCameraAnimationCameraModifier(this, 0))
 	{
 		Modifier->StopCameraAnimation(CameraAnimationHandle, false);
 		PlayerController->SetViewTarget(OriginalViewTarget);
 		PlayerController->UpdateCameraManager(0);
 	}
 	
-	SetLifeSpan(1.f);
+	SetLifeSpan(Params.EaseOutDuration);
 }
 
 UCameraAnimationSequence* ARsCameraAnimationActor::GetSequence() const

@@ -33,39 +33,42 @@ void URsBattleSubsystem::SetBossInBattle(ARsCharacterBase* Boss)
 	OnBossFight.Broadcast(Boss);
 }
 
-void URsBattleSubsystem::SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType)
+void URsBattleSubsystem::SetLinkSkillTarget(ARsCharacterBase* Target, ERsLinkSkillType InLinkSkillType)
 {
-	int32 AlivePartyMemberCount = URsPartyLibrary::GetAlivePartyMemberCount(this);
-	if (!Target || AlivePartyMemberCount <= 1)
+	int32 AliveMemberCount = URsPartyLibrary::GetAlivePartyMemberCount(this);
+	if (!Target || AliveMemberCount <= 1)
 	{
 		FinishLinkSkill();
 		return;
 	}
 	
-	if (LinkSkillType == ERsLinkSkillType::Triple)
+	switch (InLinkSkillType)
 	{
-		AvailableLinkSkillCount = FMath::Min(3, AlivePartyMemberCount);
-	}
-	else if (LinkSkillType == ERsLinkSkillType::Parry)
-	{
-		if (AlivePartyMemberCount > 0)
-		{
-			AvailableLinkSkillCount = 1;
-		}
-		else
+	case ERsLinkSkillType::Triple:
+		AvailableLinkSkillCount = FMath::Min(3, AliveMemberCount);
+		break;
+
+	case ERsLinkSkillType::Parry:
+		// Can't override Parry over Triple
+		if (LinkSkillType == ERsLinkSkillType::Triple)
 		{
 			return;
 		}
+		AvailableLinkSkillCount = 1;
+		break;
+		
+	default:
+		return;
 	}
 	
 	LinkSkillTarget = Target;
-	LastLinkSkillType = LinkSkillType;
-	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LastLinkSkillType, AvailableLinkSkillCount);
+	LinkSkillType = InLinkSkillType;
+	OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LinkSkillType, AvailableLinkSkillCount);
 }
 
-void URsBattleSubsystem::DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLinkSkillType LinkSkillType)
+void URsBattleSubsystem::DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLinkSkillType InLinkSkillType)
 {
-	if (!LinkSkillTarget.IsValid() || LinkSkillTarget != Target || LastLinkSkillType != LinkSkillType)
+	if (!LinkSkillTarget.IsValid() || LinkSkillTarget != Target || LinkSkillType != InLinkSkillType)
 	{
 		return;
 	}
@@ -73,7 +76,7 @@ void URsBattleSubsystem::DecrementLinkSkillCount(ARsCharacterBase* Target, ERsLi
 	AvailableLinkSkillCount = FMath::Max(AvailableLinkSkillCount - 1, 0);
 	if (AvailableLinkSkillCount > 0)
 	{
-		OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LastLinkSkillType, AvailableLinkSkillCount);
+		OnLinkSkillReady.Broadcast(LinkSkillTarget.Get(), LinkSkillType, AvailableLinkSkillCount);
 	}
 	else
 	{
@@ -85,7 +88,8 @@ void URsBattleSubsystem::FinishLinkSkill()
 {
 	LinkSkillTarget.Reset();
 	AvailableLinkSkillCount = 0;
-	OnLinkSkillFinish.Broadcast(LastLinkSkillType);
+	LinkSkillType = ERsLinkSkillType::None;
+	OnLinkSkillFinish.Broadcast(LinkSkillType);
 }
 
 bool URsBattleSubsystem::IsLinkSkillReady() const
@@ -98,9 +102,9 @@ ARsCharacterBase* URsBattleSubsystem::GetLinkSkillTarget() const
 	return LinkSkillTarget.Get();
 }
 
-ERsLinkSkillType URsBattleSubsystem::GetLastLinkSkillType() const
+ERsLinkSkillType URsBattleSubsystem::GetLinkSkillType() const
 {
-	return LastLinkSkillType;
+	return LinkSkillType;
 }
 
 int32 URsBattleSubsystem::GetAvailableLinkSkillCount() const
