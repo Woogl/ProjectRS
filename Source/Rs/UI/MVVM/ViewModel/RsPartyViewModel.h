@@ -61,8 +61,6 @@ private:
 	
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
-
-	void SyncPartyMembers(int32 Index);
 	
 	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
 	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);

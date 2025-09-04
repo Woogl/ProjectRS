@@ -3,10 +3,8 @@
 
 #include "RsUIManagerSubsystem.h"
 
-#include "CommonActivatableWidget.h"
 #include "CommonLocalPlayer.h"
-#include "CommonUIExtensions.h"
-#include "PrimaryGameLayout.h"
+
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
@@ -16,7 +14,6 @@
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 #include "Rs/UI/MVVM/ViewModel/RsBattleViewModel.h"
 #include "Rs/UI/MVVM/ViewModel/RsPartyViewModel.h"
-#include "Rs/UI/MVVM/ViewModel/RsPlayerCharacterViewModel.h"
 #include "Rs/UI/Widget/RsHUDLayout.h"
 
 void URsUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
@@ -66,17 +63,11 @@ void URsUIManagerSubsystem::RegisterGameHUD(UCommonLocalPlayer* LocalPlayer, APa
 	// Create Game HUD instance first only.
 	if (!RsHUDInstance)
 	{
-		UClass* LoadedWidgetClass = GameHUDClass.LoadSynchronous();
-		UCommonActivatableWidget* HUDInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, LoadedWidgetClass);
-		RsHUDInstance = Cast<URsHUDLayout>(HUDInstance);
-	}
-
-	// Set the view model to Game HUD instance.
-	if (RsHUDInstance)
-	{
-		if (URsPlayerCharacterViewModel* PCViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Cast<ARsPlayerCharacter>(Pawn)))
+		UClass* LoadedHUD = GameHUDClass.LoadSynchronous();
+		URsActivatableWidget* NewHUD = URsUILibrary::PushSceneWidgetToLayer(LocalPlayer, RsGameplayTags::UI_LAYER_GAME, LoadedHUD, TArray<URsViewModelBase*>());
+		if (NewHUD)
 		{
-			URsUILibrary::SetViewModelByClass(RsHUDInstance, PCViewModel);
+			RsHUDInstance = Cast<URsHUDLayout>(NewHUD);
 		}
 	}
 }

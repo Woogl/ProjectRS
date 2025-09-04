@@ -56,6 +56,9 @@ void URsPartyViewModel::Initialize()
 	{
 		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePossessedPawnChanged);
 	}
+	
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMember);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMemberIndex);
 }
 
 void URsPartyViewModel::Deinitialize()
@@ -115,6 +118,13 @@ URsPlayerCharacterViewModel* URsPartyViewModel::GetCurrentPartyMember() const
 	else if (CurrentIndex == 2)
 	{
 		return PartyMemberViewModel_2;
+	}
+	else
+	{
+		if (ACharacter* Character = UGameplayStatics::GetPlayerCharacter(this, 0))
+		{
+			return URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(Cast<ARsPlayerCharacter>(Character));
+		}
 	}
 	return nullptr;
 }
@@ -195,7 +205,10 @@ void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPaw
 		int32 Index = PartyComponent->GetPartyMembers().Find(Cast<ARsPlayerCharacter>(NewPawn));
 		if (Index != INDEX_NONE)
 		{
-			SyncPartyMembers(Index);
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMember);
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMemberIndex);
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPrevPartyMember);
+			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetNextPartyMember);
 		}
 	}
 }
@@ -231,14 +244,6 @@ void URsPartyViewModel::HandleRemovePartyMember(ARsPlayerCharacter* PartyMember,
 	{
 		SetPartyMemberViewModel_2(nullptr);
 	}
-}
-
-void URsPartyViewModel::SyncPartyMembers(int32 Index)
-{
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMemberIndex);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentPartyMember);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPrevPartyMember);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetNextPartyMember);
 }
 
 void URsPartyViewModel::SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel)
