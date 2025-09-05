@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RsUILibrary.generated.h"
 
+class UCommonActivatableWidget;
 class URsViewModelBase;
 class URsActivatableWidget;
 class URsHUDLayout;
@@ -20,11 +21,14 @@ class RS_API URsUILibrary : public UBlueprintFunctionLibrary
 
 public:
 	/** UI Layer */
-	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
-	static URsActivatableWidget* PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", Meta = (GameplayTagFilter = "UI.Layer"))
+	static UCommonActivatableWidget* GetActiveLayerWidget(ULocalPlayer* LocalPlayer, FGameplayTag Layer);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", Meta = (GameplayTagFilter = "UI.Layer"))
+	static URsActivatableWidget* PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
 
-	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
-	static void PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag Layer, bool bSuspendInputUntilComplete, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels);
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", Meta = (GameplayTagFilter = "UI.Layer"))
+	static void PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels);
 	
 	/** MVVM */
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library")

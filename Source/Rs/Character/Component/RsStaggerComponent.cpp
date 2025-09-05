@@ -6,7 +6,7 @@
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
-#include "Rs/System/RsGameSetting.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 
 URsStaggerComponent::URsStaggerComponent()
 {
@@ -85,7 +85,7 @@ void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{
 			FGameplayEventData Payload;
-			Payload.EventTag = URsGameSetting::Get()->GroggyAbilityTag;
+			Payload.EventTag = URsGameSettingDataAsset::Get()->GroggyAbilityTag;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 		OnGroggyEvent.Broadcast(GetOwner());

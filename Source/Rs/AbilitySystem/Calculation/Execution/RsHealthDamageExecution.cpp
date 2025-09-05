@@ -7,7 +7,7 @@
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
-#include "Rs/System/RsGameSetting.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsHealthDamageStatics
@@ -57,7 +57,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get()->DeathAbilityTag))
 	{
 		// Don't show damage floater.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
@@ -114,13 +114,13 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Critical calc
 	FinalDamage *= ((bCriticalHit && !bIsDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
 	// Defense rate calc
-	float DefenseConstant = URsGameSetting::Get()->DefenseConstant;
+	float DefenseConstant = URsGameSettingDataAsset::Get()->DefenseConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
 	// Groggy has 160 % damage bonus
-	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSetting::Get()->GroggyAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSettingDataAsset::Get()->GroggyAbilityTag))
 	{
-		FinalDamage *= URsGameSetting::Get()->GroggyDamageMultiplier;
+		FinalDamage *= URsGameSettingDataAsset::Get()->GroggyDamageMultiplier;
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();

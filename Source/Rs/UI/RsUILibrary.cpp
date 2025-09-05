@@ -13,6 +13,18 @@
 #include "Widget/RsHUDLayout.h"
 #include "Widget/RsActivatableWidget.h"
 
+UCommonActivatableWidget* URsUILibrary::GetActiveLayerWidget(ULocalPlayer* LocalPlayer, FGameplayTag Layer)
+{
+	if (UPrimaryGameLayout* PrimaryGameLayout = UPrimaryGameLayout::GetPrimaryGameLayout(LocalPlayer))
+	{
+		if (UCommonActivatableWidgetContainerBase* LayerWidget = PrimaryGameLayout->GetLayerWidget(Layer))
+		{
+			return LayerWidget->GetActiveWidget();
+		}
+	}
+	return nullptr;
+}
+
 URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
 {
 	if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Layer, WidgetClass))

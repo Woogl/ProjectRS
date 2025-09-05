@@ -6,7 +6,7 @@
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
-#include "Rs/System/RsGameSetting.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct RsDotExplosionDamageStatics
@@ -40,7 +40,7 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSetting::Get()->DeathAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get()->DeathAbilityTag))
 	{
 		// Don't trigger gameplay cue.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
@@ -93,7 +93,7 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	float Defense = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
 
-	float DefenseConstant = URsGameSetting::Get()->DefenseConstant;
+	float DefenseConstant = URsGameSettingDataAsset::Get()->DefenseConstant;
 	const FName PropertyName = GET_MEMBER_NAME_CHECKED(URsEffectDefinition_DotBurstDamage, DamageMultiplierPerDotStacks);
 	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(PropertyName));
 	TotalDamage *= (DefenseConstant / (Defense + DefenseConstant));

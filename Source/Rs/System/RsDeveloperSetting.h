@@ -8,6 +8,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "RsDeveloperSetting.generated.h"
 
+class URsGameSettingDataAsset;
 class UGameplayEffect;
 class UAttributeSet;
 /**
@@ -23,6 +24,9 @@ public:
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
+	
+	UPROPERTY(EditDefaultsOnly, config, Category = "Data Asset")
+	TSoftObjectPtr<URsGameSettingDataAsset> GameSettingDataAsset;
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;

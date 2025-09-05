@@ -5,20 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
-#include "RsGameSetting.generated.h"
+#include "RsGameSettingDataAsset.generated.h"
 
 /**
- * Golbal game setting datas for Project RS
- * Datas in this class is always loaded in memory.
+ * Golbal game setting data asset for designer.
  */
 UCLASS()
-class RS_API URsGameSetting : public UPrimaryDataAsset
+class RS_API URsGameSettingDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-	static const URsGameSetting* Get();
+	static const URsGameSettingDataAsset* Get();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
