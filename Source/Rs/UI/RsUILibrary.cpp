@@ -80,15 +80,7 @@ bool URsUILibrary::SetViewModelByName(UUserWidget* Widget, FName ViewModelName, 
 	}
 	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
 	{
-		bool bSuccess = View->SetViewModel(ViewModelName, ViewModel);
-		if (bSuccess)
-		{
-			if (UBlueprintGeneratedClass* WBPClass = Cast<UBlueprintGeneratedClass>(Widget->GetClass()))
-			{
-				WBPClass->BindDynamicDelegates(WBPClass, Widget);
-			}
-		}
-		return bSuccess;
+		return View->SetViewModel(ViewModelName, ViewModel);
 	}
 	return false;
 }
@@ -101,15 +93,7 @@ bool URsUILibrary::SetViewModelByClass(UUserWidget* Widget, URsViewModelBase* Vi
 	}
 	if (UMVVMView* View = Cast<UMVVMView>(Widget->GetExtension<UMVVMView>()))
 	{
-		bool bSuccess = View->SetViewModelByClass(ViewModel);
-		if (bSuccess)
-		{
-			if (UBlueprintGeneratedClass* WBPClass = Cast<UBlueprintGeneratedClass>(Widget->GetClass()))
-			{
-				WBPClass->BindDynamicDelegates(WBPClass, Widget);
-			}
-		}
-		return bSuccess;
+		return View->SetViewModelByClass(ViewModel);
 	}
 	return false;
 }
