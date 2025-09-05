@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MVVM/ViewModel/RsViewModelBase.h"
 #include "Rs/RsLogChannels.h"
-#include "Subsystem/RsUIManagerSubsystem.h"
+#include "RsUIManagerSubsystem.h"
 #include "View/MVVMView.h"
 #include "Widget/RsHUDLayout.h"
 #include "Widget/RsActivatableWidget.h"
