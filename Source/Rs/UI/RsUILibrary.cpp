@@ -8,9 +8,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "MVVM/ViewModel/RsViewModelBase.h"
 #include "Rs/RsLogChannels.h"
-#include "RsUIManagerSubsystem.h"
+#include "HUD/RsHUD.h"
+#include "HUD/RsHUDLayout.h"
 #include "View/MVVMView.h"
-#include "Widget/RsHUDLayout.h"
 #include "Widget/RsActivatableWidget.h"
 
 UCommonActivatableWidget* URsUILibrary::GetActiveLayerWidget(ULocalPlayer* LocalPlayer, FGameplayTag Layer)
@@ -25,7 +25,7 @@ UCommonActivatableWidget* URsUILibrary::GetActiveLayerWidget(ULocalPlayer* Local
 	return nullptr;
 }
 
-URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
+URsActivatableWidget* URsUILibrary::PushWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels)
 {
 	if (UCommonActivatableWidget* SceneWidget = UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Layer, WidgetClass))
 	{
@@ -45,7 +45,7 @@ URsActivatableWidget* URsUILibrary::PushSceneWidgetToLayer(ULocalPlayer* LocalPl
 	return nullptr;
 }
 
-void URsUILibrary::PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels)
+void URsUILibrary::PushWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels)
 {
 	if (UPrimaryGameLayout* RootLayout = UPrimaryGameLayout::GetPrimaryGameLayout(LocalPlayer))
 	{
@@ -152,11 +152,25 @@ void URsUILibrary::HideGameHUD(UObject* WorldContextObject)
 
 URsHUDLayout* URsUILibrary::GetGameHUD(UObject* WorldContextObject)
 {
-	if (UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject))
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		return GameInstance->GetSubsystem<URsUIManagerSubsystem>()->GetGameHUD();
+		if (const ARsHUD* RsHUD = Cast<ARsHUD>(PlayerController->GetHUD()))
+		{
+			return RsHUD->GetGameHUD();
+		}
 	}
 	return nullptr;
+}
+
+void URsUILibrary::OpenMenuWidget(UObject* WorldContextObject, FGameplayTag WidgetTag)
+{
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		if (ARsHUD* RsHUD = Cast<ARsHUD>(PlayerController->GetHUD()))
+		{
+			RsHUD->OpenMenuWidget(WidgetTag);
+		}
+	}
 }
 
 void URsUILibrary::ShowCursor(UObject* WorldContextObject)
@@ -207,7 +221,7 @@ void URsUILibrary::HideCursor(UObject* WorldContextObject)
 	PlayerController->bShowMouseCursor = false;
 }
 
-void URsUILibrary::AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration)
+void URsUILibrary::PrintSystemMessage(UObject* WorldContextObject, FText Message, float Duration)
 {
 	if (URsHUDLayout* GameHUD = GetGameHUD(WorldContextObject))
 	{

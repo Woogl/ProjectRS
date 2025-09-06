@@ -25,7 +25,7 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, Category = "RS|Party")
+	UPROPERTY(VisibleAnywhere, Category = "RS|Party", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsPartyComponent> PartyComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
@@ -39,6 +39,9 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> ToggleCursorAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> OpenPauseMenuAction;
 	
 public:
 	ARsPlayerController();
@@ -71,5 +74,6 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	void HandleToggleCursor(const FInputActionValue& Value);
+	void HandleOpenPauseMenu(const FInputActionValue& Value);
 };
 

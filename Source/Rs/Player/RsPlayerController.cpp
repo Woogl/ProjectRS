@@ -13,6 +13,7 @@
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 #include "Rs/UI/RsUILibrary.h"
 
 ARsPlayerController::ARsPlayerController()
@@ -100,6 +101,7 @@ void ARsPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(ToggleCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleToggleCursor);
+		EnhancedInputComponent->BindAction(OpenPauseMenuAction, ETriggerEvent::Triggered, this, &ThisClass::HandleOpenPauseMenu);
 	}
 }
 
@@ -113,4 +115,10 @@ void ARsPlayerController::HandleToggleCursor(const FInputActionValue& Value)
 	{
 		URsUILibrary::ShowCursor(this);
 	}
+}
+
+void ARsPlayerController::HandleOpenPauseMenu(const FInputActionValue& Value)
+{
+	FGameplayTag PauseMenuTag = URsGameSettingDataAsset::Get()->PauseMenuTag;
+	URsUILibrary::OpenMenuWidget(this, PauseMenuTag);
 }

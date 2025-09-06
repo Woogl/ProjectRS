@@ -1,0 +1,54 @@
+﻿// Copyright 2025 Team BH.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "GameFramework/HUD.h"
+#include "RsHUD.generated.h"
+
+enum class ERsLinkSkillType : uint8;
+class ARsCharacterBase;
+class URsHUDLayout;
+class URsActivatableWidget;
+/**
+ * 
+ */
+UCLASS()
+class RS_API ARsHUD : public AHUD
+{
+	GENERATED_BODY()
+
+public:
+	ARsHUD();
+
+	//~AHUD interface
+	virtual void GetDebugActorList(TArray<AActor*>& InOutList) override;
+	//~End of AHUD interface
+
+	// Returns the LocalPlayer for this HUD's player.
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	ULocalPlayer* GetOwningLocalPlayer() const;
+
+	void OpenGameHUD();
+	void OpenMenuWidget(FGameplayTag WidgetTag, bool bSuspendInputUntilComplete = false);
+	
+	// TODO: PrintSystemMessage()
+
+	URsHUDLayout* GetGameHUD() const;
+
+protected:
+	virtual void BeginPlay() override;
+	void HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Type, int32 AvailableCount);
+	void HandleDeactivateMenuWidget();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSoftClassPtr<URsHUDLayout> GameHUD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (GameplayTagFilter = "UI.Menu", ForceInlineRow))
+	TMap<FGameplayTag, TSoftClassPtr<URsActivatableWidget>> MenuWidgets;
+
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<URsHUDLayout> GameHUDInstance;
+};

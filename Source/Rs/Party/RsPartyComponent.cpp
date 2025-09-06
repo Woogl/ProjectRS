@@ -27,7 +27,7 @@ ARsPlayerCharacter* URsPartyComponent::GetPartyMember(int32 MemberIndex) const
 	else
 	{
 		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::GetPartyMember: Member Not Found"));
-		URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Member Not Found")));
+		URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Member Not Found")));
 		return nullptr;
 	}
 }
@@ -113,7 +113,7 @@ void URsPartyComponent::AddPartyMember(ARsPlayerCharacter* NewMember)
 	else
 	{
 		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::AddPartyMember: Already added member"));
-		URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Already added member")));
+		URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Already added member")));
 	}
 }
 
@@ -128,7 +128,7 @@ void URsPartyComponent::RemovePartyMember(ARsPlayerCharacter* MemberToRemove)
 	else
 	{
 		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::RemovePartyMember: Can't found Member"));
-		URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Can't found Member")));
+		URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Can't found Member")));
 	}
 }
 
@@ -145,7 +145,7 @@ void URsPartyComponent::InsertPartyMemberAt(ARsPlayerCharacter* NewMember, int32
 	else
 	{
 		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::InsertPartyMember: Already added member"));
-		URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Already added member")));
+		URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Already added member")));
 	}
 }
 
@@ -160,7 +160,7 @@ void URsPartyComponent::RemovePartyMemberAt(int32 MemberIndex)
 	else
 	{
 		UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::RemovePartyMemberAt: Can't found Member"));
-		URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Can't found Member")));
+		URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Can't found Member")));
 	}
 }
 
@@ -188,7 +188,7 @@ bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, i
 			if (URsBattleLibrary::IsDead(NewPartyMember) == true)
 			{
 				UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::SwitchPartyMember: Can't switch to dead character"));
-				URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Can't switch to dead character")));
+				URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Can't switch to dead character")));
 				return false;
 			}
 			
@@ -198,7 +198,7 @@ bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, i
 		else
 		{
 			UE_LOG(RsLog, Warning, TEXT("RsPartyComponent::SwitchPartyMember: Can't switch to same character"));
-			URsUILibrary::AddSystemMessage(GetWorld(), FText::FromString(TEXT("Can't switch to same character")));
+			URsUILibrary::PrintSystemMessage(GetWorld(), FText::FromString(TEXT("Can't switch to same character")));
 		}
 	}
 	

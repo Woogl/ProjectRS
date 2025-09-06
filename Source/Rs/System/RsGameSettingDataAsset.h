@@ -40,6 +40,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Effect")
 	FGameplayTag SwitchMemberCooldownTag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | UI")
+	FGameplayTag PauseMenuTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | UI")
+	FGameplayTag TripleLinkSkillTag;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
 	float DefenseConstant = 190.f;
 

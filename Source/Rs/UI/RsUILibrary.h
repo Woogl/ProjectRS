@@ -25,10 +25,10 @@ public:
 	static UCommonActivatableWidget* GetActiveLayerWidget(ULocalPlayer* LocalPlayer, FGameplayTag Layer);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", Meta = (GameplayTagFilter = "UI.Layer"))
-	static URsActivatableWidget* PushSceneWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
+	static URsActivatableWidget* PushWidgetToLayer(ULocalPlayer* LocalPlayer, FGameplayTag Layer, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<URsActivatableWidget> WidgetClass, TArray<URsViewModelBase*> ViewModels);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", Meta = (GameplayTagFilter = "UI.Layer"))
-	static void PushSceneWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels);
+	static void PushWidgetToLayerAsync(ULocalPlayer* LocalPlayer, FGameplayTag Layer, bool bSuspendInputUntilComplete, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<URsActivatableWidget> SoftWidgetClass, TArray<URsViewModelBase*> ViewModels);
 	
 	/** MVVM */
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library")
@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static URsHUDLayout* GetGameHUD(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject", GameplayTagFilter = "UI.Menu"))
+	static void OpenMenuWidget(UObject* WorldContextObject, FGameplayTag WidgetTag);
+
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static void ShowCursor(UObject* WorldContextObject);
 
@@ -60,5 +63,5 @@ public:
 	static void HideCursor(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
-	static void AddSystemMessage(UObject* WorldContextObject, FText Message, float Duration = 2.f);
+	static void PrintSystemMessage(UObject* WorldContextObject, FText Message, float Duration = 2.f);
 };

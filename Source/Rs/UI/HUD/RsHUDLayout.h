@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsActivatableWidget.h"
+#include "Rs/UI/Widget/RsActivatableWidget.h"
 #include "RsHUDLayout.generated.h"
 
 /**
@@ -15,6 +15,7 @@ class RS_API URsHUDLayout : public URsActivatableWidget
 	GENERATED_BODY()
 
 public:
+	// TODO: Refactoring
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void AddSystemMessage(const FText& Message, float Duration);
 };
