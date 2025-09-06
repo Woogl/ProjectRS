@@ -130,6 +130,16 @@ void ARsHUD::BeginPlay()
 	}
 }
 
+void ARsHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (URsBattleSubsystem* BattleSubsystem = GetOwningLocalPlayer()->GetSubsystem<URsBattleSubsystem>())
+	{
+		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void ARsHUD::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Type, int32 AvailableCount)
 {
 	if (Type == ERsLinkSkillType::Triple)
