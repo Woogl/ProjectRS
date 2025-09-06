@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "CommonPlayerController.h"
+#include "GameplayTagContainer.h"
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
@@ -37,11 +38,11 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> ControllerMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> ToggleCursorAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true", Categories = "UI.Menu"))
+	TMap<FGameplayTag, UInputAction*> OpenMenuActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> OpenPauseMenuAction;
+	TObjectPtr<UInputAction> ToggleCursorAction;
 	
 public:
 	ARsPlayerController();
@@ -74,6 +75,6 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	void HandleToggleCursor(const FInputActionValue& Value);
-	void HandleOpenPauseMenu(const FInputActionValue& Value);
+	void HandleOpenMenu(const FInputActionValue& Value, FGameplayTag WidgetTag);
 };
 

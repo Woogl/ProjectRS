@@ -100,8 +100,11 @@ void ARsPlayerController::SetupInputComponent()
 	
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
+		for (const TTuple<FGameplayTag, UInputAction*>& OpenMenu : OpenMenuActions)
+		{
+			EnhancedInputComponent->BindAction(OpenMenu.Value, ETriggerEvent::Triggered, this, &ThisClass::HandleOpenMenu, OpenMenu.Key);
+		}
 		EnhancedInputComponent->BindAction(ToggleCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleToggleCursor);
-		EnhancedInputComponent->BindAction(OpenPauseMenuAction, ETriggerEvent::Triggered, this, &ThisClass::HandleOpenPauseMenu);
 	}
 }
 
@@ -117,8 +120,7 @@ void ARsPlayerController::HandleToggleCursor(const FInputActionValue& Value)
 	}
 }
 
-void ARsPlayerController::HandleOpenPauseMenu(const FInputActionValue& Value)
+void ARsPlayerController::HandleOpenMenu(const FInputActionValue& Value, FGameplayTag WidgetTag)
 {
-	FGameplayTag PauseMenuTag = URsGameSettingDataAsset::Get()->PauseMenuTag;
-	URsUILibrary::OpenMenuWidget(this, PauseMenuTag);
+	URsUILibrary::OpenMenuWidget(this, WidgetTag);
 }

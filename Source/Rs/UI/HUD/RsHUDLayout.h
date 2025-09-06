@@ -7,7 +7,7 @@
 #include "RsHUDLayout.generated.h"
 
 /**
- * 
+ * Game layer widget (WBP_GameHUD)
  */
 UCLASS(Abstract, BlueprintType, Blueprintable)
 class RS_API URsHUDLayout : public URsActivatableWidget

@@ -144,7 +144,7 @@ void ARsHUD::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Typ
 {
 	if (Type == ERsLinkSkillType::Triple)
 	{
-		FGameplayTag TripleLinkSkillTag = URsGameSettingDataAsset::Get()->TripleLinkSkillTag;
+		FGameplayTag TripleLinkSkillTag = URsGameSettingDataAsset::Get()->TripleLinkSkillUITag;
 		OpenMenuWidget(TripleLinkSkillTag, false);
 	}
 }

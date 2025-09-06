@@ -29,12 +29,11 @@ public:
 	// Returns the LocalPlayer for this HUD's player.
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	ULocalPlayer* GetOwningLocalPlayer() const;
-
+	
 	void OpenGameHUD();
 	void OpenMenuWidget(FGameplayTag WidgetTag, bool bSuspendInputUntilComplete = false);
+	// TODO: void OpenLoadingScreen();
 	
-	// TODO: PrintSystemMessage()
-
 	URsHUDLayout* GetGameHUD() const;
 
 protected:
@@ -47,7 +46,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<URsHUDLayout> GameHUD;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (GameplayTagFilter = "UI.Menu", ForceInlineRow))
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	// TSoftClassPtr<URsActivatableWidget> LoadingScreen;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (Categories = "UI.Menu", ForceInlineRow))
 	TMap<FGameplayTag, TSoftClassPtr<URsActivatableWidget>> MenuWidgets;
 
 private:
