@@ -5,7 +5,7 @@
 
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
-URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(URsStaggerSet* StaggerSet)
+URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(const URsStaggerSet* StaggerSet)
 {
 	return CreateViewModel<URsStaggerSetViewModel>(StaggerSet);
 }
@@ -63,13 +63,13 @@ float URsStaggerSetViewModel::GetStaggerDecay() const
 
 float URsStaggerSetViewModel::GetStaggerPercent() const
 {
-	if (GetMaxStagger() != 0)
+	if (GetMaxStagger() != 0.f)
 	{
 		return GetCurrentStagger() / GetMaxStagger();
 	}
 	else
 	{
-		return 0;
+		return 0.f;
 	}
 }
 

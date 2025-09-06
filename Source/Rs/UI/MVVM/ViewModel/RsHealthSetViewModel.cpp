@@ -6,7 +6,7 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 
-URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(URsHealthSet* HealthSet)
+URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(const URsHealthSet* HealthSet)
 {
 	return CreateViewModel<URsHealthSetViewModel>(HealthSet);
 }
@@ -75,25 +75,25 @@ float URsHealthSetViewModel::GetShield() const
 
 float URsHealthSetViewModel::GetHealthPercent() const
 {
-	if (GetMaxHealth() != 0)
+	if (GetMaxHealth() != 0.f)
 	{
 		return GetCurrentHealth() / GetMaxHealth();
 	}
 	else
 	{
-		return 0;
+		return 0.f;
 	}
 }
 
 float URsHealthSetViewModel::GetShieldPercent() const
 {
-	if (GetMaxHealth() != 0)
+	if (GetMaxHealth() != 0.f)
 	{
 		return GetShield() / GetMaxHealth();
 	}
 	else
 	{
-		return 0;
+		return 0.f;
 	}
 }
 
@@ -127,7 +127,15 @@ FLinearColor URsHealthSetViewModel::GetColorByHealthPercent() const
 {
 	static const FLinearColor DeadColor = FLinearColor::Red;
 	static const FLinearColor AliveColor = FLinearColor::Green;
-	return FMath::Lerp(DeadColor, AliveColor, GetHealthPercent());
+	
+	const float HealthPercent = GetHealthPercent();
+	if (HealthPercent <= 0.25f)
+	{
+		return DeadColor;
+	}
+	
+	const float Alpha = (HealthPercent - 0.25f) / 0.75f;
+	return FLinearColor::LerpUsingHSV(DeadColor, AliveColor, Alpha);
 }
 
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)

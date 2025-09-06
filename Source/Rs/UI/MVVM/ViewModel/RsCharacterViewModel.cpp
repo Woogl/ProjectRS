@@ -39,11 +39,11 @@ void URsCharacterViewModel::Initialize()
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
-			if (URsHealthSet* HealthSet = URsAttributeSetBase::GetAttributeSet<URsHealthSet>(ASC))
+			if (const URsHealthSet* HealthSet = ASC->GetSet<URsHealthSet>())
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(HealthSet));
 			}
-			if (URsStaggerSet* StaggerSet = URsAttributeSetBase::GetAttributeSet<URsStaggerSet>(ASC))
+			if (const URsStaggerSet* StaggerSet = ASC->GetSet<URsStaggerSet>())
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
 			}

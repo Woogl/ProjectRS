@@ -19,7 +19,7 @@ class RS_API URsHealthSetViewModel : public URsAttributeSetViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsHealthSetViewModel* CreateHealthSetViewModel(URsHealthSet* HealthSet);
+	static URsHealthSetViewModel* CreateHealthSetViewModel(const URsHealthSet* HealthSet);
 
 protected:
 	virtual void Initialize() override;

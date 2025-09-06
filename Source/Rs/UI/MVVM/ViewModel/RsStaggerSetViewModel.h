@@ -19,7 +19,7 @@ class RS_API URsStaggerSetViewModel : public URsAttributeSetViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsStaggerSetViewModel* CreateStaggerSetViewModel(URsStaggerSet* StaggerSet);
+	static URsStaggerSetViewModel* CreateStaggerSetViewModel(const URsStaggerSet* StaggerSet);
 
 protected:
 	virtual void Initialize() override;

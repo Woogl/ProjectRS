@@ -5,7 +5,7 @@
 
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 
-URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(URsEnergySet* EnergySet)
+URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(const URsEnergySet* EnergySet)
 {
 	return CreateViewModel<URsEnergySetViewModel>(EnergySet);
 }
@@ -52,13 +52,13 @@ float URsEnergySetViewModel::GetMaxEnergy() const
 
 float URsEnergySetViewModel::GetEnergyPercent() const
 {
-	if (GetMaxEnergy() != 0)
+	if (GetMaxEnergy() != 0.f)
 	{
 		return GetCurrentEnergy() / GetMaxEnergy();
 	}
 	else
 	{
-		return 0;
+		return 0.f;
 	}
 }
 

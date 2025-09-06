@@ -16,9 +16,12 @@ class RS_API URsViewModelBase : public UMVVMViewModelBase
 
 public:
 	virtual void BeginDestroy() override;
-	
+
 	template<typename T>
 	static T* CreateViewModel(UObject* Model);
+	
+	template<typename T>
+	static T* CreateViewModel(const UObject* Model);
 	
 	template<typename T>
 	T* GetModel() const;
@@ -43,6 +46,13 @@ T* URsViewModelBase::CreateViewModel(UObject* Model)
 	ViewModel->Model = Model;
 	static_cast<URsViewModelBase*>(ViewModel)->Initialize();
 	return ViewModel;
+}
+
+template <typename T>
+T* URsViewModelBase::CreateViewModel(const UObject* Model)
+{
+	UObject* MutableModel = const_cast<UObject*>(Model);
+	return CreateViewModel<T>(MutableModel);
 }
 
 template <typename T>

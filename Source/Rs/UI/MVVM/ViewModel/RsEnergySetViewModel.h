@@ -18,7 +18,7 @@ class RS_API URsEnergySetViewModel : public URsAttributeSetViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
-	static URsEnergySetViewModel* CreateEnergySetViewModel(URsEnergySet* EnergySet);
+	static URsEnergySetViewModel* CreateEnergySetViewModel(const URsEnergySet* EnergySet);
 
 protected:
 	virtual void Initialize() override;
