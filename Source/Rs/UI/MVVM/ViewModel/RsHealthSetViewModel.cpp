@@ -114,7 +114,7 @@ bool URsHealthSetViewModel::IsDead() const
 	return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
 }
 
-FLinearColor URsHealthSetViewModel::GetColorByHealth() const
+FLinearColor URsHealthSetViewModel::GetColorByDeathState() const
 {
 	if (IsDead() == true)
 	{
@@ -123,12 +123,20 @@ FLinearColor URsHealthSetViewModel::GetColorByHealth() const
 	return FLinearColor::White;
 }
 
+FLinearColor URsHealthSetViewModel::GetColorByHealthPercent() const
+{
+	static const FLinearColor DeadColor = FLinearColor::Red;
+	static const FLinearColor AliveColor = FLinearColor::Green;
+	return FMath::Lerp(DeadColor, AliveColor, GetHealthPercent());
+}
+
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealth);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxHealthText);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetShieldPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealthPercent);
 }
 
 void URsHealthSetViewModel::CurrentHealthChanged(const FOnAttributeChangeData& Data)
@@ -137,7 +145,8 @@ void URsHealthSetViewModel::CurrentHealthChanged(const FOnAttributeChangeData& D
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentHealthText);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(IsDead);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealth);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByDeathState);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetColorByHealthPercent);
 }
 
 void URsHealthSetViewModel::HealthRegenChanged(const FOnAttributeChangeData& Data)

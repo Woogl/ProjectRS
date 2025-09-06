@@ -54,7 +54,10 @@ public:
 	bool IsDead() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	FLinearColor GetColorByHealth() const;
+	FLinearColor GetColorByDeathState() const;
+
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FLinearColor GetColorByHealthPercent() const;
 	
 private:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
