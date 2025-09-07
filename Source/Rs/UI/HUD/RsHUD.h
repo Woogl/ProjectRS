@@ -35,7 +35,6 @@ public:
 	
 	void OpenGameHUD();
 	void OpenMenuWidget(FGameplayTag WidgetTag, bool bSuspendInputUntilComplete = false);
-	// TODO: void OpenLoadingScreen();
 	
 	URsHUDLayout* GetGameHUD() const;
 

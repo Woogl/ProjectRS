@@ -84,7 +84,6 @@ void ARsHUD::OpenGameHUD()
 			break;
 		case EAsyncWidgetLayerState::AfterPush:
 			GameHUDInstance = Cast<URsHUDLayout>(Widget);
-			//LoadingTask->Unregister();
 			break;
 		case EAsyncWidgetLayerState::Canceled:
 			break;
