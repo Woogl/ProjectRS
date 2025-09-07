@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "CommonPlayerController.h"
 #include "GameplayTagContainer.h"
+#include "LoadingProcessInterface.h"
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
@@ -22,7 +23,7 @@ class URsPartyComponent;
  * 
  */
 UCLASS()
-class RS_API ARsPlayerController : public ACommonPlayerController, public IAbilitySystemInterface
+class RS_API ARsPlayerController : public ACommonPlayerController, public IAbilitySystemInterface, public ILoadingProcessInterface
 {
 	GENERATED_BODY()
 
@@ -52,6 +53,9 @@ public:
 
 	// IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	// ILoadingProcessInterface
+	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
 
 	UPROPERTY()
 	TWeakObjectPtr<ARsCameraAnimationActor> CurrentAnimatonCameraActor;

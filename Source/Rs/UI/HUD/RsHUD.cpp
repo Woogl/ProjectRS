@@ -45,6 +45,16 @@ void ARsHUD::GetDebugActorList(TArray<AActor*>& InOutList)
 	}
 }
 
+bool ARsHUD::ShouldShowLoadingScreen(FString& OutReason) const
+{
+	if (!GameHUDInstance && !GameHUD.IsNull())
+	{
+		OutReason = GameHUD.GetAssetName();
+		return true;
+	}
+	return false;
+}
+
 ULocalPlayer* ARsHUD::GetOwningLocalPlayer() const
 {
 	if (APlayerController* PlayerController = GetOwningPlayerController())
@@ -74,6 +84,7 @@ void ARsHUD::OpenGameHUD()
 			break;
 		case EAsyncWidgetLayerState::AfterPush:
 			GameHUDInstance = Cast<URsHUDLayout>(Widget);
+			//LoadingTask->Unregister();
 			break;
 		case EAsyncWidgetLayerState::Canceled:
 			break;

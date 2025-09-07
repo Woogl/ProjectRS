@@ -9,11 +9,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/GameplayCameraComponent.h"
+#include "GameFramework/HUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 #include "Rs/UI/RsUILibrary.h"
 
 ARsPlayerController::ARsPlayerController()
@@ -72,6 +72,15 @@ void ARsPlayerController::OnUnPossess()
 UAbilitySystemComponent* ARsPlayerController::GetAbilitySystemComponent() const
 {
 	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
+}
+
+bool ARsPlayerController::ShouldShowLoadingScreen(FString& OutReason) const
+{
+	if (ILoadingProcessInterface* LoadingInterface = Cast<ILoadingProcessInterface>(GetHUD()))
+	{
+		return LoadingInterface->ShouldShowLoadingScreen(OutReason);
+	}
+	return false;
 }
 
 UGameplayCameraComponent* ARsPlayerController::GetGameplayCameraComponent() const

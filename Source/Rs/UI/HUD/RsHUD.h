@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "LoadingProcessInterface.h"
 #include "GameFramework/HUD.h"
 #include "RsHUD.generated.h"
 
@@ -15,16 +16,18 @@ class URsActivatableWidget;
  * 
  */
 UCLASS()
-class RS_API ARsHUD : public AHUD
+class RS_API ARsHUD : public AHUD, public ILoadingProcessInterface
 {
 	GENERATED_BODY()
 
 public:
 	ARsHUD();
 
-	//~AHUD interface
+	// AHUD interface
 	virtual void GetDebugActorList(TArray<AActor*>& InOutList) override;
-	//~End of AHUD interface
+
+	// ILoadingProcessInterface
+	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
 
 	// Returns the LocalPlayer for this HUD's player.
 	UFUNCTION(BlueprintCallable, Category = "HUD")
@@ -45,9 +48,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<URsHUDLayout> GameHUD;
-
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	// TSoftClassPtr<URsActivatableWidget> LoadingScreen;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (Categories = "UI.Menu", ForceInlineRow))
 	TMap<FGameplayTag, TSoftClassPtr<URsActivatableWidget>> MenuWidgets;
