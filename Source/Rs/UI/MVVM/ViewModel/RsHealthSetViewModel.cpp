@@ -127,14 +127,18 @@ FLinearColor URsHealthSetViewModel::GetColorByHealthPercent() const
 {
 	static const FLinearColor DeadColor = FLinearColor::Red;
 	static const FLinearColor AliveColor = FLinearColor::Green;
-	
-	const float HealthPercent = GetHealthPercent();
+
+	float HealthPercent = GetHealthPercent();
+	if (HealthPercent >= 0.75f)
+	{
+		return AliveColor;
+	}
 	if (HealthPercent <= 0.25f)
 	{
 		return DeadColor;
 	}
 	
-	const float Alpha = (HealthPercent - 0.25f) / 0.75f;
+	float Alpha = (HealthPercent - 0.25f) / (0.75f - 0.25f);
 	return FLinearColor::LerpUsingHSV(DeadColor, AliveColor, Alpha);
 }
 
