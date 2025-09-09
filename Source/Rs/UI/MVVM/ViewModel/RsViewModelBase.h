@@ -20,10 +20,10 @@ class RS_API URsViewModelBase : public UMVVMViewModelBase
 public:
 	virtual void BeginDestroy() override;
 
-	template<typename T>
+	template <typename T>
 	static T* CreateViewModel(UObject* Model);
 	
-	template<typename T>
+	template <typename T>
 	static T* CreateViewModel(const UObject* Model);
 
 	template <typename T>
@@ -32,7 +32,7 @@ public:
 	template <typename T>
 	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 	
-	template<typename T>
+	template <typename T>
 	T* GetModel() const;
 	
 protected:
