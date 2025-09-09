@@ -12,7 +12,7 @@
 
 URsPartyViewModel* URsPartyViewModel::GetPartyViewModel(UObject* WorldContext)
 {
-	return URsMVVMGameSubsystem::GetSingletonViewModel<URsPartyViewModel>(WorldContext);
+	return GetSingletonViewModel<URsPartyViewModel>(WorldContext);
 }
 
 bool URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)

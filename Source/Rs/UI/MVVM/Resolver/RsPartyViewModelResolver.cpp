@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 #include "Rs/UI/MVVM/ViewModel/RsPartyViewModel.h"
 
 UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
@@ -16,14 +15,8 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 	{
 		return nullptr;
 	}
-
-	URsMVVMGameSubsystem* Subsystem = URsMVVMGameSubsystem::Get(LocalPlayer);
-	if (!Subsystem)
-	{
-		return nullptr;
-	}
 	
-	if (URsPartyViewModel* ExistingViewModel = Subsystem->GetSingletonViewModel<URsPartyViewModel>(LocalPlayer))
+	if (URsPartyViewModel* ExistingViewModel = URsViewModelBase::GetSingletonViewModel<URsPartyViewModel>(LocalPlayer))
 	{
 		return ExistingViewModel;
 	}
@@ -34,5 +27,5 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 		return nullptr;
 	}
 	
-	return Subsystem->CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+	return URsViewModelBase::CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
 }

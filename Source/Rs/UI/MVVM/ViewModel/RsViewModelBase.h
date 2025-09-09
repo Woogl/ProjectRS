@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
+#include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 #include "RsViewModelBase.generated.h"
+
+class URsMVVMGameSubsystem;
 
 /**
  * 
@@ -22,6 +25,12 @@ public:
 	
 	template<typename T>
 	static T* CreateViewModel(const UObject* Model);
+
+	template <typename T>
+	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
+
+	template <typename T>
+	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 	
 	template<typename T>
 	T* GetModel() const;
@@ -53,6 +62,32 @@ T* URsViewModelBase::CreateViewModel(const UObject* Model)
 {
 	UObject* MutableModel = const_cast<UObject*>(Model);
 	return CreateViewModel<T>(MutableModel);
+}
+
+template <typename T>
+T* URsViewModelBase::CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound)
+{
+	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model))
+	{
+		if (T* ViewModel = CreateViewModel<T>(Model))
+		{
+			if (MVVMSubsystem->AddSingletonViewModel(ViewModel, bWarnIfNotFound))
+			{
+				return ViewModel;
+			}
+		}
+	}
+	return nullptr;
+}
+
+template <typename T>
+T* URsViewModelBase::GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound)
+{
+	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(WorldContext))
+	{
+		MVVMSubsystem->GetSingletonViewModel(T::StaticClass(), bWarnIfNotFound);
+	}
+	return nullptr;
 }
 
 template <typename T>

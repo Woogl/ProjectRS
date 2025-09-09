@@ -9,7 +9,7 @@
 
 URsBattleViewModel* URsBattleViewModel::GetBattleViewModel(UObject* WorldContext)
 {
-	return URsMVVMGameSubsystem::GetSingletonViewModel<URsBattleViewModel>(WorldContext);
+	return GetSingletonViewModel<URsBattleViewModel>(WorldContext);
 }
 
 void URsBattleViewModel::Initialize()
