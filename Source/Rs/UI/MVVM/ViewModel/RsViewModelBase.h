@@ -67,14 +67,12 @@ T* URsViewModelBase::CreateViewModel(const UObject* Model)
 template <typename T>
 T* URsViewModelBase::CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound)
 {
-	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model))
+	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model->GetWorld()))
 	{
 		if (T* ViewModel = CreateViewModel<T>(Model))
 		{
-			if (MVVMSubsystem->AddSingletonViewModel(ViewModel, bWarnIfNotFound))
-			{
-				return ViewModel;
-			}
+			MVVMSubsystem->AddSingletonViewModel(ViewModel, bWarnIfNotFound);
+			return ViewModel;
 		}
 	}
 	return nullptr;
