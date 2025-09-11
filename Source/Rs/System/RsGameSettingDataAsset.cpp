@@ -7,5 +7,5 @@
 
 const URsGameSettingDataAsset* URsGameSettingDataAsset::Get()
 {
-	return URsDeveloperSetting::Get()->GameSettingDataAsset.LoadSynchronous();
+	return URsDeveloperSetting::Get().GameSettingDataAsset.LoadSynchronous();
 }

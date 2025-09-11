@@ -17,7 +17,7 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 	Super::PostInitProperties();
 
 	// Cache a convenient pointer to the developer setting.
-	DeveloperSetting = URsDeveloperSetting::Get();
+	DeveloperSetting = &URsDeveloperSetting::Get();
 }
 
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const

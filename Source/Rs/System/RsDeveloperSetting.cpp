@@ -3,9 +3,9 @@
 
 #include "RsDeveloperSetting.h"
 
-const URsDeveloperSetting* URsDeveloperSetting::Get()
+const URsDeveloperSetting& URsDeveloperSetting::Get()
 {
-	return GetDefault<URsDeveloperSetting>();
+	return *GetDefault<URsDeveloperSetting>();
 }
 
 FName URsDeveloperSetting::GetCategoryName() const

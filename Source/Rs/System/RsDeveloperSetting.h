@@ -20,7 +20,7 @@ class URsDeveloperSetting : public UDeveloperSettings
 	GENERATED_BODY()
 	
 public:
-	static const URsDeveloperSetting* Get();
+	static const URsDeveloperSetting& Get();
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
@@ -28,6 +28,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, config, Category = "Data Asset")
 	TSoftObjectPtr<URsGameSettingDataAsset> GameSettingDataAsset;
 
+	// TODO: Move To RsBattleSettings
 	UPROPERTY(EditDefaultsOnly, config, Category = "Effect | Magnitude", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> CoefficientTags;
 

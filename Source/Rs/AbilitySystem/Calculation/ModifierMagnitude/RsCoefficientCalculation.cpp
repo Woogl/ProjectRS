@@ -11,7 +11,7 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 {
 	// Capture every attribute of source and target
 	// NOTE: Attributes to be captured must exist in the source and target!
-	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get()->CoefficientTags)
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get().CoefficientTags)
 	{
 		if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))
 		{
@@ -61,7 +61,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	float FinalMagnitude = 0.f;
 	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
 	{
-		if (URsDeveloperSetting::Get()->CoefficientTags.Contains(SetByCaller.Key))
+		if (URsDeveloperSetting::Get().CoefficientTags.Contains(SetByCaller.Key))
 		{
 			float Coefficient = SetByCaller.Value;
 			if (FMath::IsNearlyZero(Coefficient) == false)
