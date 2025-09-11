@@ -32,6 +32,9 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 	UPROPERTY(EditDefaultsOnly)
 	ERsEffectTarget Target = ERsEffectTarget::Target;
 
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat", ForceInlineRow))
+	TMap<FGameplayTag, float> Coefficients;
+
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (RowType = ""))
 	// FDataTableRowHandle DataTableRow;
 	

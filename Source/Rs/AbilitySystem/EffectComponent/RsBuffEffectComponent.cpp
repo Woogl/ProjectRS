@@ -5,6 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "Rs/Battle/RsBattleSettings.h"
 
 void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
@@ -39,6 +41,8 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 
 	if (AppliedToASC)
 	{
+		FRsEffectCoefficient EffectCoefficient(ConditionalEffect.EffectClass, Coefficients);
+		FGameplayEffectSpecHandle BuffSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(AppliedToASC, EffectCoefficient, AppliedToASC->MakeEffectContext());
 		AppliedToASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), PredictionKey);
 	}
 }

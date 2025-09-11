@@ -9,7 +9,6 @@
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
 void URsEffectDefinition_DamageBase::PostInitProperties()
@@ -61,7 +60,7 @@ FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectCon
 void URsEffectDefinition_DamageBase::ApplyInstantDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff)
 {
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
-	FGameplayEffectSpecHandle DamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
+	FGameplayEffectSpecHandle DamageSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DamageSpec.IsValid())
 	{
 		SET_SETBYCALLER_PROPERTY(DamageSpec, InvinciblePierce);
@@ -73,7 +72,7 @@ void URsEffectDefinition_DamageBase::ApplyInstantDamage(UAbilitySystemComponent*
 void URsEffectDefinition_DamageBase::ApplyDotDamage(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& RsCoeff, float Duration, float Period)
 {
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
-	FGameplayEffectSpecHandle DotDamageSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
+	FGameplayEffectSpecHandle DotDamageSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
 	{
 		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
@@ -156,7 +155,7 @@ void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, U
 {
 	// Apply buff effect
 	FRsEffectCoefficient EffectCoefficient(BuffClass, Coefficients);
-	FGameplayEffectSpecHandle BuffSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
+	FGameplayEffectSpecHandle BuffSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
 	if (BuffSpec.IsValid())
 	{
 		BuffSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
@@ -260,7 +259,7 @@ void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC,
 {
 	// Apply custom effect
 	FRsEffectCoefficient CustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectSpecHandle CustomSpec = URsBattleLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, SourceASC->MakeEffectContext());
+	FGameplayEffectSpecHandle CustomSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, SourceASC->MakeEffectContext());
 	if (CustomSpec.IsValid())
 	{
 		SourceASC->ApplyGameplayEffectSpecToTarget(*CustomSpec.Data, TargetASC);

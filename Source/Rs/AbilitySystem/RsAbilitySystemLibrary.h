@@ -31,6 +31,8 @@ class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 public:
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
+
+	/** Gameplay Ability */
 	
 	// Find the first ability that matches tags. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
@@ -45,4 +47,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
+
+	/** Gameplay Effect */
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
+	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
+	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient);
+
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
+	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(const AActor* Source, const AActor* Target, const FGameplayEffectSpecHandle& EffectHandle);
+	
 };
