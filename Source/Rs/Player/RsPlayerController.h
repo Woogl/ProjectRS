@@ -43,7 +43,10 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	TMap<FGameplayTag, UInputAction*> OpenMenuActions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> ToggleCursorAction;
+	TObjectPtr<UInputAction> ShowCursorAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ResetCursorAction;
 	
 public:
 	ARsPlayerController();
@@ -71,14 +74,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	URsLockOnComponent* GetLockOnComponent() const;
-
-	UFUNCTION(BlueprintPure, Category="RS", meta=(WorldContext="WorldContextObject", UnsafeDuringActorConstruction="true"))
-	static ARsPlayerController* GetRsPlayerController(const UObject* WorldContextObject);
 	
 protected:
 	virtual void SetupInputComponent() override;
 	
-	void HandleToggleCursor(const FInputActionValue& Value);
+	void HandleShowCursor(const FInputActionValue& Value);
+	void HandleResetCursor(const FInputActionValue& Value);
 	void HandleOpenMenu(const FInputActionValue& Value, FGameplayTag WidgetTag);
 };
 

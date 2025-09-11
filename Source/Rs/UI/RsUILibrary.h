@@ -57,10 +57,10 @@ public:
 	static void OpenMenuWidget(UObject* WorldContextObject, FGameplayTag WidgetTag);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
-	static void ShowCursor(UObject* WorldContextObject);
+	static void ShowMouseCursor(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
-	static void HideCursor(UObject* WorldContextObject);
+	static void ResetMouseCursor(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "RS UI Library", meta = (WorldContext = "WorldContextObject"))
 	static void PrintSystemMessage(UObject* WorldContextObject, FText Message, float Duration = 2.f);

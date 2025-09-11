@@ -93,11 +93,6 @@ URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
 	return LockOnComponent;
 }
 
-ARsPlayerController* ARsPlayerController::GetRsPlayerController(const UObject* WorldContextObject)
-{
-	return Cast<ARsPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
-}
-
 void ARsPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -113,20 +108,19 @@ void ARsPlayerController::SetupInputComponent()
 		{
 			EnhancedInputComponent->BindAction(OpenMenu.Value, ETriggerEvent::Triggered, this, &ThisClass::HandleOpenMenu, OpenMenu.Key);
 		}
-		EnhancedInputComponent->BindAction(ToggleCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleToggleCursor);
+		EnhancedInputComponent->BindAction(ShowCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleShowCursor);
+		EnhancedInputComponent->BindAction(ResetCursorAction, ETriggerEvent::Triggered, this, &ThisClass::HandleResetCursor);
 	}
 }
 
-void ARsPlayerController::HandleToggleCursor(const FInputActionValue& Value)
+void ARsPlayerController::HandleShowCursor(const FInputActionValue& Value)
 {
-	if (bShowMouseCursor)
-	{
-		URsUILibrary::HideCursor(this);
-	}
-	else
-	{
-		URsUILibrary::ShowCursor(this);
-	}
+	URsUILibrary::ShowMouseCursor(this);
+}
+
+void ARsPlayerController::HandleResetCursor(const FInputActionValue& Value)
+{
+	URsUILibrary::ResetMouseCursor(this);
 }
 
 void ARsPlayerController::HandleOpenMenu(const FInputActionValue& Value, FGameplayTag WidgetTag)
