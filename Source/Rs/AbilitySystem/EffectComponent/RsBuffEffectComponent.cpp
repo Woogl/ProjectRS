@@ -16,19 +16,6 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 		return;
 	}
 
-	const float GELevel = GESpec.GetLevel();
-	const FGameplayEffectContextHandle& GEContextHandle = GESpec.GetEffectContext();
-
-	FConditionalGameplayEffect ConditionalEffect;
-	ConditionalEffect.EffectClass = URsBattleSettings::Get().BuffEffects.FindRef(Stat);
-	
-	/** Child effect that need to be applied to the target if parent effect is successful */
-	FGameplayEffectSpecHandle SpecHandle;
-	if (ConditionalEffect.CanApply(GESpec.CapturedSourceTags.GetActorTags(), GELevel))
-	{
-		SpecHandle = ConditionalEffect.CreateSpec(GEContextHandle, GELevel);
-	}
-
 	UAbilitySystemComponent* AppliedToASC = nullptr;
 	if (Target == ERsEffectTarget::Source)
 	{
@@ -41,8 +28,9 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 
 	if (AppliedToASC)
 	{
-		FRsEffectCoefficient EffectCoefficient(ConditionalEffect.EffectClass, Coefficients);
+		TSubclassOf<UGameplayEffect> BuffEffect = URsBattleSettings::Get().BuffEffects.FindRef(Stat);
+		FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
 		FGameplayEffectSpecHandle BuffSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(AppliedToASC, EffectCoefficient, AppliedToASC->MakeEffectContext());
-		AppliedToASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get(), PredictionKey);
+		AppliedToASC->ApplyGameplayEffectSpecToSelf(*BuffSpec.Data.Get(), PredictionKey);
 	}
 }
