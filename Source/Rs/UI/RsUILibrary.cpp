@@ -10,7 +10,6 @@
 #include "Rs/RsLogChannels.h"
 #include "HUD/RsHUD.h"
 #include "HUD/RsHUDLayout.h"
-#include "Input/RsUIActionRouter.h"
 #include "View/MVVMView.h"
 #include "Widget/RsActivatableWidget.h"
 
@@ -180,15 +179,13 @@ void URsUILibrary::ShowMouseCursor(UObject* WorldContextObject)
 	{
 		if (APlayerController* PlayerController = World->GetFirstPlayerController())
 		{
-			if (URsUIActionRouter* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<URsUIActionRouter>())
+			if (UCommonUIActionRouterBase* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<UCommonUIActionRouterBase>())
 			{
-				//UIActionRouter->bDesiredCursorVisibility = true;
-				FUIInputConfig Config(ECommonInputMode::All, EMouseCaptureMode::CaptureDuringMouseDown, false);
+				FUIInputConfig Config(ECommonInputMode::All, EMouseCaptureMode::NoCapture, false);
 				Config.bIgnoreMoveInput = true;
 				Config.bIgnoreLookInput = true;
 				UIActionRouter->SetActiveUIInputConfig(Config);
 			}
-			//PlayerController->SetShowMouseCursor(true);
 		}
 	}
 }
@@ -199,15 +196,13 @@ void URsUILibrary::ResetMouseCursor(UObject* WorldContextObject)
 	{
 		if (APlayerController* PlayerController = World->GetFirstPlayerController())
 		{
-			if (URsUIActionRouter* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<URsUIActionRouter>())
+			if (UCommonUIActionRouterBase* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<UCommonUIActionRouterBase>())
 			{
-				//UIActionRouter->bDesiredCursorVisibility = false;
-				FUIInputConfig Config(ECommonInputMode::All, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, true);
+				FUIInputConfig Config(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, true);
 				Config.bIgnoreMoveInput = false;
 				Config.bIgnoreLookInput = false;
 				UIActionRouter->SetActiveUIInputConfig(Config);
 			}
-			//PlayerController->SetShowMouseCursor(false);
 		}
 	}
 }

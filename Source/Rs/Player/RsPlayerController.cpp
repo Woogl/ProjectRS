@@ -10,7 +10,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/HUD.h"
-#include "Kismet/GameplayStatics.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -31,9 +30,7 @@ ARsPlayerController::ARsPlayerController()
 void ARsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FInputModeGameOnly InputMode;
-	SetInputMode(InputMode);
+	
 }
 
 URsPartyComponent* ARsPlayerController::GetPartyComponent() const
