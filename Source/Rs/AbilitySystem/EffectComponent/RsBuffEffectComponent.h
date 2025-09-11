@@ -3,12 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ActiveGameplayEffectHandle.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
 #include "RsBuffEffectComponent.generated.h"
-
-struct FGameplayEffectRemovalInfo;
 
 UENUM()
 enum class ERsEffectTarget : uint8
