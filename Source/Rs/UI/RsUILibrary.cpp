@@ -4,12 +4,12 @@
 #include "RsUILibrary.h"
 
 #include "PrimaryGameLayout.h"
-#include "Input/CommonUIActionRouterBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "MVVM/ViewModel/RsViewModelBase.h"
 #include "Rs/RsLogChannels.h"
 #include "HUD/RsHUD.h"
 #include "HUD/RsHUDLayout.h"
+#include "Input/RsUIActionRouter.h"
 #include "View/MVVMView.h"
 #include "Widget/RsActivatableWidget.h"
 
@@ -179,7 +179,7 @@ void URsUILibrary::ShowMouseCursor(UObject* WorldContextObject)
 	{
 		if (APlayerController* PlayerController = World->GetFirstPlayerController())
 		{
-			if (UCommonUIActionRouterBase* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<UCommonUIActionRouterBase>())
+			if (URsUIActionRouter* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<URsUIActionRouter>())
 			{
 				FUIInputConfig Config(ECommonInputMode::All, EMouseCaptureMode::NoCapture, false);
 				Config.bIgnoreMoveInput = true;
@@ -196,12 +196,9 @@ void URsUILibrary::ResetMouseCursor(UObject* WorldContextObject)
 	{
 		if (APlayerController* PlayerController = World->GetFirstPlayerController())
 		{
-			if (UCommonUIActionRouterBase* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<UCommonUIActionRouterBase>())
+			if (URsUIActionRouter* UIActionRouter = PlayerController->GetLocalPlayer()->GetSubsystem<URsUIActionRouter>())
 			{
-				FUIInputConfig Config(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, true);
-				Config.bIgnoreMoveInput = false;
-				Config.bIgnoreLookInput = false;
-				UIActionRouter->SetActiveUIInputConfig(Config);
+				UIActionRouter->ApplyLeafmostNodeConfig();
 			}
 		}
 	}

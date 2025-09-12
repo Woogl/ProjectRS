@@ -30,7 +30,9 @@ ARsPlayerController::ARsPlayerController()
 void ARsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FInputModeGameAndUI InputMode;
+	SetInputMode(InputMode);
 }
 
 URsPartyComponent* ARsPlayerController::GetPartyComponent() const
