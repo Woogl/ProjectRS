@@ -23,9 +23,11 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat", ForceInlineRow))
+	// TODO: remove coefficient tags
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat,Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> TaggedStats;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat", ForceInlineRow))
+	// TODO: remove coefficient tags
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat,Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> BuffEffects;
 };

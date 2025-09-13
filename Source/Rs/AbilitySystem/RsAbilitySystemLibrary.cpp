@@ -9,6 +9,7 @@
 #include "Abilities/RsGameplayAbility.h"
 #include "Effect/RsEffectCoefficient.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/Battle/RsBattleSettings.h"
 
 URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
 {
@@ -121,4 +122,14 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(
 		}
 	}
 	return FActiveGameplayEffectHandle();
+}
+
+float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag)
+{
+	if (!ASC)
+	{
+		return 0.f;
+	}
+	FGameplayAttribute Attribute = URsBattleSettings::Get().TaggedStats.FindRef(StatTag);
+	return ASC->GetNumericAttribute(Attribute);
 }

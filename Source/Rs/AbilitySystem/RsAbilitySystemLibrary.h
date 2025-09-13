@@ -7,6 +7,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
+struct FRsEffectCoefficient;
 class URsAbilitySystemComponent;
 class UGameplayAbility;
 class URsGameplayAbility;
@@ -35,18 +36,18 @@ public:
 	/** Gameplay Ability */
 	
 	// Find the first ability that matches tags. 
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static UGameplayAbility* FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch);
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
+	static UGameplayAbility* FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);
 
 	// Find the first RS ability that matches tags. 
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static URsGameplayAbility* FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch);
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
+	static URsGameplayAbility* FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);
 	
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static void ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff);
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
+	static void ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff);
 
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, UPARAM(meta=(Categories="Ability"))FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
+	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
 	/** Gameplay Effect */
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
@@ -57,5 +58,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(const AActor* Source, const AActor* Target, const FGameplayEffectSpecHandle& EffectHandle);
-	
+
+	/** Gameplay Attribute */
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
+	static float GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag);
 };

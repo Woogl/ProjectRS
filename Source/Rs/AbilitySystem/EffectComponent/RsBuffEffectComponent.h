@@ -23,13 +23,13 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat"))
-	FGameplayTag Stat;
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat,Coefficient"))
+	FGameplayTag StatTag;
 	
 	UPROPERTY(EditDefaultsOnly)
-	ERsEffectTarget Target = ERsEffectTarget::Target;
+	ERsEffectTarget TargetType = ERsEffectTarget::Target;
 
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat,Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
 
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (RowType = ""))

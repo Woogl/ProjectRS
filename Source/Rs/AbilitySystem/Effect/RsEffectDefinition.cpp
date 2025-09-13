@@ -257,11 +257,5 @@ void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC
 
 void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	// Apply custom effect
-	FRsEffectCoefficient CustomCoeff(CustomEffect.EffectClass, CustomEffect.Coefficients);
-	FGameplayEffectSpecHandle CustomSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, CustomCoeff, SourceASC->MakeEffectContext());
-	if (CustomSpec.IsValid())
-	{
-		SourceASC->ApplyGameplayEffectSpecToTarget(*CustomSpec.Data, TargetASC);
-	}
+	SourceASC->BP_ApplyGameplayEffectToTarget(CustomEffect, TargetASC, 0.f, SourceASC->MakeEffectContext());
 }

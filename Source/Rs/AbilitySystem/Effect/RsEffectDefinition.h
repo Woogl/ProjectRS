@@ -233,7 +233,7 @@ class RS_API URsEffectDefinition_Custom : public URsEffectDefinition
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FRsEffectCoefficient CustomEffect;
+	TSubclassOf<UGameplayEffect> CustomEffect;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

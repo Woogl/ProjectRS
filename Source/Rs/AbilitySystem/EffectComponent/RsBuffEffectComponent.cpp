@@ -17,20 +17,23 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 	}
 
 	UAbilitySystemComponent* AppliedToASC = nullptr;
-	if (Target == ERsEffectTarget::Source)
+	if (TargetType == ERsEffectTarget::Source)
 	{
-		AppliedToASC = GESpec.GetEffectContext().GetInstigatorAbilitySystemComponent();
+		AppliedToASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
 	}
-	else if (Target == ERsEffectTarget::Target)
+	else if (TargetType == ERsEffectTarget::Target)
 	{
 		AppliedToASC = ActiveGEContainer.Owner;
 	}
 
 	if (AppliedToASC)
 	{
-		TSubclassOf<UGameplayEffect> BuffEffect = URsBattleSettings::Get().BuffEffects.FindRef(Stat);
-		FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
-		FGameplayEffectSpecHandle BuffSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(AppliedToASC, EffectCoefficient, AppliedToASC->MakeEffectContext());
-		AppliedToASC->ApplyGameplayEffectSpecToSelf(*BuffSpec.Data.Get(), PredictionKey);
+		if (TSubclassOf<UGameplayEffect> BuffEffect = URsBattleSettings::Get().BuffEffects.FindRef(StatTag))
+		{
+			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
+			AActor* Source = GESpec.GetContext().GetInstigator();
+			AActor* Target = AppliedToASC->GetOwnerActor();
+			URsAbilitySystemLibrary::ApplyEffectCoefficient(Source, Target, EffectCoefficient);
+		}
 	}
 }
