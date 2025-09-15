@@ -6,8 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
-#include "Rs/Battle/RsBattleSettings.h"
 
 void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
@@ -28,9 +28,9 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 
 	if (AppliedToASC)
 	{
-		if (TSubclassOf<UGameplayEffect> BuffEffect = URsBattleSettings::Get().BuffEffects.FindRef(StatTag))
+		if (TSubclassOf<UGameplayEffect> BuffEffect = URsAbilitySystemSettings::Get().BuffEffects.FindRef(StatTag))
 		{
-			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
+			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients, GESpec.GetDuration());
 			AActor* Source = GESpec.GetContext().GetInstigator();
 			AActor* Target = AppliedToASC->GetOwnerActor();
 			URsAbilitySystemLibrary::ApplyEffectCoefficient(Source, Target, EffectCoefficient);

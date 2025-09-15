@@ -6,10 +6,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemComponent.h"
+#include "RsAbilitySystemSettings.h"
 #include "Abilities/RsGameplayAbility.h"
 #include "Effect/RsEffectCoefficient.h"
 #include "Rs/RsLogChannels.h"
-#include "Rs/Battle/RsBattleSettings.h"
 
 URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
 {
@@ -130,6 +130,6 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	{
 		return 0.f;
 	}
-	FGameplayAttribute Attribute = URsBattleSettings::Get().TaggedStats.FindRef(StatTag);
+	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().TaggedStats.FindRef(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }

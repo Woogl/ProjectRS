@@ -26,6 +26,7 @@ struct FRsEffectCoefficient
 
 	FRsEffectCoefficient() {};
 	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TMap<FGameplayTag, float>& Coefficients);
+	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TMap<FGameplayTag, float>& Coefficients, float Duration);
 	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude);
 	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude, float Duration);
 };

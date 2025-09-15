@@ -24,6 +24,12 @@ FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffect
 {
 }
 
+FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TMap<FGameplayTag, float>& InCoefficients, float Duration)
+	: EffectClass(EffectClass), Coefficients(InCoefficients)
+{
+	Coefficients.Add(RsGameplayTags::MANUAL_DURATION, Duration);
+}
+
 FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, float Magnitude)
 	: EffectClass(InEffectClass)
 {

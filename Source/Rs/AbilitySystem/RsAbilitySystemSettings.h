@@ -6,19 +6,19 @@
 #include "AttributeSet.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DeveloperSettings.h"
-#include "RsBattleSettings.generated.h"
+#include "RsAbilitySystemSettings.generated.h"
 
 class UGameplayEffect;
 /**
  * 
  */
 UCLASS(Config=Game)
-class RS_API URsBattleSettings : public UDeveloperSettings
+class RS_API URsAbilitySystemSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 
 public:
-	const static URsBattleSettings& Get();
+	const static URsAbilitySystemSettings& Get();
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
