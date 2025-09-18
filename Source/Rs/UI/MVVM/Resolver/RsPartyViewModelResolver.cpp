@@ -16,7 +16,7 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 		return nullptr;
 	}
 	
-	if (URsPartyViewModel* ExistingViewModel = URsViewModelBase::GetSingletonViewModel<URsPartyViewModel>(LocalPlayer))
+	if (URsPartyViewModel* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<URsPartyViewModel>(LocalPlayer))
 	{
 		return ExistingViewModel;
 	}
@@ -27,5 +27,5 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 		return nullptr;
 	}
 	
-	return URsViewModelBase::CreateSingletonViewModel<URsPartyViewModel>(PartyComponent);
+	return URsSingletonViewModelBase::CreateViewModel<URsPartyViewModel>(PartyComponent);
 }

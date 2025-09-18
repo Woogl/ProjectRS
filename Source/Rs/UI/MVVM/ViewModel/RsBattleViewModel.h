@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsViewModelBase.h"
+#include "RsSingletonViewModelBase.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "RsBattleViewModel.generated.h"
 
@@ -15,7 +15,7 @@ class URsCharacterViewModel;
  * 
  */
 UCLASS()
-class RS_API URsBattleViewModel : public URsViewModelBase
+class RS_API URsBattleViewModel : public URsSingletonViewModelBase
 {
 	GENERATED_BODY()
 

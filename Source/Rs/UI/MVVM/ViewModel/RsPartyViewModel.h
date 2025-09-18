@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsViewModelBase.h"
+#include "RsSingletonViewModelBase.h"
 #include "RsPartyViewModel.generated.h"
 
 class URsPlayerCharacterViewModel;
@@ -13,7 +13,7 @@ class ARsPlayerCharacter;
  * 
  */
 UCLASS()
-class RS_API URsPartyViewModel : public URsViewModelBase
+class RS_API URsPartyViewModel : public URsSingletonViewModelBase
 {
 	GENERATED_BODY()
 
