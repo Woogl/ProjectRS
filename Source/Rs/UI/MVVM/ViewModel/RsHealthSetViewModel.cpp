@@ -39,7 +39,7 @@ void URsHealthSetViewModel::Deinitialize()
 
 float URsHealthSetViewModel::GetCurrentHealth() const
 {
-	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	if (const URsHealthSet* HealthSet = GetModel<ThisClass>())
 	{
 		return HealthSet->GetCurrentHealth();
 	}
@@ -48,7 +48,7 @@ float URsHealthSetViewModel::GetCurrentHealth() const
 
 float URsHealthSetViewModel::GetMaxHealth() const
 {
-	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	if (const URsHealthSet* HealthSet = GetModel<ThisClass>())
 	{
 		return HealthSet->GetMaxHealth();
 	}
@@ -57,7 +57,7 @@ float URsHealthSetViewModel::GetMaxHealth() const
 
 float URsHealthSetViewModel::GetHealthRegen() const
 {
-	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	if (const URsHealthSet* HealthSet = GetModel<ThisClass>())
 	{
 		return HealthSet->GetHealthRegen();
 	}
@@ -66,7 +66,7 @@ float URsHealthSetViewModel::GetHealthRegen() const
 
 float URsHealthSetViewModel::GetShield() const
 {
-	if (const URsHealthSet* HealthSet = GetModel<URsHealthSet>())
+	if (const URsHealthSet* HealthSet = GetModel<ThisClass>())
 	{
 		return HealthSet->GetShield();
 	}

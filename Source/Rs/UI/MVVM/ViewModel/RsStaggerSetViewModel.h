@@ -18,6 +18,8 @@ class RS_API URsStaggerSetViewModel : public URsAttributeSetViewModelBase
 	GENERATED_BODY()
 
 public:
+	using ModelType = URsStaggerSet;
+	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsStaggerSetViewModel* CreateStaggerSetViewModel(const URsStaggerSet* StaggerSet);
 

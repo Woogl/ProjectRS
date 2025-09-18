@@ -21,7 +21,7 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 
 bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)
 {
-	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
@@ -35,7 +35,7 @@ void URsCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
 		{
@@ -60,7 +60,7 @@ void URsCharacterViewModel::Deinitialize()
 
 FText URsCharacterViewModel::GetCharacterName() const
 {
-	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
 		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 	}
@@ -69,7 +69,7 @@ FText URsCharacterViewModel::GetCharacterName() const
 
 UObject* URsCharacterViewModel::GetPortrait() const
 {
-	if (const ARsCharacterBase* Character = GetModel<ARsCharacterBase>())
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
 		return Character->Portrait;
 	}

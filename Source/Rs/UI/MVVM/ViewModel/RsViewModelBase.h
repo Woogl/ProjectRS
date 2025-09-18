@@ -20,20 +20,23 @@ class RS_API URsViewModelBase : public UMVVMViewModelBase
 public:
 	virtual void BeginDestroy() override;
 
-	template <typename T>
-	static T* CreateViewModel(UObject* Model);
+	// Override ModelType in child class.
+	using ModelType = UObject;
+
+	template <class T>
+	static T* CreateViewModel(typename T::ModelType* Model);
 	
 	template <typename T>
-	static T* CreateViewModel(const UObject* Model);
+	static T* CreateViewModel(const typename T::ModelType* Model);
 
 	template <typename T>
-	static T* CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound = true);
+	static T* CreateSingletonViewModel(typename T::ModelType* Model, bool bWarnIfNotFound = true);
 
 	template <typename T>
 	static T* GetSingletonViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 	
 	template <typename T>
-	T* GetModel() const;
+	typename T::ModelType* GetModel() const;
 	
 protected:
 	virtual void Initialize() {};
@@ -44,7 +47,7 @@ protected:
 };
 
 template <typename T>
-T* URsViewModelBase::CreateViewModel(UObject* Model)
+T* URsViewModelBase::CreateViewModel(typename T::ModelType* Model)
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::IsDerived, "T must be derived from URsViewModelBase");
 	if (!ensure(Model))
@@ -58,14 +61,14 @@ T* URsViewModelBase::CreateViewModel(UObject* Model)
 }
 
 template <typename T>
-T* URsViewModelBase::CreateViewModel(const UObject* Model)
+T* URsViewModelBase::CreateViewModel(const typename T::ModelType* Model)
 {
-	UObject* MutableModel = const_cast<UObject*>(Model);
+	typename T::ModelType* MutableModel = const_cast<typename T::ModelType*>(Model);
 	return CreateViewModel<T>(MutableModel);
 }
 
 template <typename T>
-T* URsViewModelBase::CreateSingletonViewModel(UObject* Model, bool bWarnIfNotFound)
+T* URsViewModelBase::CreateSingletonViewModel(typename T::ModelType* Model, bool bWarnIfNotFound)
 {
 	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model->GetWorld()))
 	{
@@ -83,14 +86,14 @@ T* URsViewModelBase::GetSingletonViewModel(const UObject* WorldContext, bool bWa
 {
 	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(WorldContext))
 	{
-		MVVMSubsystem->GetSingletonViewModel(T::StaticClass(), bWarnIfNotFound);
+		return Cast<T>(MVVMSubsystem->GetSingletonViewModel(T::StaticClass(), bWarnIfNotFound));
 	}
 	return nullptr;
 }
 
 template <typename T>
-T* URsViewModelBase::GetModel() const
+typename T::ModelType* URsViewModelBase::GetModel() const
 {
-	static_assert(TIsDerivedFrom<T, UObject>::IsDerived, "T must be derived from UObject");
-	return Cast<T>(Model.Get());
+	static_assert(TIsDerivedFrom<T, URsViewModelBase>::IsDerived, "T must be derived from URsViewModelBase");
+	return Cast<typename T::ModelType>(Model.Get());
 }

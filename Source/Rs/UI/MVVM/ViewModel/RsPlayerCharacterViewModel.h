@@ -19,6 +19,8 @@ class RS_API URsPlayerCharacterViewModel : public URsCharacterViewModel, public 
 	GENERATED_BODY()
 
 public:
+	using ModelType = ARsPlayerCharacter;
+	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsPlayerCharacterViewModel* CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* PlayerCharacter);
 	

@@ -20,6 +20,8 @@ class RS_API URsCharacterViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
+	using ModelType = ARsCharacterBase;
+	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsCharacterViewModel* CreateRsCharacterViewModel(ARsCharacterBase* Character);
 	

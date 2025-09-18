@@ -27,7 +27,7 @@ void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (ARsCharacterBase* PlayerCharacter = GetModel<ARsCharacterBase>())
+	if (ARsCharacterBase* PlayerCharacter = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PlayerCharacter))
 		{
@@ -74,7 +74,7 @@ void URsPlayerCharacterViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetModel<ARsCharacterBase>(), 0))
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetModel<ThisClass>(), 0))
 	{
 		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
 		if (URsPartyComponent* PartyComponent = PlayerController->FindComponentByClass<URsPartyComponent>())
@@ -93,9 +93,9 @@ void URsPlayerCharacterViewModel::Deinitialize()
 
 int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const
 {
-	if (ARsPlayerCharacter* Character = GetModel<ARsPlayerCharacter>())
+	if (ARsPlayerCharacter* Character = GetModel<ThisClass>())
 	{
-		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(GetModel<ARsCharacterBase>());
+		TArray<ARsPlayerCharacter*> PartyMembers = URsPartyLibrary::GetPartyMembers(GetModel<ThisClass>());
 		return PartyMembers.Find(Cast<ARsPlayerCharacter>(Character));
 	}
 	return INDEX_NONE;
@@ -127,7 +127,7 @@ bool URsPlayerCharacterViewModel::IsPartyMember() const
 
 bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 {
-	if (ARsPlayerCharacter* PlayerCharacter = GetModel<ARsPlayerCharacter>())
+	if (ARsPlayerCharacter* PlayerCharacter = GetModel<ThisClass>())
 	{
 		return UGameplayStatics::GetPlayerController(GetWorld(), 0) == PlayerCharacter->GetController();
 	}
@@ -145,7 +145,7 @@ ESlateVisibility URsPlayerCharacterViewModel::GetDetailInfoVisibility() const
 
 FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 {
-	if (ARsCharacterBase* PlayerCharacter = GetModel<ARsCharacterBase>())
+	if (ARsCharacterBase* PlayerCharacter = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent())
 		{
@@ -168,12 +168,12 @@ bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 	{
 		return false;
 	}
-	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(GetModel<ARsCharacterBase>());
+	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(GetModel<ThisClass>());
 	if (!BattleSubsystem || !BattleSubsystem->IsLinkSkillReady())
 	{
 		return false;
 	}
-	if (UAbilitySystemComponent* ASC = GetModel<ARsCharacterBase>()->GetAbilitySystemComponent())
+	if (UAbilitySystemComponent* ASC = GetModel<ThisClass>()->GetAbilitySystemComponent())
 	{
 		FGameplayTagContainer LinkSkillTag = URsGameSettingDataAsset::Get()->LinkSkillTag.GetSingleTagContainer();
 		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LinkSkillTag, false))
@@ -208,7 +208,7 @@ TStatId URsPlayerCharacterViewModel::GetStatId() const
 
 void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn)
 {
-	ARsCharacterBase* Character = GetModel<ARsCharacterBase>();
+	ARsCharacterBase* Character = GetModel<ThisClass>();
 	if (!Character)
 	{
 		return;
@@ -226,7 +226,7 @@ void URsPlayerCharacterViewModel::HandlePossessedPawn(APawn* OldPawn, APawn* New
 
 void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* AddedMember, int32 MemberIndex)
 {
-	if (AddedMember == GetModel<ARsCharacterBase>())
+	if (AddedMember == GetModel<ThisClass>())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);
@@ -240,7 +240,7 @@ void URsPlayerCharacterViewModel::HandleAddPartyMember(ARsPlayerCharacter* Added
 
 void URsPlayerCharacterViewModel::HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex)
 {
-	if (RemovedMember == GetModel<ARsCharacterBase>())
+	if (RemovedMember == GetModel<ThisClass>())
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartyMemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySlotNumber);

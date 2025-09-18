@@ -36,7 +36,7 @@ void URsStaggerSetViewModel::Deinitialize()
 
 float URsStaggerSetViewModel::GetCurrentStagger() const
 {
-	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
+	if (URsStaggerSet* StaggerSet = GetModel<ThisClass>())
 	{
 		return StaggerSet->GetCurrentStagger();
 	}
@@ -45,7 +45,7 @@ float URsStaggerSetViewModel::GetCurrentStagger() const
 
 float URsStaggerSetViewModel::GetMaxStagger() const
 {
-	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
+	if (URsStaggerSet* StaggerSet = GetModel<ThisClass>())
 	{
 		return StaggerSet->GetMaxStagger();
 	}
@@ -54,7 +54,7 @@ float URsStaggerSetViewModel::GetMaxStagger() const
 
 float URsStaggerSetViewModel::GetStaggerDecay() const
 {
-	if (URsStaggerSet* StaggerSet = GetModel<URsStaggerSet>())
+	if (URsStaggerSet* StaggerSet = GetModel<ThisClass>())
 	{
 		return StaggerSet->GetStaggerDecay();
 	}

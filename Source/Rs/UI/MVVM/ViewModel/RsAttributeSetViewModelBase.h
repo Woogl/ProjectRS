@@ -6,6 +6,7 @@
 #include "RsViewModelBase.h"
 #include "RsAttributeSetViewModelBase.generated.h"
 
+class UAttributeSet;
 class UAbilitySystemComponent;
 /**
  * 
@@ -15,6 +16,9 @@ class RS_API URsAttributeSetViewModelBase : public URsViewModelBase
 {
 	GENERATED_BODY()
 
+public:
+	using ModelType = UAttributeSet;
+	
 protected:
 	virtual void Initialize() override;
 

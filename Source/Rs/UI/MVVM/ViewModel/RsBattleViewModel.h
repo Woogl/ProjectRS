@@ -20,6 +20,8 @@ class RS_API URsBattleViewModel : public URsViewModelBase
 	GENERATED_BODY()
 
 public:
+	using ModelType = URsBattleSubsystem;
+	
 	// Singleton Viewmodel
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel", meta=(WorldContext="WorldContext"))
 	static URsBattleViewModel* GetBattleViewModel(UObject* WorldContext);

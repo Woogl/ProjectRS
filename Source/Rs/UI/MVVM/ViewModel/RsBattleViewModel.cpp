@@ -16,7 +16,7 @@ void URsBattleViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		BattleSubsystem->OnBossFight.AddUObject(this, &ThisClass::HandleBossFight);
 		BattleSubsystem->OnLinkSkillReady.AddUObject(this, &ThisClass::HandleLinkSkillReady);
@@ -28,7 +28,7 @@ void URsBattleViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		BattleSubsystem->OnBossFight.RemoveAll(this);
 		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
@@ -38,7 +38,7 @@ void URsBattleViewModel::Deinitialize()
 
 void URsBattleViewModel::DecrementLinkSkillCount(ARsCharacterBase* CurrentTarget, ERsLinkSkillType LinkSkillType)
 {
-	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		BattleSubsystem->DecrementLinkSkillCount(CurrentTarget, LinkSkillType);
 	}
@@ -46,7 +46,7 @@ void URsBattleViewModel::DecrementLinkSkillCount(ARsCharacterBase* CurrentTarget
 
 bool URsBattleViewModel::GetIsLinkSkillReady() const
 {
-	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		return BattleSubsystem->IsLinkSkillReady();
 	}
@@ -55,7 +55,7 @@ bool URsBattleViewModel::GetIsLinkSkillReady() const
 
 ARsCharacterBase* URsBattleViewModel::GetLinkSkillTarget() const
 {
-	if (URsBattleSubsystem* BattleSubsystem = GetModel<URsBattleSubsystem>())
+	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		return BattleSubsystem->GetLinkSkillTarget();
 	}

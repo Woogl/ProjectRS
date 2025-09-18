@@ -16,7 +16,7 @@ URsAbilityViewModel* URsAbilityViewModel::CreateRsAbilityViewModel(URsGameplayAb
 
 void URsAbilityViewModel::TryActivateAbility()
 {
-	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
+	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = Ability->GetAbilitySystemComponentFromActorInfo())
 		{
@@ -29,7 +29,7 @@ void URsAbilityViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
+	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		SetCooldownDuration(Ability->CooldownDuration);
 		SetCurrentRechargeStacks(Ability->GetCurrentRechargeStacks());
@@ -43,7 +43,7 @@ void URsAbilityViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
+	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		Ability->OnRechargeStacksChanged.RemoveAll(this);
 	}
@@ -146,7 +146,7 @@ bool URsAbilityViewModel::IsRechargeable() const
 
 FText URsAbilityViewModel::GetInputKeyText() const
 {
-	URsGameplayAbility* Ability = GetModel<URsGameplayAbility>();
+	URsGameplayAbility* Ability = GetModel<ThisClass>();
 	if (Ability && Ability->ActivationInputAction)
 	{
 		if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Ability->GetAvatarCharacter()))
@@ -168,7 +168,7 @@ FText URsAbilityViewModel::GetInputKeyText() const
 
 UObject* URsAbilityViewModel::GetSkillIcon() const
 {
-	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
+	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		return Ability->SkillIcon;
 	}
@@ -191,7 +191,7 @@ void URsAbilityViewModel::HandleRechargeStacksChanged(int CurrentStacks)
 
 void URsAbilityViewModel::Tick(float DeltaTime)
 {
-	if (URsGameplayAbility* Ability = GetModel<URsGameplayAbility>())
+	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		SetCooldownRemaining(Ability->GetCooldownTimeRemaining());
 	}

@@ -34,7 +34,7 @@ void URsEnergySetViewModel::Deinitialize()
 
 float URsEnergySetViewModel::GetCurrentEnergy() const
 {
-	if (URsEnergySet* EnergySet = GetModel<URsEnergySet>())
+	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
 	{
 		return EnergySet->GetCurrentEnergy();
 	}
@@ -43,7 +43,7 @@ float URsEnergySetViewModel::GetCurrentEnergy() const
 
 float URsEnergySetViewModel::GetMaxEnergy() const
 {
-	if (URsEnergySet* EnergySet = GetModel<URsEnergySet>())
+	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
 	{
 		return EnergySet->GetMaxEnergy();
 	}

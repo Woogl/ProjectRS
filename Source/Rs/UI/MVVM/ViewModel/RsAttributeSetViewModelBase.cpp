@@ -10,7 +10,7 @@ void URsAttributeSetViewModelBase::Initialize()
 {
 	Super::Initialize();
 
-	if (const UAttributeSet* AttributeSet = GetModel<UAttributeSet>())
+	if (const UAttributeSet* AttributeSet = GetModel<ThisClass>())
 	{
 		ASC = AttributeSet->GetOwningAbilitySystemComponent();
 	}

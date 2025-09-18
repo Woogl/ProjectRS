@@ -18,6 +18,8 @@ class RS_API URsHealthSetViewModel : public URsAttributeSetViewModelBase
 	GENERATED_BODY()
 
 public:
+	using ModelType = URsHealthSet;
+	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsHealthSetViewModel* CreateHealthSetViewModel(const URsHealthSet* HealthSet);
 

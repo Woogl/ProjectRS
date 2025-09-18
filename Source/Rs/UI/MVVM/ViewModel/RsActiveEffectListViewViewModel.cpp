@@ -14,7 +14,7 @@ void URsActiveEffectListViewViewModel::Initialize()
 {
 	Super::Initialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (UAbilitySystemComponent* ASC = GetModel<ThisClass>())
 	{
 		UE_MVVM_SET_PROPERTY_VALUE(Visibility, ESlateVisibility::SelfHitTestInvisible);
 		ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
@@ -25,7 +25,7 @@ void URsActiveEffectListViewViewModel::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	if (UAbilitySystemComponent* ASC = GetModel<UAbilitySystemComponent>())
+	if (UAbilitySystemComponent* ASC = GetModel<ThisClass>())
 	{
 		UE_MVVM_SET_PROPERTY_VALUE(Visibility, ESlateVisibility::SelfHitTestInvisible);
 		ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
@@ -39,7 +39,7 @@ void URsActiveEffectListViewViewModel::OnEffectAdded(UAbilitySystemComponent* AS
 		FGameplayTagContainer EffectTags;
 		EffectSpec.GetAllAssetTags(EffectTags);
 		// if same effect exists already
-		if (GetModel<UAbilitySystemComponent>()->GetActiveEffectsWithAllTags(EffectTags).Num() > 1)
+		if (GetModel<ThisClass>()->GetActiveEffectsWithAllTags(EffectTags).Num() > 1)
 		{
 			// stack update for every existing viewmodels
 			for (URsActiveEffectViewModel* ActiveEffectViewModel : ActiveEffectViewModels)
