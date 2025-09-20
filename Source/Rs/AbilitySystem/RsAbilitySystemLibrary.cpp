@@ -76,48 +76,44 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	}
 }
 
-FGameplayEffectSpecHandle URsAbilitySystemLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle InEffectContext)
+FGameplayEffectSpecHandle URsAbilitySystemLibrary::MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext)
 {
 	if (SourceASC && EffectCoefficient.IsValid())
 	{
-		FGameplayEffectContextHandle EffectContext = InEffectContext.IsValid() ? InEffectContext : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
-		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
+		for (const FRsStatCoefficient& Coeff : EffectCoefficient.Coefficients)
 		{
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
+			FString Suffix = StaticEnum<EGameplayEffectAttributeCaptureSource>()->GetNameStringByValue((int64)Coeff.CaptureSource);
+			for (const TTuple<FGameplayTag, float>& StatCoefficient : Coeff.StatCoefficients)
+			{
+				// ex: Stat.ATK.Source
+				FName SetByCallerName = FName(StatCoefficient.Key.ToString() + TEXT(".")+ Suffix);
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(SetByCallerName, StatCoefficient.Value);
+			}
 		}
 		return EffectSpecHandle;
 	}
 	return FGameplayEffectSpecHandle();
 }
 
-FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient)
+FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& EffectCoefficient)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
-	
 	if (SourceASC && EffectCoefficient.IsValid())
 	{
 		FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
-		for (const TTuple<FGameplayTag, float>& Coefficient : EffectCoefficient.Coefficients)
-		{
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coefficient.Key, Coefficient.Value);
-		}
-		return ApplyEffectSpecCoefficient(Source, Target, EffectSpecHandle);
+		FGameplayEffectSpecHandle EffectSpecCoefficient = MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, EffectContext);
+		return ApplyEffectSpecCoefficient(SourceASC, TargetASC, EffectSpecCoefficient);
 	}
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(const AActor* Source, const AActor* Target, const FGameplayEffectSpecHandle& EffectHandle)
+FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEffectSpecHandle& EffectHandle)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Source);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target);
-	
 	if (SourceASC && TargetASC)
 	{
 		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
-			EffectSpec->GetContext().AddOrigin(Target->GetActorLocation());
+			EffectSpec->GetContext().AddOrigin(TargetASC->GetAvatarActor()->GetActorLocation());
 			return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
 		}
 	}
@@ -130,6 +126,6 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	{
 		return 0.f;
 	}
-	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().TaggedStats.FindRef(StatTag);
+	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().TaggedAttributes.FindRef(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }

@@ -7,5 +7,5 @@
 
 float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	return Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, true);
+	return Spec.GetSetByCallerMagnitude(RsGameplayTags::DURATION, true);
 }

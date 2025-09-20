@@ -19,26 +19,15 @@ bool FRsEffectCoefficient::IsValid() const
 	return true;
 }
 
-FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, const TMap<FGameplayTag, float>& InCoefficients)
-	: EffectClass(InEffectClass), Coefficients(InCoefficients)
+FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TArray<FRsStatCoefficient>& Coefficients)
+	: EffectClass(EffectClass), Coefficients(Coefficients)
 {
 }
 
-FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TMap<FGameplayTag, float>& InCoefficients, float Duration)
-	: EffectClass(EffectClass), Coefficients(InCoefficients)
+FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude)
+	: EffectClass(EffectClass)
 {
-	Coefficients.Add(RsGameplayTags::MANUAL_DURATION, Duration);
-}
-
-FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, float Magnitude)
-	: EffectClass(InEffectClass)
-{
-	Coefficients.Add(RsGameplayTags::MANUAL_MAGNITUDE, Magnitude);
-}
-
-FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> InEffectClass, float Magnitude, float Duration)
-	: EffectClass(InEffectClass)
-{
-	Coefficients.Add(RsGameplayTags::MANUAL_MAGNITUDE, Magnitude);
-	Coefficients.Add(RsGameplayTags::MANUAL_DURATION, Duration);
+	FRsStatCoefficient StatCoefficient;
+	StatCoefficient.StatCoefficients.Add(RsGameplayTags::MANUAL, Magnitude);
+	Coefficients.Add(StatCoefficient);
 }

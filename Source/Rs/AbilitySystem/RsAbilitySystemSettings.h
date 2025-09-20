@@ -22,12 +22,10 @@ public:
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
-
-	// TODO: remove coefficient tags
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat,Coefficient", ForceInlineRow))
-	TMap<FGameplayTag, FGameplayAttribute> TaggedStats;
-
-	// TODO: remove coefficient tags
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Stat,Coefficient", ForceInlineRow))
-	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> BuffEffects;
+	
+	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
+	TMap<FGameplayTag, FGameplayAttribute> TaggedAttributes;
+	
+	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> TaggedBuffEffects;
 };

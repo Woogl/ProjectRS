@@ -30,7 +30,7 @@ class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
+	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
 	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
 
 	/** Gameplay Ability */
@@ -54,10 +54,10 @@ public:
 	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FActiveGameplayEffectHandle ApplyEffectCoefficient(const AActor* Source, const AActor* Target, const FRsEffectCoefficient& EffectCoefficient);
+	static FActiveGameplayEffectHandle ApplyEffectCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& EffectCoefficient);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(const AActor* Source, const AActor* Target, const FGameplayEffectSpecHandle& EffectHandle);
+	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEffectSpecHandle& EffectHandle);
 
 	/** Gameplay Attribute */
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))

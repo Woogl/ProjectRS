@@ -5,47 +5,20 @@
 
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
-#include "Rs/System/RsDeveloperSetting.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 
 URsCoefficientCalculation::URsCoefficientCalculation()
 {
 	// Capture every attribute of source and target
 	// NOTE: Attributes to be captured must exist in the source and target!
-	for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsDeveloperSetting::Get().CoefficientTags)
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& TaggedAttribute : URsAbilitySystemSettings::Get().TaggedAttributes)
 	{
-		if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))
-		{
-			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
-		}
-		else if (CoefficientTag.Key.ToString().EndsWith(TEXT("Target")))
-		{
-			CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
-		}
+		FName SourceKey = FName(FString(TaggedAttribute.Key.ToString() + TEXT(".Source")));
+		CaptureAttribute(SourceKey, TaggedAttribute.Value, EGameplayEffectAttributeCaptureSource::Source, true);
+		
+		FName TargetKey = FName(FString(TaggedAttribute.Key.ToString() + TEXT(".Target")));
+		CaptureAttribute(TargetKey, TaggedAttribute.Value, EGameplayEffectAttributeCaptureSource::Target, false);
 	}
-}
-
-void URsCoefficientCalculation::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
-{
-	FGameplayEffectAttributeCaptureDefinition Definition;
-	Definition.AttributeToCapture = Attribute;
-	Definition.AttributeSource = SourceOrTarget;
-	Definition.bSnapshot = bSnapShot;
-	RelevantAttributesToCapture.Add(Definition);
-	CapturedAttributeDefinitions.Add(Key, Definition);
-}
-
-float URsCoefficientCalculation::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
-{
-	float OutMagnitude = 0.f;
-	if (CapturedAttributeDefinitions.Contains(Key))
-	{
-		GetCapturedAttributeMagnitude(CapturedAttributeDefinitions[Key], Spec, EvaluationParameters, OutMagnitude);
-	}
-	else
-	{
-		UE_LOG(RsLog, Warning, TEXT("Cannot find {%s} attribute"), *Key.ToString());
-	}
-	return OutMagnitude;
 }
 
 float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -59,9 +32,11 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	
 	// Accumulate every "Coefficient * Attribute"
 	float FinalMagnitude = 0.f;
-	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
+	for (const TTuple<FName, float>& SetByCaller : Spec.SetByCallerNameMagnitudes)
 	{
-		if (URsDeveloperSetting::Get().CoefficientTags.Contains(SetByCaller.Key))
+		FName AttributeTagName = ChopLastDot(SetByCaller.Key);
+		FGameplayTag AttributeTag = FGameplayTag::RequestGameplayTag(AttributeTagName, false);
+		if (URsAbilitySystemSettings::Get().TaggedAttributes.Contains(AttributeTag))
 		{
 			float Coefficient = SetByCaller.Value;
 			if (FMath::IsNearlyZero(Coefficient) == false)
@@ -73,7 +48,43 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	}
 
 	// Add "Manual" magnitude
-	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL_MAGNITUDE, false);
+	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL, false);
 	
 	return FinalMagnitude;
+}
+
+void URsCoefficientCalculation::CaptureAttribute(FName Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
+{
+	FGameplayEffectAttributeCaptureDefinition Definition;
+	Definition.AttributeToCapture = Attribute;
+	Definition.AttributeSource = SourceOrTarget;
+	Definition.bSnapshot = bSnapShot;
+	RelevantAttributesToCapture.Add(Definition);
+	CapturedAttributeDefinitions.Add(Key, Definition);
+}
+
+float URsCoefficientCalculation::FindAttributeMagnitude(FName Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
+{
+	float OutMagnitude = 0.f;
+	if (CapturedAttributeDefinitions.Contains(Key))
+	{
+		GetCapturedAttributeMagnitude(CapturedAttributeDefinitions[Key], Spec, EvaluationParameters, OutMagnitude);
+	}
+	else
+	{
+		UE_LOG(RsLog, Warning, TEXT("Cannot find {%s} attribute"), *Key.ToString());
+	}
+	return OutMagnitude;
+}
+
+FName URsCoefficientCalculation::ChopLastDot(const FName& InName) const
+{
+	FString String = InName.ToString();
+	int32 DotIndex;
+	String.FindLastChar('.', DotIndex);
+	if (DotIndex == INDEX_NONE)
+	{
+		return InName;
+	}
+	return FName(String.LeftChop(String.Len() - DotIndex));
 }

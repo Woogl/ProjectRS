@@ -69,11 +69,11 @@ class RS_API URsEffectDefinition_InstantDamage : public URsEffectDefinition_Dama
 public:
 	URsEffectDefinition_InstantDamage();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> HealthDamageCoefficients;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> StaggerDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRsStatCoefficient> HealthDamageCoefficients;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRsStatCoefficient> StaggerDamageCoefficients;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
@@ -90,11 +90,11 @@ class RS_API URsEffectDefinition_DotDamage : public URsEffectDefinition_DamageBa
 
 public:
 	// Total sum of the health damage until duration end.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> HealthDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRsStatCoefficient> HealthDamageCoefficients;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> StaggerDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRsStatCoefficient> StaggerDamageCoefficients;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 3.f;
@@ -118,28 +118,6 @@ class RS_API URsEffectDefinition_DotBurstDamage : public URsEffectDefinition_Dam
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageMultiplierPerDotStacks = 0.05f;
-
-public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
-};
-
-/**
- * Buff effect that has duration.
- */
-UCLASS(DisplayName = "Buff")
-class RS_API URsEffectDefinition_Buff : public URsEffectDefinition
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<URsBuffEffect> BuffClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
-	TMap<FGameplayTag, float> Coefficients;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Duration = 0.f;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

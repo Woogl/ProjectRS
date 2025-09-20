@@ -51,7 +51,6 @@ FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectCon
 		HitResult = FHitResult(TargetActor, nullptr, End, FVector());
 	}
 
-	// TODO: Set RsWeapon class to effect causer
 	EffectContext.AddInstigator(SourceActor, nullptr);
 	EffectContext.AddHitResult(HitResult);
 	return EffectContext;
@@ -75,7 +74,7 @@ void URsEffectDefinition_DamageBase::ApplyDotDamage(UAbilitySystemComponent* Sou
 	FGameplayEffectSpecHandle DotDamageSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
 	{
-		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
+		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL, Duration);
 		DotDamageSpec.Data->Period = Period;
 		SET_SETBYCALLER_PROPERTY(DotDamageSpec, InvinciblePierce);
 		DotDamageSpec.Data->AppendDynamicAssetTags(DamageTags);
@@ -109,8 +108,15 @@ void URsEffectDefinition_DamageBase::ApplyHitReaction(UAbilitySystemComponent* S
 URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
 {
 	// Set default coefficient.
-	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATTACK_SOURCE, 1.f);
-	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMPACT_SOURCE, 1.f);
+	FRsStatCoefficient DefaultHealthCoff;
+	DefaultHealthCoff.CaptureSource = EGameplayEffectAttributeCaptureSource::Source;
+	DefaultHealthCoff.StatCoefficients.Add(RsGameplayTags::STAT_ATK, 1.f);
+	HealthDamageCoefficients.Add(DefaultHealthCoff);
+
+	FRsStatCoefficient DefaultStaggerCoff;
+	DefaultStaggerCoff.CaptureSource = EGameplayEffectAttributeCaptureSource::Source;
+	DefaultStaggerCoff.StatCoefficients.Add(RsGameplayTags::STAT_IMP, 1.f);
+	StaggerDamageCoefficients.Add(DefaultStaggerCoff);
 }
 
 void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
@@ -149,18 +155,6 @@ void URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* So
 	}
 	
 	ApplyHitReaction(SourceASC, TargetASC);
-}
-
-void URsEffectDefinition_Buff::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	// Apply buff effect
-	FRsEffectCoefficient EffectCoefficient(BuffClass, Coefficients);
-	FGameplayEffectSpecHandle BuffSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
-	if (BuffSpec.IsValid())
-	{
-		BuffSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL_DURATION, Duration);
-		SourceASC->ApplyGameplayEffectSpecToTarget(*BuffSpec.Data, TargetASC);
-	}
 }
 
 void URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)

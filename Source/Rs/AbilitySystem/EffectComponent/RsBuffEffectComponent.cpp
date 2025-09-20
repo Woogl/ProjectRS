@@ -28,12 +28,11 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 
 	if (AppliedToASC)
 	{
-		if (TSubclassOf<UGameplayEffect> BuffEffect = URsAbilitySystemSettings::Get().BuffEffects.FindRef(StatTag))
+		if (TSubclassOf<UGameplayEffect> BuffEffect = URsAbilitySystemSettings::Get().TaggedBuffEffects.FindRef(StatTag))
 		{
-			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients, GESpec.GetDuration());
-			AActor* Source = GESpec.GetContext().GetInstigator();
-			AActor* Target = AppliedToASC->GetOwnerActor();
-			URsAbilitySystemLibrary::ApplyEffectCoefficient(Source, Target, EffectCoefficient);
+			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
+			UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
+			URsAbilitySystemLibrary::ApplyEffectCoefficient(SourceASC, AppliedToASC, EffectCoefficient);
 		}
 	}
 }
