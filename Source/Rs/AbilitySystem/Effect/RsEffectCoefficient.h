@@ -37,5 +37,4 @@ struct FRsEffectCoefficient
 
 	FRsEffectCoefficient() {};
 	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TArray<FRsStatCoefficient>& Coefficients);
-	FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, float Magnitude);
 };

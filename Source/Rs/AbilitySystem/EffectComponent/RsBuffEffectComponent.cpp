@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
@@ -32,7 +33,11 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 		{
 			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
 			UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
-			URsAbilitySystemLibrary::ApplyEffectCoefficient(SourceASC, AppliedToASC, EffectCoefficient);
+
+			FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
+			EffectHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::DURATION, GESpec.Duration);
+
+			URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, AppliedToASC, EffectHandle);
 		}
 	}
 }

@@ -1,11 +1,9 @@
-// Copyright 2024 Team BH.
+﻿// Copyright 2025 Team BH.
 
 
-#include "RsBuffEffect.h"
+#include "RsGameplayEffect.h"
 
-#include "Rs/AbilitySystem/Calculation/ModifierMagnitude/RsDurationCalculation.h"
-
-URsBuffEffect::URsBuffEffect()
+URsGameplayEffect::URsGameplayEffect()
 {
 	DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	

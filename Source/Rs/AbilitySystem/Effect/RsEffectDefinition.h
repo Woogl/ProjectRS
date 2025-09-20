@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
-#include "RsBuffEffect.h"
 #include "RsEffectCoefficient.h"
 #include "RsEffectDefinition.generated.h"
 
