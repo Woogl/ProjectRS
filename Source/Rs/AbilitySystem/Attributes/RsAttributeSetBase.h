@@ -20,17 +20,37 @@ struct RS_API FRsAttributeMetaData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FRsAttributeMetaData();
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	// float Level = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FGameplayAttribute Attribute;
-
-	// TODO: Change to FScalableFloat
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float BaseValue;
+	float ATK = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString DevComment;
+	float IMP = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float DEF = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float HPmax = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float HPcur = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SPmax = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SPcur = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CRITrate = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CRITdmg = 0.f;
+	
+	float GetValue(const FGameplayAttribute& Attribute) const;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributeChange, float, OldValue, float, NewValue, AActor*, Instigator);

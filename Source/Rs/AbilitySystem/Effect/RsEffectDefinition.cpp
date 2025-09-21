@@ -4,6 +4,7 @@
 #include "RsEffectDefinition.h"
 
 #include "AbilitySystemComponent.h"
+#include "RsGameplayEffect.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
@@ -251,5 +252,6 @@ void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC
 
 void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
+	
 	SourceASC->BP_ApplyGameplayEffectToTarget(CustomEffect, TargetASC, 0.f, SourceASC->MakeEffectContext());
 }

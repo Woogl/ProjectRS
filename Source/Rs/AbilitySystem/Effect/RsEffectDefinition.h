@@ -8,6 +8,7 @@
 #include "RsEffectCoefficient.h"
 #include "RsEffectDefinition.generated.h"
 
+class URsGameplayEffect;
 struct FGameplayEffectSpec;
 struct FGameplayEffectSpecHandle;
 class URsDeveloperSetting;
@@ -210,7 +211,10 @@ class RS_API URsEffectDefinition_Custom : public URsEffectDefinition
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayEffect> CustomEffect;
+	TSubclassOf<URsGameplayEffect> CustomEffect;
+
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// TMap<FGameplayTag, float> SetByCallerDatas;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

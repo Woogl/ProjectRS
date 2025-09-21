@@ -4,6 +4,7 @@
 #include "RsAbilitySystemComponent.h"
 
 #include "AbilitySystemGlobals.h"
+#include "RsAbilitySystemSettings.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -35,20 +36,16 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 		return;
 	}
 	
-	// Grant attributes from data table.
-	if (AbilitySet->GrantedAttributeTable)
+	// Grant attributes from data table row.
+	if (!AbilitySet->GrantedAttributeTableRow.IsNull())
 	{
-		TArray<FRsAttributeMetaData*> OutAttributeDatas;
-		AbilitySet->GrantedAttributeTable->GetAllRows<FRsAttributeMetaData>(FString(), OutAttributeDatas);
-		for (FRsAttributeMetaData* AttributeData : OutAttributeDatas)
+		if (FRsAttributeMetaData* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeMetaData>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{
-			if (AttributeData->Attribute.IsValid())
+			for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().TaggedAttributes)
 			{
-				if (UClass* AttributeSetClass = AttributeData->Attribute.GetAttributeSetClass())
-				{
-					const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
-					SetNumericAttributeBase(AttributeData->Attribute, AttributeData->BaseValue);
-				}
+				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(Attribute.GetAttributeSetClass());
+				float BaseValue = Row->GetValue(Attribute);
+				SetNumericAttributeBase(Attribute, BaseValue);
 			}
 		}
 	}
