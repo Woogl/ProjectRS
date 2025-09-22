@@ -1,0 +1,2 @@
+,MaxHealth,CurrentHealth,MaxStagger,CurrentStagger,StaggerDecay,MaxMana,CurrentMana,MaxEnergy,CurrentEnergy,Attack,Impact,Defense,CriticalRate,CriticalDamage,Invincible,SuperArmor
+SandbagCharacter,6000,5000,100,0,10,0,0,0,0,50,50,50,0,0,0,0
