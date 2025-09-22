@@ -22,33 +22,54 @@ struct RS_API FRsAttributeMetaData : public FTableRowBase
 public:
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	// float Level = 0.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ATK = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float IMP = 0.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float DEF = 0.f;
+	float MaxHealth = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float HPmax = 0.f;
+	float CurrentHealth = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float HPcur = 0.f;
+	float MaxStagger = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float SPmax = 0.f;
+	float CurrentStagger = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float SPcur = 0.f;
+	float StaggerDecay = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float CRITrate = 0.f;
+	float MaxMana = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float CRITdmg = 0.f;
+	float CurrentMana = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MaxEnergy = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CurrentEnergy = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Attack = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Impact = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Defense = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CriticalRate = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CriticalDamage = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Invincible = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SuperArmor = 0.f;
 	
 	float GetValue(const FGameplayAttribute& Attribute) const;
 };

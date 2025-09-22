@@ -5,6 +5,7 @@
 
 #include "RsAttackSet.h"
 #include "RsDefenseSet.h"
+#include "RsEnergySet.h"
 #include "RsHealthSet.h"
 #include "RsStaggerSet.h"
 #include "Rs/RsLogChannels.h"
@@ -13,41 +14,69 @@ float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
 {
 	if (Attribute == URsHealthSet::GetMaxHealthAttribute())
 	{
-		return HPmax;
+		return MaxHealth;
 	}
 	if (Attribute == URsHealthSet::GetCurrentHealthAttribute())
 	{
-		return HPcur;
+		return CurrentHealth;
 	}
 	if (Attribute == URsStaggerSet::GetMaxStaggerAttribute())
 	{
-		return SPmax;
+		return MaxStagger;
 	}
 	if (Attribute == URsStaggerSet::GetCurrentStaggerAttribute())
 	{
-		return SPcur;
+		return CurrentStagger;
+	}
+	if (Attribute == URsStaggerSet::GetStaggerDecayAttribute())
+	{
+		return StaggerDecay;
+	}
+	if (Attribute == URsEnergySet::GetMaxManaAttribute())
+	{
+		return MaxMana;
+	}
+	if (Attribute == URsEnergySet::GetCurrentManaAttribute())
+	{
+		return CurrentMana;
+	}
+	if (Attribute == URsEnergySet::GetMaxEnergyAttribute())
+	{
+		return MaxEnergy;
+	}
+	if (Attribute == URsEnergySet::GetCurrentEnergyAttribute())
+	{
+		return CurrentEnergy;
 	}
 	if (Attribute == URsAttackSet::GetAttackAttribute())
 	{
-		return ATK;
+		return Attack;
 	}
 	if (Attribute == URsAttackSet::GetImpactAttribute())
 	{
-		return IMP;
+		return Impact;
 	}
 	if (Attribute == URsDefenseSet::GetDefenseAttribute())
 	{
-		return DEF;
+		return Defense;
 	}
 	if (Attribute == URsAttackSet::GetCriticalRateAttribute())
 	{
-		return CRITrate;
+		return CriticalRate;
 	}
 	if (Attribute == URsAttackSet::GetCriticalDmgBonusAttribute())
 	{
-		return CRITdmg;
+		return CriticalDamage;
 	}
-	UE_LOG(RsLog, Warning, TEXT("Cannot find %s attribute in table!"), *Attribute.AttributeName);
+	if (Attribute == URsDefenseSet::GetInvincibleTierAttribute())
+	{
+		return Invincible;
+	}
+	if (Attribute == URsDefenseSet::GetSuperArmorTierAttribute())
+	{
+		return SuperArmor;
+	}
+	ensureMsgf(false, TEXT("Unknown attribute: %s"), *Attribute.AttributeName);
 	return 0.f;
 }
 
