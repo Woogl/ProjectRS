@@ -22,7 +22,7 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 	UPROPERTY(EditDefaultsOnly)
 	ERsEffectTarget TargetType = ERsEffectTarget::Target;
 
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient,Manual", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
 
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (RowType = ""))

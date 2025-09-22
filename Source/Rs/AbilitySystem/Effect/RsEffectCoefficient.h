@@ -17,7 +17,7 @@ struct FRsEffectCoefficient
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> EffectClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual", ForceInlineRow))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
 
 	bool IsValid() const;
