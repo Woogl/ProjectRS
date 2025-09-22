@@ -69,11 +69,11 @@ class RS_API URsEffectDefinition_InstantDamage : public URsEffectDefinition_Dama
 public:
 	URsEffectDefinition_InstantDamage();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FRsStatCoefficient> HealthDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> HealthDamageCoefficients;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FRsStatCoefficient> StaggerDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 public:
 	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
@@ -90,11 +90,12 @@ class RS_API URsEffectDefinition_DotDamage : public URsEffectDefinition_DamageBa
 
 public:
 	// Total sum of the health damage until duration end.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FRsStatCoefficient> HealthDamageCoefficients;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> HealthDamageCoefficients;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FRsStatCoefficient> StaggerDamageCoefficients;
+	// Total sum of the stagger damage until duration end.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Coefficient,Manual.Magnitude", ForceInlineRow))
+	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 3.f;

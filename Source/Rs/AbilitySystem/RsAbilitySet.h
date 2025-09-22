@@ -19,7 +19,7 @@ class URsAbilitySet : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (RowType = "RsAttributeMetaData"))
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RowType = "RsAttributeMetaData"))
 	FDataTableRowHandle GrantedAttributeTableRow;
 	
 	// Attributes / float used to set base values.

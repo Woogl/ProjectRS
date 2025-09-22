@@ -75,7 +75,7 @@ void URsEffectDefinition_DamageBase::ApplyDotDamage(UAbilitySystemComponent* Sou
 	FGameplayEffectSpecHandle DotDamageSpec = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, RsCoeff, EffectContext);
 	if (DotDamageSpec.IsValid())
 	{
-		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::MANUAL, Duration);
+		DotDamageSpec.Data->SetSetByCallerMagnitude(RsGameplayTags::COEFFICIENT_MANUAL, Duration);
 		DotDamageSpec.Data->Period = Period;
 		SET_SETBYCALLER_PROPERTY(DotDamageSpec, InvinciblePierce);
 		DotDamageSpec.Data->AppendDynamicAssetTags(DamageTags);
@@ -109,15 +109,8 @@ void URsEffectDefinition_DamageBase::ApplyHitReaction(UAbilitySystemComponent* S
 URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
 {
 	// Set default coefficient.
-	FRsStatCoefficient DefaultHealthCoff;
-	DefaultHealthCoff.CaptureSource = EGameplayEffectAttributeCaptureSource::Source;
-	DefaultHealthCoff.StatCoefficients.Add(RsGameplayTags::STAT_ATK, 1.f);
-	HealthDamageCoefficients.Add(DefaultHealthCoff);
-
-	FRsStatCoefficient DefaultStaggerCoff;
-	DefaultStaggerCoff.CaptureSource = EGameplayEffectAttributeCaptureSource::Source;
-	DefaultStaggerCoff.StatCoefficients.Add(RsGameplayTags::STAT_IMP, 1.f);
-	StaggerDamageCoefficients.Add(DefaultStaggerCoff);
+	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATK_SOURCE, 1.f);
+	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMP_SOURCE, 1.f);
 }
 
 void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)

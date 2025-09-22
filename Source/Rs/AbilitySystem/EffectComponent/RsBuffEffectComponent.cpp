@@ -29,7 +29,7 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 
 	if (AppliedToASC)
 	{
-		if (TSubclassOf<UGameplayEffect> BuffEffect = URsAbilitySystemSettings::Get().TaggedBuffEffects.FindRef(StatTag))
+		if (TSubclassOf<UGameplayEffect> BuffEffect = URsAbilitySystemSettings::Get().BuffEffects.FindRef(StatTag))
 		{
 			FRsEffectCoefficient EffectCoefficient(BuffEffect, Coefficients);
 			UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();

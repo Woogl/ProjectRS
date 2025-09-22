@@ -11,13 +11,16 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 {
 	// Capture every attribute of source and target
 	// NOTE: Attributes to be captured must exist in the source and target!
-	for (const TTuple<FGameplayTag, FGameplayAttribute>& TaggedAttribute : URsAbilitySystemSettings::Get().TaggedAttributes)
-	{
-		FName SourceKey = FName(FString(TaggedAttribute.Key.ToString() + TEXT(".Source")));
-		CaptureAttribute(SourceKey, TaggedAttribute.Value, EGameplayEffectAttributeCaptureSource::Source, true);
-		
-		FName TargetKey = FName(FString(TaggedAttribute.Key.ToString() + TEXT(".Target")));
-		CaptureAttribute(TargetKey, TaggedAttribute.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+    for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsAbilitySystemSettings::Get().Coefficients)
+    {
+    	if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))
+    	{
+    		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
+    	}
+    	else if (CoefficientTag.Key.ToString().EndsWith(TEXT("Target")))
+    	{
+    		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+    	}
 	}
 }
 
@@ -32,11 +35,9 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	
 	// Accumulate every "Coefficient * Attribute"
 	float FinalMagnitude = 0.f;
-	for (const TTuple<FName, float>& SetByCaller : Spec.SetByCallerNameMagnitudes)
+	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
 	{
-		FName AttributeTagName = ChopLastDot(SetByCaller.Key);
-		FGameplayTag AttributeTag = FGameplayTag::RequestGameplayTag(AttributeTagName, false);
-		if (URsAbilitySystemSettings::Get().TaggedAttributes.Contains(AttributeTag))
+		if (URsAbilitySystemSettings::Get().Coefficients.Contains(SetByCaller.Key))
 		{
 			float Coefficient = SetByCaller.Value;
 			if (FMath::IsNearlyZero(Coefficient) == false)
@@ -48,22 +49,12 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	}
 
 	// Add "Manual" magnitude
-	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::MANUAL, false);
+	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::COEFFICIENT_MANUAL, false);
 	
 	return FinalMagnitude;
 }
 
-void URsCoefficientCalculation::CaptureAttribute(FName Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
-{
-	FGameplayEffectAttributeCaptureDefinition Definition;
-	Definition.AttributeToCapture = Attribute;
-	Definition.AttributeSource = SourceOrTarget;
-	Definition.bSnapshot = bSnapShot;
-	RelevantAttributesToCapture.Add(Definition);
-	CapturedAttributeDefinitions.Add(Key, Definition);
-}
-
-float URsCoefficientCalculation::FindAttributeMagnitude(FName Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
+float URsCoefficientCalculation::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
 {
 	float OutMagnitude = 0.f;
 	if (CapturedAttributeDefinitions.Contains(Key))
@@ -77,14 +68,12 @@ float URsCoefficientCalculation::FindAttributeMagnitude(FName Key, const FGamepl
 	return OutMagnitude;
 }
 
-FName URsCoefficientCalculation::ChopLastDot(const FName& InName) const
+void URsCoefficientCalculation::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
 {
-	FString String = InName.ToString();
-	int32 DotIndex;
-	String.FindLastChar('.', DotIndex);
-	if (DotIndex == INDEX_NONE)
-	{
-		return InName;
-	}
-	return FName(String.LeftChop(String.Len() - DotIndex));
+	FGameplayEffectAttributeCaptureDefinition Definition;
+	Definition.AttributeToCapture = Attribute;
+	Definition.AttributeSource = SourceOrTarget;
+	Definition.bSnapshot = bSnapShot;
+	RelevantAttributesToCapture.Add(Definition);
+	CapturedAttributeDefinitions.Add(Key, Definition);
 }

@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTypes.h"
 #include "RsBuffEffectComponent.generated.h"
 
@@ -23,8 +22,8 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 	UPROPERTY(EditDefaultsOnly)
 	ERsEffectTarget TargetType = ERsEffectTarget::Target;
 
-	UPROPERTY(EditAnywhere)
-	TArray<FRsStatCoefficient> Coefficients;
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient,Manual", ForceInlineRow))
+	TMap<FGameplayTag, float> Coefficients;
 
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (RowType = ""))
 	// FDataTableRowHandle DataTableRow;

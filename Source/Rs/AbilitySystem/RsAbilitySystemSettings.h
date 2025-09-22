@@ -24,8 +24,11 @@ public:
 	virtual FName GetCategoryName() const override;
 	
 	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
-	TMap<FGameplayTag, FGameplayAttribute> TaggedAttributes;
+	TMap<FGameplayTag, FGameplayAttribute> Attributes;
+
+	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient", ForceInlineRow))
+	TMap<FGameplayTag, FGameplayAttribute> Coefficients;
 	
 	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
-	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> TaggedBuffEffects;
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> BuffEffects;
 };

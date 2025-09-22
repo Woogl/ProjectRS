@@ -20,11 +20,10 @@ public:
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 
 protected:
-	void CaptureAttribute(FName Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot);
-	float FindAttributeMagnitude(FName Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters = FAggregatorEvaluateParameters()) const;
-	FName ChopLastDot(const FName& InName) const;
+	float FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters = FAggregatorEvaluateParameters()) const;
+	void CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot);
 
 	UPROPERTY()
-	TMap<FName, FGameplayEffectAttributeCaptureDefinition> CapturedAttributeDefinitions;
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> CapturedAttributeDefinitions;
 };
 

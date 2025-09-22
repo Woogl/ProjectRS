@@ -81,15 +81,9 @@ FGameplayEffectSpecHandle URsAbilitySystemLibrary::MakeEffectSpecCoefficient(UAb
 	if (SourceASC && EffectCoefficient.IsValid())
 	{
 		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(EffectCoefficient.EffectClass, 0, EffectContext);
-		for (const FRsStatCoefficient& Coeff : EffectCoefficient.Coefficients)
+		for (const TTuple<FGameplayTag, float>& Coeff : EffectCoefficient.Coefficients)
 		{
-			FString Suffix = StaticEnum<EGameplayEffectAttributeCaptureSource>()->GetNameStringByValue((int64)Coeff.CaptureSource);
-			for (const TTuple<FGameplayTag, float>& StatCoefficient : Coeff.StatCoefficients)
-			{
-				// ex: Stat.ATK.Source
-				FName SetByCallerName = FName(StatCoefficient.Key.ToString() + TEXT(".")+ Suffix);
-				EffectSpecHandle.Data->SetSetByCallerMagnitude(SetByCallerName, StatCoefficient.Value);
-			}
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(Coeff.Key, Coeff.Value);
 		}
 		return EffectSpecHandle;
 	}
@@ -126,6 +120,6 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	{
 		return 0.f;
 	}
-	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().TaggedAttributes.FindRef(StatTag);
+	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().Attributes.FindRef(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }

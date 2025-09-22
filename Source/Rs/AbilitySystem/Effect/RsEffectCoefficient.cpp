@@ -18,7 +18,7 @@ bool FRsEffectCoefficient::IsValid() const
 	return true;
 }
 
-FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TArray<FRsStatCoefficient>& Coefficients)
+FRsEffectCoefficient::FRsEffectCoefficient(TSubclassOf<UGameplayEffect> EffectClass, const TMap<FGameplayTag, float>& Coefficients)
 	: EffectClass(EffectClass), Coefficients(Coefficients)
 {
 }
