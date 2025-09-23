@@ -19,6 +19,11 @@ class URsAbilitySet : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	
+#if WITH_EDITOR
+	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
+#endif // WITH_EDITOR
+	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RowType = "RsAttributeMetaData"))
 	FDataTableRowHandle GrantedAttributeTableRow;
 	
