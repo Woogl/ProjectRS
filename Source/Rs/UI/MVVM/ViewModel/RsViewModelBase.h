@@ -33,7 +33,6 @@ protected:
 	virtual void Initialize() {};
 	virtual void Deinitialize() {};
 
-	UPROPERTY(Transient)
 	TWeakObjectPtr<UObject> Model;
 };
 

@@ -22,6 +22,5 @@ public:
 protected:
 	virtual void Initialize() override;
 
-	UPROPERTY(Transient)
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
 };
