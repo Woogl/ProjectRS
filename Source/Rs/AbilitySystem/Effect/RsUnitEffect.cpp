@@ -16,4 +16,5 @@ URsUnitEffect_Buff::URsUnitEffect_Buff()
 URsUnitEffect_Periodic::URsUnitEffect_Periodic()
 {
 	DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	Period = 0.5f;
 }
