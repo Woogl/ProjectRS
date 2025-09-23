@@ -5,7 +5,7 @@
 
 URsGameplayEffect::URsGameplayEffect()
 {
-	DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	// DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	
 	// FCustomCalculationBasedFloat CustomDuration;
 	// CustomDuration.CalculationClassMagnitude = URsDurationCalculation::StaticClass();

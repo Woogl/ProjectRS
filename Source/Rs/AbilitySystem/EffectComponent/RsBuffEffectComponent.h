@@ -8,6 +8,7 @@
 #include "Rs/AbilitySystem/Effect/RsEffectTypes.h"
 #include "RsBuffEffectComponent.generated.h"
 
+class URsUnitEffect_Buff;
 /**
  * 
  */
@@ -16,8 +17,8 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat"))
-	FGameplayTag StatTag;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<URsUnitEffect_Buff> Effect;
 	
 	UPROPERTY(EditDefaultsOnly)
 	ERsEffectTarget TargetType = ERsEffectTarget::Target;

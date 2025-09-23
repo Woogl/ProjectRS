@@ -24,7 +24,7 @@ class RS_API URsCanApplyEffectComponent : public UCustomCanApplyGameplayEffectCo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat,Coefficient"))
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat"))
 	FGameplayTag Stat;
 
 	UPROPERTY(EditDefaultsOnly)
