@@ -23,3 +23,4 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 	EffectHandle.Data->Duration = GESpec.Duration;
 
 	URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);
+}
