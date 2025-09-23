@@ -15,25 +15,11 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 	{
 		return;
 	}
+	
+	FRsEffectCoefficient EffectCoefficient(Effect, Coefficients);
+	UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
 
-	UAbilitySystemComponent* AppliedToASC = nullptr;
-	if (TargetType == ERsEffectTarget::Source)
-	{
-		AppliedToASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
-	}
-	else if (TargetType == ERsEffectTarget::Target)
-	{
-		AppliedToASC = ActiveGEContainer.Owner;
-	}
+	FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
+	EffectHandle.Data->Duration = GESpec.Duration;
 
-	if (AppliedToASC)
-	{
-		FRsEffectCoefficient EffectCoefficient(Effect, Coefficients);
-		UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
-
-		FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
-		EffectHandle.Data->Duration = GESpec.Duration;
-
-		URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, AppliedToASC, EffectHandle);
-	}
-}
+	URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);

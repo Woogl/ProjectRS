@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "Rs/AbilitySystem/Effect/RsEffectTypes.h"
 #include "RsBuffEffectComponent.generated.h"
 
 class URsUnitEffect_Buff;
@@ -19,9 +18,6 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<URsUnitEffect_Buff> Effect;
-	
-	UPROPERTY(EditDefaultsOnly)
-	ERsEffectTarget TargetType = ERsEffectTarget::Target;
 
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
