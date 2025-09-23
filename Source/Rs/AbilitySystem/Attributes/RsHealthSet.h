@@ -29,14 +29,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, MaxHealth)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthLoss)
+	FGameplayAttributeData HealthLoss;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthLoss)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegen)
-	FGameplayAttributeData HealthRegen;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthRegen)
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Shield)
-	FGameplayAttributeData Shield;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, Shield)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Barrier)
+	FGameplayAttributeData Barrier;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, Barrier)
 
 	// Applied to reduce the "CurrentHealth" value.
 	// Reduces "Shield" first, then reduces "CurrentHealth" by any excess amount.
@@ -61,8 +61,8 @@ protected:
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
-	virtual void OnRep_HealthRegen(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_HealthLoss(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
-	virtual void OnRep_Shield(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_Barrier(const FGameplayAttributeData& OldValue);
 };

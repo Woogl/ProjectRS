@@ -14,7 +14,7 @@ struct RsHealthDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDmgBonus);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
 
@@ -23,7 +23,7 @@ struct RsHealthDamageStatics
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDmgBonus, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDamage, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
 	}
@@ -41,7 +41,7 @@ URsHealthDamageExecution::URsHealthDamageExecution()
 
 	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
-	RelevantAttributesToCapture.Add(DamageStatics->CriticalDmgBonusDef);
+	RelevantAttributesToCapture.Add(DamageStatics->CriticalDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
 }
 
@@ -79,7 +79,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	CriticalRate = FMath::Clamp(CriticalRate, 0.f, 100.f);
 	
 	float CriticalBonus = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDmgBonusDef, EvaluationParameters, CriticalBonus);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDamageDef, EvaluationParameters, CriticalBonus);
 
 	if (BaseDamage <= 0.f)
 	{

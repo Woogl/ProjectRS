@@ -33,18 +33,15 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetMaxHealth() const;
-	
-	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetHealthRegen() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetShield() const;
+	float GetBarrier() const;
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetHealthPercent() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetShieldPercent() const;
+	float GetBarrierPercent() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetCurrentHealthText() const;
@@ -64,6 +61,5 @@ public:
 private:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void CurrentHealthChanged(const FOnAttributeChangeData& Data);
-	void HealthRegenChanged(const FOnAttributeChangeData& Data);
-	void ShieldChanged(const FOnAttributeChangeData& Data);
+	void BarrierChanged(const FOnAttributeChangeData& Data);
 };

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "RsAttributeSetBase.h"
-#include "RsMovementSet.generated.h"
+#include "RsSpeedSet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsMovementSet : public URsAttributeSetBase
+class RS_API URsSpeedSet : public URsAttributeSetBase
 {
 	GENERATED_BODY()
 
 public:
-	URsMovementSet();
+	URsSpeedSet();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
@@ -23,7 +23,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeedMultiplier)
 	FGameplayAttributeData MoveSpeedMultiplier;
-	ATTRIBUTE_ACCESSORS(URsMovementSet, MoveSpeedMultiplier)
+	ATTRIBUTE_ACCESSORS(URsSpeedSet, MoveSpeedMultiplier)
 
 protected:
 	UFUNCTION()

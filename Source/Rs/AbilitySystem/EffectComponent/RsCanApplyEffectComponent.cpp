@@ -20,7 +20,10 @@ bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEff
 	{
 		// FActiveGameplayEffect DummyActiveEffect;
 		// DummyActiveEffect.Spec = GESpec;
-		ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
+		if (bNotifyImmunityBlock)
+		{
+			ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
+		}
 		return false;
 	}
 	return Super::CanGameplayEffectApply(ActiveGEContainer, GESpec);

@@ -123,3 +123,15 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().Attributes.FindRef(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }
+
+FGameplayAttribute URsAbilitySystemLibrary::FindAttributeByCoefficientTag(FGameplayTag CoefficientTag)
+{
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& Coeff : URsAbilitySystemSettings::Get().Coefficients)
+	{
+		if (CoefficientTag.MatchesTag(Coeff.Key))
+		{
+			return Coeff.Value;
+		}
+	}
+	return FGameplayAttribute();
+}

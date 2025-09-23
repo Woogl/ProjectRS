@@ -21,14 +21,14 @@ public:
 
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
-	// Apply damage to each shield. The shield with shortest reamining time will hit first.
-	void ApplyDamageToShields(UAbilitySystemComponent* AbilitySystemComponent, float DamageAmount);
+	// Apply damage to each barrier. The barrier with the shortest remaining time will hit first.
+	void ApplyDamageToBarriers(UAbilitySystemComponent* AbilitySystemComponent, float DamageAmount);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChange OnHealthChange;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChange OnShieldChange;
+	FOnAttributeChange OnBarrierChange;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathEvent OnDeathStarted;
@@ -40,18 +40,18 @@ public:
 	float GetMaxHealth();
 
 	UFUNCTION(BlueprintCallable)
-	float GetShield();
+	float GetBarrier();
 
 protected:
 	UPROPERTY()
 	TObjectPtr<const URsHealthSet> HealthSet;
 	
 	void HandleHealthChange(const FOnAttributeChangeData& ChangeData);
-	void HandleShieldChange(const FOnAttributeChangeData& ChangeData);
+	void HandleBarrierChange(const FOnAttributeChangeData& ChangeData);
 	
-	void HandleShieldAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);
-	void HandleShieldRemove(const FGameplayEffectRemovalInfo& RemovalInfo, float Magnitude);
-	void HandleShieldBroke(const FActiveGameplayEffectHandle& BrokenShieldHandle);
+	void HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);
+	void HandleBarrierRemove(const FGameplayEffectRemovalInfo& RemovalInfo, float Magnitude);
+	void HandleBarrierBroke(const FActiveGameplayEffectHandle& BrokenBarrierHandle);
 
 	UPROPERTY(ReplicatedUsing = OnRep_bIsDead)
 	bool bIsDead = false;
@@ -60,8 +60,8 @@ protected:
 	void OnRep_bIsDead(bool OldValue);
 	
 	UPROPERTY()
-	TArray<FActiveGameplayEffectHandle> ActiveShieldHandles;
+	TArray<FActiveGameplayEffectHandle> ActiveBarrierHandles;
 
 	UPROPERTY()
-	TArray<FActiveGameplayEffectHandle> RemovePendingShieldHandles;
+	TArray<FActiveGameplayEffectHandle> RemovePendingBarrierHandles;
 };

@@ -36,6 +36,9 @@ class RS_API URsCanApplyEffectComponent : public UCustomCanApplyGameplayEffectCo
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTagRequirements TagRequirements;
 
+	UPROPERTY(EditDefaultsOnly)
+	bool bNotifyImmunityBlock = true;
+
 public:
 	URsCanApplyEffectComponent();
 	

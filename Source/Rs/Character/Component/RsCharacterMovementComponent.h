@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "RsCharacterMovementComponent.generated.h"
 
-class URsMovementSet;
+class URsSpeedSet;
 /**
  * 
  */
@@ -22,5 +22,5 @@ public:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<const URsMovementSet> MovementSet = nullptr;
+	TObjectPtr<const URsSpeedSet> MovementSet = nullptr;
 };

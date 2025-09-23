@@ -5,6 +5,7 @@
 
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 
 URsCoefficientCalculation::URsCoefficientCalculation()
@@ -13,14 +14,12 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 	// NOTE: Attributes to be captured must exist in the source and target!
     for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsAbilitySystemSettings::Get().Coefficients)
     {
-    	if (CoefficientTag.Key.ToString().EndsWith(TEXT("Source")))
-    	{
-    		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
-    	}
-    	else if (CoefficientTag.Key.ToString().EndsWith(TEXT("Target")))
-    	{
-    		CaptureAttribute(CoefficientTag.Key, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
-    	}
+	    FString CoeffString = CoefficientTag.Key.ToString();
+    	FGameplayTag SourceTag = FGameplayTag::RequestGameplayTag(FName(CoeffString + TEXT(".Source")));
+    	FGameplayTag TargetTag = FGameplayTag::RequestGameplayTag(FName(CoeffString + TEXT(".Target")));
+    	
+    	CaptureAttribute(SourceTag, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
+    	CaptureAttribute(TargetTag, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
 	}
 }
 
@@ -37,7 +36,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	float FinalMagnitude = 0.f;
 	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
 	{
-		FGameplayAttribute FoundAttribute = URsAbilitySystemSettings::Get().FindAttributeFromCoefficientTag(SetByCaller.Key);
+		FGameplayAttribute FoundAttribute = URsAbilitySystemLibrary::FindAttributeByCoefficientTag(SetByCaller.Key);
 		if (FoundAttribute.IsValid())
 		{
 			float Coefficient = SetByCaller.Value;

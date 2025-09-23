@@ -31,7 +31,4 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> BuffEffects;
-
-	// ex. Coefficient.ATK.Source -> AttackAttribute
-	FGameplayAttribute FindAttributeFromCoefficientTag(const FGameplayTag& InTag) const;
 };

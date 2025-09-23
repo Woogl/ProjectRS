@@ -10,7 +10,7 @@ URsAttackSet::URsAttackSet()
 	Attack = 0.f;
 	Impact = 0.f;
 	CriticalRate = 0.f;
-	CriticalDmgBonus = 0.f;
+	CriticalDamage = 0.f;
 }
 
 void URsAttackSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -25,7 +25,7 @@ void URsAttackSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, Attack, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, Impact, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, CriticalRate, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, CriticalDmgBonus, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, CriticalDamage, Params);
 }
 
 void URsAttackSet::OnRep_Attack(const FGameplayAttributeData& OldValue)
@@ -43,7 +43,7 @@ void URsAttackSet::OnRep_CriticalRate(const FGameplayAttributeData& OldValue)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, CriticalRate, OldValue);
 }
 
-void URsAttackSet::OnRep_CriticalDmgBonus(const FGameplayAttributeData& OldValue)
+void URsAttackSet::OnRep_CriticalDamage(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, CriticalDmgBonus, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, CriticalDamage, OldValue);
 }

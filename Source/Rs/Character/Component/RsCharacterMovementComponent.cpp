@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/Attributes/RsMovementSet.h"
+#include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 
 void URsCharacterMovementComponent::BeginPlay()
 {
@@ -13,7 +13,7 @@ void URsCharacterMovementComponent::BeginPlay()
 
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		MovementSet = ASC->GetSet<URsMovementSet>();
+		MovementSet = ASC->GetSet<URsSpeedSet>();
 	}
 }
 

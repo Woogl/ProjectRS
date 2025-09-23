@@ -8,7 +8,7 @@
 #include "RsEnergySet.h"
 #include "RsHealthSet.h"
 #include "RsStaggerSet.h"
-#include "Rs/RsLogChannels.h"
+#include "RsSpeedSet.h"
 
 float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
 {
@@ -19,6 +19,10 @@ float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
 	if (Attribute == URsHealthSet::GetCurrentHealthAttribute())
 	{
 		return CurrentHealth;
+	}
+	if (Attribute == URsHealthSet::GetBarrierAttribute())
+	{
+		return Barrier;
 	}
 	if (Attribute == URsStaggerSet::GetMaxStaggerAttribute())
 	{
@@ -64,7 +68,7 @@ float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
 	{
 		return CriticalRate;
 	}
-	if (Attribute == URsAttackSet::GetCriticalDmgBonusAttribute())
+	if (Attribute == URsAttackSet::GetCriticalDamageAttribute())
 	{
 		return CriticalDamage;
 	}
@@ -75,6 +79,10 @@ float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
 	if (Attribute == URsDefenseSet::GetSuperArmorTierAttribute())
 	{
 		return SuperArmor;
+	}
+	if (Attribute == URsSpeedSet::GetMoveSpeedMultiplierAttribute())
+	{
+		return MoveSpeed;
 	}
 	ensureMsgf(false, TEXT("Unknown attribute: %s"), *Attribute.AttributeName);
 	return 0.f;
