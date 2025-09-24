@@ -141,7 +141,7 @@ void URsHealthComponent::HandleBarrierAdded(UAbilitySystemComponent* AbilitySyst
 {
 	FGameplayTagContainer OutTags;
 	GESpec.GetAllGrantedTags(OutTags);
-	if (OutTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.Shield"))))
+	if (OutTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Buff.BP"))))
 	{
 		float ShieldMagnitude = AbilitySystemComponent->GetGameplayEffectMagnitude(ActiveEffectHandle, URsHealthSet::GetBarrierAttribute());
 		AbilitySystemComponent->OnGameplayEffectRemoved_InfoDelegate(ActiveEffectHandle)->AddUObject(this, &ThisClass::HandleBarrierRemove, ShieldMagnitude);

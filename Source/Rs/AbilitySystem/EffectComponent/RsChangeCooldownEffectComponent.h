@@ -16,15 +16,15 @@ class RS_API URsChangeCooldownEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
-public:
-	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Cooldown"))
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 	ECooldownModifingType ModifingType = ECooldownModifingType::Add;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 	float Amount = 0.f;
+	
+public:
+	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;
 };

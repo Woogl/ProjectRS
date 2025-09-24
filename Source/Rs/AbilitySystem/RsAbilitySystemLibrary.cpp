@@ -108,7 +108,14 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(
 		if (FGameplayEffectSpec* EffectSpec = EffectHandle.Data.Get())
 		{
 			EffectSpec->GetContext().AddOrigin(TargetASC->GetAvatarActor()->GetActorLocation());
-			return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+			if (SourceASC == TargetASC)
+			{
+				return SourceASC->ApplyGameplayEffectSpecToSelf(*EffectSpec);
+			}
+			else
+			{
+				return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec, TargetASC);
+			}
 		}
 	}
 	return FActiveGameplayEffectHandle();
