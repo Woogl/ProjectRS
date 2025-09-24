@@ -6,13 +6,13 @@
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
-#include "RsChangeCooldownEffectComponent.generated.h"
+#include "RsCooldownEffectComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsChangeCooldownEffectComponent : public UGameplayEffectComponent
+class RS_API URsCooldownEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 

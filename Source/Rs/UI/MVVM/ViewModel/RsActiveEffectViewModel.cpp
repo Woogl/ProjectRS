@@ -6,7 +6,7 @@
 #include "Components/SlateWrapperTypes.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/EffectComponent/RsGameplayEffectUIDataComponent.h"
+#include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 
 URsActiveEffectViewModel::URsActiveEffectViewModel()
 {
@@ -23,7 +23,7 @@ URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewMode
 	}
 	
 	// Active effect view model must have UI Data.
-	const URsGameplayEffectUIDataComponent* UIData = FindRsUIData(*ActiveEffect);
+	const URsUIDataEffectComponent* UIData = FindRsUIData(*ActiveEffect);
 	if (!UIData)
 	{
 		return nullptr;
@@ -74,7 +74,7 @@ float URsActiveEffectViewModel::GetEffectProgress() const
 
 UObject* URsActiveEffectViewModel::GetIcon() const
 {
-	if (const URsGameplayEffectUIDataComponent* UIData = CachedUIData.Get())
+	if (const URsUIDataEffectComponent* UIData = CachedUIData.Get())
 	{
 		return UIData->Icon;
 	}
@@ -83,7 +83,7 @@ UObject* URsActiveEffectViewModel::GetIcon() const
 
 FText URsActiveEffectViewModel::GetDescription() const
 {
-	if (const URsGameplayEffectUIDataComponent* UIData = CachedUIData.Get())
+	if (const URsUIDataEffectComponent* UIData = CachedUIData.Get())
 	{
 		return UIData->Description;
 	}
@@ -107,13 +107,13 @@ void URsActiveEffectViewModel::AddExtraModel(FActiveGameplayEffectHandle OtherEf
 	}
 }
 
-const URsGameplayEffectUIDataComponent* URsActiveEffectViewModel::FindRsUIData(const FActiveGameplayEffect& Effect)
+const URsUIDataEffectComponent* URsActiveEffectViewModel::FindRsUIData(const FActiveGameplayEffect& Effect)
 {
 	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
 	{
 		if (!Effect.IsPendingRemove)
 		{
-			if (const URsGameplayEffectUIDataComponent* UIData = EffectDef->FindComponent<URsGameplayEffectUIDataComponent>())
+			if (const URsUIDataEffectComponent* UIData = EffectDef->FindComponent<URsUIDataEffectComponent>())
 			{
 				return UIData;
 			}

@@ -6,7 +6,7 @@
 #include "GameplayEffect.h"
 #include "RsViewModelBase.h"
 #include "Components/SlateWrapperTypes.h"
-#include "Rs/AbilitySystem/EffectComponent/RsGameplayEffectUIDataComponent.h"
+#include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 #include "RsActiveEffectViewModel.generated.h"
 
 class URsAbilitySystemComponent;
@@ -46,7 +46,7 @@ public:
 	void AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle);
 
 protected:
-	static const URsGameplayEffectUIDataComponent* FindRsUIData(const FActiveGameplayEffect& Effect);
+	static const URsUIDataEffectComponent* FindRsUIData(const FActiveGameplayEffect& Effect);
 
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
@@ -68,7 +68,7 @@ private:
 
 	bool IsStackable = false;
 	
-	TWeakObjectPtr<const URsGameplayEffectUIDataComponent> CachedUIData;
+	TWeakObjectPtr<const URsUIDataEffectComponent> CachedUIData;
 	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
 	FActiveGameplayEffectHandle CachedEffectHandle;
 	
