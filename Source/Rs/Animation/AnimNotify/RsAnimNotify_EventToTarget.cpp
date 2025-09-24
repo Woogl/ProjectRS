@@ -1,17 +1,27 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsAnimNotify_EffectToTarget.h"
+#include "RsAnimNotify_EventToTarget.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 
-URsAnimNotify_EffectToTarget::URsAnimNotify_EffectToTarget()
+URsAnimNotify_EventToTarget::URsAnimNotify_EventToTarget()
 {
 	bIsNativeBranchingPoint = true;
 }
 
-void URsAnimNotify_EffectToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+FString URsAnimNotify_EventToTarget::GetNotifyName_Implementation() const
+{
+	if (EventTag.IsValid())
+	{
+		FString EventTagString = EventTag.ToString();
+		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
+	}
+	return Super::GetNotifyName_Implementation();
+}
+
+void URsAnimNotify_EventToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 

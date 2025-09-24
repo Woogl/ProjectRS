@@ -81,6 +81,9 @@ public:
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
+	// Cancel event in AbilityEvents if currently activating.
+	void CancelAbilityEvent(FGameplayTag EventTag);
+
 protected:
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -135,7 +138,9 @@ private:
 
 	// Contains state values. Useful for storing data between anim notifies.
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<URsGenericContainer> StatesContainer;
+	TObjectPtr<URsGenericContainer> ScratchPad;
+
+	TMap<FGameplayTag, FActiveGameplayEffectHandle> ActivatedEventEffects;
 	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;

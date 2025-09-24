@@ -23,7 +23,7 @@ class RS_API URsEffectDefinition : public UObject
 	GENERATED_BODY()
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) PURE_VIRTUAL(URsEffectDefinition::ApplyEffect, );
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) PURE_VIRTUAL(URsEffectDefinition::ApplyEffect, return FActiveGameplayEffectHandle(););
 };
 
 UCLASS(Abstract)
@@ -33,7 +33,7 @@ class RS_API URsEffectDefinition_DamageBase : public URsEffectDefinition
 
 public:
 	virtual void PostInitProperties() override;
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override {};
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 InvinciblePierce;
@@ -76,7 +76,7 @@ public:
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -104,7 +104,7 @@ public:
 	float Period = 0.5f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -121,7 +121,7 @@ public:
 	float DamageMultiplierPerDotStacks = 0.05f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 UENUM()
@@ -150,7 +150,7 @@ public:
 	float Amount = 0.f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -166,7 +166,7 @@ public:
 	float Amount = 10.f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -183,7 +183,7 @@ public:
 	float DamageMultiplier = 0.1f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 UCLASS(DisplayName = "Hit Stop")
@@ -199,7 +199,7 @@ public:
 	float TargetHitStopTime = 0.2f;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
 /**
@@ -218,5 +218,5 @@ public:
 	// TMap<FGameplayTag, float> SetByCallerDatas;
 
 public:
-	virtual void ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
+	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };

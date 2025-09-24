@@ -17,7 +17,7 @@ URsGameplayAbility::URsGameplayAbility()
 	// Sets the ability to default to Instanced Per Actor.
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	StatesContainer = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
+	ScratchPad = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
 }
 
 ARsCharacterBase* URsGameplayAbility::GetAvatarCharacter() const
@@ -183,6 +183,16 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 	}
 }
 
+void URsGameplayAbility::CancelAbilityEvent(FGameplayTag EventTag)
+{
+	FActiveGameplayEffectHandle* FoundEffect = ActivatedEventEffects.Find(EventTag);
+	if (FoundEffect->IsValid())
+	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(*FoundEffect);
+		ActivatedEventEffects.Remove(EventTag);
+	}
+}
+
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
@@ -250,9 +260,9 @@ void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if (StatesContainer)
+	if (ScratchPad)
 	{
-		StatesContainer->Reset();
+		ScratchPad->Reset();
 	}
 }
 
@@ -377,7 +387,8 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 		{
 			if (EffectDefinition)
 			{
-				EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+				FActiveGameplayEffectHandle Handle = EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+				ActivatedEventEffects.Add(EventData.EventTag, Handle);
 			}
 		}
 	}

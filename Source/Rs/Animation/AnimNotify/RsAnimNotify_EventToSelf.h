@@ -1,22 +1,24 @@
-// Copyright 2024 Team BH.
+﻿// Copyright 2024 Team BH.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotify_Targeting.h"
-#include "RsAnimNotify_EffectToTarget.generated.h"
+#include "GameplayTagContainer.h"
+#include "Animation/AnimNotifies/AnimNotify.h"
+#include "RsAnimNotify_EventToSelf.generated.h"
 
 class URsEffectDefinition;
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_EffectToTarget : public URsAnimNotify_Targeting
+class RS_API URsAnimNotify_EventToSelf : public UAnimNotify
 {
 	GENERATED_BODY()
 
 public:
-	URsAnimNotify_EffectToTarget();
+	URsAnimNotify_EventToSelf();
+	virtual FString GetNotifyName_Implementation() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Category="AnimNotify"))
 	FGameplayTag EventTag;

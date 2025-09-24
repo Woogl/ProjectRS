@@ -20,6 +20,11 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 	DeveloperSetting = &URsDeveloperSetting::Get();
 }
 
+FActiveGameplayEffectHandle URsEffectDefinition_DamageBase::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+{
+	return Super::ApplyEffect(SourceASC, TargetASC);
+}
+
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
 {
 	if (!SourceASC || !TargetASC)
@@ -113,7 +118,7 @@ URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
 	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMP_SOURCE, 1.f);
 }
 
-void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
 	ApplyInstantDamage(SourceASC, TargetASC, RsHealthDamageCoeff);
@@ -122,9 +127,11 @@ void URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* Sou
 	ApplyInstantDamage(SourceASC, TargetASC, RsStaggerDamageCoeff);
 
 	ApplyHitReaction(SourceASC, TargetASC);
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FRsEffectCoefficient RsHealthDotCoeff(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
 	ApplyDotDamage(SourceASC, TargetASC, RsHealthDotCoeff, Duration, Period);
@@ -133,9 +140,11 @@ void URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceA
 	ApplyDotDamage(SourceASC, TargetASC, RsStaggerDotCoeff, Duration, Period);
 	
 	ApplyHitReaction(SourceASC, TargetASC);
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	// Apply DoT Burst Damage
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
@@ -149,9 +158,11 @@ void URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* So
 	}
 	
 	ApplyHitReaction(SourceASC, TargetASC);
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
 	TArray<FActiveGameplayEffectHandle> CooldownEffects = SourceASC->GetActiveEffects(Query);
@@ -170,13 +181,15 @@ void URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* So
 			}
 		}
 	}
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_GainEnergy::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_GainEnergy::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (SourceASC == nullptr)
 	{
-		return;
+		return FActiveGameplayEffectHandle();
 	}
 	
 	// Create a dynamic instant Gameplay Effect
@@ -191,15 +204,17 @@ void URsEffectDefinition_GainEnergy::ApplyEffect(UAbilitySystemComponent* Source
 		ModifierInfo.Attribute = URsEnergySet::GetCurrentEnergyAttribute();
 
 		// Apply a dynamic instant Gameplay Effect
-		SourceASC->ApplyGameplayEffectToSelf(GainEnergyGE, 0.f, SourceASC->MakeEffectContext());
+		return SourceASC->ApplyGameplayEffectToSelf(GainEnergyGE, 0.f, SourceASC->MakeEffectContext());
 	}
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (SourceASC == nullptr || TargetASC == nullptr)
 	{
-		return;
+		return FActiveGameplayEffectHandle();
 	}
 	
 	// Create a dynamic instant Gameplay Effect
@@ -215,15 +230,17 @@ void URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceA
 		ModifierInfo.Attribute = URsHealthSet::GetCurrentHealthAttribute();
 
 		// Apply a dynamic instant Gameplay Effect
-		SourceASC->ApplyGameplayEffectToSelf(LifestealGE, 0.f, SourceASC->MakeEffectContext());
+		return SourceASC->ApplyGameplayEffectToSelf(LifestealGE, 0.f, SourceASC->MakeEffectContext());
 	}
+	
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	if (SourceASC == nullptr || TargetASC == nullptr)
 	{
-		return;
+		return FActiveGameplayEffectHandle();
 	}
 	
 	if (SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
@@ -241,10 +258,11 @@ void URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC
 			PauseMontageTask->ReadyForActivation();
 		}
 	}
+
+	return FActiveGameplayEffectHandle();
 }
 
-void URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	
-	SourceASC->BP_ApplyGameplayEffectToTarget(CustomEffect, TargetASC, 0.f, SourceASC->MakeEffectContext());
+	return SourceASC->BP_ApplyGameplayEffectToTarget(CustomEffect, TargetASC, 0.f, SourceASC->MakeEffectContext());
 }
