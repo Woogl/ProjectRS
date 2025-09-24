@@ -10,14 +10,14 @@ struct FActiveGameplayEffectHandle;
 /**
  * 
  */
-UCLASS()
-class RS_API URsInvincibleGameplayEffectComponent : public UGameplayEffectComponent
+UCLASS(Deprecated)
+class RS_API UDEPRECATED_RsInvincibleGameplayEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
 public:
 	friend class UGameplayEffect; // Needed for upgrade path
-	URsInvincibleGameplayEffectComponent();
+	UDEPRECATED_RsInvincibleGameplayEffectComponent();
 
 	/** We need to register our callback to check for Immunity */
 	virtual bool OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const override;

@@ -10,14 +10,14 @@
 
 #define LOCTEXT_NAMESPACE "RsInvincibleGameplayEffectComponent"
 
-URsInvincibleGameplayEffectComponent::URsInvincibleGameplayEffectComponent()
+UDEPRECATED_RsInvincibleGameplayEffectComponent::UDEPRECATED_RsInvincibleGameplayEffectComponent()
 {
 #if WITH_EDITORONLY_DATA
 	EditorFriendlyName = TEXT("Immunity (Prevent damage)");
 #endif // WITH_EDITORONLY_DATA
 }
 
-bool URsInvincibleGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const
+bool UDEPRECATED_RsInvincibleGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const
 {
 	FActiveGameplayEffectHandle& ActiveGEHandle = ActiveGE.Handle;
 	UAbilitySystemComponent* OwnerASC = ActiveGEContainer.Owner;
@@ -51,7 +51,7 @@ bool URsInvincibleGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGa
 	return true;
 }
 
-bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpecToConsider, FActiveGameplayEffectHandle ImmunityActiveGE) const
+bool UDEPRECATED_RsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpecToConsider, FActiveGameplayEffectHandle ImmunityActiveGE) const
 {
 	//SCOPE_CYCLE_COUNTER(STAT_HasApplicationImmunityToSpec)
 
@@ -84,7 +84,7 @@ bool URsInvincibleGameplayEffectComponent::AllowGameplayEffectApplication(const 
 }
 
 #if WITH_EDITOR
-EDataValidationResult URsInvincibleGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
+EDataValidationResult UDEPRECATED_RsInvincibleGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
 

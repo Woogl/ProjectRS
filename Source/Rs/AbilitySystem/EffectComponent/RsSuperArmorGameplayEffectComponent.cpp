@@ -10,14 +10,14 @@
 
 #define LOCTEXT_NAMESPACE "RsSuperArmorGameplayEffectComponent"
 
-URsSuperArmorGameplayEffectComponent::URsSuperArmorGameplayEffectComponent()
+UDEPRECATED_RsSuperArmorGameplayEffectComponent::UDEPRECATED_RsSuperArmorGameplayEffectComponent()
 {
 #if WITH_EDITORONLY_DATA
 	EditorFriendlyName = TEXT("Immunity (Prevent hit reaction)");
 #endif // WITH_EDITORONLY_DATA
 }
 
-bool URsSuperArmorGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const
+bool UDEPRECATED_RsSuperArmorGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGameplayEffectsContainer& ActiveGEContainer, FActiveGameplayEffect& ActiveGE) const
 {
 	FActiveGameplayEffectHandle& ActiveGEHandle = ActiveGE.Handle;
 	UAbilitySystemComponent* OwnerASC = ActiveGEContainer.Owner;
@@ -51,7 +51,7 @@ bool URsSuperArmorGameplayEffectComponent::OnActiveGameplayEffectAdded(FActiveGa
 	return true;
 }
 
-bool URsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpecToConsider, FActiveGameplayEffectHandle ImmunityActiveGE) const
+bool UDEPRECATED_RsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpecToConsider, FActiveGameplayEffectHandle ImmunityActiveGE) const
 {
 	// SCOPE_CYCLE_COUNTER(STAT_HasApplicationImmunityToSpec)
 	
@@ -84,7 +84,7 @@ bool URsSuperArmorGameplayEffectComponent::AllowGameplayEffectApplication(const 
 }
 
 #if WITH_EDITOR
-EDataValidationResult URsSuperArmorGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
+EDataValidationResult UDEPRECATED_RsSuperArmorGameplayEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
 
