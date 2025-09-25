@@ -21,7 +21,6 @@ void URsInstantEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCo
 	UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
 
 	FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
-	// EffectHandle.Data->SetDuration(GESpec.Duration, true);
 
 	URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);
 }

@@ -21,7 +21,9 @@ void URsPeriodicEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsC
 	UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
 
 	FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoefficient, SourceASC->MakeEffectContext());
+	// Duration is shared from owning GE.
 	EffectHandle.Data->SetDuration(GESpec.Duration, true);
+	// Period will be set in BP class. (GE_Periodic_XXX)
 
 	URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);
 }
