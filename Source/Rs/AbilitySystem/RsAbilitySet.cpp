@@ -11,7 +11,7 @@ void URsAbilitySet::PostEditChangeChainProperty(struct FPropertyChangedChainEven
 	Super::PostEditChangeChainProperty(PropertyChangedEvent);
 
 	FName MemberPropertyName = PropertyChangedEvent.GetMemberPropertyName();
-	if (MemberPropertyName == TEXT("DataTable"))
+	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(FDataTableRowHandle, DataTable))
 	{
 		const FName AssetName = FName(GetNameSafe(this));
 		if (GrantedAttributeTableRow.DataTable->FindRow<FRsAttributeMetaData>(AssetName, ANSI_TO_TCHAR(__FUNCTION__)))
