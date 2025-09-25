@@ -8,6 +8,7 @@
 #include "RsBuffEffectComponent.generated.h"
 
 class URsUnitEffect_Buff;
+struct FRsEffectCoefficient;
 /**
  * 
  */
@@ -16,16 +17,25 @@ class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
+protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<URsUnitEffect_Buff> Effect;
 
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;
 
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (RowType = ""))
-	// FDataTableRowHandle DataTableRow;
+	UPROPERTY(EditDefaultsOnly, meta = (RowType = "RsEffectCoefficientTableRow"))
+	FDataTableRowHandle DataTableRow;
 	
 public:
-	// Called when a Gameplay Effect is applied. This executes the OnApplication Gameplay Effects.
+#if WITH_EDITOR
+	virtual bool CanEditChange(const FProperty* InProperty) const override;
+	virtual void PostEditChangeProperty( struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
+#endif // WITH_EDITOR
+	
 	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;
+
+protected:
+	FRsEffectCoefficient GetEffectCoefficient() const;
 };
