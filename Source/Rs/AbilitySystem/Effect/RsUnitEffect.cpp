@@ -3,6 +3,10 @@
 
 #include "RsUnitEffect.h"
 
+URsUnitEffect::URsUnitEffect()
+{
+}
+
 URsUnitEffect_Instant::URsUnitEffect_Instant()
 {
 	DurationPolicy = EGameplayEffectDurationType::Instant;
