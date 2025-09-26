@@ -5,21 +5,21 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "RsBuffEffectComponent.generated.h"
+#include "RsUnitEffectComponent.generated.h"
 
-class URsUnitEffect_Buff;
+class URsUnitEffect;
 struct FRsEffectCoefficient;
 /**
  * 
  */
 UCLASS()
-class RS_API URsBuffEffectComponent : public UGameplayEffectComponent
+class RS_API URsUnitEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<URsUnitEffect_Buff> Effect;
+	TSubclassOf<URsUnitEffect> Effect;
 
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> Coefficients;

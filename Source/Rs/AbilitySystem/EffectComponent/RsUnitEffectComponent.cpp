@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsBuffEffectComponent.h"
+#include "RsUnitEffectComponent.h"
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
@@ -13,7 +13,7 @@
 #include "Rs/AbilitySystem/Effect/RsUnitEffect.h"
 
 #if WITH_EDITOR
-bool URsBuffEffectComponent::CanEditChange(const FProperty* InProperty) const
+bool URsUnitEffectComponent::CanEditChange(const FProperty* InProperty) const
 {
 	bool bParentVal = Super::CanEditChange(InProperty);
 	
@@ -29,7 +29,7 @@ bool URsBuffEffectComponent::CanEditChange(const FProperty* InProperty) const
 	return bParentVal;
 }
 
-void URsBuffEffectComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+void URsUnitEffectComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
@@ -41,7 +41,7 @@ void URsBuffEffectComponent::PostEditChangeProperty(struct FPropertyChangedEvent
 	}
 }
 
-EDataValidationResult URsBuffEffectComponent::IsDataValid(class FDataValidationContext& Context) const
+EDataValidationResult URsUnitEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
 
@@ -62,18 +62,12 @@ EDataValidationResult URsBuffEffectComponent::IsDataValid(class FDataValidationC
 		Context.AddError(FText::FromString(FString::Printf(TEXT("EffectClass is not set. %s"), *DataTableRow.ToDebugString())));
 		return EDataValidationResult::Invalid;
 	}
-
-	if (!Row->EffectClass->IsChildOf(URsUnitEffect_Buff::StaticClass()))
-	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("EffectClass is not a buff. %s"), *DataTableRow.ToDebugString())));
-		return EDataValidationResult::Invalid;
-	}
 	
 	return Result;
 }
 #endif // WITH_EDITOR
 
-void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
+void URsUnitEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
 	if (!ensureMsgf(ActiveGEContainer.Owner, TEXT("OnGameplayEffectApplied is passed an ActiveGEContainer which lives within an ASC but that ASC was somehow null")))
 	{
@@ -90,7 +84,7 @@ void URsBuffEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsConta
 	URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);
 }
 
-FRsEffectCoefficient URsBuffEffectComponent::GetEffectCoefficient() const
+FRsEffectCoefficient URsUnitEffectComponent::GetEffectCoefficient() const
 {
 	if (DataTableRow.IsNull())
 	{
@@ -99,23 +93,20 @@ FRsEffectCoefficient URsBuffEffectComponent::GetEffectCoefficient() const
 	
 	if (FRsEffectCoefficientTableRow* Row = DataTableRow.GetRow<FRsEffectCoefficientTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
 	{
-		if (Row->EffectClass->IsChildOf(URsUnitEffect_Buff::StaticClass()))
+		TMap<FGameplayTag, float> Coeff_Table;
+		if (Row->Tag1.IsValid())
 		{
-			TMap<FGameplayTag, float> Coeff_Table;
-			if (Row->Tag1.IsValid())
-			{
-				Coeff_Table.Add(Row->Tag1, Row->Value1);
-			}
-			if (Row->Tag2.IsValid())
-			{
-				Coeff_Table.Add(Row->Tag2, Row->Value2);
-			}
-			if (Row->Tag3.IsValid())
-			{
-				Coeff_Table.Add(Row->Tag3, Row->Value3);
-			}
-			return FRsEffectCoefficient(Row->EffectClass, Coeff_Table);
+			Coeff_Table.Add(Row->Tag1, Row->Value1);
 		}
+		if (Row->Tag2.IsValid())
+		{
+			Coeff_Table.Add(Row->Tag2, Row->Value2);
+		}
+		if (Row->Tag3.IsValid())
+		{
+			Coeff_Table.Add(Row->Tag3, Row->Value3);
+		}
+		return FRsEffectCoefficient(Row->EffectClass, Coeff_Table);
 	}
 
 	UE_LOG(RsLog, Error, TEXT("%s"), *DataTableRow.ToDebugString());
