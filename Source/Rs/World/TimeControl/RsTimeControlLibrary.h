@@ -16,7 +16,7 @@ enum class ERsTimeControlPriority : uint8
 };
 
 /**
- * 
+ * The highest-priority, the latest request will apply.
  */
 UCLASS()
 class RS_API URsTimeControlLibrary : public UBlueprintFunctionLibrary
@@ -24,15 +24,13 @@ class RS_API URsTimeControlLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
-	// Pause time. Time must be resumed by the caller! (The highest-priority, the latest request will apply.)
+	// Must be resumed by the caller!
 	UFUNCTION(BlueprintCallable, Category = "RS World Time Library", meta = (WorldContext = "WorldContext"))
-	static void RequestTimePause(UObject* WorldContext, FName RequestKey, ERsTimeControlPriority Priority, float BlendTime);
+	static void RequestTimePause(UObject* WorldContext, FName Key, ERsTimeControlPriority Priority, float BlendTime);
 
-	// Time dilation. (The highest-priority, the latest request will apply.)
 	UFUNCTION(BlueprintCallable, Category = "RS World Time Library", meta = (WorldContext = "WorldContext"))
-	static void RequestTimeDilation(UObject* WorldContext, FName RequestKey, ERsTimeControlPriority Priority, float Dilation, float Duration, float BlendTime);
+	static void RequestTimeDilation(UObject* WorldContext, FName Key, ERsTimeControlPriority Priority, float Dilation, float Duration, float BlendTime);
 
-	// Resume time. (The highest-priority, the latest request will apply.)
 	UFUNCTION(BlueprintCallable, Category = "RS World Time Library", meta = (WorldContext = "WorldContext"))
-	static void RequestTimeResume(UObject* WorldContext, FName RequestKey, float BlendTime);
+	static void RequestTimeResume(UObject* WorldContext, FName Key, float BlendTime);
 };
