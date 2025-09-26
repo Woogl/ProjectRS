@@ -124,79 +124,17 @@ public:
 	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
 };
 
-UENUM()
-enum class ECooldownModifingType
-{
-	Add,
-	Set
-};
-
 /**
- * Changes the cooldown of an ability.
+ * Apply RsGameplayEffect with coefficients.
  */
-UCLASS(DisplayName = "Change Cooldown")
-class RS_API URsEffectDefinition_ChangeCooldown : public URsEffectDefinition
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Cooldown"))
-	FGameplayTag CooldownTag;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECooldownModifingType ModifingType = ECooldownModifingType::Add;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Amount = 0.f;
-
-public:
-	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
-};
-
-/**
- * Gain energy for using ultimate skill.
- */
-UCLASS(DisplayName = "Gain Energy")
-class RS_API URsEffectDefinition_GainEnergy : public URsEffectDefinition
+UCLASS(DisplayName = "Effect Coefficient")
+class RS_API URsEffectDefinition_EffectCoefficient : public URsEffectDefinition
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Amount = 10.f;
-
-public:
-	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
-};
-
-/**
- * Gain current health based on target's damage.
- * HealthGain = (HealthDamage * DamageMultiplier)
- */
-UCLASS(DisplayName = "Lifesteal")
-class RS_API URsEffectDefinition_Lifesteal : public URsEffectDefinition
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DamageMultiplier = 0.1f;
-
-public:
-	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
-};
-
-UCLASS(DisplayName = "Hit Stop")
-class RS_API URsEffectDefinition_HitStop : public URsEffectDefinition
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SourceHitStopTime = 0.2f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TargetHitStopTime = 0.2f;
+	TSubclassOf<URsGameplayEffect> Effect;
 
 public:
 	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
@@ -212,10 +150,10 @@ class RS_API URsEffectDefinition_Custom : public URsEffectDefinition
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<URsGameplayEffect> CustomEffect;
+	TSubclassOf<UGameplayEffect> Effect;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// TMap<FGameplayTag, float> SetByCallerDatas;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FGameplayTag, float> SetByCallerDatas;
 
 public:
 	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;

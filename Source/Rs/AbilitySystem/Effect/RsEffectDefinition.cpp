@@ -7,9 +7,6 @@
 #include "RsGameplayEffect.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
-#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
-#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/System/RsDeveloperSetting.h"
 
 void URsEffectDefinition_DamageBase::PostInitProperties()
@@ -162,107 +159,20 @@ FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbi
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_ChangeCooldown::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_EffectCoefficient::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
-	TArray<FActiveGameplayEffectHandle> CooldownEffects = SourceASC->GetActiveEffects(Query);
-	for (const FActiveGameplayEffectHandle& EffectHandle : CooldownEffects)
-	{
-		if (const FActiveGameplayEffect* CooldownEffect = SourceASC->GetActiveGameplayEffect(EffectHandle))
-		{
-			if (ModifingType == ECooldownModifingType::Add)
-			{
-				SourceASC->ModifyActiveEffectStartTime(EffectHandle, Amount);
-			}
-			else if (ModifingType == ECooldownModifingType::Set)
-			{
-				float TimeRemaining = CooldownEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds());
-				SourceASC->ModifyActiveEffectStartTime(EffectHandle, -TimeRemaining + Amount);
-			}
-		}
-	}
-
-	return FActiveGameplayEffectHandle();
-}
-
-FActiveGameplayEffectHandle URsEffectDefinition_GainEnergy::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	if (SourceASC == nullptr)
-	{
-		return FActiveGameplayEffectHandle();
-	}
-	
-	// Create a dynamic instant Gameplay Effect
-	if (UGameplayEffect* GainEnergyGE = NewObject<UGameplayEffect>(SourceASC))
-	{
-		GainEnergyGE->DurationPolicy = EGameplayEffectDurationType::Instant;
-		GainEnergyGE->Modifiers.SetNum(1);
-
-		FGameplayModifierInfo& ModifierInfo = GainEnergyGE->Modifiers[0];
-		ModifierInfo.ModifierMagnitude = FScalableFloat(Amount);
-		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
-		ModifierInfo.Attribute = URsEnergySet::GetCurrentEnergyAttribute();
-
-		// Apply a dynamic instant Gameplay Effect
-		return SourceASC->ApplyGameplayEffectToSelf(GainEnergyGE, 0.f, SourceASC->MakeEffectContext());
-	}
-
-	return FActiveGameplayEffectHandle();
-}
-
-FActiveGameplayEffectHandle URsEffectDefinition_Lifesteal::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	if (SourceASC == nullptr || TargetASC == nullptr)
-	{
-		return FActiveGameplayEffectHandle();
-	}
-	
-	// Create a dynamic instant Gameplay Effect
-	if (UGameplayEffect* LifestealGE = NewObject<UGameplayEffect>(SourceASC))
-	{
-		LifestealGE->DurationPolicy = EGameplayEffectDurationType::Instant;
-		LifestealGE->Modifiers.SetNum(1);
-
-		FGameplayModifierInfo& ModifierInfo = LifestealGE->Modifiers[0];
-		float Amount = TargetASC->GetNumericAttribute(URsHealthSet::GetHealthDamageAttribute());
-		ModifierInfo.ModifierMagnitude = FScalableFloat(Amount);
-		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
-		ModifierInfo.Attribute = URsHealthSet::GetCurrentHealthAttribute();
-
-		// Apply a dynamic instant Gameplay Effect
-		return SourceASC->ApplyGameplayEffectToSelf(LifestealGE, 0.f, SourceASC->MakeEffectContext());
-	}
-	
-	return FActiveGameplayEffectHandle();
-}
-
-FActiveGameplayEffectHandle URsEffectDefinition_HitStop::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	if (SourceASC == nullptr || TargetASC == nullptr)
-	{
-		return FActiveGameplayEffectHandle();
-	}
-	
-	if (SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
-	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), SourceHitStopTime))
-		{
-			PauseMontageTask->ReadyForActivation();
-		}
-	}
-	
-	if (TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
-	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime, TargetHitStopTime))
-		{
-			PauseMontageTask->ReadyForActivation();
-		}
-	}
-
-	return FActiveGameplayEffectHandle();
+	return SourceASC->BP_ApplyGameplayEffectToTarget(Effect, TargetASC, 0.f, SourceASC->MakeEffectContext());
 }
 
 FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
-	return SourceASC->BP_ApplyGameplayEffectToTarget(CustomEffect, TargetASC, 0.f, SourceASC->MakeEffectContext());
+	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
+	if (!SetByCallerDatas.IsEmpty())
+	{
+		for (const TTuple<FGameplayTag, float>& Data : SetByCallerDatas)
+		{
+			EffectSpec.Data->SetSetByCallerMagnitude(Data.Key, Data.Value);
+		}
+	}
+	return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
 }

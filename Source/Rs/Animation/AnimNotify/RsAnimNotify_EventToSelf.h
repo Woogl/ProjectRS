@@ -20,7 +20,7 @@ public:
 	URsAnimNotify_EventToSelf();
 	virtual FString GetNotifyName_Implementation() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Category="AnimNotify"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
 	FGameplayTag EventTag;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

@@ -5,8 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "RsCooldownEffectComponent.generated.h"
+
+UENUM()
+enum class ECooldownModifingType
+{
+	Add,
+	Set
+};
 
 /**
  * 
