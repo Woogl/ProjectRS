@@ -127,8 +127,8 @@ public:
 /**
  * Apply RsGameplayEffect with coefficients.
  */
-UCLASS(DisplayName = "Effect Coefficient")
-class RS_API URsEffectDefinition_EffectCoefficient : public URsEffectDefinition
+UCLASS(DisplayName = "RsGameplayEffect")
+class RS_API URsEffectDefinition_RsGameplayEffect : public URsEffectDefinition
 {
 	GENERATED_BODY()
 

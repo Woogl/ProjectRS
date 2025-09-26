@@ -159,7 +159,7 @@ FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbi
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_EffectCoefficient::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	return SourceASC->BP_ApplyGameplayEffectToTarget(Effect, TargetASC, 0.f, SourceASC->MakeEffectContext());
 }
