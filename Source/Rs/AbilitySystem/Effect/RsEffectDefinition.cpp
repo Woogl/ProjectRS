@@ -167,9 +167,16 @@ FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UA
 FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
 {
 	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
-	if (!SetByCallerDatas.IsEmpty())
+	if (!SetByCallerTags.IsEmpty())
 	{
-		for (const TTuple<FGameplayTag, float>& Data : SetByCallerDatas)
+		for (const TTuple<FGameplayTag, float>& Data : SetByCallerTags)
+		{
+			EffectSpec.Data->SetSetByCallerMagnitude(Data.Key, Data.Value);
+		}
+	}
+	if (!SetByCallerNames.IsEmpty())
+	{
+		for (const TTuple<FName, float>& Data : SetByCallerNames)
 		{
 			EffectSpec.Data->SetSetByCallerMagnitude(Data.Key, Data.Value);
 		}

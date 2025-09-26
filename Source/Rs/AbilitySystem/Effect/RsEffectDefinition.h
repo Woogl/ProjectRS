@@ -153,7 +153,10 @@ public:
 	TSubclassOf<UGameplayEffect> Effect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<FGameplayTag, float> SetByCallerDatas;
+	TMap<FGameplayTag, float> SetByCallerTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, float> SetByCallerNames;
 
 public:
 	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) override;
