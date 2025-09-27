@@ -11,7 +11,7 @@ void URsAbilityThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32
 {
     if (const URsGameplayAbility* Ability = Cast<URsGameplayAbility>(Object))
     {
-        if (const UObject* IconObject = Ability->SkillIcon)
+        if (const UObject* IconObject = Ability->Icon)
         {
             // Texture
             if (const UTexture2D* Texture = Cast<UTexture2D>(IconObject))
@@ -42,7 +42,7 @@ bool URsAbilityThumbnailRenderer::CanVisualizeAsset(UObject* Object)
 {
     if (const URsGameplayAbility* Ability = Cast<URsGameplayAbility>(Object))
     {
-        return Ability->SkillIcon != nullptr;
+        return Ability->Icon != nullptr;
     }
     return false;
 }

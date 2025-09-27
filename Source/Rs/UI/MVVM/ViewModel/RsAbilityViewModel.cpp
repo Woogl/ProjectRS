@@ -170,7 +170,7 @@ UObject* URsAbilityViewModel::GetSkillIcon() const
 {
 	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
-		return Ability->SkillIcon;
+		return Ability->Icon;
 	}
 	return nullptr;
 }

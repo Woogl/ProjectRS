@@ -23,15 +23,21 @@ public:
 	URsGameplayAbility();
 	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, Category = "RS|Activation")
 	bool bActivateOnGranted = false;
 
 	// Which Input Action to bind the activation event to.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
-	TObjectPtr<UObject> SkillIcon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
+	TObjectPtr<UObject> Icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic")
+	FText DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic")
+	FText Description;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
