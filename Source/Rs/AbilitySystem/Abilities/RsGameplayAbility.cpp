@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
@@ -17,7 +18,10 @@ URsGameplayAbility::URsGameplayAbility()
 	// Sets the ability to default to Instanced Per Actor.
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	ScratchPad = CreateDefaultSubobject<URsGenericContainer>(TEXT("StatesContainer"));
+	ScratchPad = CreateDefaultSubobject<URsGenericContainer>(TEXT("ScratchPad"));
+
+	CostGameplayEffectClass = URsAbilitySystemSettings::Get().DefaultCostEffect;
+	CooldownGameplayEffectClass = URsAbilitySystemSettings::Get().DefaultCooldownEffect;
 }
 
 ARsCharacterBase* URsGameplayAbility::GetAvatarCharacter() const
@@ -46,10 +50,13 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 	// Don't apply cooldown while recharging.
 	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
 	{
-		ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+		if (bApplyCooldownOnEnd == false)
+		{
+			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
+		}
 	}
 
-	ApplyCost(Handle, ActorInfo, ActivationInfo);
+	CommitAbilityCost(Handle, ActorInfo, ActivationInfo);
 
 	if (MaxRechargeStacks > 0)
 	{
@@ -260,6 +267,15 @@ void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	if (bApplyCooldownOnEnd)
+	{
+		// Prevents the cooldown effect from being applied multiple times.
+		if (MaxRechargeStacks <= 1 || (CurrentRechargeStacks == MaxRechargeStacks - 1))
+		{
+			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
+		}
+	}
+	
 	if (ScratchPad)
 	{
 		ScratchPad->Reset();

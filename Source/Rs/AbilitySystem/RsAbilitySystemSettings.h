@@ -23,9 +23,15 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 	
-	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Stat", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> Attributes;
 
-	UPROPERTY(EditDefaultsOnly, config, meta = (Categories = "Coefficient", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> Coefficients;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DefaultCostEffect;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
 };
