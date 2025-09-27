@@ -5,6 +5,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
+#include "Attributes/RsAttributeMetaData.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"

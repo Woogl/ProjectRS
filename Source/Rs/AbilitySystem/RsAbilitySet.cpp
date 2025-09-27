@@ -3,7 +3,7 @@
 
 #include "RsAbilitySet.h"
 
-#include "Attributes/RsAttributeSetBase.h"
+#include "Attributes/RsAttributeMetaData.h"
 
 #if WITH_EDITOR
 void URsAbilitySet::PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent)
@@ -13,11 +13,26 @@ void URsAbilitySet::PostEditChangeChainProperty(struct FPropertyChangedChainEven
 	FName MemberPropertyName = PropertyChangedEvent.GetMemberPropertyName();
 	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(FDataTableRowHandle, DataTable))
 	{
+		GrantedAttributes.Empty();
+		
 		const FName AssetName = FName(GetNameSafe(this));
 		if (GrantedAttributeTableRow.DataTable->FindRow<FRsAttributeMetaData>(AssetName, ANSI_TO_TCHAR(__FUNCTION__)))
 		{
 			GrantedAttributeTableRow.RowName = AssetName;
 		}
 	}
+}
+
+bool URsAbilitySet::CanEditChange(const FProperty* InProperty) const
+{
+	bool bParentVal = Super::CanEditChange(InProperty);
+	
+	bool bDataTableValid = !GrantedAttributeTableRow.IsNull();
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, GrantedAttributeTableRow))
+	{
+		return bParentVal && !bDataTableValid;
+	}
+	
+	return bParentVal;
 }
 #endif // WITH_EDITOR
