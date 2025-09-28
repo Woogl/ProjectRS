@@ -30,13 +30,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> Icon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
 	FText DisplayName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|Cosmetic")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
 	FText Description;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))

@@ -36,6 +36,16 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 }
 
+void ARsCharacterBase::PostInitProperties()
+{
+	Super::PostInitProperties();
+
+	if (DisplayName.IsEmpty())
+	{
+		DisplayName = FText::FromString(GetName());
+	}
+}
+
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

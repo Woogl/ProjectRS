@@ -58,15 +58,6 @@ void URsCharacterViewModel::Deinitialize()
 	
 }
 
-FText URsCharacterViewModel::GetCharacterName() const
-{
-	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
-	{
-		return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
-	}
-	return FText::GetEmpty();
-}
-
 UObject* URsCharacterViewModel::GetPortrait() const
 {
 	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
@@ -74,6 +65,24 @@ UObject* URsCharacterViewModel::GetPortrait() const
 		return Character->Portrait;
 	}
 	return nullptr;
+}
+
+FText URsCharacterViewModel::GetCharacterName() const
+{
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	{
+		return Character->DisplayName;
+	}
+	return FText::GetEmpty();
+}
+
+FText URsCharacterViewModel::GetDescription() const
+{
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	{
+		return Character->Description;
+	}
+	return FText::GetEmpty();
 }
 
 ESlateVisibility URsCharacterViewModel::GetPortraitVisibility() const

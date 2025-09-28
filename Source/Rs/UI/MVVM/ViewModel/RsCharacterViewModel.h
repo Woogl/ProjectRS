@@ -34,10 +34,13 @@ protected:
 
 public:
 	UFUNCTION(BlueprintPure)
+	UObject* GetPortrait() const;
+
+	UFUNCTION(BlueprintPure)
 	FText GetCharacterName() const;
 
 	UFUNCTION(BlueprintPure)
-	UObject* GetPortrait() const;
+	FText GetDescription() const;
 
 	UFUNCTION(BlueprintPure)
 	ESlateVisibility GetPortraitVisibility() const;

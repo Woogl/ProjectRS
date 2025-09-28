@@ -34,6 +34,7 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
+	virtual void PostInitProperties() override;
 	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -84,8 +85,14 @@ protected:
 	ERsTeamId TeamId = ERsTeamId::Neutral;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> Portrait;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
+	FText DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
+	FText Description;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BehaviorTree;
