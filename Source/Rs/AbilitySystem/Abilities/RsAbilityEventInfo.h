@@ -21,14 +21,4 @@ struct FRsAbilityEventInfo
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<URsEffectDefinition*> EffectDefinitions;
-
-	bool operator==(const FRsAbilityEventInfo& Other) const
-	{
-		return this->EventTag == Other.EventTag;
-	}
-	
-	bool operator==(const FGameplayTag& Other) const
-	{
-		return this->EventTag == Other;
-	}
 };

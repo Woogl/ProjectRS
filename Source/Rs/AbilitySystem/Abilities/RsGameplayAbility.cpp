@@ -397,15 +397,17 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
-	if (FRsAbilityEventInfo* AbilityEventInfo = AbilityEvents.FindByKey(EventData.EventTag))
+
+	for (const FRsAbilityEventInfo& AbilityEvent : AbilityEvents)
 	{
-		for (URsEffectDefinition* EffectDefinition : AbilityEventInfo->EffectDefinitions)
+		if (AbilityEvent.EventTag == EventData.EventTag)
 		{
-			if (EffectDefinition)
+			for (URsEffectDefinition* EffectDefinition : AbilityEvent.EffectDefinitions)
 			{
 				FActiveGameplayEffectHandle Handle = EffectDefinition->ApplyEffect(SourceASC, TargetASC);
 				ActivatedEventEffects.Add(EventData.EventTag, Handle);
 			}
+			break;
 		}
 	}
 	
