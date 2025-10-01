@@ -8,7 +8,7 @@
 #include "ScalableFloat.h"
 #include "RsAbilitySet.generated.h"
 
-class URsGameplayAbility;
+class UGameplayAbility;
 class URsAttributeSetBase;
 class UGameplayEffect;
 
@@ -34,7 +34,7 @@ public:
 
 	// Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability")
-	TSet<TSubclassOf<URsGameplayAbility>> GrantedAbilities;
+	TSet<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 
 	// Gameplay Effects to apply.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effect")

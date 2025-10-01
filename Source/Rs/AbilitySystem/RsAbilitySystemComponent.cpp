@@ -65,7 +65,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	}
 
 	// Grant abilities.
-	for (const TSubclassOf<URsGameplayAbility>& GameplayAbility : AbilitySet->GrantedAbilities)
+	for (const TSubclassOf<UGameplayAbility>& GameplayAbility : AbilitySet->GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(GameplayAbility, 0, INDEX_NONE, InOwnerActor);
 		FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);

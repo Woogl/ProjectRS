@@ -11,6 +11,13 @@ class UInputAction;
 class URsGenericContainer;
 class ARsCharacterBase;
 
+UENUM()
+enum class ECooldownApplyTiming : uint8
+{
+	OnApply,
+	OnEnd
+};
+
 /**
  * 
  */
@@ -31,7 +38,7 @@ public:
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
-	TObjectPtr<UObject> Icon;
+	TObjectPtr<UObject> Icon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
 	FText DisplayName;
@@ -43,10 +50,10 @@ public:
 	FGameplayTag CooldownTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
-	float CooldownDuration;
+	float CooldownDuration = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
-	bool bApplyCooldownOnEnd = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
+	ECooldownApplyTiming CooldownApplyTiming = ECooldownApplyTiming::OnApply;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
@@ -55,7 +62,7 @@ public:
 	FOnRechargeStacksChanged OnRechargeStacksChanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
-	float CostAmount;
+	float CostAmount = 0.f;
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	ARsCharacterBase* GetAvatarCharacter() const;
@@ -84,7 +91,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Cooldowns")
 	void SetCurrentRechargeStacks(int32 NewStacks);
 	
-	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable. 
+	// Called to bind Input Pressed and Input Released events to the Avatar Actor's Enhanced Input Component if it is reachable.
 	void SetupEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
 	// Clear the bindings from the Enhanced Input Component.
