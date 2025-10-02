@@ -27,12 +27,11 @@ bool URsAbilitySet::CanEditChange(const FProperty* InProperty) const
 {
 	bool bParentVal = Super::CanEditChange(InProperty);
 	
-	bool bDataTableValid = !GrantedAttributeTableRow.IsNull();
-	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, GrantedAttributeTableRow))
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, GrantedAttributes))
 	{
-		return bParentVal && !bDataTableValid;
+		bool bIsDataTableNull = GrantedAttributeTableRow.IsNull();
+		return bParentVal && bIsDataTableNull;
 	}
-	
 	return bParentVal;
 }
 #endif // WITH_EDITOR

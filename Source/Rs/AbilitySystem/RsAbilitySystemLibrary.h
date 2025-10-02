@@ -33,6 +33,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
 	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
 
+	// Global ASC for applying environmental effects. All attribute is always 0.
+	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (WorldContext = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
+	static UAbilitySystemComponent* GetDummyAbilitySystemComponent(const UObject* WorldContextObject);
+
 	/** Gameplay Ability */
 	
 	// Find the first ability that matches tags. 

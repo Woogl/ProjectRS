@@ -3,7 +3,31 @@
 
 #include "RsWorldSettings.h"
 
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+
 ARsWorldSettings::ARsWorldSettings()
 {
 	MinGlobalTimeDilation = 0.f;
+
+	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(false);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+}
+
+void ARsWorldSettings::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TObjectPtr<URsAbilitySet> AbilitySet = URsAbilitySystemSettings::Get().EnvironmentalAbilitySet;
+	if (AbilitySystemComponent && AbilitySet)
+	{
+		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
+	}
+}
+
+UAbilitySystemComponent* ARsWorldSettings::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }

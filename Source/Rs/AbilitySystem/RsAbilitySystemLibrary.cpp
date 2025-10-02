@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "AbilitySystemInterface.h"
 #include "RsAbilitySystemComponent.h"
 #include "RsAbilitySystemSettings.h"
 #include "Abilities/RsGameplayAbility.h"
@@ -14,6 +15,25 @@
 URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
 {
 	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
+}
+
+UAbilitySystemComponent* URsAbilitySystemLibrary::GetDummyAbilitySystemComponent(const UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return nullptr;
+	}
+	const UWorld* World = WorldContextObject->GetWorld();
+	if (!World)
+	{
+		return nullptr;
+	}
+	const IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(World->GetWorldSettings());
+	if (ASI)
+	{
+		return ASI->GetAbilitySystemComponent();
+	}
+	return nullptr;
 }
 
 UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)

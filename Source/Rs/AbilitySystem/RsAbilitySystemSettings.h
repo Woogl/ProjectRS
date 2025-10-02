@@ -9,6 +9,7 @@
 #include "RsAbilitySystemSettings.generated.h"
 
 class UGameplayEffect;
+class URsAbilitySet;
 /**
  * 
  */
@@ -34,4 +35,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
+
+	// Data used to initialize the world effects source.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Environments")
+	TObjectPtr<URsAbilitySet> EnvironmentalAbilitySet;
 };
