@@ -50,7 +50,7 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 	// Don't apply cooldown while recharging.
 	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
 	{
-		if (CooldownApplyTiming == ECooldownApplyTiming::OnApply)
+		if (CooldownApplyTiming == ECooldownApplyTiming::OnActivate)
 		{
 			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
 		}
