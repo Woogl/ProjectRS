@@ -37,6 +37,6 @@ public:
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
 
 	// Data used to initialize the world effects source.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Environments")
-	TObjectPtr<URsAbilitySet> EnvironmentalAbilitySet;
+	UPROPERTY(EditDefaultsOnly, config, Category = "Environments")
+	TSoftObjectPtr<URsAbilitySet> EnvironmentalAbilitySet;
 };
