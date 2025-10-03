@@ -17,9 +17,9 @@ void URsEffectDefinition_DamageBase::PostInitProperties()
 	DeveloperSetting = &URsDeveloperSetting::Get();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_DamageBase::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_DamageBase::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
-	return Super::ApplyEffect(SourceASC, TargetASC);
+	return Super::ApplyEffect(SourceASC, TargetASC, EventData);
 }
 
 FGameplayEffectContextHandle URsEffectDefinition_DamageBase::MakeDamageEffectContext(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC) const
@@ -115,7 +115,7 @@ URsEffectDefinition_InstantDamage::URsEffectDefinition_InstantDamage()
 	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMP_SOURCE, 1.f);
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_InstantDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
 	FRsEffectCoefficient RsHealthDamageCoeff(DeveloperSetting->HealthDamageEffectClass, HealthDamageCoefficients);
 	ApplyInstantDamage(SourceASC, TargetASC, RsHealthDamageCoeff);
@@ -128,7 +128,7 @@ FActiveGameplayEffectHandle URsEffectDefinition_InstantDamage::ApplyEffect(UAbil
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_DotDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
 	FRsEffectCoefficient RsHealthDotCoeff(DeveloperSetting->HealthDotDamageEffectClass, HealthDamageCoefficients);
 	ApplyDotDamage(SourceASC, TargetASC, RsHealthDotCoeff, Duration, Period);
@@ -141,7 +141,7 @@ FActiveGameplayEffectHandle URsEffectDefinition_DotDamage::ApplyEffect(UAbilityS
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
 	// Apply DoT Burst Damage
 	FGameplayEffectContextHandle EffectContext = MakeDamageEffectContext(SourceASC, TargetASC);
@@ -159,14 +159,23 @@ FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbi
 	return FActiveGameplayEffectHandle();
 }
 
-FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
-{
-	return SourceASC->BP_ApplyGameplayEffectToTarget(Effect, TargetASC, 0.f, SourceASC->MakeEffectContext());
-}
-
-FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC)
+FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
 	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
+	if (EventData.EventMagnitude > 0)
+	{
+		EffectSpec.Data->SetDuration(EventData.EventMagnitude, true);
+	}
+	return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
+}
+
+FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
+{
+	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
+	if (EventData.EventMagnitude > 0)
+	{
+		EffectSpec.Data->SetDuration(EventData.EventMagnitude, true);
+	}
 	if (!SetByCallerTags.IsEmpty())
 	{
 		for (const TTuple<FGameplayTag, float>& Data : SetByCallerTags)

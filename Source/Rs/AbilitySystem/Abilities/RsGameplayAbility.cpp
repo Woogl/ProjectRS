@@ -404,7 +404,7 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 		{
 			for (URsEffectDefinition* EffectDefinition : AbilityEvent.EffectDefinitions)
 			{
-				FActiveGameplayEffectHandle Handle = EffectDefinition->ApplyEffect(SourceASC, TargetASC);
+				FActiveGameplayEffectHandle Handle = EffectDefinition->ApplyEffect(SourceASC, TargetASC, EventData);
 				ActivatedEventEffects.Add(EventData.EventTag, Handle);
 			}
 			break;

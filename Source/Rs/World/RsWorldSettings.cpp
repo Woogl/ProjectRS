@@ -13,7 +13,6 @@ ARsWorldSettings::ARsWorldSettings()
 
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(false);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 void ARsWorldSettings::BeginPlay()

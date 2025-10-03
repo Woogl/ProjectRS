@@ -38,6 +38,7 @@ void URsAnimNotifyState_EventToTarget::NotifyBegin(USkeletalMeshComponent* MeshC
 				Payload.EventTag = EventTag;
 				Payload.Instigator = Owner;
 				Payload.Target = Target;
+				Payload.EventMagnitude = TotalDuration;	// GE Duration
 				OwnerASC->HandleGameplayEvent(EventTag, &Payload);
 			}
 		}

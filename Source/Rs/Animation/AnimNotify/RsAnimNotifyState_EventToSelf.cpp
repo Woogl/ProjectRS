@@ -27,14 +27,17 @@ void URsAnimNotifyState_EventToSelf::NotifyBegin(USkeletalMeshComponent* MeshCom
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (AActor* Owner = MeshComp->GetOwner())
+	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner || !OwnerASC.IsValid())
 	{
-		FGameplayEventData Payload;
-		Payload.EventTag = EventTag;
-		Payload.Instigator = Owner;
-		Payload.Target = Owner;
-		OwnerASC->HandleGameplayEvent(EventTag, &Payload);
+		return;
 	}
+
+	FGameplayEventData Payload;
+	Payload.EventTag = EventTag;
+	Payload.Instigator = Owner;
+	Payload.Target = Owner;
+	OwnerASC->HandleGameplayEvent(EventTag, &Payload);
 }
 
 void URsAnimNotifyState_EventToSelf::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
