@@ -41,12 +41,11 @@ void URsAbilityViewModel::Initialize()
 
 void URsAbilityViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-	
 	if (URsGameplayAbility* Ability = GetModel<ThisClass>())
 	{
 		Ability->OnRechargeStacksChanged.RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 float URsAbilityViewModel::GetCooldownDuration() const

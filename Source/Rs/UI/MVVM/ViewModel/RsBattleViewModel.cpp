@@ -26,14 +26,13 @@ void URsBattleViewModel::Initialize()
 
 void URsBattleViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-
 	if (URsBattleSubsystem* BattleSubsystem = GetModel<ThisClass>())
 	{
 		BattleSubsystem->OnBossFight.RemoveAll(this);
 		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
 		BattleSubsystem->OnLinkSkillFinish.RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 void URsBattleViewModel::DecrementLinkSkillCount(ARsCharacterBase* CurrentTarget, ERsLinkSkillType LinkSkillType)

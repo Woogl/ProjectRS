@@ -8,7 +8,7 @@
 #include "RsEffectCoefficient.h"
 #include "RsEffectDefinition.generated.h"
 
-class URsGameplayEffect;
+class URsStatusEffect;
 struct FGameplayEffectSpec;
 struct FGameplayEffectSpecHandle;
 struct FGameplayEventData;
@@ -135,7 +135,7 @@ class RS_API URsEffectDefinition_RsGameplayEffect : public URsEffectDefinition
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<URsGameplayEffect> Effect;
+	TSubclassOf<URsStatusEffect> Effect;
 
 public:
 	virtual FActiveGameplayEffectHandle ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData) override;

@@ -23,13 +23,12 @@ void URsEnergySetViewModel::Initialize()
 
 void URsEnergySetViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-	
 	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxEnergyAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentEnergyAttribute()).RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 float URsEnergySetViewModel::GetCurrentEnergy() const

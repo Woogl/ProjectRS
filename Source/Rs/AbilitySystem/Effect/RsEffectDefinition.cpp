@@ -4,7 +4,7 @@
 #include "RsEffectDefinition.h"
 
 #include "AbilitySystemComponent.h"
-#include "RsGameplayEffect.h"
+#include "RsStatusEffect.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/System/RsDeveloperSetting.h"

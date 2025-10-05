@@ -4,16 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
-#include "RsGameplayEffect.generated.h"
+#include "RsStatusEffect.generated.h"
 
 /**
  * Categorized gameplay effect for designer.
  */
 UCLASS(Abstract)
-class RS_API URsGameplayEffect : public UGameplayEffect
+class RS_API URsStatusEffect : public UGameplayEffect
 {
 	GENERATED_BODY()
 
 public:
-	URsGameplayEffect();
+	URsStatusEffect();
+	
 };

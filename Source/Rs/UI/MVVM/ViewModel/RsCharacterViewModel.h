@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
 #include "RsViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
-class URsActiveEffectListViewViewModel;
+class URsActiveEffectViewModel;
 class URsStaggerSetViewModel;
 class URsHealthSetViewModel;
+class UAbilitySystemComponent;
 class ARsCharacterBase;
 /**
  * 
@@ -32,6 +34,9 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
+	void OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle);
+	void OnEffectRemoved(URsActiveEffectViewModel* DisabledViewModel);
+
 public:
 	UFUNCTION(BlueprintPure)
 	UObject* GetPortrait() const;
@@ -52,6 +57,6 @@ protected:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsStaggerSetViewModel> StaggerSetViewModel;
 
-	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess, FieldNotifySetter = ""))
-	TObjectPtr<URsActiveEffectListViewViewModel> ActiveEffectListViewViewModel;
+	UPROPERTY(FieldNotify, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TArray<TObjectPtr<URsActiveEffectViewModel>> ActiveEffectViewModels;
 };

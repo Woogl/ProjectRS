@@ -24,14 +24,13 @@ void URsStaggerSetViewModel::Initialize()
 
 void URsStaggerSetViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-	
 	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 float URsStaggerSetViewModel::GetCurrentStagger() const

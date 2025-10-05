@@ -38,20 +38,30 @@ public:
 	float GetEffectProgress() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
+	int32 GetPriority() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
 	UObject* GetIcon() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetDescription() const;
 
-	void AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle);
-
 protected:
-	static const URsUIDataEffectComponent* FindRsUIData(const FActiveGameplayEffect& Effect);
+	static const URsUIDataEffectComponent* FindRsUIData(const FActiveGameplayEffect& Effect)
+	{
+		if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
+		{
+			if (const URsUIDataEffectComponent* UIData = EffectDef->FindComponent<URsUIDataEffectComponent>())
+			{
+				return UIData;
+			}
+		}
+		return nullptr;
+	};
 
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	virtual bool IsTickable() const override;
 	virtual void Tick(float DeltaTime) override;
 
 	void OnEffectAdded();
@@ -71,7 +81,4 @@ private:
 	TWeakObjectPtr<const URsUIDataEffectComponent> CachedUIData;
 	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
 	FActiveGameplayEffectHandle CachedEffectHandle;
-	
-	TArray<const FActiveGameplayEffect*> ExtraModels;
-	int32 Stack = 1;
 };

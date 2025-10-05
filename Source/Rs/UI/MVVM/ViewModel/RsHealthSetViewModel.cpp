@@ -25,14 +25,13 @@ void URsHealthSetViewModel::Initialize()
 
 void URsHealthSetViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-
 	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetBarrierAttribute()).RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 float URsHealthSetViewModel::GetCurrentHealth() const

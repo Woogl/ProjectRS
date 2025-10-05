@@ -63,8 +63,6 @@ void URsPartyViewModel::Initialize()
 
 void URsPartyViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-
 	if (URsPartyComponent* PartyComponent = GetModel<ThisClass>())
 	{
 		PartyComponent->OnAddPartyMember.RemoveAll(this);
@@ -75,6 +73,7 @@ void URsPartyViewModel::Deinitialize()
 	{
 		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 ESlateVisibility URsPartyViewModel::GetPartyMemberVisibility_0() const

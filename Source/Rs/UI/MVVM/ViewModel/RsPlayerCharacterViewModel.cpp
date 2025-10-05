@@ -72,8 +72,6 @@ void URsPlayerCharacterViewModel::Initialize()
 
 void URsPlayerCharacterViewModel::Deinitialize()
 {
-	Super::Deinitialize();
-
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetModel<ThisClass>(), 0))
 	{
 		PlayerController->OnPossessedPawnChanged.RemoveAll(this);
@@ -89,6 +87,7 @@ void URsPlayerCharacterViewModel::Deinitialize()
 		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
 		BattleSubsystem->OnLinkSkillFinish.RemoveAll(this);
 	}
+	Super::Deinitialize();
 }
 
 int32 URsPlayerCharacterViewModel::GetPartyMemberIndex() const

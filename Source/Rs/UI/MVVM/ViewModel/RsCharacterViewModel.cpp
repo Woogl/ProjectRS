@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "CommonHardwareVisibilityBorder.h"
-#include "RsActiveEffectListViewViewModel.h"
+#include "RsActiveEffectViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/GameplayStatics.h"
@@ -47,15 +47,42 @@ void URsCharacterViewModel::Initialize()
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
 			}
-			UE_MVVM_SET_PROPERTY_VALUE(ActiveEffectListViewViewModel, URsActiveEffectListViewViewModel::CreateActiveEffectListViewViewModel(ASC));
+			ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
 		}
 	}
 }
 
 void URsCharacterViewModel::Deinitialize()
 {
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
+		{
+			ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
+		}
+	}
 	Super::Deinitialize();
-	
+}
+
+void URsCharacterViewModel::OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)
+{
+	if (URsActiveEffectViewModel* NewEffectViewModel = URsActiveEffectViewModel::CreateRsActiveEffectViewModel(EffectHandle))
+	{
+		NewEffectViewModel->OnViewModelDisabled.AddUObject(this, &ThisClass::OnEffectRemoved);
+		ActiveEffectViewModels.Add(NewEffectViewModel);
+		ActiveEffectViewModels.Sort([](const URsActiveEffectViewModel& A, const URsActiveEffectViewModel& B)->bool{return A.GetPriority() > B.GetPriority();});
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
+	}
+}
+
+void URsCharacterViewModel::OnEffectRemoved(URsActiveEffectViewModel* DisabledViewModel)
+{
+	if (DisabledViewModel)
+	{
+		DisabledViewModel->OnViewModelDisabled.RemoveAll(this);
+		ActiveEffectViewModels.Remove(DisabledViewModel);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
+	}
 }
 
 UObject* URsCharacterViewModel::GetPortrait() const

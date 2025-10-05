@@ -4,7 +4,6 @@
 #include "RsActiveEffectViewModel.h"
 
 #include "Components/SlateWrapperTypes.h"
-#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 
@@ -39,87 +38,40 @@ URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewMode
 
 ESlateVisibility URsActiveEffectViewModel::GetVisibility() const
 {
-	if (GetActiveEffect())
-	{
-		return ESlateVisibility::HitTestInvisible;
-	}
-	else
-	{
-		return ESlateVisibility::Collapsed;
-	}
+	return GetActiveEffect() ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed;
 }
 
 int32 URsActiveEffectViewModel::GetStack() const
 {
-	return Stack;
+	const FActiveGameplayEffect* ActiveEffect = GetActiveEffect();
+	return ActiveEffect ? ActiveEffect->ClientCachedStackCount : 0;
 }
 
 FText URsActiveEffectViewModel::GetStackText() const
 {
-	if (Stack > 1)
-	{
-		return FText::AsNumber(Stack);
-	}
-	return FText();
+	int32 Stack = GetStack();
+	return Stack > 1 ? FText::AsNumber(Stack) : FText();
 }
 
 float URsActiveEffectViewModel::GetEffectProgress() const
 {
-	if (const FActiveGameplayEffect* ActiveEffect = GetActiveEffect())
-	{
-		return ActiveEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds()) / ActiveEffect->GetDuration();
-	}
-	return 1.f;
+	const FActiveGameplayEffect* ActiveEffect = GetActiveEffect();
+	return ActiveEffect ? ActiveEffect->GetTimeRemaining(GetWorld()->GetTimeSeconds()) / ActiveEffect->GetDuration() : 1.0f;
+}
+
+int32 URsActiveEffectViewModel::GetPriority() const
+{
+	return CachedUIData.Get() ? CachedUIData->GetPriority() : 0;
 }
 
 UObject* URsActiveEffectViewModel::GetIcon() const
 {
-	if (const URsUIDataEffectComponent* UIData = CachedUIData.Get())
-	{
-		return UIData->Icon;
-	}
-	return nullptr;
+	return CachedUIData.Get() ? CachedUIData->GetIcon() : nullptr;
 }
 
 FText URsActiveEffectViewModel::GetDescription() const
 {
-	if (const URsUIDataEffectComponent* UIData = CachedUIData.Get())
-	{
-		return UIData->Description;
-	}
-	return FText();
-}
-
-void URsActiveEffectViewModel::AddExtraModel(FActiveGameplayEffectHandle OtherEffectHandle)
-{
-	if (GetActiveEffect() && CachedUIData.IsValid())
-	{
-		const FActiveGameplayEffect* OtherModelEffect = CachedASC->GetActiveGameplayEffect(OtherEffectHandle);
-		if (CachedUIData == FindRsUIData(*OtherModelEffect))
-		{
-			ExtraModels.Add(OtherModelEffect);
-			CachedASC.Get()->OnGameplayEffectTimeChangeDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRenewed);
-			CachedASC.Get()->OnGameplayEffectRemoved_InfoDelegate(OtherEffectHandle)->AddUObject(this, &ThisClass::OnEffectRemoved);
-			Stack++;
-			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStack);
-			UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackText);
-		}
-	}
-}
-
-const URsUIDataEffectComponent* URsActiveEffectViewModel::FindRsUIData(const FActiveGameplayEffect& Effect)
-{
-	if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
-	{
-		if (!Effect.IsPendingRemove)
-		{
-			if (const URsUIDataEffectComponent* UIData = EffectDef->FindComponent<URsUIDataEffectComponent>())
-			{
-				return UIData;
-			}
-		}
-	}
-	return nullptr;
+	return CachedUIData.Get() ? CachedUIData->GetDescription() : FText();
 }
 
 void URsActiveEffectViewModel::OnEffectAdded()
@@ -128,57 +80,23 @@ void URsActiveEffectViewModel::OnEffectAdded()
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetIcon);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetDescription);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetVisibility);
-	if (GetActiveEffect())
-	{
-		FGameplayTagContainer ModelTags;
-		GetActiveEffect()->Spec.GetAllAssetTags(ModelTags);
-		if (ModelTags.HasTag(FGameplayTag::RequestGameplayTag("Effect.Damage.Dot")))
-		{
-			IsStackable = true;
-		}
-	}
 }
 
 void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration)
 {
-	// not nessesary
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEffectProgress);
-}
-
-void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
-{
-	int32 Index = ExtraModels.Find(RemovalInfo.ActiveEffect);
-	
-	if (Index != INDEX_NONE)
-	{
-		ExtraModels.RemoveAt(Index);
-	}
-	else if (ExtraModels.Num() > 0)
-	{
-		// Change datas
-		CachedEffectHandle = ExtraModels[0]->Handle;
-		CachedUIData = FindRsUIData(*GetActiveEffect());
-		ExtraModels.RemoveAt(0);
-	}
-	else
-	{
-		OnViewModelDisabled.Broadcast(this);
-		return;
-	}
-
-	Stack--;
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetVisibility);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStack);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStackText);
 }
 
+void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
+{
+	OnViewModelDisabled.Broadcast(this);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetVisibility);
+}
+
 const FActiveGameplayEffect* URsActiveEffectViewModel::GetActiveEffect() const
 {
-	if (URsAbilitySystemComponent* ASC = CachedASC.Get())
-	{
-		return ASC->GetActiveGameplayEffect(CachedEffectHandle);
-	}
-	return nullptr;
+	return CachedASC.Get() ? CachedASC->GetActiveGameplayEffect(CachedEffectHandle) : nullptr;
 }
 
 void URsActiveEffectViewModel::Initialize()
@@ -195,12 +113,8 @@ void URsActiveEffectViewModel::Initialize()
 
 void URsActiveEffectViewModel::Deinitialize()
 {
+	// unsafe to remove delegate bind, because ActiveEffect which has binded delegate might be already deleted in ASC
 	Super::Deinitialize();
-}
-
-bool URsActiveEffectViewModel::IsTickable() const
-{
-	return !IsStackable;
 }
 
 void URsActiveEffectViewModel::Tick(float DeltaTime)
