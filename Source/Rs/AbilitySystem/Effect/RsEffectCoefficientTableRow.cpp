@@ -9,7 +9,7 @@
 #if WITH_EDITOR
 EDataValidationResult FRsEffectCoefficientTableRow::IsDataValid(FDataValidationContext& Context) const
 {
-	auto CheckTableRow = [&](const TSubclassOf<URsUnitEffect>& EffectClass, const FString& Expression, int32 Index)
+	auto CheckEffectPair = [&](const TSubclassOf<URsUnitEffect>& EffectClass, const FString& Expression, int32 Index)
 	{
 		bool bEffectSet = EffectClass != nullptr;
 		bool bExpressionSet = !Expression.IsEmpty();
@@ -21,12 +21,12 @@ EDataValidationResult FRsEffectCoefficientTableRow::IsDataValid(FDataValidationC
 		return true;
 	};
 
-	if (!CheckTableRow(UnitEffect1, CoefficientExpression1, 1) ||
-		!CheckTableRow(UnitEffect2, CoefficientExpression2, 2) ||
-		!CheckTableRow(UnitEffect3, CoefficientExpression3, 3) ||
-		!CheckTableRow(UnitEffect4, CoefficientExpression4, 4) ||
-		!CheckTableRow(UnitEffect5, CoefficientExpression5, 5) ||
-		!CheckTableRow(UnitEffect6, CoefficientExpression6, 6))
+	if (!CheckEffectPair(UnitEffect1, CoefficientExpression1, 1) ||
+		!CheckEffectPair(UnitEffect2, CoefficientExpression2, 2) ||
+		!CheckEffectPair(UnitEffect3, CoefficientExpression3, 3) ||
+		!CheckEffectPair(UnitEffect4, CoefficientExpression4, 4) ||
+		!CheckEffectPair(UnitEffect5, CoefficientExpression5, 5) ||
+		!CheckEffectPair(UnitEffect6, CoefficientExpression6, 6))
 	{
 		return EDataValidationResult::Invalid;
 	}
