@@ -102,22 +102,22 @@ TArray<FRsEffectCoefficient> URsUnitEffectsComponent::GetEffectCoefficients() co
 			FRsEffectCoefficient EffectCoeff2 = MakeEffectCoefficientFromTable(Row->UnitEffect2, Row->CoefficientExpression2);
 			OutEffectCoeffs.Add(EffectCoeff2);
 		}
-		if (Row->UnitEffect1 && !Row->CoefficientExpression1.IsEmpty())
+		if (Row->UnitEffect3 && !Row->CoefficientExpression3.IsEmpty())
 		{
 			FRsEffectCoefficient EffectCoeff3 = MakeEffectCoefficientFromTable(Row->UnitEffect3, Row->CoefficientExpression3);
 			OutEffectCoeffs.Add(EffectCoeff3);
 		}
-		if (Row->UnitEffect1 && !Row->CoefficientExpression1.IsEmpty())
+		if (Row->UnitEffect4 && !Row->CoefficientExpression4.IsEmpty())
 		{
 			FRsEffectCoefficient EffectCoeff4 = MakeEffectCoefficientFromTable(Row->UnitEffect4, Row->CoefficientExpression4);
 			OutEffectCoeffs.Add(EffectCoeff4);
 		}
-		if (Row->UnitEffect1 && !Row->CoefficientExpression1.IsEmpty())
+		if (Row->UnitEffect5 && !Row->CoefficientExpression5.IsEmpty())
 		{
 			FRsEffectCoefficient EffectCoeff5 = MakeEffectCoefficientFromTable(Row->UnitEffect5, Row->CoefficientExpression5);
 			OutEffectCoeffs.Add(EffectCoeff5);
 		}
-		if (Row->UnitEffect1 && !Row->CoefficientExpression1.IsEmpty())
+		if (Row->UnitEffect6 && !Row->CoefficientExpression6.IsEmpty())
 		{
 			FRsEffectCoefficient EffectCoeff6 = MakeEffectCoefficientFromTable(Row->UnitEffect6, Row->CoefficientExpression6);
 			OutEffectCoeffs.Add(EffectCoeff6);
