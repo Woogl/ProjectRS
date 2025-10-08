@@ -7,7 +7,7 @@
 #include "RsEffectCoefficientTableRow.generated.h"
 
 class URsUnitEffect;
-class URsStatusEffect;
+class URsGameplayEffect;
 
 USTRUCT(BlueprintType)
 struct RS_API FRsEffectCoefficientTableRow : public FTableRowBase

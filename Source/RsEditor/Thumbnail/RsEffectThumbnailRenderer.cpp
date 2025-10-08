@@ -5,12 +5,12 @@
 
 #include "CanvasItem.h"
 #include "CanvasTypes.h"
-#include "GameplayEffect.h"
+#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 
 void URsEffectThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* RenderTarget, FCanvas* Canvas, bool bAdditionalViewFamily)
 {
-	if (const UGameplayEffect* Effect = Cast<UGameplayEffect>(Object))
+	if (const URsGameplayEffect* Effect = Cast<URsGameplayEffect>(Object))
 	{
 		if (const URsUIDataEffectComponent* UIData = Effect->FindComponent<URsUIDataEffectComponent>())
 		{
@@ -44,7 +44,7 @@ void URsEffectThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 
 
 bool URsEffectThumbnailRenderer::CanVisualizeAsset(UObject* Object)
 {
-	if (const UGameplayEffect* Effect = Cast<UGameplayEffect>(Object))
+	if (const URsGameplayEffect* Effect = Cast<URsGameplayEffect>(Object))
 	{
 		return Effect->FindComponent<URsUIDataEffectComponent>() != nullptr;
 	}
