@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "Misc/DataValidation.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Effect/RsEffectCoefficient.h"
@@ -76,7 +77,7 @@ void URsUnitEffectsComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCont
 	{
 		FGameplayEffectSpecHandle EffectHandle = URsAbilitySystemLibrary::MakeEffectSpecCoefficient(SourceASC, EffectCoeff, SourceASC->MakeEffectContext());
 		// Duration is shared from owning GE.
-		EffectHandle.Data->SetDuration(GESpec.Duration, true);
+		EffectHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::DURATION, GESpec.Duration);
 
 		URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(SourceASC, ActiveGEContainer.Owner, EffectHandle);
 	}
