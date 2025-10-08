@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
-#include "GameplayTagContainer.h"
-#include "RsUnitEffectComponent.generated.h"
+#include "RsUnitEffectsComponent.generated.h"
 
 class URsUnitEffect;
 struct FRsEffectCoefficient;
@@ -13,16 +12,13 @@ struct FRsEffectCoefficient;
  * 
  */
 UCLASS()
-class RS_API URsUnitEffectComponent : public UGameplayEffectComponent
+class RS_API URsUnitEffectsComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<URsUnitEffect> Effect;
-
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
-	TMap<FGameplayTag, float> Coefficients;
+	TArray<FRsEffectCoefficient> EffectCoefficients;
 
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "RsEffectCoefficientTableRow"))
 	FDataTableRowHandle DataTableRow;
@@ -37,5 +33,6 @@ public:
 	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;
 
 protected:
-	FRsEffectCoefficient GetEffectCoefficient() const;
+	TArray<FRsEffectCoefficient> GetEffectCoefficients() const;
+	FRsEffectCoefficient MakeEffectCoefficientFromTable(TSubclassOf<UGameplayEffect> EffectClass, FString CoefficientExpression) const;
 };
