@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
@@ -31,7 +32,7 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	{
 		return;
 	}
-	AController* Controller = Cast<AController>(GetOwner());
+	AController* Controller = OwnerController.Get();
 	if (!Controller)
 	{
 		return;
@@ -47,7 +48,25 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	if (FVector::DistSquared(TargetLocation, SourceLocation) > MaxTargetDistance * MaxTargetDistance)
 	{
 		LockOff();
+		return;
 	}
+
+	// Update control rotation
+	if (Controller->IsLocalPlayerController())
+	{
+		FRotator CurrentRotation = Controller->GetControlRotation();
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
+		TargetRotation += ControlRotationOffset;
+		TargetRotation.Roll = 0.f;
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, ControlRotationInterpSpeed);
+		Controller->SetControlRotation(NewRotation);
+	}
+}
+
+void URsLockOnComponent::SetController(AController* Controller)
+{
+	OwnerController = Controller;
+	Controller->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawnChanged);
 }
 
 void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
@@ -84,6 +103,7 @@ bool URsLockOnComponent::LockOn(AActor* Target)
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
 		RsPlayerController->CameraRig = ERsCameraRig::LockOn;
+		RsPlayerController->SetIgnoreLookInput(true);
 	}
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
@@ -115,6 +135,7 @@ void URsLockOnComponent::LockOff()
 	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
 	{
 		RsPlayerController->CameraRig = ERsCameraRig::FreeCam;
+		RsPlayerController->SetIgnoreLookInput(false);
 	}
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
@@ -127,7 +148,7 @@ void URsLockOnComponent::LockOff()
 
 bool URsLockOnComponent::TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
 {
-	if (AController* Controller = Cast<AController>(GetOwner()))
+	if (AController* Controller = OwnerController.Get())
 	{
 		if (APawn* ControlledPawn = Controller->GetPawn())
 		{
@@ -187,6 +208,20 @@ UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 	}
 	
 	return nullptr;
+}
+
+void URsLockOnComponent::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
+{
+	AActor* Target = GetLockOnTarget();
+	if (Target && OldPawn)
+	{
+		// Update control rotation
+		FVector TargetLocation = Target->GetActorLocation();
+		FVector SourceLocation = OldPawn->GetActorLocation();
+		FRotator NewControlRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
+		NewControlRotation += ControlRotationOffset;
+		OwnerController->SetControlRotation(NewControlRotation);
+	}
 }
 
 void URsLockOnComponent::HandleTargetDeath(AActor* DeadActor)

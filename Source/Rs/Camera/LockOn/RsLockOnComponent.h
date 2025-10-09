@@ -18,8 +18,9 @@ class RS_API URsLockOnComponent : public UActorComponent
 
 public:	
 	URsLockOnComponent();
-	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	void SetController(AController* Controller);
 
 	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
@@ -53,6 +54,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	float MaxTargetDistance = 1500.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS|Player")
+	float ControlRotationInterpSpeed = 5.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RS|Player")
+	FRotator ControlRotationOffset = FRotator(-20.f, 0.f, 0.f);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "RS|AI")
 	FName BlackBoardValueName = FName("TargetActor");
@@ -68,10 +75,14 @@ protected:
 
 private:
 	UWidgetComponent* RespawnReticleWidget(AActor* Target);
+
+	UFUNCTION()
+	void HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
 	
 	UFUNCTION()
 	void HandleTargetDeath(AActor* DeadActor);
-	
+
+	TWeakObjectPtr<AController> OwnerController;
 	TWeakObjectPtr<AActor> LockOnTarget;
 	TWeakObjectPtr<UWidgetComponent> SpawnedReticleWidget;
 };
