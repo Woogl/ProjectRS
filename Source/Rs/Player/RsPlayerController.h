@@ -60,19 +60,13 @@ public:
 	// ILoadingProcessInterface
 	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
 
-	UPROPERTY()
 	TWeakObjectPtr<ARsCameraAnimationActor> CurrentAnimatonCameraActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
-
-	UFUNCTION(BlueprintCallable)
+	
 	URsPartyComponent* GetPartyComponent() const;
-
-	UFUNCTION(BlueprintCallable)
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
-
-	UFUNCTION(BlueprintCallable)
 	URsLockOnComponent* GetLockOnComponent() const;
 	
 protected:

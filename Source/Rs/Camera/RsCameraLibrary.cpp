@@ -25,7 +25,7 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerCameraComponent(const UObje
 	return nullptr;
 }
 
-void URsCameraLibrary::SwitchCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
+void URsCameraLibrary::SetCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
@@ -36,7 +36,7 @@ void URsCameraLibrary::SwitchCameraRig(const UObject* WorldContextObject, ERsCam
 	}
 }
 
-void URsCameraLibrary::SwitchCharacterFacingMode(const UObject* WorldContextObject, ERsCharacterFacingMode FacingMode)
+void URsCameraLibrary::SetCharacterFacingMode(const UObject* WorldContextObject, ERsCharacterFacingMode FacingMode)
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
