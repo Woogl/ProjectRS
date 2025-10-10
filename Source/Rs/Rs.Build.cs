@@ -33,8 +33,6 @@ public class Rs : ModuleRules
 			"GameplayMessageRuntime",
 			"NavigationSystem",
 			"Niagara",
-			"EngineCameras",
-			"TemplateSequence",
 		});
 	}
 }

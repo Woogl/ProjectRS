@@ -12,10 +12,3 @@ enum class ERsCameraRig : uint8
 	LockOn,
 	LinkSkill,
 };
-
-UENUM(BlueprintType)
-enum class ERsCharacterFacingMode : uint8
-{
-	MovementDirection,
-	CameraDirection,
-};

@@ -8,10 +8,6 @@
 #include "RsCameraLibrary.generated.h"
 
 class ARsPlayerController;
-class ARsCameraAnimationActor;
-struct FCameraAnimationParams;
-class UCameraAnimationSequence;
-class URsLockOnComponent;
 class UGameplayCameraComponent;
 
 /**
@@ -28,13 +24,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
 	static void SetCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
-	static void SetCharacterFacingMode(const UObject* WorldContextObject, ERsCharacterFacingMode FacingMode);
-	
-	UFUNCTION(BlueprintCallable, Category = "RS Camera Library")
-	static ARsCameraAnimationActor* PlayCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence, FCameraAnimationParams Params);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Camera Library")
-	static void StopCameraAnimationSequence(ARsPlayerController* PlayerController, UCameraAnimationSequence* Sequence);
 };
