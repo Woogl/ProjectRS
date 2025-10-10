@@ -64,10 +64,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount = 0.f;
 	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	ARsCharacterBase* GetAvatarCharacter() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	virtual AController* GetController() const;
 
 	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;

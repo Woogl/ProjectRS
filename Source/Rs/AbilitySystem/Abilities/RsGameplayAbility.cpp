@@ -37,9 +37,13 @@ AController* URsGameplayAbility::GetController() const
 {
 	if (CurrentActorInfo)
 	{
-		if (AController* PController = CurrentActorInfo->PlayerController.Get())
+		if (AController* PC = CurrentActorInfo->PlayerController.Get())
 		{
-			return PController;
+			return PC;
+		}
+		if (AActor* Avatar = GetAvatarActorFromActorInfo())
+		{
+			return Avatar->GetInstigatorController();
 		}
 	}
 	return nullptr;
