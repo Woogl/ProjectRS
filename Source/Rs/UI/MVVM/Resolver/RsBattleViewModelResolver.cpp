@@ -14,7 +14,7 @@ UObject* URsBattleViewModelResolver::CreateInstance(const UClass* ExpectedType, 
 		return nullptr;
 	}
 	
-	if (URsBattleViewModel* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<URsBattleViewModel>(LocalPlayer))
+	if (URsBattleViewModel* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<URsBattleViewModel>(LocalPlayer, false))
 	{
 		return ExistingViewModel;
 	}
