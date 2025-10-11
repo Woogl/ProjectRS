@@ -13,7 +13,7 @@ namespace RsTargetingGlobals
 	bool bShowDebug = false;
 	float DebugTime = 0.5f;
 	
-	static FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay.  ex) rs.Targeting.ShowDebug [0/1]"), ECVF_Cheat);
+	static FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay.  ex) rs.Targeting.ShowDebug [1/0]"), ECVF_Cheat);
 	static FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), DebugTime, TEXT("Set the duration of the debug shapes for targeting.  ex) rs.Targeting.DebugTime [Sec]"), ECVF_Cheat);
 
 	bool ShouldDrawDebug(UWorld* World, bool bDrawDebug)
