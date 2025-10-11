@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsLockOnComponent.generated.h"

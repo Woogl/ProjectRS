@@ -221,21 +221,19 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 		});
 	}
 
-	if (Sorter.ByTag != ERsSortingOrder::None && Sorter.SortingTag.IsValid())
+	if (Sorter.ByTags != ERsSortingOrder::None && Sorter.RequiredTags.IsValid())
 	{
-		FGameplayTag SortingTag = Sorter.SortingTag;
-		const ERsSortingOrder Order = Sorter.ByTag;
-		SortedResult.Sort([SortingTag, Order](const AActor& A, const AActor& B)
+		SortedResult.Sort([&Sorter](const AActor& A, const AActor& B)
 		{
 			const IGameplayTagAssetInterface* ATagInterface = Cast<IGameplayTagAssetInterface>(&A);
 			const IGameplayTagAssetInterface* BTagInterface = Cast<IGameplayTagAssetInterface>(&B);
-			bool AHasTag = ATagInterface && ATagInterface->HasMatchingGameplayTag(SortingTag);
-			bool BHasTag = BTagInterface && BTagInterface->HasMatchingGameplayTag(SortingTag);
-			if (Order == ERsSortingOrder::Ascending)
+			bool AHasTag = ATagInterface && ATagInterface->HasAllMatchingGameplayTags(Sorter.RequiredTags);
+			bool BHasTag = BTagInterface && BTagInterface->HasAllMatchingGameplayTags(Sorter.RequiredTags);
+			if (Sorter.ByTags == ERsSortingOrder::Ascending)
 			{
 				return AHasTag < BHasTag;
 			}
-			else if (Order == ERsSortingOrder::Descending)
+			else if (Sorter.ByTags == ERsSortingOrder::Descending)
 			{
 				return AHasTag > BHasTag;
 			}

@@ -32,7 +32,7 @@ FRsTargetingFilter::FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyT
 }
 
 FRsTargetingSorter::FRsTargetingSorter(ERsSortingOrder ByDistance, ERsSortingOrder ByTag, FGameplayTag SortingTag)
-	: ByDistance(ByDistance), ByTag(ByTag), SortingTag(SortingTag)
+	: ByDistance(ByDistance), ByTags(ByTag), RequiredTags(SortingTag)
 {
 }
 

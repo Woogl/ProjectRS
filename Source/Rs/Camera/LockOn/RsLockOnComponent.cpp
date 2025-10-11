@@ -7,7 +7,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Rs/Camera/RsCameraLibrary.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
@@ -52,9 +54,10 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 
 	// Update control rotation
-	if (Controller->IsLocalPlayerController())
+	UGameplayCameraComponent* GameplayCameraComponent = Controller->FindComponentByClass<UGameplayCameraComponent>();
+	if (Controller->IsLocalPlayerController() && GameplayCameraComponent)
 	{
-		FRotator CurrentRotation = Controller->GetControlRotation();
+		FRotator CurrentRotation = GameplayCameraComponent->GetInitialPose().Rotation;
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
 		TargetRotation += ControlRotationOffset;
 		TargetRotation.Roll = 0.f;
@@ -213,14 +216,16 @@ UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 void URsLockOnComponent::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
 	AActor* Target = GetLockOnTarget();
-	if (Target && OldPawn)
+	if (!OwnerController.IsValid() || !Target)
 	{
-		// Update control rotation
-		FVector TargetLocation = Target->GetActorLocation();
-		FVector SourceLocation = OldPawn->GetActorLocation();
-		FRotator NewControlRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
-		NewControlRotation += ControlRotationOffset;
-		OwnerController->SetControlRotation(NewControlRotation);
+		return;
+	}
+
+	// Update control rotation
+	UGameplayCameraComponent* GameplayCameraComponent = OwnerController->FindComponentByClass<UGameplayCameraComponent>();
+	if (GameplayCameraComponent)
+	{
+		OwnerController->SetControlRotation(GameplayCameraComponent->GetInitialPose().Rotation);
 	}
 }
 
