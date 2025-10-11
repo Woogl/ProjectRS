@@ -310,3 +310,15 @@ void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FTransform Trans
 		break;
 	}
 }
+
+FTransform URsTargetingLibrary::GetSocketWorldTransform(const USceneComponent* Component, FName SocketName, const FTransform& LocalOffset)
+{
+	if (!Component)
+	{
+		return FTransform();
+	}
+	
+	FTransform ComponentTransform = Component->GetSocketTransform(SocketName, RTS_Component);
+	FTransform WorldTransform = (ComponentTransform * LocalOffset) * Component->GetComponentTransform();
+	return WorldTransform;
+}

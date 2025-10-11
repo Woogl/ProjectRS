@@ -41,4 +41,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
 	static void DrawDebugShape(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color);
+
+	static FTransform GetSocketWorldTransform(const USceneComponent* Component, FName SocketName = NAME_None, const FTransform& LocalOffset = FTransform::Identity);
 };

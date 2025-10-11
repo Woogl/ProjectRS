@@ -34,12 +34,11 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	PerformTargeting(MeshComp);
-
+	LastWorldTransform.Reset();
+	HitTargets.Reset();
+	
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		LastSocketTransform = MeshComp->GetSocketTransform(SocketName);
-		
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
 			if (UGameplayAbility* AnimatingAbility = ASC->GetAnimatingAbility())
@@ -47,9 +46,14 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 				CurrentAbility = Cast<URsGameplayAbility>(AnimatingAbility);
 			}
 		}
+		
+		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+		FTransform WorldTransform = URsTargetingLibrary::GetSocketWorldTransform(MeshComp, SocketName, FTransform(RotationOffset, PositionOffset));
+		URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, Params, HitTargets);
+	
+		// Keep old socket transform for next tick.
+		LastWorldTransform = WorldTransform;
 	}
-
-	HitTargets.Reset();
 }
 
 void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -58,28 +62,25 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
    
     SCOPE_CYCLE_COUNTER(STAT_RsAnimNotifyState_HitTrace);
    
-    if (!MeshComp || !MeshComp->GetWorld() || !LastSocketTransform.IsSet())
+    if (!MeshComp || !MeshComp->GetWorld() || !LastWorldTransform.IsSet())
     {
        return;
     }
 
-	// Get socket transform.
-	FTransform CurrentSocketTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	CurrentSocketTransform.SetLocation(CurrentSocketTransform.GetLocation() + MeshComp->GetComponentTransform().TransformVector(PositionOffset));
-	CurrentSocketTransform.SetRotation(RotationOffset.Quaternion() * CurrentSocketTransform.GetRotation());
-
 	TArray<AActor*> ResultActors;
 	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
-	if (URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastSocketTransform.GetValue(), CurrentSocketTransform, MaxSubsteps, Params, ResultActors))
+	FTransform WorldTransform = URsTargetingLibrary::GetSocketWorldTransform(MeshComp, SocketName, FTransform(RotationOffset, PositionOffset));
+	bool bSuccess = URsTargetingLibrary::PerformTargetingWithSubsteps(MeshComp->GetOwner(), LastWorldTransform.GetValue(), WorldTransform, MaxSubsteps, Params, ResultActors);
+
+	if (bSuccess == true)
 	{
-		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
 		{
+			// Ignore already hit actors
 			if (!HitTargets.Contains(Target))
 			{
 				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
 				{
-					//CurrentAbility->ApplyDamageEvent(DamageEvent, Target);
 					FGameplayEventData Payload;
 					Payload.EventTag = EventTag;
 					Payload.Instigator = MeshComp->GetOwner();
@@ -92,5 +93,5 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	}
 
 	// Keep old socket transform for next tick.
-	LastSocketTransform = MeshComp->GetSocketTransform(SocketName);
+	LastWorldTransform = WorldTransform;
 }

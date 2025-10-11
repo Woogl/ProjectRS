@@ -25,15 +25,13 @@ bool URsAnimNotify_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
 	}
 
 	Targets.Reset();
-
-	FTransform LocalTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName, RTS_Component) : MeshComp->GetComponentTransform();
-	FTransform LocalOffset(RotationOffset, PositionOffset, FVector::OneVector);
-	FTransform WorldTransform = (LocalTransform * LocalOffset) * MeshComp->GetComponentTransform();
-	if (MeshComp->GetOwner())
+	
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), WorldTransform, Params, OutActors))
+		FTransform WorldTransform = URsTargetingLibrary::GetSocketWorldTransform(MeshComp, SocketName, FTransform(RotationOffset, PositionOffset));
+		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+		if (URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, Params, OutActors))
 		{
 			Targets = OutActors;
 		}

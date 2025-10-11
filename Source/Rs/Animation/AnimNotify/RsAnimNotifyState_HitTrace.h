@@ -30,13 +30,9 @@ public:
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
-
-	// Ignore already hit actors
+	
 	UPROPERTY()
 	TArray<AActor*> HitTargets;
-	
-	UPROPERTY()
-	TOptional<FTransform> LastSocketTransform;
-	
+	TOptional<FTransform> LastWorldTransform;
 	TWeakObjectPtr<URsGameplayAbility> CurrentAbility;
 };

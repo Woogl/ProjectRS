@@ -5,6 +5,7 @@
 
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsEnemyCharacter.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_TriggerParryLinkSkill::URsAnimNotifyState_TriggerParryLinkSkill()
 {
@@ -15,11 +16,16 @@ void URsAnimNotifyState_TriggerParryLinkSkill::NotifyBegin(USkeletalMeshComponen
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (PerformTargeting(MeshComp))
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(MeshComp))
+		TArray<AActor*> ResultActors;
+		FTransform WorldTransform = URsTargetingLibrary::GetSocketWorldTransform(MeshComp, SocketName, FTransform(RotationOffset, PositionOffset));
+		if (URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, FRsTargetingParams(Shape, Collision, Filter, Sorter), ResultActors))
 		{
-			BattleSubsystem->SetLinkSkillTarget(Cast<ARsEnemyCharacter>(MeshComp->GetOwner()), ERsLinkSkillType::Parry);
+			if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(MeshComp))
+			{
+				BattleSubsystem->SetLinkSkillTarget(Cast<ARsEnemyCharacter>(Owner), ERsLinkSkillType::Parry);
+			}
 		}
 	}
 }

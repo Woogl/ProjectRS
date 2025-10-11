@@ -3,9 +3,6 @@
 
 #include "RsAnimNotifyState_Targeting.h"
 
-#include "Rs/Targeting/RsTargetingLibrary.h"
-
-
 void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
@@ -13,27 +10,4 @@ void URsAnimNotifyState_Targeting::NotifyBegin(USkeletalMeshComponent* MeshComp,
 #if WITH_EDITOR
 	SocketNames = MeshComp->GetAllSocketNames();
 #endif // WITH_EDITOR
-}
-
-bool URsAnimNotifyState_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
-{
-	if (!MeshComp)
-	{
-		return false;
-	}
-
-	Targets.Reset();
-	
-	FTransform SourceTransform = SocketName.IsValid() ? MeshComp->GetSocketTransform(SocketName) : MeshComp->GetComponentTransform();
-	if (MeshComp->GetOwner())
-	{
-		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
-		TArray<AActor*> OutActors;
-		if (URsTargetingLibrary::PerformTargeting(MeshComp->GetOwner(), SourceTransform, Params, OutActors))
-		{
-			Targets = OutActors;
-		}
-	}
-
-	return Targets.Num() > 0;
 }
