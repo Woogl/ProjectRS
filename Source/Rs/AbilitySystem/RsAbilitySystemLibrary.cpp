@@ -17,7 +17,7 @@ URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(
 	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
 }
 
-UAbilitySystemComponent* URsAbilitySystemLibrary::GetDummyAbilitySystemComponent(const UObject* WorldContextObject)
+UAbilitySystemComponent* URsAbilitySystemLibrary::GetWorldAbilitySystemComponent(const UObject* WorldContextObject)
 {
 	if (!WorldContextObject)
 	{

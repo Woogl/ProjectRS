@@ -19,7 +19,7 @@ void ARsWorldSettings::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TObjectPtr<URsAbilitySet> AbilitySet = URsAbilitySystemSettings::Get().EnvironmentalAbilitySet.LoadSynchronous();
+	TObjectPtr<URsAbilitySet> AbilitySet = URsAbilitySystemSettings::Get().WorldAbilitySet.LoadSynchronous();
 	if (AbilitySystemComponent && AbilitySet)
 	{
 		AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);

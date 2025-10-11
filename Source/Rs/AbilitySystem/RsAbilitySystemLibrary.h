@@ -29,15 +29,16 @@ class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 {
 	GENERATED_BODY()
 	
-public:
+public: /** Ability System Component */
+	
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
 	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
 
-	// Global ASC for applying environmental effects. All attribute is always 0.
+	// Get ASC for applying environmental effects. All attribute is always 0.
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (WorldContext = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
-	static UAbilitySystemComponent* GetDummyAbilitySystemComponent(const UObject* WorldContextObject);
+	static UAbilitySystemComponent* GetWorldAbilitySystemComponent(const UObject* WorldContextObject);
 
-	/** Gameplay Ability */
+public:	/** Gameplay Ability */
 	
 	// Find the first ability that matches tags. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
@@ -53,7 +54,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
 	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
-	/** Gameplay Effect */
+public: /** Gameplay Effect */
+	
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
 	
@@ -63,7 +65,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
 	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEffectSpecHandle& EffectHandle);
 
-	/** Gameplay Attribute */
+public: /** Gameplay Attribute */
+	
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
 	static float GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag);
 
