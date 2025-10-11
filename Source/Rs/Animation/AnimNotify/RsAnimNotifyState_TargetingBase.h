@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
-#include "RsAnimNotifyState_Targeting.generated.h"
+#include "RsAnimNotifyState_TargetingBase.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_Targeting : public UAnimNotifyState
+class RS_API URsAnimNotifyState_TargetingBase : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
@@ -36,15 +36,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
 	FRsTargetingSorter Sorter;
-
-	UFUNCTION(BlueprintPure, Category = "Targeting")
-	TArray<AActor*> GetTargets() { return Targets;};
 	
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
-	
-	UPROPERTY()
-	TArray<AActor*> Targets;
+
+	bool PerformTargeting(USkeletalMeshComponent* MeshComp, TArray<AActor*>& ResultActors);
 	
 #if WITH_EDITOR
 	UFUNCTION()

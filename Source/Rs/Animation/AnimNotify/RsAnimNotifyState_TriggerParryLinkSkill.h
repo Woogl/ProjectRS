@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotifyState_Targeting.h"
+#include "RsAnimNotifyState_TargetingBase.h"
 #include "RsAnimNotifyState_TriggerParryLinkSkill.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_TriggerParryLinkSkill : public URsAnimNotifyState_Targeting
+class RS_API URsAnimNotifyState_TriggerParryLinkSkill : public URsAnimNotifyState_TargetingBase
 {
 	GENERATED_BODY()
 

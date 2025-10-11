@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotifyState_Targeting.h"
+#include "RsAnimNotifyState_TargetingBase.h"
 #include "RsAnimNotifyState_HitTrace.generated.h"
 
 class URsGameplayAbility;
@@ -11,7 +11,7 @@ class URsGameplayAbility;
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_HitTrace : public URsAnimNotifyState_Targeting
+class RS_API URsAnimNotifyState_HitTrace : public URsAnimNotifyState_TargetingBase
 {
 	GENERATED_BODY()
 
@@ -28,8 +28,10 @@ public:
 	int32 MaxSubsteps = 5;
 
 protected:
-	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
-	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
+
+	void SendHitEventToResults(AActor* Owner, TArray<AActor*> ResultActors);
 	
 	UPROPERTY()
 	TArray<AActor*> HitTargets;

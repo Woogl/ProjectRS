@@ -32,6 +32,8 @@ void URsAnimNotifyState_EventToTarget::NotifyBegin(USkeletalMeshComponent* MeshC
 		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
 			CurrentAbility = OwnerASC->GetAnimatingAbility();
+			TArray<AActor*> Targets;
+			PerformTargeting(MeshComp, Targets);
 			for (AActor* Target : Targets)
 			{
 				FGameplayEventData Payload;

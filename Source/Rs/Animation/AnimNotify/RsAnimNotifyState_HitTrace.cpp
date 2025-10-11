@@ -46,10 +46,15 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 				CurrentAbility = Cast<URsGameplayAbility>(AnimatingAbility);
 			}
 		}
-		
+
+		TArray<AActor*> ResultActors;
 		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		FTransform WorldTransform = URsTargetingLibrary::GetSocketWorldTransform(MeshComp, SocketName, FTransform(RotationOffset, PositionOffset));
-		URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, Params, HitTargets);
+		bool bSuccess = URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, Params, ResultActors);
+		if (bSuccess == true)
+		{
+			SendHitEventToResults(MeshComp->GetOwner(), ResultActors);
+		}
 	
 		// Keep old socket transform for next tick.
 		LastWorldTransform = WorldTransform;
@@ -74,24 +79,34 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 
 	if (bSuccess == true)
 	{
-		for (AActor* Target : ResultActors)
-		{
-			// Ignore already hit actors
-			if (!HitTargets.Contains(Target))
-			{
-				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
-				{
-					FGameplayEventData Payload;
-					Payload.EventTag = EventTag;
-					Payload.Instigator = MeshComp->GetOwner();
-					Payload.Target = Target;
-					ASC->HandleGameplayEvent(EventTag, &Payload);
-				}
-				HitTargets.Emplace(Target);
-			}
-		}
+		SendHitEventToResults(MeshComp->GetOwner(), ResultActors);
 	}
 
 	// Keep old socket transform for next tick.
 	LastWorldTransform = WorldTransform;
+}
+
+void URsAnimNotifyState_HitTrace::SendHitEventToResults(AActor* Owner, TArray<AActor*> ResultActors)
+{
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	if (!ASC)
+	{
+		return;
+	}
+	
+	for (AActor* Target : ResultActors)
+	{
+		// Ignore already hit actors
+		if (HitTargets.Contains(Target))
+		{
+			continue;
+		}
+
+		FGameplayEventData Payload;
+		Payload.EventTag = EventTag;
+		Payload.Instigator = Owner;
+		Payload.Target = Target;
+		ASC->HandleGameplayEvent(EventTag, &Payload);
+		HitTargets.Emplace(Target);
+	}
 }

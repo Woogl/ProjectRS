@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "RsAnimNotifyState_Targeting.h"
+#include "RsAnimNotifyState_TargetingBase.h"
 #include "RsAnimNotifyState_EventToTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsAnimNotifyState_EventToTarget : public URsAnimNotifyState_Targeting
+class RS_API URsAnimNotifyState_EventToTarget : public URsAnimNotifyState_TargetingBase
 {
 	GENERATED_BODY()
 
