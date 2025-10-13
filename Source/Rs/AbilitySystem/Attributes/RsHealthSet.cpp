@@ -11,7 +11,6 @@ URsHealthSet::URsHealthSet()
 {
 	MaxHealth = 1.f;
 	CurrentHealth = 0.f;
-	HealthLoss = 0.f;
 	Barrier = 0.f;
 }
 
@@ -27,10 +26,6 @@ void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, CurrentHealth, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, MaxHealth, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, Barrier, Params);
-
-	// Only Owner
-	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, HealthLoss, Params);
 }
 
 void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -101,7 +96,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.f, GetMaxHealth()));
-		SetHealthLoss(FMath::Clamp(GetMaxHealth() - GetCurrentHealth(), 0.f, GetMaxHealth()));
 	}
 }
 
@@ -113,11 +107,6 @@ void URsHealthSet::OnRep_CurrentHealth(const FGameplayAttributeData& OldValue)
 void URsHealthSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, MaxHealth, OldValue);
-}
-
-void URsHealthSet::OnRep_HealthLoss(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, HealthLoss, OldValue);
 }
 
 void URsHealthSet::OnRep_Barrier(const FGameplayAttributeData& OldValue)
