@@ -10,7 +10,6 @@
 #include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
-class ARsCameraAnimationActor;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -59,8 +58,6 @@ public:
 
 	// ILoadingProcessInterface
 	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
-
-	TWeakObjectPtr<ARsCameraAnimationActor> CurrentAnimatonCameraActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
