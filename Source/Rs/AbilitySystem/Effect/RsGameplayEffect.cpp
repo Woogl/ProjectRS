@@ -59,13 +59,13 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 		// Stat to modify
 		FGameplayAttribute Attribute = URsAbilitySystemLibrary::GetAttributeByTag(ModCoeff.Stat);
 
-		for (const auto [CoeffTag, Coeff] : ModCoeff.Coefficients)
+		for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
 		{
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                                   ^
 			if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
 			{
-				FGameplayModifierInfo ModifierInfo(Attribute, EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(Coeff));
+				FGameplayModifierInfo ModifierInfo(Attribute, EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
 				Modifiers.Add(ModifierInfo);
 				continue;
 			}
@@ -93,7 +93,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			FAttributeBasedFloat MagnitudeData;
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                            ^
-			MagnitudeData.Coefficient = Coeff;
+			MagnitudeData.Coefficient = CoeffNum;
 			// (Coefficient.ATK.source * 1.5) + 500
 			//               ^
 			MagnitudeData.BackingAttribute = CaptureDefinition;
