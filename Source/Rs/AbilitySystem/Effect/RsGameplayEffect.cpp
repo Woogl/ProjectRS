@@ -42,7 +42,7 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 
 	Modifiers.Empty();
 
-	if (!ModifierDataEffectComp->DataTableRow.IsNull())
+	if (ModifierDataEffectComp->DataTableRow.IsNull())
 	{
 		SetModifiersFromAsset(ModifierDataEffectComp);
 	}
