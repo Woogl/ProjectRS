@@ -5,11 +5,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "CommonHardwareVisibilityBorder.h"
 #include "RsActiveEffectViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
-#include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/Character/RsCharacterBase.h"
@@ -98,7 +96,7 @@ FText URsCharacterViewModel::GetCharacterName() const
 {
 	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
-		return Character->DisplayName;
+		return Character->CharacterName;
 	}
 	return FText::GetEmpty();
 }
