@@ -36,7 +36,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	float FinalMagnitude = 0.f;
 	for (const TTuple<FGameplayTag, float>& SetByCaller : Spec.SetByCallerTagMagnitudes)
 	{
-		FGameplayAttribute FoundAttribute = URsAbilitySystemLibrary::FindAttributeByCoefficientTag(SetByCaller.Key);
+		FGameplayAttribute FoundAttribute = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(SetByCaller.Key);
 		if (FoundAttribute.IsValid())
 		{
 			float Coefficient = SetByCaller.Value;

@@ -66,11 +66,14 @@ public: /** Gameplay Effect */
 	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEffectSpecHandle& EffectHandle);
 
 public: /** Gameplay Attribute */
+
+	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
+	static FGameplayAttribute GetAttributeByTag(FGameplayTag StatTag);
 	
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
 	static float GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag);
 
 	// ex. Coefficient.ATK.Source -> AttackAttribute
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Coefficient"))
-	static FGameplayAttribute FindAttributeByCoefficientTag(FGameplayTag CoefficientTag);
+	static FGameplayAttribute GetAttributeByCoefficientTag(FGameplayTag CoefficientTag);
 };

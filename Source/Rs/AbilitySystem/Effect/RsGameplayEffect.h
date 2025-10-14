@@ -6,6 +6,8 @@
 #include "GameplayEffect.h"
 #include "RsGameplayEffect.generated.h"
 
+class URsModifierDataEffectComponent;
+
 /**
  * Categorized gameplay effect for designer.
  */
@@ -16,5 +18,10 @@ class RS_API URsGameplayEffect : public UGameplayEffect
 
 public:
 	URsGameplayEffect();
-	
+
+#if WITH_EDITOR
+	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
+	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataEffectComp);
+	void SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataEffectComp);
+#endif // WITH_EDITOR
 };
