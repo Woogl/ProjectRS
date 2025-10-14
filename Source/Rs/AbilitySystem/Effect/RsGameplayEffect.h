@@ -21,6 +21,8 @@ public:
 
 #if WITH_EDITOR
 	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
+
+private:
 	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataEffectComp);
 	void SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataEffectComp);
 #endif // WITH_EDITOR
