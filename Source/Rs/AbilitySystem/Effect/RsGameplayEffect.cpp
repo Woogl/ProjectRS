@@ -84,7 +84,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			}
 			else
 			{
-				UE_LOG(RsLog, Warning, TEXT("Coefficient tag { %s } should end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+				UE_LOG(RsLog, Warning, TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 				continue;
 			}
 			bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
