@@ -64,7 +64,7 @@ struct FRsEffectModifierTableRow : public FTableRowBase
 };
 
 /**
- * 
+ * When RsGameplayEffect asset is saved, this component automatically updates its modifiers.
  */
 UCLASS()
 class RS_API URsModifierDataEffectComponent : public UGameplayEffectComponent
