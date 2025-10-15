@@ -56,14 +56,14 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 					continue;
 				}
 				FString CoeffTagString = CoeffTag.ToString();
-				if (!CoeffTag.IsValid())
+				if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
 				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } is not valid."), *CoeffTag.ToString())));
+					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must start with \".Coefficient\""), *CoeffTag.ToString())));
 					return EDataValidationResult::Invalid;
 				}
 				if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
 				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString())));
+					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\""), *CoeffTag.ToString())));
 					return EDataValidationResult::Invalid;
 				}
 			}
