@@ -90,10 +90,12 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 				Modifiers.Add(ModifierInfo);
 				continue;
 			}
-
+			
+			// (Coefficient.ATK.source * 1.5) + 500
+			//               ^
+			FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                    ^
-			FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
 			EGameplayEffectAttributeCaptureSource SourceOrTarget;
 			if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
 			{
@@ -115,8 +117,6 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                            ^
 			MagnitudeData.Coefficient = CoeffNum;
-			// (Coefficient.ATK.source * 1.5) + 500
-			//               ^
 			MagnitudeData.BackingAttribute = CaptureDefinition;
 
 			FGameplayModifierInfo ModifierInfo(StatToModify, EGameplayModOp::Additive, MagnitudeData);
