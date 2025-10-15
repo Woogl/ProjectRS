@@ -40,7 +40,7 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 	// Check GE
 	if (GetOuter() && !GetOuter()->IsA(URsGameplayEffect::StaticClass()))
 	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("RsModifierDataEffectComponent only support RsGameplayEffect."))));
+		Context.AddError(FText::FromString(FString::Printf(TEXT("RsModifierDataEffectComponent supports RsGameplayEffect only."))));
 		return EDataValidationResult::Invalid;
 	}
 
@@ -58,7 +58,7 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 				FString CoeffTagString = CoeffTag.ToString();
 				if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
 				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must start with \".Coefficient\""), *CoeffTag.ToString())));
+					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must start with \"Coefficient.\""), *CoeffTag.ToString())));
 					return EDataValidationResult::Invalid;
 				}
 				if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
