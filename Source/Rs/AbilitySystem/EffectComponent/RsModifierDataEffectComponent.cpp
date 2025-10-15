@@ -83,7 +83,6 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 		Context.AddError(FText::FromString(FString::Printf(TEXT("Invalid DataTable row. %s"), *DataTableRow.ToDebugString())));
 		return EDataValidationResult::Invalid;
 	}
-	
 	return Result;
 }
 #endif // WITH_EDITOR
