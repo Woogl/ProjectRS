@@ -22,19 +22,7 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 	Super::PreSave(SaveContext);
 
 	// Find modifier data.
-	URsModifierDataEffectComponent* ModifierDataEffectComp = nullptr;
-	for (TObjectPtr<UGameplayEffectComponent> GEComponent : GEComponents)
-	{
-		if (!GEComponent)
-		{
-			continue;
-		}
-		ModifierDataEffectComp = Cast<URsModifierDataEffectComponent>(GEComponent);
-		if (ModifierDataEffectComp)
-		{
-			break;
-		}
-	}
+	const URsModifierDataEffectComponent* ModifierDataEffectComp = FindModifierDataComponent();
 	if (!ModifierDataEffectComp)
 	{
 		return;
@@ -52,12 +40,45 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 	}
 }
 
-void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataEffectComp)
+bool URsGameplayEffect::CanEditChange(const FEditPropertyChain& PropertyChain) const
 {
-	for (const FModifierCoefficient& ModCoeff : ModifierDataEffectComp->ModifierCoefficients)
+	bool bParentVal = Super::CanEditChange(PropertyChain);
+	
+	if (FindModifierDataComponent() != nullptr)
 	{
-		// Stat to modify
-		FGameplayAttribute Attribute = URsAbilitySystemLibrary::GetAttributeByTag(ModCoeff.Stat);
+		if (PropertyChain.GetHead()->GetValue()->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Modifiers))
+		{
+			return false;
+		}
+		if (PropertyChain.GetActiveNode()->GetValue()->GetFName() == GET_MEMBER_NAME_CHECKED(FGameplayModifierInfo, Attribute))
+		{
+			return false;
+		}
+	}
+	return bParentVal;
+}
+
+const URsModifierDataEffectComponent* URsGameplayEffect::FindModifierDataComponent() const
+{
+	for (TObjectPtr<UGameplayEffectComponent> GEComponent : GEComponents)
+	{
+		if (!GEComponent)
+		{
+			continue;
+		}
+		if (URsModifierDataEffectComponent* ModifierDataComp = Cast<URsModifierDataEffectComponent>(GEComponent))
+		{
+			return ModifierDataComp;
+		}
+	}
+	return nullptr;
+}
+
+void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataComp)
+{
+	for (const FModifierCoefficient& ModCoeff : ModifierDataComp->ModifierCoefficients)
+	{
+		FGameplayAttribute StatToModify = URsAbilitySystemLibrary::GetAttributeByTag(ModCoeff.Stat);
 
 		for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
 		{
@@ -65,14 +86,14 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			//                                   ^
 			if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
 			{
-				FGameplayModifierInfo ModifierInfo(Attribute, EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
+				FGameplayModifierInfo ModifierInfo(StatToModify, EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
 				Modifiers.Add(ModifierInfo);
 				continue;
 			}
 
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                    ^
-			FGameplayAttribute AttributeToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
+			FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
 			EGameplayEffectAttributeCaptureSource SourceOrTarget;
 			if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
 			{
@@ -88,7 +109,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 				continue;
 			}
 			bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
-			FGameplayEffectAttributeCaptureDefinition CaptureDefinition(AttributeToCapture, SourceOrTarget, bSnapshot);
+			FGameplayEffectAttributeCaptureDefinition CaptureDefinition(StatToCapture, SourceOrTarget, bSnapshot);
 
 			FAttributeBasedFloat MagnitudeData;
 			// (Coefficient.ATK.source * 1.5) + 500
@@ -98,13 +119,13 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			//               ^
 			MagnitudeData.BackingAttribute = CaptureDefinition;
 
-			FGameplayModifierInfo ModifierInfo(Attribute, EGameplayModOp::Additive, MagnitudeData);
+			FGameplayModifierInfo ModifierInfo(StatToModify, EGameplayModOp::Additive, MagnitudeData);
 			Modifiers.Add(ModifierInfo);
 		}
 	}
 }
 
-void URsGameplayEffect::SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataEffectComp)
+void URsGameplayEffect::SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataComp)
 {
 	// TODO: Implement
 }

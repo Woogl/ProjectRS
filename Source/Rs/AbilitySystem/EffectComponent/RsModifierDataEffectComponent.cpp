@@ -11,11 +11,13 @@
 bool URsModifierDataEffectComponent::CanEditChange(const FProperty* InProperty) const
 {
 	bool bParentVal = Super::CanEditChange(InProperty);
-	
-	bool bDataTableValid = !DataTableRow.IsNull();
-	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, ModifierCoefficients))
+
+	if (!DataTableRow.IsNull())
 	{
-		return bParentVal && !bDataTableValid;
+		if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, ModifierCoefficients))
+		{
+			return false;
+		}
 	}
 	return bParentVal;
 }
@@ -54,6 +56,11 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 					continue;
 				}
 				FString CoeffTagString = CoeffTag.ToString();
+				if (!CoeffTag.IsValid())
+				{
+					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } is not valid."), *CoeffTag.ToString())));
+					return EDataValidationResult::Invalid;
+				}
 				if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
 				{
 					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString())));

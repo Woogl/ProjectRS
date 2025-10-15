@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "RsModifierDataEffectComponent.generated.h"
 
-// Set modifiers from asset
+// Used for setting RsGameplayEffect's modifiers from asset.
 USTRUCT(BlueprintType)
 struct FModifierCoefficient
 {
@@ -20,7 +20,7 @@ struct FModifierCoefficient
 	TMap<FGameplayTag, float> Coefficients;
 };
 
-// Set modifiers from table
+// Used for setting RsGameplayEffect's modifiers from table.
 USTRUCT(BlueprintType)
 struct FRsEffectModifierTableRow : public FTableRowBase
 {
@@ -72,9 +72,11 @@ class RS_API URsModifierDataEffectComponent : public UGameplayEffectComponent
 	GENERATED_BODY()
 
 public:
+	// Data for setting RsGameplayEffect's modifiers from asset.
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FModifierCoefficient> ModifierCoefficients;
 
+	// Data for setting RsGameplayEffect's modifiers from table.
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "RsEffectModifierTableRow"))
 	FDataTableRowHandle DataTableRow;
 

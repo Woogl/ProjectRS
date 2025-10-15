@@ -10,6 +10,7 @@ class URsModifierDataEffectComponent;
 
 /**
  * Categorized gameplay effect for designer.
+ * It supports automatic setting of modifiers using RsModifierDataEffectComponent.
  */
 UCLASS(Abstract)
 class RS_API URsGameplayEffect : public UGameplayEffect
@@ -21,9 +22,11 @@ public:
 
 #if WITH_EDITOR
 	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
+	virtual bool CanEditChange(const FEditPropertyChain& PropertyChain) const override;
 
 private:
-	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataEffectComp);
-	void SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataEffectComp);
+	const URsModifierDataEffectComponent* FindModifierDataComponent() const;
+	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataComp);
+	void SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataComp);
 #endif // WITH_EDITOR
 };
