@@ -66,7 +66,7 @@ void URsCharacterViewModel::OnEffectAdded(UAbilitySystemComponent* ASC, const FG
 {
 	if (URsActiveEffectViewModel* NewEffectViewModel = URsActiveEffectViewModel::CreateRsActiveEffectViewModel(EffectHandle))
 	{
-		NewEffectViewModel->OnViewModelDisabled.AddUObject(this, &ThisClass::OnEffectRemoved);
+		NewEffectViewModel->OnViewModelDisabled.BindUObject(this, &ThisClass::OnEffectRemoved);
 		ActiveEffectViewModels.Add(NewEffectViewModel);
 		ActiveEffectViewModels.Sort([](const URsActiveEffectViewModel& A, const URsActiveEffectViewModel& B)->bool{return A.GetPriority() > B.GetPriority();});
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
@@ -77,7 +77,7 @@ void URsCharacterViewModel::OnEffectRemoved(URsActiveEffectViewModel* DisabledVi
 {
 	if (DisabledViewModel)
 	{
-		DisabledViewModel->OnViewModelDisabled.RemoveAll(this);
+		DisabledViewModel->OnViewModelDisabled.Unbind();
 		ActiveEffectViewModels.Remove(DisabledViewModel);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
 	}

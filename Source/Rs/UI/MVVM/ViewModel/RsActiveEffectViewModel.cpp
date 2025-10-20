@@ -90,7 +90,7 @@ void URsActiveEffectViewModel::OnEffectRenewed(FActiveGameplayEffectHandle Effec
 
 void URsActiveEffectViewModel::OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
 {
-	OnViewModelDisabled.Broadcast(this);
+	OnViewModelDisabled.Execute(this);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetVisibility);
 }
 

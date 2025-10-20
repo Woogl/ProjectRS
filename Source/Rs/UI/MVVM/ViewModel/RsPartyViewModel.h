@@ -23,22 +23,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel", meta=(WorldContext="WorldContext"))
 	static URsPartyViewModel* GetPartyViewModel(UObject* WorldContext);
 
-	UFUNCTION(BlueprintCallable)
-	bool TrySwitchMemberAbility(int32 MemberIndex);
+	void TrySwitchMemberAbility(int32 MemberIndex);
 	
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
 public:
-	UFUNCTION(FieldNotify, BlueprintPure)
-	ESlateVisibility GetPartyMemberVisibility_0() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	ESlateVisibility GetPartyMemberVisibility_1() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	ESlateVisibility GetPartyMemberVisibility_2() const;
-
 	UFUNCTION(FieldNotify, BlueprintPure)
 	URsPlayerCharacterViewModel* GetCurrentPartyMember() const;
 
@@ -64,16 +54,6 @@ private:
 	void HandleAddPartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	void HandleRemovePartyMember(ARsPlayerCharacter* PartyMember, int32 MemberIndex);
 	
-	void SetPartyMemberViewModel_0(URsPlayerCharacterViewModel* CharacterViewModel);
-	void SetPartyMemberViewModel_1(URsPlayerCharacterViewModel* CharacterViewModel);
-	void SetPartyMemberViewModel_2(URsPlayerCharacterViewModel* CharacterViewModel);
-	
-	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_0;
-
-	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_1;
-
-	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsPlayerCharacterViewModel> PartyMemberViewModel_2;
+	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TArray<TObjectPtr<URsPlayerCharacterViewModel>> PartyMemberViewModels;
 };

@@ -8,6 +8,7 @@
 #include "RsAbilityViewModel.h"
 #include "RsEnergySetViewModel.h"
 #include "RsHealthSetViewModel.h"
+#include "Components/Button.h"
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
@@ -26,7 +27,6 @@ URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacte
 void URsPlayerCharacterViewModel::Initialize()
 {
 	Super::Initialize();
-	
 	if (ARsCharacterBase* PlayerCharacter = GetModel<ThisClass>())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PlayerCharacter))
@@ -35,7 +35,6 @@ void URsPlayerCharacterViewModel::Initialize()
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
 			}
-			
 			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get()->ESkillTag.GetSingleTagContainer(), true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));
@@ -193,6 +192,11 @@ ESlateVisibility URsPlayerCharacterViewModel::GetLinkSkillVisibility() const
 		return ESlateVisibility::SelfHitTestInvisible;
 	}
 	return ESlateVisibility::Collapsed;
+}
+
+void URsPlayerCharacterViewModel::OnSwitchButtonPressed()
+{
+	PlayerPawnSwitchRequestEvent.Execute(GetPartyMemberIndex());
 }
 
 void URsPlayerCharacterViewModel::Tick(float DeltaTime)

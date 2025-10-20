@@ -70,7 +70,7 @@ protected:
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(URsAbilityViewModel, STATGROUP_Tickables); };
 
 public:
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnViewModelDisabled, URsActiveEffectViewModel*);
+	DECLARE_DELEGATE_OneParam(FOnViewModelDisabled, URsActiveEffectViewModel*);
 	FOnViewModelDisabled OnViewModelDisabled;
 
 private:
