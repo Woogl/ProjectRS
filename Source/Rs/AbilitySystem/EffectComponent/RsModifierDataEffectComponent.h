@@ -72,6 +72,7 @@ class RS_API URsModifierDataEffectComponent : public UGameplayEffectComponent
 	GENERATED_BODY()
 
 public:
+#if WITH_EDITORONLY_DATA
 	// Data for setting RsGameplayEffect's modifiers from asset.
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FModifierCoefficient> ModifierCoefficients;
@@ -79,6 +80,7 @@ public:
 	// Data for setting RsGameplayEffect's modifiers from table.
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "RsEffectModifierTableRow"))
 	FDataTableRowHandle DataTableRow;
+#endif // WITH_EDITORONLY_DATA
 
 #if WITH_EDITOR
 	virtual bool CanEditChange(const FProperty* InProperty) const override;
