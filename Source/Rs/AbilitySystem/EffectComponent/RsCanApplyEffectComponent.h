@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectComponent.h"
 #include "GameplayEffectTypes.h"
-#include "GameplayEffectComponents/CustomCanApplyGameplayEffectComponent.h"
 #include "RsCanApplyEffectComponent.generated.h"
 
 UENUM(BlueprintType)
@@ -20,7 +20,7 @@ enum class ERsStatComparision : uint8
  * 
  */
 UCLASS()
-class RS_API URsCanApplyEffectComponent : public UCustomCanApplyGameplayEffectComponent
+class RS_API URsCanApplyEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
