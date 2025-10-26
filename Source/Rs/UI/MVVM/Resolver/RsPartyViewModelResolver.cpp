@@ -15,17 +15,12 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 	{
 		return nullptr;
 	}
-	
-	if (URsPartyViewModel* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<URsPartyViewModel>(LocalPlayer, false))
-	{
-		return ExistingViewModel;
-	}
 
 	URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(LocalPlayer);
 	if (!PartyComponent)
 	{
 		return nullptr;
 	}
-	
-	return URsSingletonViewModelBase::CreateViewModel<URsPartyViewModel>(PartyComponent);
+
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsPartyViewModel>(PartyComponent);
 }

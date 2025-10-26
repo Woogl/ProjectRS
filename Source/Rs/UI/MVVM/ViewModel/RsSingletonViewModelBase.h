@@ -17,25 +17,11 @@ class RS_API URsSingletonViewModelBase : public URsViewModelBase
 
 public:
 	template <typename T>
-	static T* CreateViewModel(typename T::ModelType* Model, bool bWarnIfNotFound = true);
+	static T* GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 	template <typename T>
-	static T* GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
+	static T* GetOrCreateViewModel(typename T::ModelType* Model, bool bWarnIfNotFound = true);
 };
-
-template <typename T>
-T* URsSingletonViewModelBase::CreateViewModel(typename T::ModelType* Model, bool bWarnIfNotFound)
-{
-	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model->GetWorld()))
-	{
-		if (T* ViewModel = URsViewModelBase::CreateViewModel<T>(Model))
-		{
-			MVVMSubsystem->AddSingletonViewModel(ViewModel, bWarnIfNotFound);
-			return ViewModel;
-		}
-	}
-	return nullptr;
-}
 
 template <typename T>
 T* URsSingletonViewModelBase::GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound)
@@ -43,6 +29,24 @@ T* URsSingletonViewModelBase::GetViewModel(const UObject* WorldContext, bool bWa
 	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(WorldContext))
 	{
 		return Cast<T>(MVVMSubsystem->GetSingletonViewModel(T::StaticClass(), bWarnIfNotFound));
+	}
+	return nullptr;
+}
+
+template <typename T>
+T* URsSingletonViewModelBase::GetOrCreateViewModel(typename T::ModelType* Model, bool bWarnIfNotFound)
+{
+	if (T* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<T>(Model, false))
+	{
+		return ExistingViewModel;
+	}
+	if (URsMVVMGameSubsystem* MVVMSubsystem = URsMVVMGameSubsystem::Get(Model->GetWorld()))
+	{
+		if (T* ViewModel = URsViewModelBase::CreateViewModel<T>(Model))
+		{
+			MVVMSubsystem->AddSingletonViewModel(ViewModel, bWarnIfNotFound);
+			return ViewModel;
+		}
 	}
 	return nullptr;
 }

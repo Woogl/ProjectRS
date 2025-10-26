@@ -14,16 +14,11 @@ UObject* URsBattleViewModelResolver::CreateInstance(const UClass* ExpectedType, 
 		return nullptr;
 	}
 	
-	if (URsBattleViewModel* ExistingViewModel = URsSingletonViewModelBase::GetViewModel<URsBattleViewModel>(LocalPlayer, false))
-	{
-		return ExistingViewModel;
-	}
-
 	URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>();
 	if (!BattleSubsystem)
 	{
 		return nullptr;
 	}
-	
-	return URsSingletonViewModelBase::CreateViewModel<URsBattleViewModel>(BattleSubsystem);
+
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsBattleViewModel>(BattleSubsystem);
 }
