@@ -25,7 +25,7 @@ public:
 	virtual bool CanEditChange(const FProperty* InProperty) const override;
 #endif // WITH_EDITOR
 	
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RowType = "RsAttributeMetaData"))
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RowType = "RsAttributeTableRow"))
 	FDataTableRowHandle GrantedAttributeTableRow;
 	
 	// Attributes / float used to set base values.

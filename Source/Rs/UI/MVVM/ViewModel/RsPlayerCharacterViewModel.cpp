@@ -8,7 +8,6 @@
 #include "RsAbilityViewModel.h"
 #include "RsEnergySetViewModel.h"
 #include "RsHealthSetViewModel.h"
-#include "Components/Button.h"
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
@@ -134,7 +133,7 @@ bool URsPlayerCharacterViewModel::IsPlayerControlled() const
 
 ESlateVisibility URsPlayerCharacterViewModel::GetDetailInfoVisibility() const
 {
-	if (HealthSetViewModel->IsDead() || IsPlayerControlled())
+	if (HealthSetViewModel && HealthSetViewModel->IsDead() || IsPlayerControlled())
 	{
 		return ESlateVisibility::Hidden;
 	}

@@ -99,7 +99,11 @@ FText URsHealthSetViewModel::GetMaxHealthText() const
 
 bool URsHealthSetViewModel::IsDead() const
 {
-	return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
+	if (ASC.IsValid())
+	{
+		return URsBattleLibrary::IsDead(ASC->GetAvatarActor());
+	}
+	return false;
 }
 
 FLinearColor URsHealthSetViewModel::GetColorByDeathState() const

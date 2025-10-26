@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsAttributeMetaData.h"
+#include "RsAttributeTableRow.h"
 
 #include "RsAttackSet.h"
 #include "RsDefenseSet.h"
@@ -10,7 +10,7 @@
 #include "RsSpeedSet.h"
 #include "RsStaggerSet.h"
 
-float FRsAttributeMetaData::GetValue(const FGameplayAttribute& Attribute) const
+float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) const
 {
 	if (Attribute == URsHealthSet::GetMaxHealthAttribute())
 	{

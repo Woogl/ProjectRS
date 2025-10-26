@@ -5,7 +5,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
-#include "Attributes/RsAttributeMetaData.h"
+#include "Attributes/RsAttributeTableRow.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -40,12 +40,12 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	// Grant attributes from data table row.
 	if (!AbilitySet->GrantedAttributeTableRow.IsNull())
 	{
-		if (FRsAttributeMetaData* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeMetaData>(ANSI_TO_TCHAR(__FUNCTION__)))
+		if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{
 			for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
 			{
 				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(Attribute.GetAttributeSetClass());
-				float BaseValue = Row->GetValue(Attribute);
+				float BaseValue = Row->GetBaseValue(Attribute);
 				SetNumericAttributeBase(Attribute, BaseValue);
 			}
 		}

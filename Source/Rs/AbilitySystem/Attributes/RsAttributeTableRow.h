@@ -3,14 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAttributeMetaData.generated.h"
+#include "RsAttributeTableRow.generated.h"
 
+/**
+ * 
+ */
 struct FGameplayAttribute;
 /**
  * 
  */
 USTRUCT(BlueprintType)
-struct RS_API FRsAttributeMetaData : public FTableRowBase
+struct RS_API FRsAttributeTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -72,5 +75,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MoveSpeed  = 1.f;
 	
-	float GetValue(const FGameplayAttribute& Attribute) const;
+	float GetBaseValue(const FGameplayAttribute& Attribute) const;
 };

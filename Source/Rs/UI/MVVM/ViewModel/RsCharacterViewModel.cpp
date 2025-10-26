@@ -8,6 +8,7 @@
 #include "RsActiveEffectViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/Character/RsCharacterBase.h"
@@ -96,6 +97,11 @@ FText URsCharacterViewModel::GetCharacterName() const
 {
 	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
+		if (Character->CharacterName.IsEmpty())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Character %s has no name."), *Character->GetName());
+			return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
+		}
 		return Character->CharacterName;
 	}
 	return FText::GetEmpty();
