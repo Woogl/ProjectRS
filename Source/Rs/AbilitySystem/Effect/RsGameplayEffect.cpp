@@ -50,10 +50,6 @@ bool URsGameplayEffect::CanEditChange(const FEditPropertyChain& PropertyChain) c
 		{
 			return false;
 		}
-		if (PropertyChain.GetActiveNode()->GetValue()->GetFName() == GET_MEMBER_NAME_CHECKED(FGameplayModifierInfo, Attribute))
-		{
-			return false;
-		}
 	}
 	return bParentVal;
 }
