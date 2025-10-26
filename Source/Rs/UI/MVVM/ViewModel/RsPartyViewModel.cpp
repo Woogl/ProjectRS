@@ -3,17 +3,11 @@
 
 #include "RsPartyViewModel.h"
 
-#include "CommonHardwareVisibilityBorder.h"
 #include "RsPlayerCharacterViewModel.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
-
-URsPartyViewModel* URsPartyViewModel::GetPartyViewModel(UObject* WorldContext)
-{
-	return GetViewModel<URsPartyViewModel>(WorldContext);
-}
 
 void URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)
 {

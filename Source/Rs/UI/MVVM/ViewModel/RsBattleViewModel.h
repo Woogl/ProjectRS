@@ -22,10 +22,6 @@ class RS_API URsBattleViewModel : public URsSingletonViewModelBase
 public:
 	using ModelType = URsBattleSubsystem;
 	
-	// Singleton Viewmodel
-	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel", meta=(WorldContext="WorldContext"))
-	static URsBattleViewModel* GetBattleViewModel(UObject* WorldContext);
-	
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 

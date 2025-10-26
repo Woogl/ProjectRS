@@ -19,9 +19,6 @@ class RS_API URsPartyViewModel : public URsSingletonViewModelBase
 
 public:
 	using ModelType = URsPartyComponent;
-	
-	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel", meta=(WorldContext="WorldContext"))
-	static URsPartyViewModel* GetPartyViewModel(UObject* WorldContext);
 
 	void TrySwitchMemberAbility(int32 MemberIndex);
 	

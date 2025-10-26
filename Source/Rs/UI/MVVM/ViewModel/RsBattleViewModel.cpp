@@ -7,11 +7,6 @@
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
-URsBattleViewModel* URsBattleViewModel::GetBattleViewModel(UObject* WorldContext)
-{
-	return GetViewModel<URsBattleViewModel>(WorldContext);
-}
-
 void URsBattleViewModel::Initialize()
 {
 	Super::Initialize();
