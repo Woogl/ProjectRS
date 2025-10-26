@@ -9,6 +9,7 @@
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/Character/RsCharacterBase.h"
@@ -99,7 +100,7 @@ FText URsCharacterViewModel::GetCharacterName() const
 	{
 		if (Character->CharacterName.IsEmpty())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Character %s has no name."), *Character->GetName());
+			UE_LOG(RsLog, Warning, TEXT("Character %s has no name."), *Character->GetName());
 			return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 		}
 		return Character->CharacterName;
