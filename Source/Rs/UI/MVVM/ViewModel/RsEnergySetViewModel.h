@@ -28,15 +28,15 @@ protected:
 
 public:
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetCurrentEnergy() const;
+	float GetCurrentUltimate() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetMaxEnergy() const;
+	float GetMaxUltimate() const;
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetEnergyPercent() const;
+	float GetUltimatePercent() const;
 	
 private:
-	void MaxEnergyChanged(const FOnAttributeChangeData& Data);
-	void CurrentEnergyChanged(const FOnAttributeChangeData& Data);
+	void MaxUltimateChanged(const FOnAttributeChangeData& Data);
+	void CurrentUltimateChanged(const FOnAttributeChangeData& Data);
 };

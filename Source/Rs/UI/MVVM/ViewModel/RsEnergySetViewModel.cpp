@@ -16,8 +16,8 @@ void URsEnergySetViewModel::Initialize()
 	
 	if (ASC.IsValid())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).AddUObject(this, &ThisClass::MaxEnergyChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).AddUObject(this, &ThisClass::CurrentEnergyChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).AddUObject(this, &ThisClass::MaxUltimateChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).AddUObject(this, &ThisClass::CurrentUltimateChanged);
 	}
 }
 
@@ -31,7 +31,7 @@ void URsEnergySetViewModel::Deinitialize()
 	Super::Deinitialize();
 }
 
-float URsEnergySetViewModel::GetCurrentEnergy() const
+float URsEnergySetViewModel::GetCurrentUltimate() const
 {
 	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
 	{
@@ -40,7 +40,7 @@ float URsEnergySetViewModel::GetCurrentEnergy() const
 	return 0.f;
 }
 
-float URsEnergySetViewModel::GetMaxEnergy() const
+float URsEnergySetViewModel::GetMaxUltimate() const
 {
 	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
 	{
@@ -49,11 +49,11 @@ float URsEnergySetViewModel::GetMaxEnergy() const
 	return 0.f;
 }
 
-float URsEnergySetViewModel::GetEnergyPercent() const
+float URsEnergySetViewModel::GetUltimatePercent() const
 {
-	if (GetMaxEnergy() != 0.f)
+	if (GetMaxUltimate() != 0.f)
 	{
-		return GetCurrentEnergy() / GetMaxEnergy();
+		return GetCurrentUltimate() / GetMaxUltimate();
 	}
 	else
 	{
@@ -61,14 +61,14 @@ float URsEnergySetViewModel::GetEnergyPercent() const
 	}
 }
 
-void URsEnergySetViewModel::MaxEnergyChanged(const FOnAttributeChangeData& Data)
+void URsEnergySetViewModel::MaxUltimateChanged(const FOnAttributeChangeData& Data)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxEnergy);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxUltimate);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
 }
 
-void URsEnergySetViewModel::CurrentEnergyChanged(const FOnAttributeChangeData& Data)
+void URsEnergySetViewModel::CurrentUltimateChanged(const FOnAttributeChangeData& Data)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentEnergy);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetEnergyPercent);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentUltimate);
+	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
 }
