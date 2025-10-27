@@ -31,16 +31,16 @@ bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEff
 
 bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
-	if (Comparision != ERsStatComparision::None)
+	if (Comparision != ERsComparisionOperator::None)
 	{
 		float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, Stat);
 		switch (Comparision)
 		{
-		case ERsStatComparision::Greater:
+		case ERsComparisionOperator::Greater:
 			return StatValue < Value;
-		case ERsStatComparision::Equal:
+		case ERsComparisionOperator::Equal:
 			return StatValue != Value;
-		case ERsStatComparision::Less:
+		case ERsComparisionOperator::Less:
 			return StatValue > Value;
 		default:
 			break;

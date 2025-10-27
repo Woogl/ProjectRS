@@ -8,7 +8,7 @@
 #include "RsCanApplyEffectComponent.generated.h"
 
 UENUM(BlueprintType)
-enum class ERsStatComparision : uint8
+enum class ERsComparisionOperator : uint8
 {
 	None,
 	Greater,
@@ -24,11 +24,12 @@ class RS_API URsCanApplyEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat"))
 	FGameplayTag Stat;
 
 	UPROPERTY(EditDefaultsOnly)
-	ERsStatComparision Comparision = ERsStatComparision::None;
+	ERsComparisionOperator Comparision = ERsComparisionOperator::None;
 
 	UPROPERTY(EditDefaultsOnly)
 	float Value = 0.f;
