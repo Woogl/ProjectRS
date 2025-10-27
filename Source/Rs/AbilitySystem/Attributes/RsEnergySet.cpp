@@ -9,8 +9,8 @@
 
 URsEnergySet::URsEnergySet()
 {
-	CurrentEnergy = 0.f;
-	MaxEnergy = 1.f;
+	CurrentUltimate = 0.f;
+	MaxUltimate = 1.f;
 	CurrentMana = 0.f;
 	MaxMana = 1.f;
 }
@@ -24,11 +24,8 @@ void URsEnergySet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Params.Condition = COND_None;
 	
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentEnergy, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxEnergy, Params);
-
-	// Only Owner
-	Params.Condition = COND_OwnerOnly;
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentUltimate, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxUltimate, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentMana, Params);
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxMana, Params);
 }
@@ -37,7 +34,7 @@ void URsEnergySet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
-	if (Attribute == GetMaxEnergyAttribute())
+	if (Attribute == GetMaxUltimateAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}
@@ -52,9 +49,9 @@ void URsEnergySet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 {
 	Super::PostGameplayEffectExecute(Data);
 	
-	if (Data.EvaluatedData.Attribute == GetCurrentEnergyAttribute())
+	if (Data.EvaluatedData.Attribute == GetCurrentUltimateAttribute())
 	{
-		SetCurrentEnergy(FMath::Clamp(GetCurrentEnergy(), 0.f, GetMaxEnergy()));
+		SetCurrentUltimate(FMath::Clamp(GetCurrentUltimate(), 0.f, GetMaxUltimate()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetCurrentManaAttribute())
 	{
@@ -62,14 +59,14 @@ void URsEnergySet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	}
 }
 
-void URsEnergySet::OnRep_CurrentEnergy(const FGameplayAttributeData& OldValue)
+void URsEnergySet::OnRep_CurrentUltimate(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, CurrentEnergy, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, CurrentUltimate, OldValue);
 }
 
-void URsEnergySet::OnRep_MaxEnergy(const FGameplayAttributeData& OldValue)
+void URsEnergySet::OnRep_MaxUltimate(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, MaxEnergy, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsEnergySet, MaxUltimate, OldValue);
 }
 
 void URsEnergySet::OnRep_CurrentMana(const FGameplayAttributeData& OldValue)

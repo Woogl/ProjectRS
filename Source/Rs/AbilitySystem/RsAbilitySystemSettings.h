@@ -25,7 +25,10 @@ public:
 	virtual FName GetCategoryName() const override;
 	
 	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat", ForceInlineRow))
-	TMap<FGameplayTag, FGameplayAttribute> Attributes;
+	TMap<FGameplayTag, FGameplayAttribute> BaseAttributes;
+
+	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat", ForceInlineRow))
+	TMap<FGameplayTag, FGameplayAttribute> MetaAttributes;
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> Coefficients;

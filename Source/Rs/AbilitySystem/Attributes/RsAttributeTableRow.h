@@ -46,10 +46,10 @@ public:
 	float CurrentMana = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxEnergy = 0.f;
+	float MaxUltimate = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float CurrentEnergy = 0.f;
+	float CurrentUltimate = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Attack = 0.f;

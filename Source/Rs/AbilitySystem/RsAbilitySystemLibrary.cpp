@@ -143,7 +143,15 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(
 
 FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByTag(FGameplayTag StatTag)
 {
-	return URsAbilitySystemSettings::Get().Attributes.FindRef(StatTag);
+	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().BaseAttributes.Find(StatTag))
+	{
+		return *FoundStat;
+	}
+	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().MetaAttributes.Find(StatTag))
+	{
+		return *FoundStat;
+	}
+	return nullptr;
 }
 
 float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag)
@@ -152,7 +160,8 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	{
 		return 0.f;
 	}
-	FGameplayAttribute Attribute = URsAbilitySystemSettings::Get().Attributes.FindRef(StatTag);
+	
+	FGameplayAttribute Attribute = GetAttributeByTag(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }
 

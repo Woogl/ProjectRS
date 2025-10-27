@@ -40,14 +40,14 @@ public:
 	FGameplayAttributeData HealthDamage;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthDamage)
 
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData Healing;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
-
 	// Used in the RsHealthDamageCalculation to calculate final health damage.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, BaseDamage)
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData Healing;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
 
 protected:
 	UFUNCTION()

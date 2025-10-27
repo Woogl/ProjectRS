@@ -44,13 +44,13 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return CurrentMana;
 	}
-	if (Attribute == URsEnergySet::GetMaxEnergyAttribute())
+	if (Attribute == URsEnergySet::GetMaxUltimateAttribute())
 	{
-		return MaxEnergy;
+		return MaxUltimate;
 	}
-	if (Attribute == URsEnergySet::GetCurrentEnergyAttribute())
+	if (Attribute == URsEnergySet::GetCurrentUltimateAttribute())
 	{
-		return CurrentEnergy;
+		return CurrentUltimate;
 	}
 	if (Attribute == URsAttackSet::GetAttackAttribute())
 	{

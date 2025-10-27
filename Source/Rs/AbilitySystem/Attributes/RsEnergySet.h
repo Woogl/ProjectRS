@@ -23,13 +23,13 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 	// Cost for ultimate skill.
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentEnergy)
-	FGameplayAttributeData CurrentEnergy;
-	ATTRIBUTE_ACCESSORS(URsEnergySet, CurrentEnergy)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentUltimate)
+	FGameplayAttributeData CurrentUltimate;
+	ATTRIBUTE_ACCESSORS(URsEnergySet, CurrentUltimate)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxEnergy)
-	FGameplayAttributeData MaxEnergy;
-	ATTRIBUTE_ACCESSORS(URsEnergySet, MaxEnergy)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxUltimate)
+	FGameplayAttributeData MaxUltimate;
+	ATTRIBUTE_ACCESSORS(URsEnergySet, MaxUltimate)
 
 	// Special resource for character-specific mechanics or abilities.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentMana)
@@ -42,10 +42,10 @@ public:
 
 protected:
 	UFUNCTION()
-	virtual void OnRep_CurrentEnergy(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_CurrentUltimate(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
-	virtual void OnRep_MaxEnergy(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_MaxUltimate(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
 	virtual void OnRep_CurrentMana(const FGameplayAttributeData& OldValue);
