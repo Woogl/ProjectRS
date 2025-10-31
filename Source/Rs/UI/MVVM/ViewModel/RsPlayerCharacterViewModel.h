@@ -57,16 +57,12 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	ESlateVisibility GetLinkSkillVisibility() const;
-
-	UFUNCTION(BlueprintCallable)
-	void OnSwitchButtonPressed();
+	
 	// FTickableGameObject
 	// Display cooldown updated every frame.
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 
-	DECLARE_DELEGATE_OneParam(FPlayerPawnSwitchRequest, int32 PartyMemberIndex);
-	FPlayerPawnSwitchRequest PlayerPawnSwitchRequestEvent;
 private:
 	UFUNCTION()
 	void HandlePossessedPawn(APawn* OldPawn, APawn* NewPawn);

@@ -69,8 +69,7 @@ bool URsPartyLibrary::SwitchPartyMember(UObject* WorldContextObject, int32 NewMe
 	{
 		return false;
 	}
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
-	return PartyComponent->SwitchPartyMember(PlayerController, NewMemberIndex);
+	return PartyComponent->SwitchPartyMember(NewMemberIndex);
 }
 
 void URsPartyLibrary::AddPartyMember(ARsPlayerCharacter* NewMember)

@@ -9,14 +9,6 @@
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
-void URsPartyViewModel::TrySwitchMemberAbility(int32 MemberIndex)
-{
-	if (URsPartyComponent* PartyComponent = GetModel<ThisClass>())
-	{
-		PartyComponent->TrySwitchMemberAbility(MemberIndex);
-	}
-}
-
 void URsPartyViewModel::Initialize()
 {
 	Super::Initialize();
@@ -30,7 +22,6 @@ void URsPartyViewModel::Initialize()
 		for (int32 i = 0; i < PartyMembers.Num(); ++i)
 		{
 			URsPlayerCharacterViewModel* CharacterViewModel = URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(PartyMembers[i]);
-			CharacterViewModel->PlayerPawnSwitchRequestEvent.BindUObject(this, &ThisClass::TrySwitchMemberAbility);
 			PartyMemberViewModels.Add(CharacterViewModel);
 		}
 	}
@@ -106,6 +97,14 @@ int32 URsPartyViewModel::GetCurrentPartyMemberIndex() const
 		return PartyComponent->GetCurrentMemberIndex();
 	}
 	return INDEX_NONE;
+}
+
+void URsPartyViewModel::SwitchPartyMember(int32 MemberIndex)
+{
+	if (URsPartyComponent* PartyComponent = GetModel<ThisClass>())
+	{
+		PartyComponent->SwitchPartyMember(MemberIndex);
+	}
 }
 
 void URsPartyViewModel::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)

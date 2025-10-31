@@ -6,10 +6,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "RsPartySubsystem.h"
-#include "Kismet/GameplayStatics.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Character/RsPlayerCharacter.h"
+#include "Rs/Player/RsPlayerController.h"
 #include "Rs/UI/RsUILibrary.h"
 
 URsPartyComponent::URsPartyComponent()
@@ -44,9 +44,12 @@ int32 URsPartyComponent::GetPartyMemberIndex(ARsPlayerCharacter* Character) cons
 
 int32 URsPartyComponent::GetCurrentMemberIndex() const
 {
-	if (ACharacter* CurrentCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	if (ARsPlayerController* PlayerController = GetController())
 	{
-		return GetPartyMemberIndex(Cast<ARsPlayerCharacter>(CurrentCharacter));
+		if (ACharacter* CurrentCharacter = PlayerController->GetCharacter())
+		{
+			return GetPartyMemberIndex(Cast<ARsPlayerCharacter>(CurrentCharacter));
+		}
 	}
 	return INDEX_NONE;
 }
@@ -166,8 +169,13 @@ void URsPartyComponent::RemovePartyMemberAt(int32 MemberIndex)
 
 void URsPartyComponent::SpawnPartyMembers()
 {
-	APlayerController* OwingPlayerController = Cast<APlayerController>(GetOwner());
-	if (ULocalPlayer* LocalPlayer = OwingPlayerController->GetLocalPlayer())
+	ARsPlayerController* PlayerController = GetController();
+	if (!PlayerController)
+	{
+		return;
+	}
+	
+	if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
 	{
 		for (TSubclassOf<ARsPlayerCharacter> PartyMemberClass : URsPartySubsystem::Get(LocalPlayer)->GetPartyMemberClasses())
 		{
@@ -179,8 +187,14 @@ void URsPartyComponent::SpawnPartyMembers()
 	}
 }
 
-bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex)
+bool URsPartyComponent::SwitchPartyMember(int32 MemberIndex)
 {
+	ARsPlayerController* PlayerController = GetController();
+	if (!PlayerController)
+	{
+		return false;
+	}
+	
 	if (ARsPlayerCharacter* NewPartyMember = GetPartyMember(MemberIndex))
 	{
 		if (PlayerController->GetPawn() != NewPartyMember)
@@ -207,7 +221,7 @@ bool URsPartyComponent::SwitchPartyMember(APlayerController* PlayerController, i
 
 bool URsPartyComponent::TrySwitchMemberAbility(int32 MemberIndex)
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	ARsPlayerController* PlayerController = GetController();
 	if (!PlayerController)
 	{
 		return false;
@@ -235,6 +249,16 @@ AActor* URsPartyComponent::GetLinkSkillTarget() const
 void URsPartyComponent::SetLinkSkillTarget(AActor* NewTarget)
 {
 	LinkSkillTarget = NewTarget;
+}
+
+ARsPlayerController* URsPartyComponent::GetController() const
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return nullptr;
+	}
+	return Cast<ARsPlayerController>(Owner);
 }
 
 void URsPartyComponent::BeginPlay()

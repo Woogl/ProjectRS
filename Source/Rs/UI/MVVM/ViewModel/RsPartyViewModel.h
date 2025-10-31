@@ -19,8 +19,6 @@ class RS_API URsPartyViewModel : public URsSingletonViewModelBase
 
 public:
 	using ModelType = URsPartyComponent;
-
-	void TrySwitchMemberAbility(int32 MemberIndex);
 	
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
@@ -43,6 +41,9 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	int32 GetCurrentPartyMemberIndex() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchPartyMember(int32 MemberIndex);
 
 private:
 	UFUNCTION()

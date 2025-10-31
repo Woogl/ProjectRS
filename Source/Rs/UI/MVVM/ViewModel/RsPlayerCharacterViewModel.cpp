@@ -193,11 +193,6 @@ ESlateVisibility URsPlayerCharacterViewModel::GetLinkSkillVisibility() const
 	return ESlateVisibility::Collapsed;
 }
 
-void URsPlayerCharacterViewModel::OnSwitchButtonPressed()
-{
-	PlayerPawnSwitchRequestEvent.Execute(GetPartyMemberIndex());
-}
-
 void URsPlayerCharacterViewModel::Tick(float DeltaTime)
 {
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetPartySwitchCooldownRemaining);

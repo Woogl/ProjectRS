@@ -43,7 +43,7 @@ public:
 	void RemovePartyMemberAt(int32 MemberIndex);
 
 	void SpawnPartyMembers();
-	bool SwitchPartyMember(APlayerController* PlayerController, int32 MemberIndex);
+	bool SwitchPartyMember(int32 MemberIndex);
 
 	bool TrySwitchMemberAbility(int32 MemberIndex);
 
@@ -52,6 +52,8 @@ public:
 	
 	AActor* GetLinkSkillTarget() const;
 	void SetLinkSkillTarget(AActor* NewTarget);
+
+	ARsPlayerController* GetController() const;
 
 protected:
 	virtual void BeginPlay() override;
