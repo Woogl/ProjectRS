@@ -24,10 +24,10 @@ public:
 	
 	/** Party member getter */
 	UFUNCTION(BlueprintPure, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static ARsPlayerCharacter* GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex);
+	static TArray<ARsPlayerCharacter*> GetPartyMembers(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category = "Rs Party Library", meta = (WorldContext = "WorldContextObject"))
-	static TArray<ARsPlayerCharacter*> GetPartyMembers(UObject* WorldContextObject);
+	static ARsPlayerCharacter* GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex);
 
 	UFUNCTION(BlueprintPure, Category = "Rs Party Library")
 	static int32 FindPartyMemberIndex(ARsPlayerCharacter* Member);

@@ -23,16 +23,6 @@ URsPartyComponent* URsPartyLibrary::GetPartyComponent(UObject* WorldContextObjec
 	return nullptr;
 }
 
-ARsPlayerCharacter* URsPartyLibrary::GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex)
-{
-	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
-	if (!PartyComponent)
-	{
-		return nullptr;
-	}
-	return PartyComponent->GetPartyMember(MemberIndex);
-}
-
 TArray<ARsPlayerCharacter*> URsPartyLibrary::GetPartyMembers(UObject* WorldContextObject)
 {
 	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
@@ -41,6 +31,16 @@ TArray<ARsPlayerCharacter*> URsPartyLibrary::GetPartyMembers(UObject* WorldConte
 		return TArray<ARsPlayerCharacter*>();
 	}
 	return PartyComponent->GetPartyMembers();
+}
+
+ARsPlayerCharacter* URsPartyLibrary::GetPartyMemberAt(UObject* WorldContextObject, int32 MemberIndex)
+{
+	URsPartyComponent* PartyComponent = GetPartyComponent(WorldContextObject);
+	if (!PartyComponent)
+	{
+		return nullptr;
+	}
+	return PartyComponent->GetPartyMember(MemberIndex);
 }
 
 int32 URsPartyLibrary::FindPartyMemberIndex(ARsPlayerCharacter* Member)
