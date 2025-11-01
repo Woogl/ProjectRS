@@ -53,7 +53,7 @@ void URsAnimNotifyState_HitTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 		bool bSuccess = URsTargetingLibrary::PerformTargeting(Owner, WorldTransform, Params, ResultActors);
 		if (bSuccess == true)
 		{
-			SendHitEventToResults(MeshComp->GetOwner(), ResultActors);
+			SendHitEventToResults(MeshComp, ResultActors);
 		}
 	
 		// Keep old socket transform for next tick.
@@ -79,15 +79,16 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 
 	if (bSuccess == true)
 	{
-		SendHitEventToResults(MeshComp->GetOwner(), ResultActors);
+		SendHitEventToResults(MeshComp, ResultActors);
 	}
 
 	// Keep old socket transform for next tick.
 	LastWorldTransform = WorldTransform;
 }
 
-void URsAnimNotifyState_HitTrace::SendHitEventToResults(AActor* Owner, TArray<AActor*> ResultActors)
+void URsAnimNotifyState_HitTrace::SendHitEventToResults(USkeletalMeshComponent* MeshComp, TArray<AActor*> ResultActors)
 {
+	AActor* Owner = MeshComp->GetOwner();
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
 	if (!ASC)
 	{
@@ -106,6 +107,13 @@ void URsAnimNotifyState_HitTrace::SendHitEventToResults(AActor* Owner, TArray<AA
 		Payload.EventTag = EventTag;
 		Payload.Instigator = Owner;
 		Payload.Target = Target;
+		FVector Start = MeshComp->GetSocketLocation(SocketName);
+		FVector End = Target->GetActorLocation();
+		FHitResult HitResult;
+		Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack);
+		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+		EffectContext.AddHitResult(HitResult);
+		Payload.ContextHandle = EffectContext;
 		ASC->HandleGameplayEvent(EventTag, &Payload);
 		HitTargets.Emplace(Target);
 	}

@@ -31,7 +31,7 @@ protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
-	void SendHitEventToResults(AActor* Owner, TArray<AActor*> ResultActors);
+	void SendHitEventToResults(USkeletalMeshComponent* MeshComp, TArray<AActor*> ResultActors);
 	
 	UPROPERTY()
 	TArray<AActor*> HitTargets;

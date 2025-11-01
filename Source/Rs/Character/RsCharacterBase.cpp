@@ -27,11 +27,13 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	//GetMesh()->SetVisibility(false);
 	
 	CharacterAppearance = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterAppearance"));
 	CharacterAppearance->SetupAttachment(GetMesh());
 	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
+	CharacterAppearance->SetCollisionProfileName(TEXT("CharacterMesh"));
 
 	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 }

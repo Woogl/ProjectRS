@@ -161,7 +161,8 @@ FActiveGameplayEffectHandle URsEffectDefinition_DotBurstDamage::ApplyEffect(UAbi
 
 FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
-	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
+	FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
+	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, EffectContext);
 	if (EventData.EventMagnitude > 0)
 	{
 		EffectSpec.Data->SetDuration(EventData.EventMagnitude, true);

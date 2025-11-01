@@ -86,6 +86,13 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 				Payload.EventTag = EventTag;
 				Payload.Instigator = Owner;
 				Payload.Target = Target;
+				FVector Start = WeaponComponent->GetComponentLocation();
+				FVector End = Target->GetActorLocation();
+				FHitResult HitResult;
+				Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack);
+				FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+				EffectContext.AddHitResult(HitResult);
+				Payload.ContextHandle = EffectContext;
 				ASC->HandleGameplayEvent(EventTag, &Payload);
 			}
 		}
