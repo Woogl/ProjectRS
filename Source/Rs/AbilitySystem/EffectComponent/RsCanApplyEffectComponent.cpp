@@ -7,19 +7,10 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
-URsCanApplyEffectComponent::URsCanApplyEffectComponent()
-{
-#if WITH_EDITORONLY_DATA
-	EditorFriendlyName = FString();
-#endif
-}
-
 bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
 	if (ShouldImmunityBlock(ActiveGEContainer, GESpec))
 	{
-		// FActiveGameplayEffect DummyActiveEffect;
-		// DummyActiveEffect.Spec = GESpec;
 		if (bNotifyImmunityBlock)
 		{
 			ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
@@ -31,18 +22,23 @@ bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEff
 
 bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
+	bool bResult = false;
 	if (Comparision != ERsComparisionOperator::None)
 	{
 		float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, Stat);
 		switch (Comparision)
 		{
+		case ERsComparisionOperator::None:
+			bResult = true;
+			break;
 		case ERsComparisionOperator::Greater:
-			return StatValue < Value;
+			bResult = StatValue < Value;
+			break;
 		case ERsComparisionOperator::Equal:
-			return StatValue != Value;
+			bResult = StatValue != Value;
+			break;
 		case ERsComparisionOperator::Less:
-			return StatValue > Value;
-		default:
+			bResult = StatValue > Value;
 			break;
 		}
 	}
@@ -50,8 +46,8 @@ bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffect
 	if (!TagRequirements.IsEmpty())
 	{
 		FGameplayTagContainer Tags = ActiveGEContainer.Owner->GetOwnedGameplayTags();
-		return !TagRequirements.RequirementsMet(Tags);
+		return bResult && !TagRequirements.RequirementsMet(Tags);
 	}
 	
-	return true;
+	return bResult;
 }

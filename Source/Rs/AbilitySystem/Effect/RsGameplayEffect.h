@@ -6,6 +6,7 @@
 #include "GameplayEffect.h"
 #include "RsGameplayEffect.generated.h"
 
+class URsDamageEffectComponent;
 class URsModifierDataEffectComponent;
 
 /**
@@ -25,8 +26,13 @@ public:
 	virtual bool CanEditChange(const FEditPropertyChain& PropertyChain) const override;
 
 private:
-	const URsModifierDataEffectComponent* FindModifierDataComponent() const;
+	/** RsModifierDataEffectComponent setup */
 	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataComp);
 	void SetModifiersFromTable(const URsModifierDataEffectComponent* ModifierDataComp);
+
+	/** RsDamageDataEffectComponent setup */
+	void SetModifiersFromAsset(const URsDamageEffectComponent* DamageDataComp);
+	void SetModifiersFromTable(const URsDamageEffectComponent* DamageDataComp);
+	void SetDamageExecutions(const URsDamageEffectComponent* DamageDataComp);
 #endif // WITH_EDITOR
 };

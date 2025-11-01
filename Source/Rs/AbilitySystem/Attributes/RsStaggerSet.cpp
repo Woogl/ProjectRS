@@ -21,7 +21,6 @@ void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, floa
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}
-	
 	else if (Attribute == GetCurrentStaggerAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStagger());
@@ -42,11 +41,13 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetStaggerDamageAttribute())
+	if (Data.EvaluatedData.Attribute == GetFinalDamageAttribute())
 	{
 		// Store a local copy of the amount of Stagger Gain done and clear the Stagger Gain attribute.
-		const float LocalDamage = GetStaggerDamage();
-		if (LocalDamage > 0.0f)
+		const float LocalDamage = GetFinalDamage();
+		SetBaseDamage(0.f);
+		SetFinalDamage(0.f);
+		if (LocalDamage > 0.f)
 		{
 			// Apply the Stagger change and then clamp it.
 			const float NewStagger = GetCurrentStagger() + LocalDamage;
@@ -95,5 +96,4 @@ void URsStaggerSet::OnRep_MaxStagger(const FGameplayAttributeData& OldValue)
 void URsStaggerSet::OnRep_StaggerDecay(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, StaggerDecay, OldValue);
-
 }

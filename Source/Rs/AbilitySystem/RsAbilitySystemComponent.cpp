@@ -42,7 +42,7 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 	{
 		if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{
-			for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().BaseAttributes)
+			for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
 			{
 				const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(Attribute.GetAttributeSetClass());
 				float BaseValue = Row->GetBaseValue(Attribute);

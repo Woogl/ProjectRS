@@ -143,11 +143,7 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectSpecCoefficient(
 
 FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByTag(FGameplayTag StatTag)
 {
-	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().BaseAttributes.Find(StatTag))
-	{
-		return *FoundStat;
-	}
-	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().MetaAttributes.Find(StatTag))
+	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().Attributes.Find(StatTag))
 	{
 		return *FoundStat;
 	}

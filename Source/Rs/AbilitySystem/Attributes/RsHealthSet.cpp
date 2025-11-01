@@ -36,12 +36,10 @@ void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}
-	
 	else if (Attribute == GetCurrentHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
-
 	else if (Attribute == GetBarrierAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 0.f);
@@ -62,9 +60,11 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if (Data.EvaluatedData.Attribute == GetHealthDamageAttribute())
+	if (Data.EvaluatedData.Attribute == GetFinalDamageAttribute())
 	{
-		float LocalHealthDamage = GetHealthDamage();
+		float LocalHealthDamage = GetFinalDamage();
+		SetBaseDamage(0.f);
+		SetFinalDamage(0.f);
 		if (LocalHealthDamage > 0.f)
 		{
 			if (GetBarrier() > 0.f)

@@ -33,16 +33,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaggerDecay)
 	FGameplayAttributeData StaggerDecay;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerDecay)
-
-	// Applied to reduce the "CurrentStagger" value.
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData StaggerDamage;
-	ATTRIBUTE_ACCESSORS(URsStaggerSet, StaggerDamage)
-
+	
 	// Used in the RsStaggerDamageCalculation to calculate final stagger damage.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, BaseDamage)
+
+	// Applied to reduce the "CurrentStagger" value. (aka. True damage)
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData FinalDamage;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, FinalDamage)
 
 protected:
 	UFUNCTION()

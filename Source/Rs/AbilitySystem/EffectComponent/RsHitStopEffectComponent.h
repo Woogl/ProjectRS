@@ -14,6 +14,7 @@ class RS_API URsHitStopEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere)
 	float SourceHitStopTime = 0.2f;
 

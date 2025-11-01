@@ -11,13 +11,13 @@
 struct RsStaggerDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FinalDamage);
 
 	RsStaggerDamageStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, BaseDamage, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, StaggerDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, FinalDamage, Target, false);
 	}
 
 	static const RsStaggerDamageStatics& Get()
@@ -37,7 +37,7 @@ URsStaggerDamageExecution::URsStaggerDamageExecution()
 void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
-	if (TargetASC == nullptr)
+	if (!TargetASC)
 	{
 		return;
 	}
@@ -80,7 +80,7 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->StaggerDamageProperty, EGameplayModOp::Override, FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
 }
 
 void URsStaggerDamageExecution::HandleDotDamage(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, float& OutDamage) const

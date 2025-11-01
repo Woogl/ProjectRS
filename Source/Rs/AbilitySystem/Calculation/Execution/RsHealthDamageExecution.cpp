@@ -16,7 +16,7 @@ struct RsHealthDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FinalDamage);
 
 	RsHealthDamageStatics()
 	{
@@ -25,7 +25,7 @@ struct RsHealthDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDamage, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, FinalDamage, Target, false);
 	}
 
 	static const RsHealthDamageStatics& Get()
@@ -48,7 +48,7 @@ URsHealthDamageExecution::URsHealthDamageExecution()
 void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
-	if (TargetASC == nullptr)
+	if (!TargetASC)
 	{
 		return;
 	}
@@ -124,7 +124,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->HealthDamageProperty, EGameplayModOp::Override, FinalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
 }
 
 void URsHealthDamageExecution::HandleDotDamage(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, float& OutDamage) const

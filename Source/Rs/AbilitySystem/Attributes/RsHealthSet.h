@@ -34,16 +34,15 @@ public:
 	FGameplayAttributeData Barrier;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Barrier)
 
-	// Applied to reduce the "CurrentHealth" value.
-	// Reduces "Shield" first, then reduces "CurrentHealth" by any excess amount.
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData HealthDamage;
-	ATTRIBUTE_ACCESSORS(URsHealthSet, HealthDamage)
-
 	// Used in the RsHealthDamageCalculation to calculate final health damage.
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, BaseDamage)
+	
+	// Applied to reduce the "CurrentHealth" value. (aka. True damage)
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData FinalDamage;
+	ATTRIBUTE_ACCESSORS(URsHealthSet, FinalDamage)
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Healing;

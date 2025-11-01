@@ -12,13 +12,13 @@
 struct RsDotExplosionDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FinalDamage);
 
 	RsDotExplosionDamageStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, HealthDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, FinalDamage, Target, false);
 	}
 
 	static const RsDotExplosionDamageStatics& Get()
@@ -98,5 +98,5 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(PropertyName));
 	TotalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(URsHealthSet::GetHealthDamageAttribute(), EGameplayModOp::Override, TotalDamage));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(URsHealthSet::GetFinalDamageAttribute(), EGameplayModOp::Override, TotalDamage));
 }
