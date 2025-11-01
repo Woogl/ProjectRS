@@ -35,10 +35,6 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
-#if WITH_EDITOR
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
-#endif // WITH_EDITOR
-	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -57,6 +53,9 @@ public:
 
 	// IRsTargetingInterface
 	virtual bool IsLockableTarget_Implementation() const override;
+
+	// TODO: "Character.Movement.Falling" tag
+	//virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.

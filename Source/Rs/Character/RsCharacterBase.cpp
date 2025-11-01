@@ -36,21 +36,6 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 }
 
-#if WITH_EDITOR
-void ARsCharacterBase::PreSave(FObjectPreSaveContext SaveContext)
-{
-	Super::PreSave(SaveContext);
-
-	if (CharacterName.IsEmpty())
-	{
-		FString DefaultName = GetName();
-		DefaultName.RemoveFromStart("Default__");
-		DefaultName.RemoveFromEnd("_C");
-		CharacterName = FText::FromString(DefaultName);
-	}
-}
-#endif // WITH_EDITOR
-
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -97,3 +82,18 @@ bool ARsCharacterBase::IsLockableTarget_Implementation() const
 	}
 	return true;
 }
+
+// void ARsCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+// {
+// 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+//
+// 	static FGameplayTag FallingTag = FGameplayTag::RequestGameplayTag(FName("Character.Movement.Falling"));
+// 	if (GetCharacterMovement()->IsFalling())
+// 	{
+// 		GetAbilitySystemComponent()->AddLooseGameplayTag(FallingTag);
+// 	}
+// 	else
+// 	{
+// 		GetAbilitySystemComponent()->RemoveLooseGameplayTag(FallingTag);
+// 	}
+// }
