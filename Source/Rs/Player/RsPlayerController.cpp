@@ -13,6 +13,7 @@
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 #include "Rs/UI/RsUILibrary.h"
 
 ARsPlayerController::ARsPlayerController()
@@ -50,14 +51,15 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 	{
 		GameplayCameraComponent->ActivateCameraForPlayerController(this);
 	}
-	GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Actor.PlayerControlled"));
+
+	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->PlayerControlledTag);
 }
 
 void ARsPlayerController::OnUnPossess()
 {
 	APawn* ReleasedPawn = GetPawn();
+	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->PlayerControlledTag);
 	
-	GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Actor.PlayerControlled"));
 	Super::OnUnPossess();
 
 	// Reuse the cached Friendly AI Controller.

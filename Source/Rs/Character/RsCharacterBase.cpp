@@ -11,6 +11,7 @@
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/System/RsGameSettingDataAsset.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
 
 ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
@@ -83,17 +84,16 @@ bool ARsCharacterBase::IsLockableTarget_Implementation() const
 	return true;
 }
 
-// void ARsCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
-// {
-// 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
-//
-// 	static FGameplayTag FallingTag = FGameplayTag::RequestGameplayTag(FName("Character.Movement.Falling"));
-// 	if (GetCharacterMovement()->IsFalling())
-// 	{
-// 		GetAbilitySystemComponent()->AddLooseGameplayTag(FallingTag);
-// 	}
-// 	else
-// 	{
-// 		GetAbilitySystemComponent()->RemoveLooseGameplayTag(FallingTag);
-// 	}
-// }
+void ARsCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+	
+	if (GetCharacterMovement()->IsFalling())
+	{
+		GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->FallingTag);
+	}
+	else
+	{
+		GetAbilitySystemComponent()->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get()->FallingTag);
+	}
+}

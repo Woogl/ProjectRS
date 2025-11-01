@@ -19,33 +19,39 @@ public:
 	static const URsGameSettingDataAsset* Get();
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag DeathAbilityTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag GroggyAbilityTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag ESkillTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag QSkillTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag UltSkillTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag LinkSkillTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | Effect")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Effect")
 	FGameplayTag SwitchMemberCooldownTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay Tag for Native Code | UI")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | UI")
 	FGameplayTag TripleLinkSkillUITag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Character")
+	FGameplayTag PlayerControlledTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Character")
+	FGameplayTag FallingTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Battle")
 	float DefenseConstant = 190.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Battle")
+	UPROPERTY(EditDefaultsOnly, Category = "Battle")
 	float GroggyDamageMultiplier = 1.6f;
 };

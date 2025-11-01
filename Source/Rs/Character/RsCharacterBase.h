@@ -54,8 +54,7 @@ public:
 	// IRsTargetingInterface
 	virtual bool IsLockableTarget_Implementation() const override;
 
-	// TODO: "Character.Movement.Falling" tag
-	//virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.
