@@ -30,15 +30,16 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	{
 		return;
 	}
+	const FRsDamageEffectTableRow* DamageTableRow = DamageGEComp->GetDamageTableRow();
 
 	// Check super armor
-	DamageGEComp->SuperArmorPierce;
+	int32 SuperArmorPierce = DamageTableRow ? DamageTableRow->SuperArmorPierce : DamageGEComp->SuperArmorPierce;
 	float SuperArmor = URsAbilitySystemLibrary::GetNumericAttributeByTag(TargetASC, RsGameplayTags::STAT_SA);
-	if (DamageGEComp->SuperArmorPierce >= SuperArmor)
+	if (SuperArmorPierce >= SuperArmor)
 	{
 		// Trigger hit reaction
 		FGameplayEventData Payload;
-		Payload.EventTag = DamageGEComp->HitReaction;
+		Payload.EventTag = DamageTableRow ? DamageTableRow->HitReaction : DamageGEComp->HitReaction;
 		Payload.Instigator = Spec.GetEffectContext().GetInstigator();
 		Payload.Target = TargetASC->GetOwner();
 		Payload.InstigatorTags = Spec.CapturedSourceTags.GetActorTags();
@@ -49,7 +50,7 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	}
 
 	// Trigger hit stop
-	const float SourceHitStopTime = DamageGEComp->SourceHitStopTime;
+	const float SourceHitStopTime = DamageTableRow ? DamageTableRow->SourceHitStopTime : DamageGEComp->SourceHitStopTime;
 	if (SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
 	{
 		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), SourceHitStopTime))
@@ -57,7 +58,7 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 			PauseMontageTask->ReadyForActivation();
 		}
 	}
-	const float TargetHitStopTime = DamageGEComp->TargetHitStopTime;
+	const float TargetHitStopTime = DamageTableRow ? DamageTableRow->TargetHitStopTime : DamageGEComp->TargetHitStopTime;
 	if (TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
 	{
 		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime, TargetHitStopTime))

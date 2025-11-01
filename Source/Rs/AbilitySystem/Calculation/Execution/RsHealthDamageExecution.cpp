@@ -80,11 +80,6 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	
 	float CriticalBonus = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDamageDef, EvaluationParameters, CriticalBonus);
-
-	if (BaseDamage <= 0.f)
-	{
-		return;
-	}
 	
 	// Damage calculation start
 	float FinalDamage = BaseDamage;

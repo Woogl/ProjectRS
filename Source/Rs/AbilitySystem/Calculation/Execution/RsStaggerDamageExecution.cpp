@@ -58,11 +58,6 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	// Set in RsCoefficientCalculation
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->BaseDamageDef, EvaluationParameters, BaseDamage);
-
-	if (BaseDamage <= 0.f)
-	{
-		return;
-	}
 	
 	// Stagger calculation start
 	float FinalDamage = BaseDamage;

@@ -72,6 +72,8 @@ class RS_API URsModifierDataEffectComponent : public UGameplayEffectComponent
 	GENERATED_BODY()
 
 public:
+	URsModifierDataEffectComponent();
+	
 #if WITH_EDITORONLY_DATA
 	// Data for setting RsGameplayEffect's modifiers from asset.
 	UPROPERTY(EditDefaultsOnly)

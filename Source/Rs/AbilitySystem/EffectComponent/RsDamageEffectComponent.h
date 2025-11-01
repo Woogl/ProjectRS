@@ -47,7 +47,7 @@ struct FRsDamageEffectTableRow : public FTableRowBase
 
 /**
  * It contains datas that make damage.
- * AssetTags + CanApply + ModifierData + CrowdControl + HitStop
+ * AssetTags + CanApply + ModifierData + HitReaction + HitStop
  */
 UCLASS()
 class RS_API URsDamageEffectComponent : public UGameplayEffectComponent
@@ -55,8 +55,10 @@ class RS_API URsDamageEffectComponent : public UGameplayEffectComponent
 	GENERATED_BODY()
 
 public:
+	URsDamageEffectComponent();
+	
 #if WITH_EDITORONLY_DATA
-	/** Modifiers */
+	/** Modifiers data */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> HealthDamageCoefficients;
 
@@ -96,4 +98,12 @@ public:
 	
 	// Handle InvinciblePierce
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
+
+#if WITH_EDITOR
+	virtual bool CanEditChange(const FProperty* InProperty) const override;
+	virtual void PostEditChangeProperty( struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
+#endif // WITH_EDITOR
+	
+	const FRsDamageEffectTableRow* GetDamageTableRow() const;
 };

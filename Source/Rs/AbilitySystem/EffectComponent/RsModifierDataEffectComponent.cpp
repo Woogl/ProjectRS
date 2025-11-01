@@ -7,12 +7,23 @@
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 
+URsModifierDataEffectComponent::URsModifierDataEffectComponent()
+{
+	if (UGameplayEffect* Owner = GetOwner())
+	{
+		FString DefaultRowName = Owner->GetName();
+		DefaultRowName.RemoveFromStart(TEXT("Default__"));
+		DefaultRowName.RemoveFromEnd(TEXT("_C"));
+		DataTableRow.RowName = FName(DefaultRowName);
+	}
+}
+
 #if WITH_EDITOR
 bool URsModifierDataEffectComponent::CanEditChange(const FProperty* InProperty) const
 {
 	bool bParentVal = Super::CanEditChange(InProperty);
 
-	if (!DataTableRow.IsNull())
+	if (DataTableRow.DataTable)
 	{
 		if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, ModifierCoefficients))
 		{
@@ -45,7 +56,7 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 	}
 
 	// Check asset data
-	if (DataTableRow.IsNull())
+	if (!DataTableRow.DataTable)
 	{
 		for (const FModifierCoefficient& ModCoeff : ModifierCoefficients)
 		{
@@ -75,12 +86,12 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 	const FRsEffectModifierTableRow* Row = DataTableRow.GetRow<FRsEffectModifierTableRow>(TEXT(__FUNCTION__));
 	if (!Row)
 	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("Invalid DataTable row. %s"), *DataTableRow.ToDebugString())));
+		Context.AddError(FText::FromString(FString::Printf(TEXT("%s"), *DataTableRow.ToDebugString())));
 		return EDataValidationResult::Invalid;
 	}
 	if (Row->IsDataValid(Context) == EDataValidationResult::Invalid)
 	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("Invalid DataTable row. %s"), *DataTableRow.ToDebugString())));
+		Context.AddError(FText::FromString(FString::Printf(TEXT("%s"), *DataTableRow.ToDebugString())));
 		return EDataValidationResult::Invalid;
 	}
 	return Result;

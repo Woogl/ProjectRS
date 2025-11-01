@@ -1,0 +1,2 @@
+---,HealthDamageExpression,StaggerDamageExpression,InvinciblePierce,SuperArmorPierce,HitReaction,SourceHitStopTime,TargetHitStopTime,DamageTags
+GE_DamageTest,(Coefficient.ATK.source * 1.5) + 5,20,0,0,"(TagName=""Ability.HitReaction.Normal"")",0.1,0.1,"(GameplayTags=((TagName=""Effect.Damage.ParryAble"")))"
