@@ -54,8 +54,6 @@ public:
 	// IRsTargetingInterface
 	virtual bool IsLockableTarget_Implementation() const override;
 
-	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
-
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.

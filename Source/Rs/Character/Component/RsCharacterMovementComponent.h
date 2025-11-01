@@ -21,6 +21,8 @@ public:
 	virtual float GetMaxSpeed() const override;
 
 protected:
+	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
+	
 	UPROPERTY()
 	TObjectPtr<const URsSpeedSet> MovementSet = nullptr;
 };
