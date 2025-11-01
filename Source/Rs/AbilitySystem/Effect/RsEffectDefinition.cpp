@@ -163,20 +163,17 @@ FActiveGameplayEffectHandle URsEffectDefinition_RsGameplayEffect::ApplyEffect(UA
 {
 	FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, EffectContext);
-	if (EventData.EventMagnitude > 0)
+	if (!EffectSpec.IsValid())
 	{
-		EffectSpec.Data->SetDuration(EventData.EventMagnitude, true);
+		return FActiveGameplayEffectHandle();
 	}
 	return SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
 }
 
 FActiveGameplayEffectHandle URsEffectDefinition_Custom::ApplyEffect(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEventData& EventData)
 {
-	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, SourceASC->MakeEffectContext());
-	if (EventData.EventMagnitude > 0)
-	{
-		EffectSpec.Data->SetDuration(EventData.EventMagnitude, true);
-	}
+	FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
+	FGameplayEffectSpecHandle EffectSpec = SourceASC->MakeOutgoingSpec(Effect, 0.f, EffectContext);
 	if (!SetByCallerTags.IsEmpty())
 	{
 		for (const TTuple<FGameplayTag, float>& Data : SetByCallerTags)

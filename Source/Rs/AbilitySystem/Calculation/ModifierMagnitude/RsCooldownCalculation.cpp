@@ -8,11 +8,9 @@
 float URsCooldownCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
 	const URsGameplayAbility* Ability = Cast<URsGameplayAbility>(Spec.GetContext().GetAbilityInstance_NotReplicated());
-
-	if (!Ability)
+	if (!Ability || Ability->CooldownDuration == 0.f)
 	{
-		return 0.f;
+		return KINDA_SMALL_NUMBER;
 	}
-
 	return Ability->CooldownDuration;
 }
