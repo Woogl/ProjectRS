@@ -108,7 +108,9 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 					FVector Start = WeaponComponent->GetComponentLocation();
 					FVector End = Target->GetActorLocation();
 					FHitResult HitResult;
-					Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack);
+					FCollisionQueryParams Query;
+					Query.AddIgnoredActor(Owner);
+					Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
 					FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 					EffectContext.AddHitResult(HitResult);
 					Payload.ContextHandle = EffectContext;
