@@ -60,7 +60,6 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 		}
 		//Executions.Empty();
 		SetDamageExecutions(DamageDataComp);
-		//SetEffectComponents(DamageDataComp);
 	}
 }
 
@@ -288,49 +287,4 @@ void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* Dama
 		Executions.Add(DamageResponseExecution);
 	}
 }
-
-// void URsGameplayEffect::SetEffectComponents(const URsDamageDataEffectComponent* DamageDataComp)
-// {
-// 	const UAssetTagsGameplayEffectComponent* DamageTagsComp = FindComponent<UAssetTagsGameplayEffectComponent>();
-// 	if (!DamageTagsComp)
-// 	{
-// 		UAssetTagsGameplayEffectComponent* NewComp = NewObject<UAssetTagsGameplayEffectComponent>(this, TEXT("DamageTags"), GetMaskedFlags(RF_PropagateToSubObjects) | RF_Transactional);
-// 		FInheritedTagContainer AssetTags;
-// 		for (FGameplayTag DamageTag : DamageDataComp->DamageTags)
-// 		{
-// 			AssetTags.AddTag(DamageTag);
-// 		}
-// 		NewComp->SetAndApplyAssetTagChanges(AssetTags);
-// 		GEComponents.Add(NewComp);
-// 	}
-//
-// 	const URsCanApplyEffectComponent* CanApplyComp = FindComponent<URsCanApplyEffectComponent>();
-// 	if (!CanApplyComp)
-// 	{
-// 		URsCanApplyEffectComponent* NewComp = NewObject<URsCanApplyEffectComponent>(this, TEXT("CanApply"), GetMaskedFlags(RF_PropagateToSubObjects) | RF_Transactional);
-// 		NewComp->Stat = RsGameplayTags::STAT_INV;
-// 		NewComp->Comparision = ERsComparisionOperator::Less;
-// 		NewComp->Value = DamageDataComp->InvinciblePierce + 1;
-// 		GEComponents.Add(NewComp);
-// 	}
-//
-// 	const URsCrowdControlEffectComponent* CrowdControlComp = FindComponent<URsCrowdControlEffectComponent>();
-// 	if (!CrowdControlComp)
-// 	{
-// 		URsCrowdControlEffectComponent* NewComp = NewObject<URsCrowdControlEffectComponent>(this, TEXT("CrowdControl"), GetMaskedFlags(RF_PropagateToSubObjects) | RF_Transactional);
-// 		NewComp->EventTag = DamageDataComp->HitReaction;
-// 		NewComp->bUseInternalCanApply = true;
-// 		NewComp->Value = DamageDataComp->SuperArmorPierce + 1;
-// 		GEComponents.Add(NewComp);
-// 	}
-//
-// 	const URsHitStopEffectComponent* HitStopComp = FindComponent<URsHitStopEffectComponent>();
-// 	if (!HitStopComp)
-// 	{
-// 		URsHitStopEffectComponent* NewComp = NewObject<URsHitStopEffectComponent>(this, TEXT("HitStop"), GetMaskedFlags(RF_PropagateToSubObjects) | RF_Transactional);
-// 		NewComp->SourceHitStopTime = DamageDataComp->SourceHitStopTime;
-// 		NewComp->TargetHitStopTime = DamageDataComp->TargetHitStopTime;
-// 		GEComponents.Add(NewComp);
-// 	}
-// }
 #endif // WITH_EDITOR
