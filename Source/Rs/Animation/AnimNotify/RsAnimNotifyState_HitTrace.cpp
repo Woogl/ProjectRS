@@ -94,7 +94,8 @@ void URsAnimNotifyState_HitTrace::SendHitEventToResults(USkeletalMeshComponent* 
 	{
 		return;
 	}
-	
+
+	UWorld* World = Owner->GetWorld();
 	for (AActor* Target : ResultActors)
 	{
 		// Ignore already hit actors
@@ -113,6 +114,7 @@ void URsAnimNotifyState_HitTrace::SendHitEventToResults(USkeletalMeshComponent* 
 		FCollisionQueryParams Query;
 		Query.AddIgnoredActor(Owner);
 		Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+		URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
 		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 		EffectContext.AddHitResult(HitResult);
 		Payload.ContextHandle = EffectContext;

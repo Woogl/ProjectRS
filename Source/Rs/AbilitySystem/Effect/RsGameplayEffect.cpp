@@ -89,6 +89,16 @@ bool URsGameplayEffect::CanEditChange(const FEditPropertyChain& PropertyChain) c
 	return bParentVal;
 }
 
+void URsGameplayEffect::AddModifier(const FGameplayModifierInfo& Modifier)
+{
+	Modifiers.Add(Modifier);
+}
+
+void URsGameplayEffect::AddExecution(const FGameplayEffectExecutionDefinition& Execution)
+{
+	Executions.Add(Execution);
+}
+
 void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataComp)
 {
 	for (const FModifierCoefficient& ModCoeff : ModifierDataComp->ModifierCoefficients)

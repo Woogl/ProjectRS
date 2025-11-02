@@ -15,15 +15,6 @@ namespace RsTargetingGlobals
 	
 	static FAutoConsoleVariableRef CVarTargetingShowDebug(TEXT("rs.Targeting.ShowDebug"), bShowDebug, TEXT("Enable/Disable targeting collision debug shapes during gameplay.  ex) rs.Targeting.ShowDebug [1/0]"), ECVF_Cheat);
 	static FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), DebugTime, TEXT("Set the duration of the debug shapes for targeting.  ex) rs.Targeting.DebugTime [Sec]"), ECVF_Cheat);
-
-	bool ShouldDrawDebug(UWorld* World, bool bDrawDebug)
-	{
-		if (!World) return false;
-		if (bDrawDebug) return true;
-		if (World->WorldType == EWorldType::EditorPreview) return true;
-		if (World->WorldType == EWorldType::PIE && bShowDebug) return true;
-		return false;
-	}
 }
 
 bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
@@ -36,11 +27,8 @@ bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, 
 
 	if (UWorld* World = Owner->GetWorld())
 	{
-		if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true)
-		{
-			FColor Color = bSuccess ? FColor::Green : FColor::Red;
-			DrawDebugShape(World, Transform, Params.Shape, Params.Collision, Color);
-		}
+		FColor Color = bSuccess ? FColor::Green : FColor::Red;
+		DrawDebugShape(World, Transform, Params.Shape, Params.Collision, Color);
 	}
 	
 	return bSuccess;
@@ -72,10 +60,7 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 		SubstepTransform.Blend(Start, End, Alpha);
 		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Params.Shape, Params.Collision);
 		OverlappedSet.Append(SubstepOverlappedActors);
-		if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true)
-		{
-			DrawDebugShape(World, SubstepTransform, Params.Shape, Params.Collision, FColor::Red);
-		}
+		DrawDebugShape(World, SubstepTransform, Params.Shape, Params.Collision, FColor::Red);
 	}
 
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedSet.Array(), Owner, Params.Filter);
@@ -83,7 +68,7 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	ResultActors = SortedActors;
 	bool bSuccess = ResultActors.Num() > 0;
 
-	if (RsTargetingGlobals::ShouldDrawDebug(World, bDrawDebug) == true && bSuccess)
+	if (bSuccess)
 	{
 		DrawDebugShape(World, Start, Params.Shape, Params.Collision, FColor::Green);
 	}
@@ -282,10 +267,13 @@ bool URsTargetingLibrary::ExecuteTargetingPreset(AActor* SourceActor, const UTar
 	return !ResultActors.IsEmpty();
 }
 
-void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color)
+void URsTargetingLibrary::DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color)
 {
-	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World)
+	{
+		return;
+	}
+	if (!ShouldDrawDebug(World))
 	{
 		return;
 	}
@@ -311,6 +299,20 @@ void URsTargetingLibrary::DrawDebugShape(UObject* WorldContext, FTransform Trans
 	}
 }
 
+void URsTargetingLibrary::DrawDebugArrow(const UWorld* World, const FVector& Start, const FVector& End, FColor Color)
+{
+	if (!World)
+	{
+		return;
+	}
+	if (!ShouldDrawDebug(World))
+	{
+		return;
+	}
+	
+	DrawDebugDirectionalArrow(World, Start, End, 2.f, Color, false, RsTargetingGlobals::DebugTime, 0, 1.f);
+}
+
 FTransform URsTargetingLibrary::GetSocketWorldTransform(const USceneComponent* Component, FName SocketName, const FTransform& LocalOffset)
 {
 	if (!Component)
@@ -321,4 +323,21 @@ FTransform URsTargetingLibrary::GetSocketWorldTransform(const USceneComponent* C
 	FTransform ComponentTransform = Component->GetSocketTransform(SocketName, RTS_Component);
 	FTransform WorldTransform = (ComponentTransform * LocalOffset) * Component->GetComponentTransform();
 	return WorldTransform;
+}
+
+bool URsTargetingLibrary::ShouldDrawDebug(const UWorld* World)
+{
+	if (!World)
+	{
+		return false;
+	}
+	if (World->WorldType == EWorldType::EditorPreview)
+	{
+		return true;
+	}
+	if (World->WorldType == EWorldType::PIE && RsTargetingGlobals::bShowDebug)
+	{
+		return true;
+	}
+	return false;
 }

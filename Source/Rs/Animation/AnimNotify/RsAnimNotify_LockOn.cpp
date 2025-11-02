@@ -30,7 +30,7 @@ void URsAnimNotify_LockOn::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	if (World->WorldType == EWorldType::EditorPreview)
 	{
 		TArray<AActor*> OutActors;
-		URsTargetingLibrary::DrawDebugShape(Owner, Owner->GetTransform(), Shape, Collision, FColor::Red);
+		URsTargetingLibrary::DrawDebugShape(World, Owner->GetTransform(), Shape, Collision, FColor::Red);
 	}
 #endif // WITH_EDITOR
 	

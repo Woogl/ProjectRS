@@ -38,9 +38,11 @@ public:
 	// Use gameplay targeting system plugin.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static void DrawDebugShape(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color);
-
+	
+	static void DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color);
+	static void DrawDebugArrow(const UWorld* World, const FVector& Start, const FVector& End, FColor Color);
 	static FTransform GetSocketWorldTransform(const USceneComponent* Component, FName SocketName = NAME_None, const FTransform& LocalOffset = FTransform::Identity);
+
+private:
+	static bool ShouldDrawDebug(const UWorld* World);
 };

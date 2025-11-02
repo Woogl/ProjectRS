@@ -94,6 +94,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Params, ResultActors))
 	{
+		UWorld* World = Owner->GetWorld();
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
 		{
@@ -110,7 +111,8 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 					FHitResult HitResult;
 					FCollisionQueryParams Query;
 					Query.AddIgnoredActor(Owner);
-					Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+					World->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+					URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
 					FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 					EffectContext.AddHitResult(HitResult);
 					Payload.ContextHandle = EffectContext;

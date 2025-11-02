@@ -77,6 +77,7 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Params, ResultActors))
 	{
+		UWorld* World = Owner->GetWorld();
 		// Deal damage to each target.
 		for (AActor* Target : ResultActors)
 		{
@@ -92,6 +93,7 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 				FCollisionQueryParams Query;
 				Query.AddIgnoredActor(Owner);
 				Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+				URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
 				FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 				EffectContext.AddHitResult(HitResult);
 				Payload.ContextHandle = EffectContext;

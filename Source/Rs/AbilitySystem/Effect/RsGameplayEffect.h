@@ -25,6 +25,10 @@ public:
 	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
 	virtual bool CanEditChange(const FEditPropertyChain& PropertyChain) const override;
 
+	// TODO: Refactor functions.
+	void AddModifier(const FGameplayModifierInfo& Modifier);
+	void AddExecution(const FGameplayEffectExecutionDefinition& Execution);
+
 private:
 	/** RsModifierDataEffectComponent setup */
 	void SetModifiersFromAsset(const URsModifierDataEffectComponent* ModifierDataComp);

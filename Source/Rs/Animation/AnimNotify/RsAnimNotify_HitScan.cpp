@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotify_HitScan::URsAnimNotify_HitScan()
 {
@@ -32,6 +32,7 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
+	UWorld* World = Owner->GetWorld();
 	for (AActor* ResultActor : Targets)
 	{
 		FGameplayEventData Payload;
@@ -45,8 +46,8 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 			FHitResult HitResult;
 			FCollisionQueryParams Query;
 			Query.AddIgnoredActor(Owner);
-			Owner->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
-			//UKismetSystemLibrary::DrawDebugArrow(Owner, Start, End, 1.f, FColor::Red, 1.f, 1.f);
+			World->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+			URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
 			FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 			EffectContext.AddHitResult(HitResult);
 			Payload.ContextHandle = EffectContext;
