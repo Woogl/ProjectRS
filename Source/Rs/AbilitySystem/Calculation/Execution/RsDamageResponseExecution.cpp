@@ -34,7 +34,7 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 
 	// Check super armor
 	int32 SuperArmorPierce = DamageTableRow ? DamageTableRow->SuperArmorPierce : DamageGEComp->SuperArmorPierce;
-	float SuperArmor = URsAbilitySystemLibrary::GetNumericAttributeByTag(TargetASC, RsGameplayTags::STAT_SA);
+	float SuperArmor = URsAbilitySystemLibrary::GetNumericAttributeByTag(TargetASC, RsGameplayTags::STAT_SUA);
 	if (SuperArmorPierce >= SuperArmor)
 	{
 		// Trigger hit reaction

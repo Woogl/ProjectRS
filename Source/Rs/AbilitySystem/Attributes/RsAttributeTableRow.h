@@ -71,9 +71,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float SuperArmor = 0.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MoveSpeed  = 1.f;
 	
 	float GetBaseValue(const FGameplayAttribute& Attribute) const;
 };

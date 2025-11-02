@@ -11,7 +11,7 @@
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
 URsCrowdControlEffectComponent::URsCrowdControlEffectComponent()
-	: Stat(RsGameplayTags::STAT_SA), Comparision(ERsComparisionOperator::Less), Value(1.f)
+	: Stat(RsGameplayTags::STAT_SUA), Comparision(ERsComparisionOperator::Less), Value(1.f)
 {
 }
 

@@ -5,13 +5,13 @@
 
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "RsSendGameplayEventGameplayEffectComponent.generated.h"
+#include "RsSendGameplayEventEffectComponent.generated.h"
 
 /**
  * 
  */
-UCLASS(DisplayName="Send Gameplay Event (Rs)")
-class RS_API URsSendGameplayEventGameplayEffectComponent : public UGameplayEffectComponent
+UCLASS()
+class RS_API URsSendGameplayEventEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 

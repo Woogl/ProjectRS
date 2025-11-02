@@ -26,7 +26,7 @@ class RS_API URsCooldownEffectComponent : public UGameplayEffectComponent
 	FGameplayTag CooldownTag;
 	
 	UPROPERTY(EditDefaultsOnly)
-	ECooldownModifingType ModifingType = ECooldownModifingType::Add;
+	ECooldownModifingType ModifingType = ECooldownModifingType::Set;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float Amount = 0.f;

@@ -82,7 +82,7 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	}
 	if (Attribute == URsSpeedSet::GetMoveSpeedMultiplierAttribute())
 	{
-		return MoveSpeed;
+		return 1.f;
 	}
 	ensureMsgf(false, TEXT("Unknown attribute: %s"), *Attribute.AttributeName);
 	return 0.f;
