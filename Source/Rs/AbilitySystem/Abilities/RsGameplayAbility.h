@@ -37,6 +37,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectContainerMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	TArray<UAnimMontage*> Montages;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
 	TObjectPtr<UObject> Icon = nullptr;
 
@@ -58,11 +64,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
 
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRechargeStacksChanged, int32 NewStacks);
-	FOnRechargeStacksChanged OnRechargeStacksChanged;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
 	float CostAmount = 0.f;
+
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRechargeStacksChanged, int32 NewStacks);
+	FOnRechargeStacksChanged OnRechargeStacksChanged;
 	
 	UFUNCTION(BlueprintCallable)
 	ARsCharacterBase* GetAvatarCharacter() const;
@@ -125,12 +131,6 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityEvent")
 	void K2_OnAbilityEvent(const FGameplayEventData& EventData);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
-	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectContainerMap;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
-	TArray<UAnimMontage*> Montages;
 
 	// Override in BP to select a montage. Defaults to a random one.
 	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
