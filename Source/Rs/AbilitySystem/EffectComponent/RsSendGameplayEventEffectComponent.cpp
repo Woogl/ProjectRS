@@ -19,10 +19,9 @@ void URsSendGameplayEventEffectComponent::OnGameplayEffectApplied(FActiveGamepla
 		FGameplayEventData Payload;
 		Payload.EventTag = EventTag;
 		Payload.Instigator = GESpec.GetEffectContext().GetInstigator();
-		Payload.Target = GESpec.GetEffectContext().GetHitResult()->GetActor();
+		Payload.Target = ActiveGEContainer.Owner->GetOwner();
 		Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
 		Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
-		Payload.EventMagnitude = GESpec.GetLevel();
 		Payload.ContextHandle = GESpec.GetEffectContext();
 			
 		ActiveGEContainer.Owner->HandleGameplayEvent(EventTag, &Payload);
