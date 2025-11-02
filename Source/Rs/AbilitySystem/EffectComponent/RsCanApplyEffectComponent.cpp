@@ -11,10 +11,7 @@ bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEff
 {
 	if (ShouldImmunityBlock(ActiveGEContainer, GESpec))
 	{
-		if (bNotifyImmunityBlock)
-		{
-			ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
-		}
+		ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
 		return false;
 	}
 	return Super::CanGameplayEffectApply(ActiveGEContainer, GESpec);

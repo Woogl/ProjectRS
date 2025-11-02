@@ -37,9 +37,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTagRequirements TagRequirements;
 
-	UPROPERTY(EditDefaultsOnly)
-	bool bNotifyImmunityBlock = true;
-
 public:
 	/** Determine if we can apply this GameplayEffect or not */
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
