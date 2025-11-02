@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAbilityEventInfo.h"
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
+class URsGameplayEffect;
 class UInputAction;
 class URsGenericContainer;
 class ARsCharacterBase;
@@ -97,9 +97,6 @@ public:
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 
-	// Cancel event in AbilityEvents if currently activating.
-	void CancelAbilityEvent(FGameplayTag EventTag);
-
 protected:
 	// Add logic here that should run when the Ability is first initialized.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -128,11 +125,11 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityEvent")
 	void K2_OnAbilityEvent(const FGameplayEventData& EventData);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectContainerMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage", meta = (Categories = "AnimNotify", ForceInlineRow, TitleProperty="EventTag"))
-	TArray<FRsAbilityEventInfo> AbilityEvents;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Montage")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TArray<UAnimMontage*> Montages;
 
 	// Override in BP to select a montage. Defaults to a random one.
@@ -155,8 +152,6 @@ private:
 	// Contains state values. Useful for storing data between anim notifies.
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsGenericContainer> ScratchPad;
-
-	TMap<FGameplayTag, FActiveGameplayEffectHandle> ActivatedEventEffects;
 	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;

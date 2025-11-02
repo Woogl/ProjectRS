@@ -5,7 +5,6 @@
 #include "AbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
 #include "Rs/System/RsGameSettingDataAsset.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
@@ -94,8 +93,6 @@ void URsDotBurstDamageExecution::Execute_Implementation(const FGameplayEffectCus
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->DefenseDef, EvaluationParameters, Defense);
 
 	float DefenseConstant = URsGameSettingDataAsset::Get()->DefenseConstant;
-	const FName PropertyName = GET_MEMBER_NAME_CHECKED(URsEffectDefinition_DotBurstDamage, DamageMultiplierPerDotStacks);
-	TotalDamage *= (1 + DotStack * Spec.GetSetByCallerMagnitude(PropertyName));
 	TotalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(URsHealthSet::GetFinalDamageAttribute(), EGameplayModOp::Override, TotalDamage));

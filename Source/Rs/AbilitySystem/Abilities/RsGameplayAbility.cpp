@@ -9,7 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
-#include "Rs/AbilitySystem/Effect/RsEffectDefinition.h"
+#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
 
@@ -194,16 +194,6 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 	}
 }
 
-void URsGameplayAbility::CancelAbilityEvent(FGameplayTag EventTag)
-{
-	FActiveGameplayEffectHandle* FoundEffect = ActivatedEventEffects.Find(EventTag);
-	if (FoundEffect->IsValid())
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(*FoundEffect);
-		ActivatedEventEffects.Remove(EventTag);
-	}
-}
-
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
@@ -254,15 +244,12 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 
-	for (const FRsAbilityEventInfo& Event : AbilityEvents)
+	for (const TTuple<FGameplayTag, TSubclassOf<URsGameplayEffect>>& EffectContainer : EffectContainerMap)
 	{
-		if (Event.EventTag.IsValid())
+		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EffectContainer.Key))
 		{
-			if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, Event.EventTag))
-			{
-				HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleAbilityEvent);
-				HitDetectTask->ReadyForActivation();
-			}
+			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleAbilityEvent);
+			HitDetectTask->ReadyForActivation();
 		}
 	}
 }
@@ -402,17 +389,10 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
 
-	for (const FRsAbilityEventInfo& AbilityEvent : AbilityEvents)
+	if (TSubclassOf<URsGameplayEffect>* Effect = EffectContainerMap.Find(EventData.EventTag))
 	{
-		if (AbilityEvent.EventTag == EventData.EventTag)
-		{
-			for (URsEffectDefinition* EffectDefinition : AbilityEvent.EffectDefinitions)
-			{
-				FActiveGameplayEffectHandle Handle = EffectDefinition->ApplyEffect(SourceASC, TargetASC, EventData);
-				ActivatedEventEffects.Add(EventData.EventTag, Handle);
-			}
-			break;
-		}
+		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
+		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
 	}
 	
 	K2_OnAbilityEvent(EventData);
