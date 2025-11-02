@@ -244,7 +244,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 
-	for (const TTuple<FGameplayTag, TSubclassOf<URsGameplayEffect>>& EffectContainer : EffectContainerMap)
+	for (const TTuple<FGameplayTag, TSubclassOf<URsGameplayEffect>>& EffectContainer : EffectMap)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EffectContainer.Key))
 		{
@@ -389,7 +389,7 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
 
-	if (TSubclassOf<URsGameplayEffect>* Effect = EffectContainerMap.Find(EventData.EventTag))
+	if (TSubclassOf<URsGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
