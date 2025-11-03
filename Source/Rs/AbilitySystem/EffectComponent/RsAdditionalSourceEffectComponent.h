@@ -42,9 +42,6 @@ protected:
 	void OnActiveGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, FActiveGameplayEffectsContainer* ActiveGEContainer) const;
 
 public:
-	// UPROPERTY(EditDefaultsOnly)
-	// bool bApplyOnce = true;
-
 	/** Other gameplay effects that will be applied to the source of this effect if the owning effect applies */
 	UPROPERTY(EditDefaultsOnly, Category = OnApplication)
 	TArray<TSubclassOf<UGameplayEffect>> OnApplicationGameplayEffects;

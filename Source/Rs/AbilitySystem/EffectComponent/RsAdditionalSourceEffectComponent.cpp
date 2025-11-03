@@ -58,21 +58,11 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 	// Apply to source!!!
 	UAbilitySystemComponent& AppliedToASC = *GESpec.GetContext().GetInstigatorAbilitySystemComponent();
-	bool bHasApplied = false;
 	for (const FGameplayEffectSpecHandle& SourceSpec : SourceEffectSpecs)
 	{
 		if (SourceSpec.IsValid())
 		{
-			// if (bApplyOnce && bHasApplied)
-			// {
-			// 	break;
-			// }
-			
-			FActiveGameplayEffectHandle Handle = AppliedToASC.ApplyGameplayEffectSpecToSelf(*SourceSpec.Data.Get(), PredictionKey);
-			if (Handle.IsValid())
-			{
-				bHasApplied = true;
-			}
+			AppliedToASC.ApplyGameplayEffectSpecToSelf(*SourceSpec.Data.Get(), PredictionKey);
 		}
 	}
 }
@@ -103,24 +93,14 @@ void URsAdditionalSourceEffectComponent::OnActiveGameplayEffectRemoved(const FGa
 	TArray<TSubclassOf<UGameplayEffect>> AllGameplayEffects{ ExpiryEffects };
 	AllGameplayEffects.Append(OnCompleteAlways);
 
-	bool bHasApplied = false;
 	for (TSubclassOf<UGameplayEffect>& CurExpiryEffect : AllGameplayEffects)
 	{
-		// if (bApplyOnce && bHasApplied)
-		// {
-		// 	break;
-		// }
-		
 		if (UGameplayEffect* CurExpiryCDO = CurExpiryEffect.GetDefaultObject())
 		{
 			FGameplayEffectSpec NewSpec;
 			NewSpec.InitializeFromLinkedSpec(CurExpiryCDO, ActiveGE->Spec);
 
-			FActiveGameplayEffectHandle Handle = ASC->ApplyGameplayEffectSpecToSelf(NewSpec);
-			if (Handle.IsValid())
-			{
-				bHasApplied = true;
-			}
+			ASC->ApplyGameplayEffectSpecToSelf(NewSpec);
 		}
 	}
 }
