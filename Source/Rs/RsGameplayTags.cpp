@@ -49,4 +49,6 @@ namespace RsGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(COEFFICIENT_MANUAL, "Coefficient.Manual", "");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(DURATION, "Duration", "");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(EFFECT_DAMAGE, "Effect.Damage", "");
 }

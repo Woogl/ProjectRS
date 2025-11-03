@@ -21,7 +21,7 @@ URsDamageEffectComponent::URsDamageEffectComponent()
 
 	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATK_SOURCE, 1.f);
 	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMP_SOURCE, 1.f);
-	DamageTags.AddTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Damage")));
+	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
 }
 
 void URsDamageEffectComponent::OnGameplayEffectChanged()
