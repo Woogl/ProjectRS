@@ -54,7 +54,7 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 			SetCurrentStagger(FMath::Clamp(NewStagger, 0.f, GetMaxStagger()));
 		}
 
-		FGameplayTag StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(FName("GameplayCue.Damage.Stagger"));
+		FGameplayTag StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger"));
 		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(StaggerDamageCueTag, Data.EffectSpec.GetEffectContext());
 	}
 	
