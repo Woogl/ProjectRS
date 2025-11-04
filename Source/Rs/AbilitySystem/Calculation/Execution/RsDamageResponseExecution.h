@@ -7,7 +7,8 @@
 #include "RsDamageResponseExecution.generated.h"
 
 /**
- * Handle damage target's response from RsDamageEffectComponent's data.
+ * Trigger damage response to target, advantage to damage source.
+ * It utilizes RsDamageEffectComponent.
  */
 UCLASS()
 class RS_API URsDamageResponseExecution : public UGameplayEffectExecutionCalculation

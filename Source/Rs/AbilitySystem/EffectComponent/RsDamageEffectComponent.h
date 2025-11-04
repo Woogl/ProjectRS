@@ -40,6 +40,13 @@ struct FRsDamageEffectTableRow : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly)
 	float TargetHitStopTime = 0.f;
 
+	/** Advantage to source */
+	UPROPERTY(EditDefaultsOnly)
+	float ManaGain = 0.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float UltimateGain = 0.f;
+
 	/** GE asset tags */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect.Damage"))
 	FGameplayTagContainer DamageTags;
@@ -83,6 +90,13 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	float TargetHitStopTime = 0.f;
+	
+	/** Advantage to source */
+	UPROPERTY(EditDefaultsOnly)
+	float ManaGain = 0.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float UltimateGain = 0.f;
 
 	/** GE asset tags */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect.Damage"))

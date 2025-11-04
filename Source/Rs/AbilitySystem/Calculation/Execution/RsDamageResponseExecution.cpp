@@ -7,6 +7,7 @@
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
+#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/EffectComponent/RsDamageEffectComponent.h"
 
 void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -66,4 +67,24 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 			PauseMontageTask->ReadyForActivation();
 		}
 	}
+
+	// Advantage to damage source
+	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("Advantage"));
+	GE->DurationPolicy = EGameplayEffectDurationType::Instant;
+	int32 Idx = GE->Modifiers.Num();
+	GE->Modifiers.SetNum(Idx + 2);
+
+	float ManaGain = DamageTableRow ? DamageTableRow->ManaGain : DamageGEComp->ManaGain;
+	FGameplayModifierInfo& InfoMana = GE->Modifiers[Idx];
+	InfoMana.ModifierMagnitude = FScalableFloat(ManaGain);
+	InfoMana.ModifierOp = EGameplayModOp::Additive;
+	InfoMana.Attribute = URsEnergySet::GetCurrentManaAttribute();
+
+	float UltimateGain = DamageTableRow ? DamageTableRow->UltimateGain : DamageGEComp->UltimateGain;
+	FGameplayModifierInfo& InfoUltimate = GE->Modifiers[Idx + 1];
+	InfoUltimate.ModifierMagnitude = FScalableFloat(UltimateGain);
+	InfoUltimate.ModifierOp = EGameplayModOp::Additive;
+	InfoUltimate.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
+
+	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
 }
