@@ -38,7 +38,7 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 
 	if (ModifierDataComp)
 	{
-		if (ModifierDataComp->DataTableRow.IsNull())
+		if (!ModifierDataComp->DataTableRow.DataTable)
 		{
 			SetModifiersFromAsset(ModifierDataComp);
 		}
@@ -50,7 +50,7 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 
 	if (DamageDataComp)
 	{
-		if (DamageDataComp->DataTableRow.IsNull())
+		if (!DamageDataComp->DataTableRow.DataTable)
 		{
 			SetModifiersFromAsset(DamageDataComp);
 		}
