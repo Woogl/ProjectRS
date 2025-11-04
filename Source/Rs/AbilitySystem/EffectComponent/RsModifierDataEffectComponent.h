@@ -13,7 +13,7 @@ struct FModifierCoefficient
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Stat"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Stat,Meta"))
 	FGameplayTag Stat;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Coefficient", ForceInlineRow))

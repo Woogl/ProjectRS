@@ -49,7 +49,7 @@ float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGa
 	}
 
 	// Add "Manual" magnitude
-	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::COEFFICIENT_MANUAL, false);
+	FinalMagnitude += Spec.GetSetByCallerMagnitude(RsGameplayTags::COEFFICIENT_CONSTANT, false);
 	
 	return FinalMagnitude;
 }

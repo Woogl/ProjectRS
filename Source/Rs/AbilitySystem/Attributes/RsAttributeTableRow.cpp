@@ -84,6 +84,18 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return 1.f;
 	}
+	if (Attribute == URsHealthSet::GetBaseDamageAttribute())
+	{
+		return 0.f;
+	}
+	if (Attribute == URsStaggerSet::GetBaseDamageAttribute())
+	{
+		return 0.f;
+	}
+	if (Attribute == URsHealthSet::GetHealingAttribute())
+	{
+		return 0.f;
+	}
 	ensureMsgf(false, TEXT("Unknown attribute: %s"), *Attribute.AttributeName);
 	return 0.f;
 }

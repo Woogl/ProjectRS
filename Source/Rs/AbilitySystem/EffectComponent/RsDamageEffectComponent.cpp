@@ -130,7 +130,7 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 	{
 		for (const auto& [CoeffTag, CoeffNum] : HealthDamageCoefficients)
 		{
-			if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+			if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 			{
 				continue;
 			}
@@ -149,7 +149,7 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 
 		for (const auto& [CoeffTag, CoeffNum] : StaggerDamageCoefficients)
 		{
-			if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+			if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 			{
 				continue;
 			}

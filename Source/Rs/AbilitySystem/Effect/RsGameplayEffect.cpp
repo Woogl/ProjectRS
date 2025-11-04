@@ -108,7 +108,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 		{
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                                   ^
-			if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+			if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 			{
 				FGameplayModifierInfo ModifierInfo(StatToModify, EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
 				Modifiers.Add(ModifierInfo);
@@ -161,7 +161,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 	{
 		// (Coefficient.ATK.source * 1.5) + 500
 		//                                   ^
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 		{
 			FGameplayModifierInfo ModifierInfo(URsHealthSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
 			Modifiers.Add(ModifierInfo);
@@ -205,7 +205,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 	{
 		// (Coefficient.IMP.source * 1.5) + 500
 		//                                   ^
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 		{
 			FGameplayModifierInfo ModifierInfo(URsStaggerSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
 			Modifiers.Add(ModifierInfo);

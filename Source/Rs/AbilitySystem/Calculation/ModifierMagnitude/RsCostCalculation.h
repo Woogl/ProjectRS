@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "RsCostAmountCalculation.generated.h"
+#include "RsCostCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsCostAmountCalculation : public UGameplayModMagnitudeCalculation
+class RS_API URsCostCalculation : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 

@@ -24,7 +24,7 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat, Meta", ForceInlineRow))
 	TMap<FGameplayTag, FGameplayAttribute> Attributes;
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Coefficient", ForceInlineRow))

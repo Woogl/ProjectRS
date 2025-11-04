@@ -62,7 +62,7 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 		{
 			for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
 			{
-				if (CoeffTag == RsGameplayTags::COEFFICIENT_MANUAL)
+				if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 				{
 					continue;
 				}
