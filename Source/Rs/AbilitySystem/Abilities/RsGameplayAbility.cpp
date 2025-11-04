@@ -54,7 +54,7 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 	// Don't apply cooldown while recharging.
 	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
 	{
-		if (CooldownApplyTiming == ECooldownApplyTiming::OnActivate)
+		if (CooldownApplyTiming == ERsCooldownApplyTiming::OnActivate)
 		{
 			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
 		}
@@ -264,7 +264,7 @@ void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if (CooldownApplyTiming == ECooldownApplyTiming::OnEnd)
+	if (CooldownApplyTiming == ERsCooldownApplyTiming::OnEnd)
 	{
 		// Prevents the cooldown effect from being applied multiple times.
 		if (MaxRechargeStacks <= 1 || (CurrentRechargeStacks == MaxRechargeStacks - 1))

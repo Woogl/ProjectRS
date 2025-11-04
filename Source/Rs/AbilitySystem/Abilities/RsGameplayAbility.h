@@ -12,7 +12,7 @@ class URsGenericContainer;
 class ARsCharacterBase;
 
 UENUM()
-enum class ECooldownApplyTiming : uint8
+enum class ERsCooldownApplyTiming : uint8
 {
 	OnActivate,
 	OnEnd
@@ -59,7 +59,7 @@ public:
 	float CooldownDuration = 0.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
-	ECooldownApplyTiming CooldownApplyTiming = ECooldownApplyTiming::OnActivate;
+	ERsCooldownApplyTiming CooldownApplyTiming = ERsCooldownApplyTiming::OnActivate;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
