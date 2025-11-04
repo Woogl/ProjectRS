@@ -7,7 +7,7 @@
 
 URsSpeedSet::URsSpeedSet()
 {
-	MoveSpeedMultiplier = 1.0f;
+	Movement = 1.0f;
 }
 
 void URsSpeedSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -19,7 +19,7 @@ void URsSpeedSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Params.Condition = COND_OwnerOnly;
 
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsSpeedSet, MoveSpeedMultiplier, Params);
+	DOREPLIFETIME_WITH_PARAMS_FAST(URsSpeedSet, Movement, Params);
 }
 
 void URsSpeedSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
@@ -29,7 +29,7 @@ void URsSpeedSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, fl
 	NewValue = FMath::Max(NewValue, 0.f);
 }
 
-void URsSpeedSet::OnRep_MoveSpeedMultiplier(const FGameplayAttributeData& OldValue)
+void URsSpeedSet::OnRep_Movement(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsSpeedSet, MoveSpeedMultiplier, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsSpeedSet, Movement, OldValue);
 }

@@ -34,7 +34,7 @@ namespace RsGameplayTags
 	// Meta stat
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEHP, "Meta.DamageHP", "Base Health Damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEGP, "Meta.DamageGP", "Base Stagger Damage");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_HEALING, "Meta.HealHP", "Health Healing");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_HEALINGHP, "Meta.HealingHP", "Health Healing");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(COEFFICIENT_HPmax_SOURCE, "Coefficient.HPmax.Source", "");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(COEFFICIENT_HPmax_TARGET, "Coefficient.HPmax.Target", "");

@@ -72,15 +72,15 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return CriticalDamage;
 	}
-	if (Attribute == URsDefenseSet::GetInvincibleTierAttribute())
+	if (Attribute == URsDefenseSet::GetInvincibleAttribute())
 	{
 		return Invincible;
 	}
-	if (Attribute == URsDefenseSet::GetSuperArmorTierAttribute())
+	if (Attribute == URsDefenseSet::GetSuperArmorAttribute())
 	{
 		return SuperArmor;
 	}
-	if (Attribute == URsSpeedSet::GetMoveSpeedMultiplierAttribute())
+	if (Attribute == URsSpeedSet::GetMovementAttribute())
 	{
 		return 1.f;
 	}

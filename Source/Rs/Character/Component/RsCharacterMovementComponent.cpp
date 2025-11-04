@@ -23,7 +23,7 @@ float URsCharacterMovementComponent::GetMaxSpeed() const
 	float MovementSpeedMultiplier = 1.f;
 	if (MovementSet)
 	{
-		MovementSpeedMultiplier = MovementSet->GetMoveSpeedMultiplier();
+		MovementSpeedMultiplier = MovementSet->GetMovement();
 	}
 	return Super::GetMaxSpeed() * MovementSpeedMultiplier;
 }
