@@ -92,12 +92,18 @@ bool URsGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 
 void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	if (UGameplayEffect* CooldownGE = GetCooldownGameplayEffect())
+	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
+	if (!CooldownGE)
 	{
-		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
-		SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
-		CurrentCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+		return;
 	}
+	if (CooldownGameplayEffectClass == URsAbilitySystemSettings::Get().DefaultCooldownEffect && CooldownDuration == 0.f)
+	{
+		return;
+	}
+	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
+	SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
+	CurrentCooldownHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 }
 
 void URsGameplayAbility::ModifyCooldownRemaining(float TimeDiff)
