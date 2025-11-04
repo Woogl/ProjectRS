@@ -74,11 +74,11 @@ public:
 #endif // WITH_EDITORONLY_DATA
 
 	/** Can apply */
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 InvinciblePierce = 0;
 	
 	/** Hit reaction */
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 SuperArmorPierce = 0;
 	
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Ability.HitReaction"))
