@@ -59,7 +59,6 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 			SetModifiersFromTable(DamageDataComp);
 		}
 		SetDamageExecutions(DamageDataComp);
-		SetGameplayCues(DamageDataComp);
 	}
 }
 
@@ -286,21 +285,5 @@ void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* Dama
 		FGameplayEffectExecutionDefinition DamageResponseExecution(URsDamageResponseExecution::StaticClass());
 		Executions.Add(DamageResponseExecution);
 	}
-}
-
-void URsGameplayEffect::SetGameplayCues(const URsDamageEffectComponent* DamageDataComp)
-{
-	if (!GameplayCues.IsEmpty())
-	{
-		return;
-	}
-	
-	FGameplayEffectCue HealthDamageCue(FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Health")), 0.f, 0.f);
-	HealthDamageCue.MagnitudeAttribute = URsHealthSet::GetFinalDamageAttribute();
-	GameplayCues.Add(HealthDamageCue);
-	
-	FGameplayEffectCue StaggerDamageCue(FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger")), 0.f, 0.f);
-	StaggerDamageCue.MagnitudeAttribute = URsStaggerSet::GetFinalDamageAttribute();
-	GameplayCues.Add(StaggerDamageCue);
 }
 #endif // WITH_EDITOR

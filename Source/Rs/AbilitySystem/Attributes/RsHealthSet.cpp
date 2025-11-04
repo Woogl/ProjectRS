@@ -78,6 +78,9 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			}
 			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.f, GetMaxHealth()));
 		}
+		
+		FGameplayTag HealthDamageCueTag = FGameplayTag::RequestGameplayTag(FName("GameplayCue.Damage.Health"));
+		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(HealthDamageCueTag, Data.EffectSpec.GetEffectContext());
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetHealingAttribute())

@@ -38,6 +38,5 @@ private:
 	void SetModifiersFromAsset(const URsDamageEffectComponent* DamageDataComp);
 	void SetModifiersFromTable(const URsDamageEffectComponent* DamageDataComp);
 	void SetDamageExecutions(const URsDamageEffectComponent* DamageDataComp);
-	void SetGameplayCues(const URsDamageEffectComponent* DamageDataComp);
 #endif // WITH_EDITOR
 };
