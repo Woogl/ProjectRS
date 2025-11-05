@@ -53,4 +53,7 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_StaggerDecay(const FGameplayAttributeData& OldValue);
+
+	// Gameplay cue
+	FGameplayTag StaggerDamageCueTag;
 };

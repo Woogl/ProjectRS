@@ -11,6 +11,8 @@ URsStaggerSet::URsStaggerSet()
 	MaxStagger = 1.f;
 	CurrentStagger = 0.f;
 	StaggerDecay = 0.f;
+
+	StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger"));
 }
 
 void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -53,8 +55,7 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 			const float NewStagger = GetCurrentStagger() + LocalDamage;
 			SetCurrentStagger(FMath::Clamp(NewStagger, 0.f, GetMaxStagger()));
 		}
-
-		FGameplayTag StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger"));
+		
 		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(StaggerDamageCueTag, Data.EffectSpec.GetEffectContext());
 	}
 	

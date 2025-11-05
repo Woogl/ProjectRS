@@ -57,4 +57,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_Barrier(const FGameplayAttributeData& OldValue);
+
+	// Gameplay cue
+	FGameplayTag HealthDamageCueTag;
+	FGameplayTag HealingCueTag;
 };

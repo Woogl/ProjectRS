@@ -12,6 +12,9 @@ URsHealthSet::URsHealthSet()
 	MaxHealth = 1.f;
 	CurrentHealth = 0.f;
 	Barrier = 0.f;
+
+	HealthDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Health"));
+	HealingCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Healing"));
 }
 
 void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -79,7 +82,6 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.f, GetMaxHealth()));
 		}
 		
-		FGameplayTag HealthDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Health"));
 		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(HealthDamageCueTag, Data.EffectSpec.GetEffectContext());
 	}
 	
@@ -94,6 +96,8 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 			const float NewHealth = GetCurrentHealth() + LocalHealingDone;
 			SetCurrentHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 		}
+
+		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(HealingCueTag, Data.EffectSpec.GetEffectContext());
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
