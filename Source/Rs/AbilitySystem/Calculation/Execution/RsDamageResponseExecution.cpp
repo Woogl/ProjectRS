@@ -87,4 +87,17 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	InfoUltimate.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
 
 	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
+
+	// Additional effects
+	TArray<TSubclassOf<UGameplayEffect>> AdditionalSourceEffects = DamageTableRow ? DamageTableRow->AdditionalSourceEffects : DamageGEComp->AdditionalSourceEffects;
+	for (const TSubclassOf<UGameplayEffect>& AdditionalSourceEffect : AdditionalSourceEffects)
+	{
+		TargetASC->BP_ApplyGameplayEffectToTarget(AdditionalSourceEffect, SourceASC, 0, TargetASC->MakeEffectContext());
+	}
+	
+	TArray<TSubclassOf<UGameplayEffect>> AdditionalTargetEffects = DamageTableRow ? DamageTableRow->AdditionalTargetEffects : DamageGEComp->AdditionalTargetEffects;
+	for (const TSubclassOf<UGameplayEffect>& AdditionalTargetEffect : AdditionalTargetEffects)
+	{
+		SourceASC->BP_ApplyGameplayEffectToSelf(AdditionalTargetEffect, 0, SourceASC->MakeEffectContext());
+	}
 }
