@@ -37,10 +37,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotify", ForceInlineRow))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotify", RowType = "RsEffectTableBase"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, RowType = "RsEffectTableRowBase"))
 	TMap<FGameplayTag, FDataTableRowHandle> DataTableEffectMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
