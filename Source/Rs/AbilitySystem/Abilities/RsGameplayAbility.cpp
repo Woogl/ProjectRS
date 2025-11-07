@@ -419,7 +419,9 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			{
 				FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 				FGameplayEffectSpecHandle GESpec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
-				GESpec.Data->DynamicGrantedTags.AddTag(EffectTag);
+				GESpec.Data->DynamicGrantedTags.AddTag(TableRow->EffectTag);
+				GESpec.Data->DynamicGrantedTags.AddTag(TableRow->OwnedTag1);
+				GESpec.Data->DynamicGrantedTags.AddTag(TableRow->OwnedTag2);
 				if (GESpec.IsValid())
 				{
 					// Set table data in GE spec

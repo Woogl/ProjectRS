@@ -34,8 +34,8 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow())
 	{
 		FGameplayTagContainer TableDamageTags;
-		TableDamageTags.AddTag(DamageTableRow->DamageTag1);
-		TableDamageTags.AddTag(DamageTableRow->DamageTag2);
+		TableDamageTags.AddTag(DamageTableRow->AdditionalEffectTag1);
+		TableDamageTags.AddTag(DamageTableRow->AdditionalEffectTag2);
 		Owner->CachedAssetTags.AppendTags(TableDamageTags);
 	}
 	else

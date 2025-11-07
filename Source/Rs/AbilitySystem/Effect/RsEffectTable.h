@@ -16,8 +16,15 @@ struct FRsEffectTableRowBase : public FTableRowBase
 {
 	GENERATED_BODY()
 
+	// Referencing GE asset. Grant to target.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories = "Effect"))
 	FGameplayTag EffectTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect"))
+	FGameplayTag OwnedTag1;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect"))
+	FGameplayTag OwnedTag2;
 };
 
 // TODO: Implement FRsEffectTableRow
@@ -69,11 +76,4 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> AdditionalTargetEffect;
-
-	/** GE asset tags */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect.Damage"))
-	FGameplayTag DamageTag1;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect.Damage"))
-	FGameplayTag DamageTag2;
 };
