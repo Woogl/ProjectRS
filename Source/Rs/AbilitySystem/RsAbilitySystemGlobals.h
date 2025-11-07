@@ -19,6 +19,7 @@ public:
 	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
 	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
 
+	// Used in shared gameplay effect for dereferencing table row.
 	template <typename T>
 	static const T* FindTableRowFromSpec(const FGameplayEffectSpec& Spec);
 };
