@@ -118,6 +118,8 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 		FinalDamage *= URsGameSettingDataAsset::Get()->GroggyDamageMultiplier;
 	}
 
+	
+
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
 }

@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotify", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (Categories = "AnimNotify", RowType = "RsEffectTableBase"))
+	TMap<FGameplayTag, FDataTableRowHandle> DataTableEffectMap;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
 	TArray<UAnimMontage*> Montages;
 
@@ -143,7 +146,7 @@ protected:
 	void HandleMontageCancelled();
 
 	UFUNCTION()
-	void HandleAbilityEvent(FGameplayEventData EventData);
+	void HandleGameplayEvent(FGameplayEventData EventData);
 
 private:
 	UPROPERTY(Transient)

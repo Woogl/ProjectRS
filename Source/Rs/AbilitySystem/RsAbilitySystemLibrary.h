@@ -14,13 +14,6 @@ class URsGameplayAbility;
 class UAbilitySystemComponent;
 struct FGameplayTagContainer;
 
-#define SET_SETBYCALLER_PROPERTY(SpecHandle, Property) \
-UAbilitySystemBlueprintLibrary::AssignSetByCallerMagnitude(SpecHandle, GET_MEMBER_NAME_CHECKED(ThisClass, Property), Property)
-
-#define GET_SETBYCALLER_PROPERTY(SpecHandle, Property, WarnIfNotFound, DefaultIfNotFound) \
-((SpecHandle.IsValid() && SpecHandle.Data.IsValid()) ? \
-SpecHandle.Data->GetSetByCallerMagnitude(GET_MEMBER_NAME_CHECKED(ThisClass, Property), WarnIfNotFound, DefaultIfNotFound) : DefaultIfNotFound)
-
 /**
  * 
  */

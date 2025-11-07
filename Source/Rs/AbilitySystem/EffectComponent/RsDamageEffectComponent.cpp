@@ -7,7 +7,9 @@
 #include "Misc/DataValidation.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
+
 
 URsDamageEffectComponent::URsDamageEffectComponent()
 {
@@ -29,9 +31,12 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 	Super::OnGameplayEffectChanged();
 	
 	UGameplayEffect* Owner = GetOwner();
-	if (const FRsDamageEffectTableRow* DamageTableRow = GetDamageTableRow())
+	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow())
 	{
-		Owner->CachedAssetTags.AppendTags(DamageTableRow->DamageTags);
+		FGameplayTagContainer TableDamageTags;
+		TableDamageTags.AddTag(DamageTableRow->DamageTag1);
+		TableDamageTags.AddTag(DamageTableRow->DamageTag2);
+		Owner->CachedAssetTags.AppendTags(TableDamageTags);
 	}
 	else
 	{
@@ -42,7 +47,7 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
 	float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, RsGameplayTags::STAT_INV);
-	if (const FRsDamageEffectTableRow* DamageTableRow = GetDamageTableRow())
+	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow())
 	{
 		return StatValue <= DamageTableRow->InvinciblePierce;
 	}
@@ -174,7 +179,7 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 	}
 
 	// Check table data
-	const FRsDamageEffectTableRow* Row = GetDamageTableRow();
+	const FRsDamageTableRow* Row = GetDamageTableRow();
 	if (!Row)
 	{
 		Context.AddError(FText::FromString(FString::Printf(TEXT("%s"), *DataTableRow.ToDebugString())));
@@ -189,11 +194,11 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 }
 #endif // WITH_EDITOR
 
-const FRsDamageEffectTableRow* URsDamageEffectComponent::GetDamageTableRow() const
+const FRsDamageTableRow* URsDamageEffectComponent::GetDamageTableRow() const
 {
 	if (!DataTableRow.DataTable || DataTableRow.RowName.IsNone())
 	{
 		return nullptr;
 	}
-	return DataTableRow.GetRow<FRsDamageEffectTableRow>(TEXT(__FUNCTION__));
+	return DataTableRow.GetRow<FRsDamageTableRow>(TEXT(__FUNCTION__));
 }

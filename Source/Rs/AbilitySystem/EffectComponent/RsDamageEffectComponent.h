@@ -7,58 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "RsDamageEffectComponent.generated.h"
 
-/**
- * 
- */
-USTRUCT(BlueprintType)
-struct FRsDamageEffectTableRow : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	/** Modifiers */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString HealthDamageExpression;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString StaggerDamageExpression;
-
-	/** Can apply */
-	UPROPERTY(EditDefaultsOnly)
-	int32 InvinciblePierce = 0;
-
-	UPROPERTY(EditDefaultsOnly)
-	int32 SuperArmorPierce = 0;
-
-	/** Hit reaction */
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Ability.HitReaction"))
-	FGameplayTag HitReaction;
-
-	/** Hit stop */
-	UPROPERTY(EditDefaultsOnly)
-	float SourceHitStopTime = 0.f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float TargetHitStopTime = 0.f;
-
-	/** Advantage to source */
-	UPROPERTY(EditDefaultsOnly)
-	float ManaGain = 0.f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float UltimateGain = 0.f;
-
-	/** Additional Effects */
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalSourceEffects;
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalTargetEffects;
-
-	/** GE asset tags */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect.Damage"))
-	FGameplayTagContainer DamageTags;
-};
-
+struct FRsDamageTableRow;
 /**
  * It contains datas that make damage.
  * AssetTags + CanApply + ModifierData + HitReaction + HitStop
@@ -133,5 +82,5 @@ public:
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif // WITH_EDITOR
 	
-	const FRsDamageEffectTableRow* GetDamageTableRow() const;
+	const FRsDamageTableRow* GetDamageTableRow() const;
 };

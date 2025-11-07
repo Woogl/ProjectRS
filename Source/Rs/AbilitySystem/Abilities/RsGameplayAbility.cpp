@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
+#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/System/RsGenericContainer.h"
@@ -254,7 +255,15 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EffectContainer.Key))
 		{
-			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleAbilityEvent);
+			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
+			HitDetectTask->ReadyForActivation();
+		}
+	}
+	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : DataTableEffectMap)
+	{
+		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
+		{
+			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
 			HitDetectTask->ReadyForActivation();
 		}
 	}
@@ -390,7 +399,7 @@ void URsGameplayAbility::HandleMontageCancelled()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
-void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
+void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 {
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
@@ -399,6 +408,28 @@ void URsGameplayAbility::HandleAbilityEvent(FGameplayEventData EventData)
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
+	}
+
+	if (FDataTableRowHandle* TableRowHandle = DataTableEffectMap.Find(EventData.EventTag))
+	{
+		if (FRsEffectTableRowBase* TableRow = TableRowHandle->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
+		{
+			FGameplayTag EffectTag = TableRow->EffectTag;
+			if (const TSubclassOf<UGameplayEffect>* Effect = URsAbilitySystemSettings::Get().SharedEffects.Find(EffectTag))
+			{
+				FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
+				FGameplayEffectSpecHandle GESpec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
+				GESpec.Data->DynamicGrantedTags.AddTag(EffectTag);
+				if (GESpec.IsValid())
+				{
+					// Set table data in GE spec
+					FString TablePath = TableRowHandle->DataTable.GetPath();
+					int32 TableRowIndex = TableRowHandle->DataTable->GetRowNames().IndexOfByKey(TableRowHandle->RowName);
+					GESpec.Data->SetSetByCallerMagnitude(FName(TablePath), TableRowIndex);
+					SourceASC->ApplyGameplayEffectSpecToTarget(*GESpec.Data, TargetASC);
+				}
+			}
+		}
 	}
 	
 	K2_OnAbilityEvent(EventData);

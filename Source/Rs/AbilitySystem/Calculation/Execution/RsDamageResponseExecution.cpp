@@ -5,9 +5,11 @@
 
 #include "AbilitySystemComponent.h"
 #include "Rs/RsGameplayTags.h"
+#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
+#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/EffectComponent/RsDamageEffectComponent.h"
 
 void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -26,32 +28,75 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
+    /** Response data */
+	int32 SuperArmorPierce;
+	FGameplayTag HitReaction;
+	float SourceHitStopTime;
+	float TargetHitStopTime;
+	float ManaGain;
+	float UltimateGain;
+	TArray<TSubclassOf<UGameplayEffect>> SourceEffects;
+	TArray<TSubclassOf<UGameplayEffect>> TargetEffects;
+
+	/** Response data source */
+	const FRsDamageTableRow* DamageTableRow;
 	const URsDamageEffectComponent* DamageGEComp = Spec.Def->FindComponent<URsDamageEffectComponent>();
-	if (!DamageGEComp)
+	if (DamageGEComp)
 	{
+		DamageTableRow = DamageGEComp->GetDamageTableRow();
+	}
+	else
+	{
+		DamageTableRow = URsAbilitySystemGlobals::FindTableRowFromSpec<FRsDamageTableRow>(Spec);
+	}
+
+	/** Set response data */
+	if (DamageTableRow)
+	{
+		SuperArmorPierce = DamageTableRow->SuperArmorPierce;
+		HitReaction = DamageTableRow->HitReaction;
+		SourceHitStopTime = DamageTableRow->SourceHitStopTime;
+		TargetHitStopTime = DamageTableRow->TargetHitStopTime;
+		ManaGain = DamageTableRow->ManaGain;
+		UltimateGain = DamageTableRow->UltimateGain;
+		SourceEffects.Add(DamageTableRow->AdditionalSourceEffect);
+		TargetEffects.Add(DamageTableRow->AdditionalTargetEffect);
+	}
+	else if (DamageGEComp)
+	{
+		SuperArmorPierce = DamageGEComp->SuperArmorPierce;
+		HitReaction = DamageGEComp->HitReaction;
+		SourceHitStopTime = DamageGEComp->SourceHitStopTime;
+		TargetHitStopTime = DamageGEComp->TargetHitStopTime;
+		ManaGain = DamageGEComp->ManaGain;
+		UltimateGain = DamageGEComp->UltimateGain;
+		SourceEffects = DamageGEComp->AdditionalSourceEffects;
+		TargetEffects = DamageGEComp->AdditionalTargetEffects;
+	}
+	else
+	{
+		check(false);
 		return;
 	}
-	const FRsDamageEffectTableRow* DamageTableRow = DamageGEComp->GetDamageTableRow();
+
+	/** Apply response data */
 
 	// Check super armor
-	int32 SuperArmorPierce = DamageTableRow ? DamageTableRow->SuperArmorPierce : DamageGEComp->SuperArmorPierce;
 	float SuperArmor = URsAbilitySystemLibrary::GetNumericAttributeByTag(TargetASC, RsGameplayTags::STAT_SUA);
 	if (SuperArmorPierce >= SuperArmor)
 	{
 		// Trigger hit reaction
 		FGameplayEventData Payload;
-		Payload.EventTag = DamageTableRow ? DamageTableRow->HitReaction : DamageGEComp->HitReaction;
-		Payload.Instigator = Spec.GetEffectContext().GetInstigator();
-		Payload.Target = TargetASC->GetOwner();
+		Payload.EventTag = HitReaction;
+		Payload.Instigator = SourceASC->GetAvatarActor();
+		Payload.Target = TargetASC->GetAvatarActor();
 		Payload.InstigatorTags = Spec.CapturedSourceTags.GetActorTags();
 		Payload.TargetTags = Spec.CapturedTargetTags.GetActorTags();
 		Payload.ContextHandle = Spec.GetEffectContext();
-			
 		TargetASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 	}
 
 	// Trigger hit stop
-	const float SourceHitStopTime = DamageTableRow ? DamageTableRow->SourceHitStopTime : DamageGEComp->SourceHitStopTime;
 	if (SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
 	{
 		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), SourceHitStopTime))
@@ -59,7 +104,6 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 			PauseMontageTask->ReadyForActivation();
 		}
 	}
-	const float TargetHitStopTime = DamageTableRow ? DamageTableRow->TargetHitStopTime : DamageGEComp->TargetHitStopTime;
 	if (TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
 	{
 		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), TargetHitStopTime, TargetHitStopTime))
@@ -69,18 +113,16 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	}
 
 	// Advantage to damage source
-	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("Advantage"));
+	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP_GainUP"));
 	GE->DurationPolicy = EGameplayEffectDurationType::Instant;
 	int32 Idx = GE->Modifiers.Num();
 	GE->Modifiers.SetNum(Idx + 2);
-
-	float ManaGain = DamageTableRow ? DamageTableRow->ManaGain : DamageGEComp->ManaGain;
+	
 	FGameplayModifierInfo& InfoMana = GE->Modifiers[Idx];
 	InfoMana.ModifierMagnitude = FScalableFloat(ManaGain);
 	InfoMana.ModifierOp = EGameplayModOp::Additive;
 	InfoMana.Attribute = URsEnergySet::GetCurrentManaAttribute();
-
-	float UltimateGain = DamageTableRow ? DamageTableRow->UltimateGain : DamageGEComp->UltimateGain;
+	
 	FGameplayModifierInfo& InfoUltimate = GE->Modifiers[Idx + 1];
 	InfoUltimate.ModifierMagnitude = FScalableFloat(UltimateGain);
 	InfoUltimate.ModifierOp = EGameplayModOp::Additive;
@@ -89,15 +131,12 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
 
 	// Additional effects
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalSourceEffects = DamageTableRow ? DamageTableRow->AdditionalSourceEffects : DamageGEComp->AdditionalSourceEffects;
-	for (const TSubclassOf<UGameplayEffect>& AdditionalSourceEffect : AdditionalSourceEffects)
+	for (const TSubclassOf<UGameplayEffect>& SourceEffect : SourceEffects)
 	{
-		TargetASC->BP_ApplyGameplayEffectToTarget(AdditionalSourceEffect, SourceASC, 0, TargetASC->MakeEffectContext());
+		TargetASC->BP_ApplyGameplayEffectToTarget(SourceEffect, SourceASC, 0, TargetASC->MakeEffectContext());
 	}
-	
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalTargetEffects = DamageTableRow ? DamageTableRow->AdditionalTargetEffects : DamageGEComp->AdditionalTargetEffects;
-	for (const TSubclassOf<UGameplayEffect>& AdditionalTargetEffect : AdditionalTargetEffects)
+	for (const TSubclassOf<UGameplayEffect>& TargetEffect : TargetEffects)
 	{
-		SourceASC->BP_ApplyGameplayEffectToSelf(AdditionalTargetEffect, 0, SourceASC->MakeEffectContext());
+		SourceASC->BP_ApplyGameplayEffectToTarget(TargetEffect, TargetASC, 0, SourceASC->MakeEffectContext());
 	}
 }

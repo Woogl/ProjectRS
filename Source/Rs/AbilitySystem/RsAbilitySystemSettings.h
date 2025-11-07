@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
 
+	UPROPERTY(EditDefaultsOnly, config, Category = "Effect", meta = (Categories = "Effect", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> SharedEffects;
+	
 	// Data used to initialize the environmental effects source.
 	UPROPERTY(EditDefaultsOnly, config, Category = "Environments")
 	TSoftObjectPtr<URsAbilitySet> WorldAbilitySet;

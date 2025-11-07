@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemGlobals.h"
+#include "GameplayEffect.h"
 #include "RsAbilitySystemGlobals.generated.h"
 
 /**
@@ -17,4 +18,29 @@ class RS_API URsAbilitySystemGlobals : public UAbilitySystemGlobals
 public:
 	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
 	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
+
+	template <typename T>
+	static const T* FindTableRowFromSpec(const FGameplayEffectSpec& Spec);
 };
+
+template <typename T>
+const T* URsAbilitySystemGlobals::FindTableRowFromSpec(const FGameplayEffectSpec& Spec)
+{
+	for (const TTuple<FName, float>& SetByCallerData : Spec.SetByCallerNameMagnitudes)
+	{
+		FName DataTablePath = SetByCallerData.Key;
+		int32 RowIndex = SetByCallerData.Value;
+		if (const UDataTable* DataTable = LoadObject<UDataTable>(nullptr, *DataTablePath.ToString()))
+		{
+			TArray<FName> RowNames = DataTable->GetRowNames();
+			if (RowNames.IsValidIndex(RowIndex))
+			{
+				if (T* Row = DataTable->FindRow<T>(RowNames[RowIndex], ANSI_TO_TCHAR(__FUNCTION__)))
+				{
+					return Row;
+				}
+			}
+		}
+	}
+	return nullptr;
+}

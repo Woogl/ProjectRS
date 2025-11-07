@@ -65,24 +65,27 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 
 	if (Data.EvaluatedData.Attribute == GetFinalDamageAttribute())
 	{
-		float LocalHealthDamage = GetFinalDamage();
+		float LocalFinalDamage = GetFinalDamage();
 		SetBaseDamage(0.f);
 		SetFinalDamage(0.f);
-		if (LocalHealthDamage > 0.f)
+		if (LocalFinalDamage > 0.f)
 		{
 			if (GetBarrier() > 0.f)
 			{
 				if (URsHealthComponent* HealthComponent = GetActorInfo()->AvatarActor->FindComponentByClass<URsHealthComponent>())
 				{
-					float Absorbed = FMath::Min(GetBarrier(), LocalHealthDamage);
-					LocalHealthDamage -= Absorbed;
+					float Absorbed = FMath::Min(GetBarrier(), LocalFinalDamage);
+					LocalFinalDamage -= Absorbed;
 					HealthComponent->ApplyDamageToBarriers(GetOwningAbilitySystemComponent(), Absorbed);
 				}
 			}
-			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalHealthDamage, 0.f, GetMaxHealth()));
+			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - LocalFinalDamage, 0.f, GetMaxHealth()));
 		}
-		
-		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(HealthDamageCueTag, Data.EffectSpec.GetEffectContext());
+
+		FGameplayCueParameters GameplayCueParams;
+		GameplayCueParams.EffectContext = Data.EffectSpec.GetEffectContext();
+		GameplayCueParams.RawMagnitude = LocalFinalDamage;
+		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(HealthDamageCueTag, GameplayCueParams);
 	}
 	
 	else if (Data.EvaluatedData.Attribute == GetHealingAttribute())

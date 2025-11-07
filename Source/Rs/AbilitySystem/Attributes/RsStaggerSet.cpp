@@ -46,17 +46,20 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 	if (Data.EvaluatedData.Attribute == GetFinalDamageAttribute())
 	{
 		// Store a local copy of the amount of Stagger Gain done and clear the Stagger Gain attribute.
-		const float LocalDamage = GetFinalDamage();
+		const float LocalFinalDamage = GetFinalDamage();
 		SetBaseDamage(0.f);
 		SetFinalDamage(0.f);
-		if (LocalDamage > 0.f)
+		if (LocalFinalDamage > 0.f)
 		{
 			// Apply the Stagger change and then clamp it.
-			const float NewStagger = GetCurrentStagger() + LocalDamage;
+			const float NewStagger = GetCurrentStagger() + LocalFinalDamage;
 			SetCurrentStagger(FMath::Clamp(NewStagger, 0.f, GetMaxStagger()));
 		}
 		
-		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(StaggerDamageCueTag, Data.EffectSpec.GetEffectContext());
+		FGameplayCueParameters GameplayCueParams;
+		GameplayCueParams.EffectContext = Data.EffectSpec.GetEffectContext();
+		GameplayCueParams.RawMagnitude = LocalFinalDamage;
+		GetOwningAbilitySystemComponent()->ExecuteGameplayCue(StaggerDamageCueTag, GameplayCueParams);
 	}
 	
 	if (Data.EvaluatedData.Attribute == GetCurrentStaggerAttribute())
