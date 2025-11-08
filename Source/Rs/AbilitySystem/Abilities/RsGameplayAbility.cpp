@@ -255,6 +255,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 			HitDetectTask->ReadyForActivation();
 		}
 	}
+	
 	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectMapDataTable)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
@@ -376,6 +377,7 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 
 UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation()
 {
+	// TODO: Replicate
 	int32 RandomIndex = FMath::RandRange(0, Montages.Num() - 1);
 	if (Montages.IsValidIndex(RandomIndex))
 	{
@@ -414,9 +416,9 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			{
 				FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 				FGameplayEffectSpecHandle GESpec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
-				GESpec.Data->AddDynamicAssetTag(TableRow->EffectTag);
 				if (GESpec.IsValid())
 				{
+					GESpec.Data->DynamicGrantedTags.AddTag(TableRow->EffectTag);
 					// Set table data in GE spec
 					URsAbilitySystemGlobals::SetSetByCallerTableRow(*GESpec.Data, TableRowHandle);
 					SourceASC->ApplyGameplayEffectSpecToTarget(*GESpec.Data, TargetASC);

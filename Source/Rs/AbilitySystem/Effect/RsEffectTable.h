@@ -17,36 +17,46 @@ struct FRsEffectTableRowBase : public FTableRowBase
 	GENERATED_BODY()
 
 	// Referencing GE asset. Grant to target.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories = "Effect"))
+	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect"))
 	FGameplayTag EffectTag;
 };
 
-// TODO: Implement FRsEffectTableRow
 USTRUCT(BlueprintType)
 struct FRsEffectTableRow : public FRsEffectTableRowBase
 {
 	GENERATED_BODY()
 	
-	/** Magnitude */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	/** ex1: 170
+	 * ex2: (Coefficient.ATK.Source * 1.5) + 30 */
+	UPROPERTY(EditDefaultsOnly)
 	FString Magnitude;
 
 	/** Time */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	float Duration = 0.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	float Period = 0.f;
 
 	/** Polymorphic parameters (optional) */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	FString Parameter1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	FString Parameter2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	FString Parameter3;
+
+	/** UI Data */
+	UPROPERTY(EditDefaultsOnly)
+	FText EffectName;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FText Description;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowedClasses="MaterialInterface,Texture2D"))
+	TSoftObjectPtr<UObject> Icon = nullptr;
 
 	/** Additional Effect */
 	UPROPERTY(EditDefaultsOnly)

@@ -66,7 +66,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs", meta = (ClampMin = "0"))
 	float CostAmount = 0.f;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRechargeStacksChanged, int32 NewStacks);
