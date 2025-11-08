@@ -7,7 +7,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "RsAbilitySystemLibrary.generated.h"
 
-struct FRsEffectCoefficient;
 class URsAbilitySystemComponent;
 class UGameplayAbility;
 class URsGameplayAbility;
@@ -23,7 +22,6 @@ class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 	GENERATED_BODY()
 	
 public: /** Ability System Component */
-	
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
 	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
 
@@ -32,7 +30,6 @@ public: /** Ability System Component */
 	static UAbilitySystemComponent* GetWorldAbilitySystemComponent(const UObject* WorldContextObject);
 
 public:	/** Gameplay Ability */
-	
 	// Find the first ability that matches tags. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
 	static UGameplayAbility* FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);
@@ -48,18 +45,8 @@ public:	/** Gameplay Ability */
 	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
 public: /** Gameplay Effect */
-	
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FGameplayEffectSpecHandle MakeEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, const FRsEffectCoefficient& EffectCoefficient, FGameplayEffectContextHandle EffectContext);
-	
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FActiveGameplayEffectHandle ApplyEffectCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FRsEffectCoefficient& EffectCoefficient);
-
-	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library")
-	static FActiveGameplayEffectHandle ApplyEffectSpecCoefficient(UAbilitySystemComponent* SourceASC, UAbilitySystemComponent* TargetASC, const FGameplayEffectSpecHandle& EffectHandle);
 
 public: /** Gameplay Attribute */
-
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
 	static FGameplayAttribute GetAttributeByTag(FGameplayTag StatTag);
 	

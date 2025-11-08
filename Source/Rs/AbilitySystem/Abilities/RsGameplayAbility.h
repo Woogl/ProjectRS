@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, RowType = "RsEffectTableRowBase"))
 	TMap<FGameplayTag, FDataTableRowHandle> DataTableEffectMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
