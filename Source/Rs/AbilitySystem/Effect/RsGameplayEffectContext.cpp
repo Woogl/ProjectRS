@@ -40,13 +40,9 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 		{
 			RepBits |= 1 << 7;
 		}
-		if (bIsDotDamage)
-		{
-			RepBits |= 1 << 8;
-		}
 	}
 
-	Ar.SerializeBits(&RepBits, 9); // Using total 9 Bits
+	Ar.SerializeBits(&RepBits, 8); // Using total 8 Bits
 
 	if (RepBits & (1 << 0))
 	{
@@ -91,10 +87,6 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 	if (RepBits & (1 << 7))
 	{
 		Ar << bIsCriticalHit;
-	}
-	if (RepBits & (1 << 8))
-	{
-		Ar << bIsDotDamage;
 	}
 
 	if (Ar.IsLoading())

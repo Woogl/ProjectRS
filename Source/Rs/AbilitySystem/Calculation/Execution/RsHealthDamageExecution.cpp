@@ -83,23 +83,11 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	
 	// Damage calculation start
 	float FinalDamage = BaseDamage;
-	
-	// Chceck DoT damage
-	bool bIsDotDamage = Spec.Def && Spec.Def->DurationPolicy == EGameplayEffectDurationType::HasDuration;
-	if (bIsDotDamage)
-	{
-		HandleDotDamage(ExecutionParams, Spec, FinalDamage);
-		if (FinalDamage <= 0.f)
-		{
-			// Don't show damage floater.
-			OutExecutionOutput.MarkGameplayCuesHandledManually();
-		}
-	}
 
 	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
 	bool bCriticalHit = CriticalRate >= RandomValue;
-	if (bCriticalHit && !bIsDotDamage)
+	if (bCriticalHit)
 	{
 		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
 		FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
@@ -107,7 +95,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	}
 	
 	// Critical calc
-	FinalDamage *= ((bCriticalHit && !bIsDotDamage) ? (1 + CriticalBonus * 0.01f) : 1.f);
+	FinalDamage *= bCriticalHit ? (1 + CriticalBonus * 0.01f) : 1.f;
 	// Defense rate calc
 	float DefenseConstant = URsGameSettingDataAsset::Get()->DefenseConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
@@ -122,34 +110,4 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
-}
-
-void URsHealthDamageExecution::HandleDotDamage(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, float& OutDamage) const
-{
-	float Duration = Spec.GetDuration();
-	float Period = Spec.GetPeriod();
-	if (Duration > 0.f && Period > 0.f)
-	{
-		float RemainingTime = Spec.GetSetByCallerMagnitude(DataName_RemainingTime, false, Duration);
-		if (RemainingTime < Duration - KINDA_SMALL_NUMBER)
-		{
-			float Tick = Duration / Period;
-			OutDamage /= Tick;
-		}
-		else
-		{
-			OutDamage = 0.f;
-		}
-
-		if (FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod())
-		{
-			FRsGameplayEffectContext* ContextHandle = static_cast<FRsGameplayEffectContext*>(MutableSpec->GetContext().Get());
-			ContextHandle->bIsDotDamage = true;
-			// Disable critical when DoT damage
-			ContextHandle->bIsCriticalHit = false;
-			// Update remaining time
-			float NextRemainingTime = FMath::Max(RemainingTime - Period, 0.f);
-			MutableSpec->SetSetByCallerMagnitude(DataName_RemainingTime, NextRemainingTime);
-		}
-	}
 }

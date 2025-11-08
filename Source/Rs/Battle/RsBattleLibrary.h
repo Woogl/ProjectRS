@@ -22,9 +22,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
 	static bool IsCriticalHitEffect(FGameplayEffectContextHandle EffectContextHandle);
 
-	UFUNCTION(BlueprintPure, Category = "RS Battle Library")
-	static bool IsDotDamageEffect(FGameplayEffectContextHandle EffectContextHandle);
-
 	UFUNCTION(BlueprintPure, Category = "RS Battle Library", meta = (DefaultToSelf = "Target"))
 	static bool IsDead(const AActor* Target);
 

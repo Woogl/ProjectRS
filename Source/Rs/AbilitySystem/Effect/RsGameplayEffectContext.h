@@ -16,7 +16,6 @@ struct FRsGameplayEffectContext : public FGameplayEffectContext
 
 public:
 	bool bIsCriticalHit = false;
-	bool bIsDotDamage = false;
 	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 	virtual UScriptStruct* GetScriptStruct() const override;
