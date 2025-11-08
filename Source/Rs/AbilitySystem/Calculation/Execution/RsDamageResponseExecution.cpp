@@ -47,7 +47,7 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 	}
 	else
 	{
-		DamageTableRow = URsAbilitySystemGlobals::FindTableRowFromSpec<FRsDamageTableRow>(Spec);
+		DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec);
 	}
 
 	/** Set response data */

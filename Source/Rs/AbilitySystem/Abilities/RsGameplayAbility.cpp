@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
@@ -425,9 +426,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 				if (GESpec.IsValid())
 				{
 					// Set table data in GE spec
-					FString TablePath = TableRowHandle->DataTable.GetPath();
-					int32 TableRowIndex = TableRowHandle->DataTable->GetRowNames().IndexOfByKey(TableRowHandle->RowName);
-					GESpec.Data->SetSetByCallerMagnitude(FName(TablePath), TableRowIndex);
+					URsAbilitySystemGlobals::SetSetByCallerTableRow(*GESpec.Data, TableRowHandle);
 					SourceASC->ApplyGameplayEffectSpecToTarget(*GESpec.Data, TargetASC);
 				}
 			}

@@ -8,7 +8,7 @@
 
 float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::FindTableRowFromSpec<FRsDamageTableRow>(Spec))
+	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec))
 	{
 		FString HealthDamageExpression = Row->HealthDamageExpression;
 		if (HealthDamageExpression.IsNumeric())
