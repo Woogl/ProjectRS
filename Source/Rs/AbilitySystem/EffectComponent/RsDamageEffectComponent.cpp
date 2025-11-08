@@ -3,6 +3,7 @@
 
 #include "RsDamageEffectComponent.h"
 
+#include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "Misc/DataValidation.h"
 #include "Rs/RsGameplayTags.h"
@@ -34,8 +35,7 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow())
 	{
 		FGameplayTagContainer TableDamageTags;
-		TableDamageTags.AddTag(DamageTableRow->OwnedTag1);
-		TableDamageTags.AddTag(DamageTableRow->OwnedTag2);
+		TableDamageTags.AddTag(DamageTableRow->EffectTag);
 		Owner->CachedAssetTags.AppendTags(TableDamageTags);
 	}
 	else
@@ -47,14 +47,20 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
 	float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, RsGameplayTags::STAT_INV);
+	bool bCanApply = true;
 	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow())
 	{
-		return StatValue <= DamageTableRow->InvinciblePierce;
+		bCanApply = StatValue <= DamageTableRow->InvinciblePierce;
 	}
 	else
 	{
-		return StatValue <= InvinciblePierce;
+		bCanApply = StatValue <= InvinciblePierce;
 	}
+	if (!bCanApply)
+	{
+		ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
+	}
+	return bCanApply;
 }
 
 #if WITH_EDITOR

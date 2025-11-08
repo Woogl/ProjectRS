@@ -19,12 +19,6 @@ struct FRsEffectTableRowBase : public FTableRowBase
 	// Referencing GE asset. Grant to target.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories = "Effect"))
 	FGameplayTag EffectTag;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect"))
-	FGameplayTag OwnedTag1;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (Categories = "Effect"))
-	FGameplayTag OwnedTag2;
 };
 
 // TODO: Implement FRsEffectTableRow
@@ -46,10 +40,10 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 	FString StaggerDamageExpression;
 
 	/** Can apply */
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 InvinciblePierce = 0;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
 	int32 SuperArmorPierce = 0;
 
 	/** Hit reaction */
