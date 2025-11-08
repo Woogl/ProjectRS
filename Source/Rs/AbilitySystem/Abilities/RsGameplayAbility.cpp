@@ -53,16 +53,22 @@ AController* URsGameplayAbility::GetController() const
 
 void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
+	if (!CommitAbilityCost(Handle, ActorInfo, ActivationInfo))
+	{
+		return;
+	}
+	
 	// Don't apply cooldown while recharging.
 	if (MaxRechargeStacks == 0 || GetCooldownTimeRemaining() <= 0.f)
 	{
 		if (CooldownApplyTiming == ERsCooldownApplyTiming::OnActivate)
 		{
-			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
+			if (!CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false))
+			{
+				return;
+			}
 		}
 	}
-
-	CommitAbilityCost(Handle, ActorInfo, ActivationInfo);
 
 	if (MaxRechargeStacks > 0)
 	{
