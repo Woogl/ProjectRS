@@ -20,7 +20,10 @@ public:
 	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
 
 	// Used in shared gameplay effect for dereferencing table row.
-	static void SetSetByCallerTableRow(FGameplayEffectSpec& Spec, FDataTableRowHandle* RowHandle);
+	// TODO: rename to "SetSetByCallerTableRowHandle()"
+	static void SetSetByCallerTableRow(FGameplayEffectSpec& Spec, const FDataTableRowHandle* RowHandle);
+	
+	static FDataTableRowHandle GetSetByCallerTableRowHandle(const FGameplayEffectSpec& Spec);
 	
 	template <typename T>
 	static const T* GetSetByCallerTableRow(const FGameplayEffectSpec& Spec);

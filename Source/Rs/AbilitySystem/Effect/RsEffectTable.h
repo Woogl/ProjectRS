@@ -19,6 +19,13 @@ struct FRsEffectTableRowBase : public FTableRowBase
 	// Referencing GE asset. Grant to target.
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect"))
 	FGameplayTag EffectTag;
+
+	/** Additional Effect */
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalSourceEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalTargetEffect;
 };
 
 USTRUCT(BlueprintType)
@@ -57,13 +64,6 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowedClasses="MaterialInterface,Texture2D"))
 	TSoftObjectPtr<UObject> Icon = nullptr;
-
-	/** Additional Effect */
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalSourceEffect;
-
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalTargetEffect;
 };
 /**
  * 
@@ -106,11 +106,4 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	float UltimateGain = 0.f;
-
-	/** Additional Effect */
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalSourceEffect;
-
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalTargetEffect;
 };

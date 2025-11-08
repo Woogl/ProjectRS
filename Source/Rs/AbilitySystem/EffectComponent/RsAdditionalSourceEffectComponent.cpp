@@ -7,6 +7,9 @@
 #include "AbilitySystemLog.h"
 #include "GameplayEffect.h"
 #include "Misc/DataValidation.h"
+#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
+#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 #define LOCTEXT_NAMESPACE "RsAdditionalSourceEffectComponent"
 
@@ -63,6 +66,44 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		if (SourceSpec.IsValid())
 		{
 			AppliedToASC.ApplyGameplayEffectSpecToSelf(*SourceSpec.Data.Get(), PredictionKey);
+		}
+	}
+
+	// Check data table
+	// Should we add shared effect table???
+	FDataTableRowHandle RowHandle = URsAbilitySystemGlobals::GetSetByCallerTableRowHandle(GESpec);
+	if (RowHandle.IsNull())
+	{
+		return;
+	}
+	FRsEffectTableRowBase* CurrentEffectRow = RowHandle.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__));
+	if (!CurrentEffectRow)
+	{
+		return;
+	}
+	FName AdditionalEffectName = FName(CurrentEffectRow->AdditionalSourceEffect);
+	FRsEffectTableRowBase* AdditionalEffectRow = RowHandle.DataTable->FindRow<FRsEffectTableRowBase>(AdditionalEffectName, ANSI_TO_TCHAR(__FUNCTION__));
+	if (!AdditionalEffectRow)
+	{
+		return;
+	}
+	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectTag))
+	{
+		if (UAbilitySystemComponent* SourceASC = ActiveGEContainer.Owner)
+		{
+			FGameplayEffectContextHandle AdditionalEffectContext = SourceASC->MakeEffectContext();
+			FGameplayEffectSpecHandle AdditionalGESpec = SourceASC->MakeOutgoingSpec(*AdditionalEffect, GELevel, AdditionalEffectContext);
+			if (AdditionalGESpec.IsValid())
+			{
+				// Data table feedback.
+				FDataTableRowHandle AdditionalTableRowHandle;
+				AdditionalTableRowHandle.DataTable = RowHandle.DataTable;
+				AdditionalTableRowHandle.RowName = AdditionalEffectName;
+				URsAbilitySystemGlobals::SetSetByCallerTableRow(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
+				
+				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectTag);
+				SourceASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
+			}
 		}
 	}
 }

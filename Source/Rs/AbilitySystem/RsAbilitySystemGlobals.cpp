@@ -12,7 +12,7 @@ FGameplayEffectContext* URsAbilitySystemGlobals::AllocGameplayEffectContext() co
 	return new FRsGameplayEffectContext();
 }
 
-void URsAbilitySystemGlobals::SetSetByCallerTableRow(FGameplayEffectSpec& Spec, FDataTableRowHandle* RowHandle)
+void URsAbilitySystemGlobals::SetSetByCallerTableRow(FGameplayEffectSpec& Spec, const FDataTableRowHandle* RowHandle)
 {
 	if (!RowHandle->DataTable)
 	{
@@ -27,4 +27,25 @@ void URsAbilitySystemGlobals::SetSetByCallerTableRow(FGameplayEffectSpec& Spec, 
 		return;
 	}
 	Spec.SetSetByCallerMagnitude(FName(TablePath), TableRowIndex);
+}
+
+FDataTableRowHandle URsAbilitySystemGlobals::GetSetByCallerTableRowHandle(const FGameplayEffectSpec& Spec)
+{
+	for (const TTuple<FName, float>& SetByCallerData : Spec.SetByCallerNameMagnitudes)
+	{
+		FName DataTablePath = SetByCallerData.Key;
+		int32 RowIndex = SetByCallerData.Value;
+		if (const UDataTable* DataTable = LoadObject<UDataTable>(nullptr, *DataTablePath.ToString()))
+		{
+			TArray<FName> RowNames = DataTable->GetRowNames();
+			if (RowNames.IsValidIndex(RowIndex))
+			{
+				FDataTableRowHandle RowHandle;
+				RowHandle.DataTable = DataTable;
+				RowHandle.RowName = RowNames[RowIndex];
+				return RowHandle;
+			}
+		}
+	}
+	return FDataTableRowHandle();
 }
