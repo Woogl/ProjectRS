@@ -11,7 +11,7 @@ class UGameplayEffect;
 /**
  * 
  */
-USTRUCT(BlueprintType)
+USTRUCT()
 struct FRsEffectTableRowBase : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -22,6 +22,39 @@ struct FRsEffectTableRowBase : public FTableRowBase
 };
 
 // TODO: Implement FRsEffectTableRow
+USTRUCT(BlueprintType)
+struct FRsEffectTableRow : public FRsEffectTableRowBase
+{
+	GENERATED_BODY()
+	
+	/** Magnitude */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Magnitude;
+
+	/** Time */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Duration = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Period = 0.f;
+
+	/** Polymorphic parameters (optional) */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Parameter1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Parameter2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Parameter3;
+
+	/** Additional Effect */
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalSourceEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalTargetEffect;
+};
 /**
  * 
  */
@@ -32,11 +65,11 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	FRsDamageTableRow();
 
-	/** Modifiers */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	/** Magnitude */
+	UPROPERTY(EditAnywhere)
 	FString HealthDamageExpression;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	FString StaggerDamageExpression;
 
 	/** Can apply */
@@ -66,8 +99,8 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	/** Additional Effect */
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> AdditionalSourceEffect;
+	FString AdditionalSourceEffect;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> AdditionalTargetEffect;
+	FString AdditionalTargetEffect;
 };

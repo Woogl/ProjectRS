@@ -41,7 +41,7 @@ bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffect
 			bStatBlock = StatValue > Value;
 			break;
 		case ERsComparisionOperator::Equal:
-			bStatBlock = StatValue == Value;
+			bStatBlock = FMath::IsNearlyEqual(StatValue, Value, UE_KINDA_SMALL_NUMBER);
 			break;
 		case ERsComparisionOperator::Less:
 			bStatBlock = StatValue < Value;

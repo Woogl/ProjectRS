@@ -59,8 +59,8 @@ void URsDamageResponseExecution::Execute_Implementation(const FGameplayEffectCus
 		TargetHitStopTime = DamageTableRow->TargetHitStopTime;
 		ManaGain = DamageTableRow->ManaGain;
 		UltimateGain = DamageTableRow->UltimateGain;
-		SourceEffects.Add(DamageTableRow->AdditionalSourceEffect);
-		TargetEffects.Add(DamageTableRow->AdditionalTargetEffect);
+		//SourceEffects.Add(DamageTableRow->AdditionalSourceEffect);
+		//TargetEffects.Add(DamageTableRow->AdditionalTargetEffect);
 	}
 	else if (DamageGEComp)
 	{
