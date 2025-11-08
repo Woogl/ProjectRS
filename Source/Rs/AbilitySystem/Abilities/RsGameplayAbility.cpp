@@ -13,15 +13,12 @@
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
-#include "Rs/System/RsGenericContainer.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
 	// Sets the ability to default to Instanced Per Actor.
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-	ScratchPad = CreateDefaultSubobject<URsGenericContainer>(TEXT("ScratchPad"));
-
+	
 	CostGameplayEffectClass = URsAbilitySystemSettings::Get().DefaultCostEffect;
 	CooldownGameplayEffectClass = URsAbilitySystemSettings::Get().DefaultCooldownEffect;
 }
@@ -63,16 +60,8 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 	{
 		if (CooldownApplyTiming == ERsCooldownApplyTiming::OnActivate)
 		{
-			if (!CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false))
-			{
-				return;
-			}
+			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
 		}
-	}
-
-	if (MaxRechargeStacks > 0)
-	{
-		ModifyCurrentRechargeStacks(-1);
 	}
 }
 
@@ -266,13 +255,18 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 			HitDetectTask->ReadyForActivation();
 		}
 	}
-	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : DataTableEffectMap)
+	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectMapDataTable)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
 		{
 			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
 			HitDetectTask->ReadyForActivation();
 		}
+	}
+
+	if (MaxRechargeStacks > 0)
+	{
+		ModifyCurrentRechargeStacks(-1);
 	}
 }
 
@@ -287,11 +281,6 @@ void URsGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 		{
 			CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, false);
 		}
-	}
-	
-	if (ScratchPad)
-	{
-		ScratchPad->Reset();
 	}
 }
 
@@ -417,7 +406,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
 	}
 
-	if (FDataTableRowHandle* TableRowHandle = DataTableEffectMap.Find(EventData.EventTag))
+	if (FDataTableRowHandle* TableRowHandle = EffectMapDataTable.Find(EventData.EventTag))
 	{
 		if (FRsEffectTableRowBase* TableRow = TableRowHandle->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{

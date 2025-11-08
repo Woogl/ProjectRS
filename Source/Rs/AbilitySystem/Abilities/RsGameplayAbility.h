@@ -8,7 +8,6 @@
 
 class URsGameplayEffect;
 class UInputAction;
-class URsGenericContainer;
 class ARsCharacterBase;
 
 UENUM()
@@ -41,7 +40,7 @@ public:
 	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, RowType = "RsEffectTableRowBase"))
-	TMap<FGameplayTag, FDataTableRowHandle> DataTableEffectMap;
+	TMap<FGameplayTag, FDataTableRowHandle> EffectMapDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
@@ -151,10 +150,6 @@ protected:
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimMontage> MontageToPlay;
-
-	// Contains state values. Useful for storing data between anim notifies.
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<URsGenericContainer> ScratchPad;
 	
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
