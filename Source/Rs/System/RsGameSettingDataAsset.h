@@ -16,7 +16,7 @@ class RS_API URsGameSettingDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	static const URsGameSettingDataAsset* Get();
+	static const URsGameSettingDataAsset& Get();
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")

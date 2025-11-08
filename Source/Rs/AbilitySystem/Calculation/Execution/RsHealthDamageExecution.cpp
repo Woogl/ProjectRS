@@ -57,7 +57,7 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get()->DeathAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get().DeathAbilityTag))
 	{
 		// Don't show damage floater.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
@@ -97,16 +97,14 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Critical calc
 	FinalDamage *= bCriticalHit ? (1 + CriticalBonus * 0.01f) : 1.f;
 	// Defense rate calc
-	float DefenseConstant = URsGameSettingDataAsset::Get()->DefenseConstant;
+	float DefenseConstant = URsGameSettingDataAsset::Get().DefenseConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
 	// Groggy has 160 % damage bonus
-	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSettingDataAsset::Get()->GroggyAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTagExact(URsGameSettingDataAsset::Get().GroggyAbilityTag))
 	{
-		FinalDamage *= URsGameSettingDataAsset::Get()->GroggyDamageMultiplier;
+		FinalDamage *= URsGameSettingDataAsset::Get().GroggyDamageMultiplier;
 	}
-
-	
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));

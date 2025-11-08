@@ -52,13 +52,13 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 		GameplayCameraComponent->ActivateCameraForPlayerController(this);
 	}
 
-	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->PlayerControlledTag);
+	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
 }
 
 void ARsPlayerController::OnUnPossess()
 {
 	APawn* ReleasedPawn = GetPawn();
-	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->PlayerControlledTag);
+	GetAbilitySystemComponent()->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
 	
 	Super::OnUnPossess();
 

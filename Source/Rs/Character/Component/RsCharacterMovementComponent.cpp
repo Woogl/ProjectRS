@@ -36,11 +36,11 @@ void URsCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previous
 	{
 		if (IsFalling())
 		{
-			ASC->AddLooseGameplayTag(URsGameSettingDataAsset::Get()->FallingTag);
+			ASC->AddLooseGameplayTag(URsGameSettingDataAsset::Get().FallingTag);
 		}
 		else
 		{
-			ASC->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get()->FallingTag);
+			ASC->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().FallingTag);
 		}
 	}
 }

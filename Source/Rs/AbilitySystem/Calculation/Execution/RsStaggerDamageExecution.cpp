@@ -46,7 +46,7 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get()->DeathAbilityTag))
+	if (EvaluationParameters.TargetTags->HasTag(URsGameSettingDataAsset::Get().DeathAbilityTag))
 	{
 		// Don't show hit VFX.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();

@@ -85,7 +85,7 @@ void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{
 			FGameplayEventData Payload;
-			Payload.EventTag = URsGameSettingDataAsset::Get()->GroggyAbilityTag;
+			Payload.EventTag = URsGameSettingDataAsset::Get().GroggyAbilityTag;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 		OnGroggyEvent.Broadcast(GetOwner());

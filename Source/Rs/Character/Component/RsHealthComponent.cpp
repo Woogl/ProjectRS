@@ -189,7 +189,7 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 		if (UAbilitySystemComponent* ASC = HealthSet->GetOwningAbilitySystemComponent())
 		{
 			FGameplayEventData Payload;
-			Payload.EventTag = URsGameSettingDataAsset::Get()->DeathAbilityTag;
+			Payload.EventTag = URsGameSettingDataAsset::Get().DeathAbilityTag;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 		OnDeathStarted.Broadcast(GetOwner());

@@ -410,8 +410,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	{
 		if (FRsEffectTableRowBase* TableRow = TableRowHandle->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{
-			FGameplayTag EffectTag = TableRow->EffectTag;
-			if (const TSubclassOf<UGameplayEffect>* Effect = URsAbilitySystemSettings::Get().SharedEffects.Find(EffectTag))
+			if (const TSubclassOf<UGameplayEffect>* Effect = URsAbilitySystemSettings::Get().SharedEffects.Find(TableRow->EffectTag))
 			{
 				FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 				FGameplayEffectSpecHandle GESpec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
