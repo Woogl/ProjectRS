@@ -32,7 +32,7 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 	{
 		return;
 	}
-	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectTag))
+	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectType))
 	{
 		if (UAbilitySystemComponent* TargetASC = ActiveGEContainer.Owner)
 		{
@@ -45,8 +45,9 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 				AdditionalTableRowHandle.DataTable = RowHandle.DataTable;
 				AdditionalTableRowHandle.RowName = AdditionalEffectName;
 				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
-				
-				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectTag);
+
+				AdditionalGESpec.Data->AddDynamicAssetTag(AdditionalEffectRow->EffectType);
+				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectType);
 				TargetASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
 			}
 		}

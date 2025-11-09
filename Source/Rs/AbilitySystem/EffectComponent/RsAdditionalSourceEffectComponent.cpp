@@ -87,7 +87,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	{
 		return;
 	}
-	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectTag))
+	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectType))
 	{
 		if (UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent())
 		{
@@ -101,7 +101,8 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				AdditionalTableRowHandle.RowName = AdditionalEffectName;
 				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
 				
-				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectTag);
+				AdditionalGESpec.Data->AddDynamicAssetTag(AdditionalEffectRow->EffectType);
+				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectType);
 				SourceASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
 			}
 		}

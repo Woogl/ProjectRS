@@ -16,9 +16,9 @@ struct FRsEffectTableRowBase : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	// Referencing GE asset. Grant to target.
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect"))
-	FGameplayTag EffectTag;
+	// Referencing GE asset.
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag EffectType;
 
 	/** Additional Effect */
 	UPROPERTY(EditDefaultsOnly)
@@ -57,7 +57,7 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 
 	/** UI Data */
 	UPROPERTY(EditDefaultsOnly)
-	FText EffectName;
+	FText DisplayName;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FText Description;

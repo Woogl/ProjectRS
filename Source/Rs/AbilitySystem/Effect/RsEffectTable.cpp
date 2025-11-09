@@ -7,5 +7,5 @@
 
 FRsDamageTableRow::FRsDamageTableRow()
 {
-	EffectTag = RsGameplayTags::EFFECT_DAMAGE;
+	EffectType = RsGameplayTags::EFFECT_DAMAGE;
 }

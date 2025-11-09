@@ -412,13 +412,14 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	{
 		if (FRsEffectTableRowBase* TableRow = TableRowHandle->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
 		{
-			if (const TSubclassOf<UGameplayEffect>* Effect = URsAbilitySystemSettings::Get().SharedEffects.Find(TableRow->EffectTag))
+			if (const TSubclassOf<UGameplayEffect>* Effect = URsAbilitySystemSettings::Get().SharedEffects.Find(TableRow->EffectType))
 			{
 				FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 				FGameplayEffectSpecHandle GESpec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
 				if (GESpec.IsValid())
 				{
-					GESpec.Data->DynamicGrantedTags.AddTag(TableRow->EffectTag);
+					GESpec.Data->AddDynamicAssetTag(TableRow->EffectType);
+					GESpec.Data->DynamicGrantedTags.AddTag(TableRow->EffectType);
 					// Set table data in GE spec
 					URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, TableRowHandle);
 					SourceASC->ApplyGameplayEffectSpecToTarget(*GESpec.Data, TargetASC);
