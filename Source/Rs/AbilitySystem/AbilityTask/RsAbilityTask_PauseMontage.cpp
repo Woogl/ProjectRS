@@ -41,7 +41,7 @@ void URsAbilityTask_PauseMontage::Activate()
 						// Skip frames. (ex. HitStop)
 						FMontageBlendSettings BlendSettings;
 						BlendSettings.Blend.BlendTime = 0;
-						AnimInstance->Montage_PlayWithBlendSettings(CurrentMontage, BlendSettings);
+						AnimInstance->Montage_PlayWithBlendSettings(CurrentMontage, BlendSettings, 1, EMontagePlayReturnType::MontageLength, 0, false);
 					}
 					AnimInstance->Montage_Pause();
 				}
