@@ -36,7 +36,7 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 	/** ex1: 170
 	 * ex2: (Coefficient.ATK.Source * 1.5) + 30 */
 	UPROPERTY(EditDefaultsOnly)
-	FString Magnitude;
+	FString MagnitudeExpression;
 
 	/** Time */
 	UPROPERTY(EditDefaultsOnly)
