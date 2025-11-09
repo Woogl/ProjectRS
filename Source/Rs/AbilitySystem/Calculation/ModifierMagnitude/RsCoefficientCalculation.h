@@ -13,6 +13,7 @@
 USTRUCT(BlueprintType)
 struct FRsEffectMagnitudeExpressionParser
 {
+	GENERATED_BODY()
 public:
 	static float GetParseResult(const FString& Expression, const FGameplayEffectSpec& Spec, const URsCoefficientCalculation* Calc);
 	

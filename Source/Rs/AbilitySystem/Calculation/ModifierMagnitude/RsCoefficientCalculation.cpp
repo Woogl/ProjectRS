@@ -34,7 +34,7 @@ float FRsEffectMagnitudeExpressionParser::GetParseResult(const FString& Expressi
 			{
 				FAggregatorEvaluateParameters EvaluationParameters;
 				float AttributeValue = Calc->FindAttributeMagnitude(FGameplayTag::RequestGameplayTag(FName(Token)),Spec, EvaluationParameters);
-				Stack.Push(FString::Printf(AttributeValue));
+				Stack.Push(FString::Printf(TEXT("%f"), AttributeValue));
 			}
 		}
 		else
@@ -137,7 +137,7 @@ FString FRsEffectMagnitudeExpressionParser::CalculateOperation(const FString& Va
 	if (Operator == "*") Value = FCString::Atof(*Value1) * FCString::Atof(*Value2);
 	if (Operator == "/") Value = FCString::Atof(*Value1) / FCString::Atof(*Value2);
 
-	return FString::Printf(Value);
+	return FString::Printf(TEXT("%f"), Value);
 }
 
 
