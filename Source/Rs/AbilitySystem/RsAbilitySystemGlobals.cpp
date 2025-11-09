@@ -12,7 +12,7 @@ FGameplayEffectContext* URsAbilitySystemGlobals::AllocGameplayEffectContext() co
 	return new FRsGameplayEffectContext();
 }
 
-void URsAbilitySystemGlobals::SetSetByCallerTableRow(FGameplayEffectSpec& Spec, const FDataTableRowHandle* RowHandle)
+void URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(FGameplayEffectSpec& Spec, const FDataTableRowHandle* RowHandle)
 {
 	if (!RowHandle->DataTable)
 	{

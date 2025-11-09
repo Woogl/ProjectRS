@@ -89,7 +89,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	}
 	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectTag))
 	{
-		if (UAbilitySystemComponent* SourceASC = ActiveGEContainer.Owner)
+		if (UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent())
 		{
 			FGameplayEffectContextHandle AdditionalEffectContext = SourceASC->MakeEffectContext();
 			FGameplayEffectSpecHandle AdditionalGESpec = SourceASC->MakeOutgoingSpec(*AdditionalEffect, GELevel, AdditionalEffectContext);
@@ -99,7 +99,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				FDataTableRowHandle AdditionalTableRowHandle;
 				AdditionalTableRowHandle.DataTable = RowHandle.DataTable;
 				AdditionalTableRowHandle.RowName = AdditionalEffectName;
-				URsAbilitySystemGlobals::SetSetByCallerTableRow(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
+				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
 				
 				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectTag);
 				SourceASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);

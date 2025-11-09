@@ -420,7 +420,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 				{
 					GESpec.Data->DynamicGrantedTags.AddTag(TableRow->EffectTag);
 					// Set table data in GE spec
-					URsAbilitySystemGlobals::SetSetByCallerTableRow(*GESpec.Data, TableRowHandle);
+					URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, TableRowHandle);
 					SourceASC->ApplyGameplayEffectSpecToTarget(*GESpec.Data, TargetASC);
 				}
 			}
