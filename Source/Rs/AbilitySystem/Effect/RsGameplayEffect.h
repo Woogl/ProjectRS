@@ -36,7 +36,6 @@ private:
 
 	/** RsDamageDataEffectComponent setup */
 	void SetModifiersFromAsset(const URsDamageEffectComponent* DamageDataComp);
-	void SetModifiersFromTable(const URsDamageEffectComponent* DamageDataComp);
 	void SetDamageExecutions(const URsDamageEffectComponent* DamageDataComp);
 #endif // WITH_EDITOR
 };

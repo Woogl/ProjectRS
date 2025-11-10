@@ -65,10 +65,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect.Damage"))
 	FGameplayTagContainer DamageTags;
 
-	/** From data table */
-	UPROPERTY(EditDefaultsOnly, meta = (RowType = "RsDamageEffectTableRow"))
-	FDataTableRowHandle DataTableRow;
-
 public:
 	// Handle DamageTags
 	virtual void OnGameplayEffectChanged() override;
@@ -76,11 +72,13 @@ public:
 	// Handle InvinciblePierce
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
 
+	// Handle HitReaction, HitStops, ManaGain, UltimateGain, AdditionalEffects
+	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;
+
 #if WITH_EDITOR
-	virtual bool CanEditChange(const FProperty* InProperty) const override;
-	virtual void PostEditChangeProperty( struct FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif // WITH_EDITOR
-	
-	const FRsDamageTableRow* GetDamageTableRow() const;
+
+private:
+	const FRsDamageTableRow* GetDamageTableRow(const FGameplayEffectSpec& GESpec) const;
 };

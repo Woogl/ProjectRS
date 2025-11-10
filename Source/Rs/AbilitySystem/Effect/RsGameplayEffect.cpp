@@ -10,7 +10,6 @@
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
-#include "Rs/AbilitySystem/Calculation/Execution/RsDamageResponseExecution.h"
 #include "Rs/AbilitySystem/Calculation/Execution/RsHealthDamageExecution.h"
 #include "Rs/AbilitySystem/Calculation/Execution/RsStaggerDamageExecution.h"
 #include "Rs/AbilitySystem/EffectComponent/RsCanApplyEffectComponent.h"
@@ -50,14 +49,7 @@ void URsGameplayEffect::PreSave(FObjectPreSaveContext SaveContext)
 
 	if (DamageDataComp)
 	{
-		if (!DamageDataComp->DataTableRow.DataTable)
-		{
-			SetModifiersFromAsset(DamageDataComp);
-		}
-		else
-		{
-			SetModifiersFromTable(DamageDataComp);
-		}
+		SetModifiersFromAsset(DamageDataComp);
 		SetDamageExecutions(DamageDataComp);
 	}
 }
@@ -244,16 +236,10 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 	}
 }
 
-void URsGameplayEffect::SetModifiersFromTable(const URsDamageEffectComponent* DamageDataComp)
-{
-	// TODO: Implement
-}
-
 void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* DamageDataComp)
 {
 	bool bHasHealthDamageExecution = false;
 	bool bHasStaggerDamageExecution = false;
-	bool bHasDamageResponseExecution = false;
 	for (const FGameplayEffectExecutionDefinition& Execution : Executions)
 	{
 		if (Execution.CalculationClass == URsHealthDamageExecution::StaticClass())
@@ -263,10 +249,6 @@ void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* Dama
 		else if (Execution.CalculationClass == URsStaggerDamageExecution::StaticClass())
 		{
 			bHasStaggerDamageExecution = true;
-		}
-		else if (Execution.CalculationClass == URsDamageResponseExecution::StaticClass())
-		{
-			bHasDamageResponseExecution = true;
 		}
 	}
 
@@ -279,11 +261,6 @@ void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* Dama
 	{
 		FGameplayEffectExecutionDefinition StaggerDamageExecution(URsStaggerDamageExecution::StaticClass());
 		Executions.Add(StaggerDamageExecution);
-	}
-	if (!bHasDamageResponseExecution)
-	{
-		FGameplayEffectExecutionDefinition DamageResponseExecution(URsDamageResponseExecution::StaticClass());
-		Executions.Add(DamageResponseExecution);
 	}
 }
 #endif // WITH_EDITOR

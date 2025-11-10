@@ -5,10 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
@@ -22,14 +20,6 @@ bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEff
 
 bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
-	// Check invincible for damage
-	bool bInvincibleBlock = false;
-	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
-	{
-		float TargetINV = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, RsGameplayTags::STAT_INV);
-		bInvincibleBlock = TargetINV > Row->InvinciblePierce;
-	}
-
 	// Check stat
 	bool bStatBlock = false;
 	if (Comparision != ERsComparisionOperator::None)
@@ -59,5 +49,5 @@ bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffect
 		bTagBlock = TagRequirements.RequirementsMet(Tags);
 	}
 	
-	return bInvincibleBlock || bStatBlock || bTagBlock;
+	return bStatBlock || bTagBlock;
 }

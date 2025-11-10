@@ -214,13 +214,6 @@ URsCoefficientCalculation::URsCoefficientCalculation()
 
 float URsCoefficientCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
-	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-
-	FAggregatorEvaluateParameters EvaluationParameters;
-	EvaluationParameters.SourceTags = SourceTags;
-	EvaluationParameters.TargetTags = TargetTags;
-
 	const FRsEffectTableRow* TableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec);
 	return FRsEffectMagnitudeExpressionParser::GetParseResult(TableRow->MagnitudeExpression, Spec, this);
 }
