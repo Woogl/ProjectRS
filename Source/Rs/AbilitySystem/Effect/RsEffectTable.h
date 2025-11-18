@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "UObject/Object.h"
 #include "RsEffectTable.generated.h"
 
 class UGameplayEffect;
@@ -16,16 +15,12 @@ struct FRsEffectTableRowBase : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	// Referencing GE asset.
 	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag EffectType;
+	TSubclassOf<UGameplayEffect> EffectClass;
 
-	/** Additional Effect */
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalSourceEffect;
-
-	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalTargetEffect;
+#if WITH_EDITOR
+	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif // WITH_EDITOR
 };
 
 USTRUCT(BlueprintType)
@@ -57,13 +52,10 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 
 	/** UI Data */
 	UPROPERTY(EditDefaultsOnly)
-	FText DisplayName;
+	FText Title;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FText Description;
-	
-	UPROPERTY(EditDefaultsOnly, meta=(AllowedClasses="MaterialInterface,Texture2D"))
-	TSoftObjectPtr<UObject> Icon = nullptr;
 };
 /**
  * 
@@ -72,9 +64,7 @@ USTRUCT(BlueprintType)
 struct FRsDamageTableRow : public FRsEffectTableRowBase
 {
 	GENERATED_BODY()
-
-	FRsDamageTableRow();
-
+	
 	/** Magnitude */
 	UPROPERTY(EditAnywhere)
 	FString HealthDamageExpression;
@@ -106,4 +96,11 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	float UltimateGain = 0.f;
+
+	/** Additional Effect */
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalSourceEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString AdditionalTargetEffect;
 };

@@ -4,41 +4,6 @@
 #include "RsActivatableWidget.h"
 
 #include "Input/CommonUIActionRouterBase.h"
-#include "Rs/World/TimeControl/RsTimeControlLibrary.h"
-
-void URsActivatableWidget::NativeOnActivated()
-{
-	Super::NativeOnActivated();
-
-	if (APlayerController* Player = GetOwningPlayer())
-	{
-		if (TimeControl == ERsWidgetTimeControl::GamePause)
-		{
-			URsTimeControlLibrary::RequestTimePause(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, BlendTime);
-		}
-		else if (TimeControl == ERsWidgetTimeControl::TimeDilation)
-		{
-			URsTimeControlLibrary::RequestTimeDilation(Player, GetFNameSafe(this), ERsTimeControlPriority::UI, TimeDilation, FLT_MAX, BlendTime);
-		}
-	}
-}
-
-void URsActivatableWidget::NativeOnDeactivated()
-{
-	if (APlayerController* Player = GetOwningPlayer())
-	{
-		if (TimeControl == ERsWidgetTimeControl::GamePause)
-		{
-			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this), BlendTime);
-		}
-		else if (TimeControl == ERsWidgetTimeControl::TimeDilation)
-		{
-			URsTimeControlLibrary::RequestTimeResume(Player, GetFNameSafe(this), BlendTime);
-		}
-	}
-	
-	Super::NativeOnDeactivated();
-}
 
 TOptional<FUIInputConfig> URsActivatableWidget::GetDesiredInputConfig() const
 {

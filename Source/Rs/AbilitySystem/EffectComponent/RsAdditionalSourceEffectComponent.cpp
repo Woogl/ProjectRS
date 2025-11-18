@@ -76,7 +76,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	{
 		return;
 	}
-	FRsEffectTableRowBase* CurrentEffectRow = RowHandle.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__));
+	FRsDamageTableRow* CurrentEffectRow = RowHandle.GetRow<FRsDamageTableRow>(ANSI_TO_TCHAR(__FUNCTION__));
 	if (!CurrentEffectRow)
 	{
 		return;
@@ -87,12 +87,12 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	{
 		return;
 	}
-	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectType))
+	if (const TSubclassOf<UGameplayEffect> AdditionalEffect = AdditionalEffectRow->EffectClass)
 	{
 		if (UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent())
 		{
 			FGameplayEffectContextHandle AdditionalEffectContext = SourceASC->MakeEffectContext();
-			FGameplayEffectSpecHandle AdditionalGESpec = SourceASC->MakeOutgoingSpec(*AdditionalEffect, GELevel, AdditionalEffectContext);
+			FGameplayEffectSpecHandle AdditionalGESpec = SourceASC->MakeOutgoingSpec(AdditionalEffect, GELevel, AdditionalEffectContext);
 			if (AdditionalGESpec.IsValid())
 			{
 				// Data table feedback.
@@ -101,8 +101,6 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				AdditionalTableRowHandle.RowName = AdditionalEffectName;
 				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
 				
-				AdditionalGESpec.Data->AddDynamicAssetTag(AdditionalEffectRow->EffectType);
-				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectType);
 				SourceASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
 			}
 		}

@@ -9,41 +9,9 @@
 
 URsModifierDataEffectComponent::URsModifierDataEffectComponent()
 {
-	if (UGameplayEffect* Owner = GetOwner())
-	{
-		FString DefaultRowName = Owner->GetName();
-		DefaultRowName.RemoveFromStart(TEXT("Default__"));
-		DefaultRowName.RemoveFromEnd(TEXT("_C"));
-		DataTableRow.RowName = FName(DefaultRowName);
-	}
 }
 
 #if WITH_EDITOR
-bool URsModifierDataEffectComponent::CanEditChange(const FProperty* InProperty) const
-{
-	bool bParentVal = Super::CanEditChange(InProperty);
-
-	if (DataTableRow.DataTable)
-	{
-		if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, ModifierCoefficients))
-		{
-			return false;
-		}
-	}
-	return bParentVal;
-}
-
-void URsModifierDataEffectComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	FName MemberPropertyName = PropertyChangedEvent.GetMemberPropertyName();
-	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DataTableRow))
-	{
-		ModifierCoefficients.Empty();
-	}
-}
-
 EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
@@ -56,48 +24,31 @@ EDataValidationResult URsModifierDataEffectComponent::IsDataValid(class FDataVal
 	}
 
 	// Check asset data
-	if (!DataTableRow.DataTable)
+	for (const FModifierCoefficient& ModCoeff : ModifierCoefficients)
 	{
-		for (const FModifierCoefficient& ModCoeff : ModifierCoefficients)
+		for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
 		{
-			for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
+			if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
 			{
-				if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
-				{
-					continue;
-				}
-				FString CoeffTagString = CoeffTag.ToString();
-				if (CoeffTagString.IsEmpty())
-				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));
-					return EDataValidationResult::Invalid;
-				}
-				if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
-				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must start with \"Coefficient.\""), *CoeffTag.ToString())));
-					return EDataValidationResult::Invalid;
-				}
-				if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
-				{
-					Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must end with \".Target\" or \".Source\""), *CoeffTag.ToString())));
-					return EDataValidationResult::Invalid;
-				}
+				continue;
+			}
+			FString CoeffTagString = CoeffTag.ToString();
+			if (CoeffTagString.IsEmpty())
+			{
+				Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));
+				return EDataValidationResult::Invalid;
+			}
+			if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
+			{
+				Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must start with \"Coefficient.\""), *CoeffTag.ToString())));
+				return EDataValidationResult::Invalid;
+			}
+			if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
+			{
+				Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must end with \".Target\" or \".Source\""), *CoeffTag.ToString())));
+				return EDataValidationResult::Invalid;
 			}
 		}
-		return Result;
-	}
-
-	// Check table data
-	const FRsEffectModifierTableRow* Row = DataTableRow.GetRow<FRsEffectModifierTableRow>(TEXT(__FUNCTION__));
-	if (!Row)
-	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("%s"), *DataTableRow.ToDebugString())));
-		return EDataValidationResult::Invalid;
-	}
-	if (Row->IsDataValid(Context) == EDataValidationResult::Invalid)
-	{
-		Context.AddError(FText::FromString(FString::Printf(TEXT("%s"), *DataTableRow.ToDebugString())));
-		return EDataValidationResult::Invalid;
 	}
 	return Result;
 }

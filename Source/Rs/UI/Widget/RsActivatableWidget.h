@@ -15,14 +15,6 @@ enum class ERsWidgetInputMode : uint8
 	Menu		UMETA(ToolTip = "Input from UI only. Shows mouse cursor.")
 };
 
-UENUM(BlueprintType)
-enum class ERsWidgetTimeControl : uint8
-{
-	Default,
-	GamePause,
-	TimeDilation,
-};
-
 /**
  * 
  */
@@ -32,21 +24,9 @@ class RS_API URsActivatableWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeOnActivated() override;
-	virtual void NativeOnDeactivated() override;
-
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RS")
 	ERsWidgetInputMode InputConfig = ERsWidgetInputMode::Default;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	ERsWidgetTimeControl TimeControl = ERsWidgetTimeControl::Default;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
-	float TimeDilation = 0.01f;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "RS", meta = (EditCondition = "TimeControl == ERsWidgetTimeControl::TimeDilation", EditConditionHides))
-	float BlendTime = 0.f;
 };

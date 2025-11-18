@@ -3,9 +3,19 @@
 
 #include "RsEffectTable.h"
 
-#include "Rs/RsGameplayTags.h"
+#include "GameplayEffect.h"
+#include "Misc/DataValidation.h"
 
-FRsDamageTableRow::FRsDamageTableRow()
+#if WITH_EDITOR
+EDataValidationResult FRsEffectTableRowBase::IsDataValid(FDataValidationContext& Context) const
 {
-	EffectType = RsGameplayTags::EFFECT_DAMAGE;
+	if (!EffectClass || !EffectClass->IsChildOf(UGameplayEffect::StaticClass()))
+	{
+		FString EffectString = EffectClass ? EffectClass->GetName() : TEXT("NULL");
+		FText EffectText = FText::FromString(EffectString);
+		Context.AddError(FText::Format(NSLOCTEXT("RsEffectTable", "InvalidEffectClass", "EffectClass is not valid. {0}"), EffectText));
+		return EDataValidationResult::Invalid;
+	}
+	return FTableRowBase::IsDataValid(Context);
 }
+#endif // WITH_EDITOR

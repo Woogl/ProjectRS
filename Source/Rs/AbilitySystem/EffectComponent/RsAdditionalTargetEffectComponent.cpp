@@ -21,7 +21,7 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 	{
 		return;
 	}
-	FRsEffectTableRowBase* CurrentEffectRow = RowHandle.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__));
+	FRsDamageTableRow* CurrentEffectRow = RowHandle.GetRow<FRsDamageTableRow>(ANSI_TO_TCHAR(__FUNCTION__));
 	if (!CurrentEffectRow)
 	{
 		return;
@@ -32,12 +32,12 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 	{
 		return;
 	}
-	if (const TSubclassOf<UGameplayEffect>* AdditionalEffect = URsAbilitySystemSettings::Get().SharedEffects.Find(AdditionalEffectRow->EffectType))
+	if (const TSubclassOf<UGameplayEffect> AdditionalEffect = AdditionalEffectRow->EffectClass)
 	{
 		if (UAbilitySystemComponent* TargetASC = ActiveGEContainer.Owner)
 		{
 			FGameplayEffectContextHandle AdditionalEffectContext = TargetASC->MakeEffectContext();
-			FGameplayEffectSpecHandle AdditionalGESpec = TargetASC->MakeOutgoingSpec(*AdditionalEffect, GESpec.GetLevel(), AdditionalEffectContext);
+			FGameplayEffectSpecHandle AdditionalGESpec = TargetASC->MakeOutgoingSpec(AdditionalEffect, GESpec.GetLevel(), AdditionalEffectContext);
 			if (AdditionalGESpec.IsValid())
 			{
 				// Data table feedback.
@@ -46,8 +46,6 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 				AdditionalTableRowHandle.RowName = AdditionalEffectName;
 				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
 
-				AdditionalGESpec.Data->AddDynamicAssetTag(AdditionalEffectRow->EffectType);
-				AdditionalGESpec.Data->DynamicGrantedTags.AddTag(AdditionalEffectRow->EffectType);
 				TargetASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
 			}
 		}
