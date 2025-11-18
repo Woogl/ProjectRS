@@ -17,10 +17,11 @@ void URsCooldownEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsC
 	float LocalAmount;
 	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(GESpec))
 	{
-		LocalCooldownTag = FGameplayTag::RequestGameplayTag(FName(Row->Parameter1));
-		int64 EnumValue = StaticEnum<ECooldownModifingType>()->GetValueByNameString(Row->Parameter2, EGetByNameFlags::ErrorIfNotFound);
-		LocalModifingType = static_cast<ECooldownModifingType>(EnumValue);
-		LocalAmount = FCString::Atof(*Row->Parameter3);
+		// TODO: Implement
+		// LocalCooldownTag = FGameplayTag::RequestGameplayTag(FName(Row->Parameter1));
+		// int64 EnumValue = StaticEnum<ECooldownModifingType>()->GetValueByNameString(Row->Parameter2, EGetByNameFlags::ErrorIfNotFound);
+		// LocalModifingType = static_cast<ECooldownModifingType>(EnumValue);
+		// LocalAmount = FCString::Atof(*Row->Parameter3);
 	}
 	else
 	{

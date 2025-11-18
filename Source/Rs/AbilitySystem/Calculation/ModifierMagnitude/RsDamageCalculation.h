@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsCoefficientCalculation.h"
+#include "RsCoefficientCalculationBase.h"
 #include "RsDamageCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsHealthDamageCalculation : public URsCoefficientCalculation
+class RS_API URsHealthDamageCalculation : public URsCoefficientCalculationBase
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ public:
 };
 
 UCLASS()
-class RS_API URsStaggerDamageCalculation : public URsCoefficientCalculation
+class RS_API URsStaggerDamageCalculation : public URsCoefficientCalculationBase
 {
 	GENERATED_BODY()
 

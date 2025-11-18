@@ -27,36 +27,90 @@ USTRUCT(BlueprintType)
 struct FRsEffectTableRow : public FRsEffectTableRowBase
 {
 	GENERATED_BODY()
-	
-	/** ex1: 170
-	 * ex2: (Coefficient.ATK.Source * 1.5) + 30 */
-	UPROPERTY(EditDefaultsOnly)
-	FString MagnitudeExpression;
 
-	/** Time */
+#if WITH_EDITOR
+	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif // WITH_EDITOR
+
+	/** Polymorphic parameters */
+	UPROPERTY(EditDefaultsOnly)
+	FName Key1 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value1 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key2 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value2 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key3 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value3 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key4 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value4 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key5 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value5 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key6 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value6 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key7 = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString Value7 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key8 = NAME_None;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FString Value8 = FString();
+
+	UPROPERTY(EditDefaultsOnly)
+	FName Key9 = NAME_None;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FString Value9 = FString();
+
+	/** Time (Optional) */
 	UPROPERTY(EditDefaultsOnly)
 	float Duration = 0.f;
 
-	UPROPERTY(EditDefaultsOnly)
-	float Period = 0.f;
-
-	/** Polymorphic parameters (optional) */
-	UPROPERTY(EditDefaultsOnly)
-	FString Parameter1;
-
-	UPROPERTY(EditDefaultsOnly)
-	FString Parameter2;
-
-	UPROPERTY(EditDefaultsOnly)
-	FString Parameter3;
-
 	/** UI Data */
 	UPROPERTY(EditDefaultsOnly)
-	FText Title;
+	FText Title = FText::GetEmpty();
 	
 	UPROPERTY(EditDefaultsOnly)
-	FText Description;
+	FText Description = FText::GetEmpty();
+
+	FString FindValue(FName Key) const;
+
+	template <typename T>
+	T FindValue(FName Key) const;
 };
+
+template <typename T>
+T FRsEffectTableRow::FindValue(FName Key) const
+{
+	FString StringValue = FindValue(Key);
+	return Cast<T>(*StringValue);
+}
+
 /**
  * 
  */
