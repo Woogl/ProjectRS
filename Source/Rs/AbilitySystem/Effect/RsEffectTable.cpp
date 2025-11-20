@@ -90,38 +90,3 @@ FString FRsEffectTableRow::FindValueInternal(FName Key, bool bWarnIfNotFound) co
 	}
 	return FString();
 }
-
-template <>
-FName FRsEffectTableRow::FindValue<FName>(FName Key, bool bWarnIfNotFound) const
-{
-	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
-	return FName(StringValue);
-}
-
-template <>
-FString FRsEffectTableRow::FindValue<FString>(FName Key, bool bWarnIfNotFound) const
-{
-	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
-	return StringValue;
-}
-
-template <>
-int32 FRsEffectTableRow::FindValue<int32>(FName Key, bool bWarnIfNotFound) const
-{
-	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
-	return FCString::Atoi(*StringValue);
-}
-
-template <>
-float FRsEffectTableRow::FindValue<float>(FName Key, bool bWarnIfNotFound) const
-{
-	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
-	return FCString::Atof(*StringValue);
-}
-
-template <>
-bool FRsEffectTableRow::FindValue<bool>(FName Key, bool bWarnIfNotFound) const
-{
-	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
-	return StringValue.ToBool();
-}

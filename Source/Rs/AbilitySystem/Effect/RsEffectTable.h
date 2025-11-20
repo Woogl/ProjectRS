@@ -108,24 +108,44 @@ private:
 template <typename T>
 T FRsEffectTableRow::FindValue(FName Key, bool bWarnIfNotFound) const
 {
-	static_assert(!std::is_same_v<T, T>, "FRsEffectTableRow::FindValue: Unsupported type. Add an explicit specialization.");
-	return T{};
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	if constexpr (std::is_same_v<T, FString>)
+	{
+		return StringValue;
+	}
+	else if constexpr (std::is_same_v<T, FName>)
+	{
+		return FName(*StringValue);
+	}
+	else if constexpr (std::is_same_v<T, int32>)
+	{
+		return FCString::Atoi(*StringValue);
+	}
+	else if constexpr (std::is_same_v<T, float>)
+	{
+		return FCString::Atof(*StringValue);
+	}
+	else if constexpr (std::is_same_v<T, bool>)
+	{
+		return StringValue.ToBool();
+	}
+	else if constexpr (std::is_same_v<T, FGameplayTag>)
+	{
+		return FGameplayTag::RequestGameplayTag(FName(*StringValue));
+	}
+	else if constexpr (TIsEnum<T>::Value)
+	{
+		UEnum* EnumPtr = StaticEnum<T>();
+		check(EnumPtr);
+		int64 EnumValue = EnumPtr->GetValueByNameString(StringValue, EGetByNameFlags::ErrorIfNotFound);
+		return static_cast<T>(EnumValue);
+	}
+	else
+	{
+		static_assert("FRsEffectTableRow::FindValue: Unsupported type T.");
+		return T{};
+	}
 }
-
-template <>
-FString FRsEffectTableRow::FindValue<FString>(FName Key, bool bWarnIfNotFound) const;
-
-template <>
-FName FRsEffectTableRow::FindValue<FName>(FName Key, bool bWarnIfNotFound) const;
-
-template <>
-int32 FRsEffectTableRow::FindValue<int32>(FName Key, bool bWarnIfNotFound) const;
-
-template <>
-float FRsEffectTableRow::FindValue<float>(FName Key, bool bWarnIfNotFound) const;
-
-template <>
-bool FRsEffectTableRow::FindValue<bool>(FName Key, bool bWarnIfNotFound) const;
 
 /**
  * 
