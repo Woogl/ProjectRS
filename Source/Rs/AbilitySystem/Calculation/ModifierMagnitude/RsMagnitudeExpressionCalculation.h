@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "RsCoefficientCalculationBase.h"
-#include "RsMagnitudeCalculation.generated.h"
+#include "RsMagnitudeExpressionCalculation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RS_API URsMagnitudeCalculation : public URsCoefficientCalculationBase
+class RS_API URsMagnitudeExpressionCalculation : public URsCoefficientCalculationBase
 {
 	GENERATED_BODY()
 

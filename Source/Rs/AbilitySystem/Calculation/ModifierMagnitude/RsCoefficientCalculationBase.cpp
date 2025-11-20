@@ -49,7 +49,7 @@ void URsCoefficientCalculationBase::CaptureAttribute(FGameplayTag Key, const FGa
 
 float FRsExpressionParser::GetParseResult(const FString& Expression, const FGameplayEffectSpec& Spec, const URsCoefficientCalculationBase* Calc)
 {
-	FRsExpressionParser Parser = Get();
+	const FRsExpressionParser Parser = Get();
 	
 	const TArray<FString> Tokens = Parser.Tokenize(Expression);
 

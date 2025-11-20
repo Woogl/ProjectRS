@@ -46,45 +46,82 @@ EDataValidationResult FRsEffectTableRow::IsDataValid(FDataValidationContext& Con
 }
 #endif // WITH_EDITOR
 
-FString FRsEffectTableRow::FindValue(FName Key) const
+FString FRsEffectTableRow::FindValueInternal(FName Key, bool bWarnIfNotFound) const
 {
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key1))
+	if (Key == Key1)
 	{
 		return Value1;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key2))
+	if (Key == Key2)
 	{
 		return Value2;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key3))
+	if (Key == Key3)
 	{
 		return Value3;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key4))
+	if (Key == Key4)
 	{
 		return Value4;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key5))
+	if (Key == Key5)
 	{
 		return Value5;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key6))
+	if (Key == Key6)
 	{
 		return Value6;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key7))
+	if (Key == Key7)
 	{
 		return Value7;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key8))
+	if (Key == Key8)
 	{
 		return Value8;
 	}
-	if (Key == GET_MEMBER_NAME_CHECKED(FRsEffectTableRow, Key9))
+	if (Key == Key9)
 	{
 		return Value9;
 	}
-	UE_LOG(RsLog, Warning, TEXT("Cannot find [ %s ] value in RsEffectTableRow."), *Key.ToString());
+	if (bWarnIfNotFound)
+	{
+		UE_LOG(RsLog, Warning, TEXT("Cannot find [ %s ] value in RsEffectTableRow."), *Key.ToString());
+	}
 	return FString();
 }
 
+template <>
+FName FRsEffectTableRow::FindValue<FName>(FName Key, bool bWarnIfNotFound) const
+{
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	return FName(StringValue);
+}
+
+template <>
+FString FRsEffectTableRow::FindValue<FString>(FName Key, bool bWarnIfNotFound) const
+{
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	return StringValue;
+}
+
+template <>
+int32 FRsEffectTableRow::FindValue<int32>(FName Key, bool bWarnIfNotFound) const
+{
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	return FCString::Atoi(*StringValue);
+}
+
+template <>
+float FRsEffectTableRow::FindValue<float>(FName Key, bool bWarnIfNotFound) const
+{
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	return FCString::Atof(*StringValue);
+}
+
+template <>
+bool FRsEffectTableRow::FindValue<bool>(FName Key, bool bWarnIfNotFound) const
+{
+	FString StringValue = FindValueInternal(Key, bWarnIfNotFound);
+	return StringValue.ToBool();
+}

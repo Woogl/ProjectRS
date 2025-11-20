@@ -7,12 +7,13 @@
 #include "GameplayEffect.h"
 #include "Misc/DataValidation.h"
 #include "Rs/RsGameplayTags.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
-#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 
 URsDamageEffectComponent::URsDamageEffectComponent()
 {
@@ -66,8 +67,8 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	float LocalTargetHitStopTime;
 	float LocalManaGain;
 	float LocalUltimateGain;
-	TArray<TSubclassOf<UGameplayEffect>> LocalAdditionalSourceEffects;
-	TArray<TSubclassOf<UGameplayEffect>> LocalAdditionalTargetEffects;
+	TArray<FGameplayEffectSpec> AdditionalSourceEffectSpecs;
+	TArray<FGameplayEffectSpec> AdditionalTargetEffectSpecs;
 	
 	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow(GESpec))
 	{
@@ -77,8 +78,22 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		LocalTargetHitStopTime = DamageTableRow->TargetHitStopTime;
 		LocalManaGain = DamageTableRow->ManaGain;
 		LocalUltimateGain = DamageTableRow->UltimateGain;
-		// TODO: LocalAdditionalSourceEffects
-		// TODO: LocalAdditionalTargetEffects
+		if (URsAbilitySystemComponent* RsTargetASC = Cast<URsAbilitySystemComponent>(TargetASC))
+		{
+			FGameplayEffectSpecHandle SpecHandle = RsTargetASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalSourceEffect, GESpec.GetLevel());
+			if (SpecHandle.IsValid())
+			{
+				AdditionalSourceEffectSpecs.Add(*SpecHandle.Data);
+			}
+		}
+		if (URsAbilitySystemComponent* RsSourceASC = Cast<URsAbilitySystemComponent>(SourceASC))
+		{
+			FGameplayEffectSpecHandle SpecHandle = RsSourceASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalTargetEffect, GESpec.GetLevel());
+			if (SpecHandle.IsValid())
+			{
+				AdditionalTargetEffectSpecs.Add(*SpecHandle.Data);
+			}
+		}
 	}
 	else
 	{
@@ -88,8 +103,18 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		LocalTargetHitStopTime = TargetHitStopTime;
 		LocalManaGain = ManaGain;
 		LocalUltimateGain = UltimateGain;
-		LocalAdditionalSourceEffects = AdditionalSourceEffects;
-		LocalAdditionalTargetEffects = AdditionalTargetEffects;
+		for (const TSubclassOf<UGameplayEffect>& AdditionalSourceEffect : AdditionalSourceEffects)
+		{
+			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+			FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(AdditionalSourceEffect, GESpec.GetLevel(), EffectContext);
+			AdditionalSourceEffectSpecs.Add(*Spec.Data);
+		}
+		for (const TSubclassOf<UGameplayEffect>& AdditionalTargetEffect : AdditionalTargetEffects)
+		{
+			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+			FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(AdditionalTargetEffect, GESpec.GetLevel(), EffectContext);
+			AdditionalTargetEffectSpecs.Add(*Spec.Data);
+		}
 	}
 
 	// Check super armor
@@ -145,13 +170,13 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
 
 	// Additional effects
-	for (const TSubclassOf<UGameplayEffect>& SourceEffect : LocalAdditionalSourceEffects)
+	for (const FGameplayEffectSpec& SourceSpec : AdditionalSourceEffectSpecs)
 	{
-		TargetASC->BP_ApplyGameplayEffectToTarget(SourceEffect, SourceASC, GESpec.GetLevel(), TargetASC->MakeEffectContext());
+		TargetASC->ApplyGameplayEffectSpecToTarget(SourceSpec, SourceASC, PredictionKey);
 	}
-	for (const TSubclassOf<UGameplayEffect>& TargetEffect : LocalAdditionalTargetEffects)
+	for (const FGameplayEffectSpec& TargetSpec : AdditionalTargetEffectSpecs)
 	{
-		SourceASC->BP_ApplyGameplayEffectToTarget(TargetEffect, TargetASC, GESpec.GetLevel(), SourceASC->MakeEffectContext());
+		SourceASC->ApplyGameplayEffectSpecToTarget(TargetSpec, TargetASC, PredictionKey);
 	}
 }
 

@@ -13,6 +13,5 @@ float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGamep
 	{
 		return Row->Duration;
 	}
-	UE_LOG(RsLog, Warning, TEXT("Cannot find duration of [ %s ]"), *Spec.ToSimpleString());
 	return 0.f;
 }

@@ -4,8 +4,10 @@
 #include "RsAbilitySystemComponent.h"
 
 #include "AbilitySystemGlobals.h"
+#include "RsAbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
 #include "Attributes/RsAttributeTableRow.h"
+#include "Effect/RsEffectTable.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -122,5 +124,40 @@ URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentF
 		return Cast<URsAbilitySystemComponent>(ASC);
 	}
 	return nullptr;
+}
+
+FGameplayEffectSpecHandle URsAbilitySystemComponent::MakeOutgoingSpecFromSharedTable(FName RowName, float EffectLevel)
+{
+	if (RowName.IsNone())
+	{
+		return FGameplayEffectSpecHandle();
+	}
+	
+	for (const TSoftObjectPtr<UDataTable>& SharedEffectTable : URsAbilitySystemSettings::Get().SharedEffectTables)
+	{
+		UDataTable* OtherEffectTable = SharedEffectTable.LoadSynchronous();
+		if (!OtherEffectTable)
+		{
+			continue;
+		}
+		FRsEffectTableRow* Row = OtherEffectTable->FindRow<FRsEffectTableRow>(RowName, ANSI_TO_TCHAR(__FUNCTION__), false);
+		if (!Row)
+		{
+			continue;
+		}
+		FGameplayEffectContextHandle AdditionalEffectContext = MakeEffectContext();
+		FGameplayEffectSpecHandle AdditionalGESpec = MakeOutgoingSpec(Row->EffectClass, EffectLevel, AdditionalEffectContext);
+		if (AdditionalGESpec.IsValid())
+		{
+			// Data table feedback.
+			FDataTableRowHandle AdditionalTableRowHandle;
+			AdditionalTableRowHandle.DataTable = OtherEffectTable;
+			AdditionalTableRowHandle.RowName = RowName;
+			URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
+			return AdditionalGESpec;
+		}
+	}
+	
+	return FGameplayEffectSpecHandle();
 }
 

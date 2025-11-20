@@ -91,25 +91,41 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 	UPROPERTY(EditDefaultsOnly)
 	float Duration = 0.f;
 
-	/** UI Data */
+	/** UI Data (Optional) */
 	UPROPERTY(EditDefaultsOnly)
 	FText Title = FText::GetEmpty();
 	
 	UPROPERTY(EditDefaultsOnly)
 	FText Description = FText::GetEmpty();
 
-	FString FindValue(FName Key) const;
-
 	template <typename T>
-	T FindValue(FName Key) const;
+	T FindValue(FName Key, bool bWarnIfNotFound) const;
+
+private:
+	FString FindValueInternal(FName Key, bool bWarnIfNotFound) const;
 };
 
 template <typename T>
-T FRsEffectTableRow::FindValue(FName Key) const
+T FRsEffectTableRow::FindValue(FName Key, bool bWarnIfNotFound) const
 {
-	FString StringValue = FindValue(Key);
-	return Cast<T>(*StringValue);
+	static_assert(!std::is_same_v<T, T>, "FRsEffectTableRow::FindValue: Unsupported type. Add an explicit specialization.");
+	return T{};
 }
+
+template <>
+FString FRsEffectTableRow::FindValue<FString>(FName Key, bool bWarnIfNotFound) const;
+
+template <>
+FName FRsEffectTableRow::FindValue<FName>(FName Key, bool bWarnIfNotFound) const;
+
+template <>
+int32 FRsEffectTableRow::FindValue<int32>(FName Key, bool bWarnIfNotFound) const;
+
+template <>
+float FRsEffectTableRow::FindValue<float>(FName Key, bool bWarnIfNotFound) const;
+
+template <>
+bool FRsEffectTableRow::FindValue<bool>(FName Key, bool bWarnIfNotFound) const;
 
 /**
  * 
@@ -153,8 +169,8 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	/** Additional Effect */
 	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalSourceEffect;
+	FName AdditionalSourceEffect = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly)
-	FString AdditionalTargetEffect;
+	FName AdditionalTargetEffect = NAME_None;
 };

@@ -7,8 +7,8 @@
 #include "AbilitySystemLog.h"
 #include "GameplayEffect.h"
 #include "Misc/DataValidation.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 #define LOCTEXT_NAMESPACE "RsAdditionalSourceEffectComponent"
@@ -69,42 +69,26 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		}
 	}
 
-	// Check data table
-	// Should we add shared effect table???
-	FDataTableRowHandle RowHandle = URsAbilitySystemGlobals::GetSetByCallerTableRowHandle(GESpec);
-	if (RowHandle.IsNull())
+	URsAbilitySystemComponent* SourceASC = Cast<URsAbilitySystemComponent>(&AppliedToASC);
+	URsAbilitySystemComponent* TargetASC = Cast<URsAbilitySystemComponent>(ActiveGEContainer.Owner);
+	if (!SourceASC || !TargetASC)
 	{
 		return;
 	}
-	FRsDamageTableRow* CurrentEffectRow = RowHandle.GetRow<FRsDamageTableRow>(ANSI_TO_TCHAR(__FUNCTION__));
+
+	// Check data table
+	const FRsEffectTableRow* CurrentEffectRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(GESpec);
 	if (!CurrentEffectRow)
 	{
 		return;
 	}
-	FName AdditionalEffectName = FName(CurrentEffectRow->AdditionalSourceEffect);
-	FRsEffectTableRowBase* AdditionalEffectRow = RowHandle.DataTable->FindRow<FRsEffectTableRowBase>(AdditionalEffectName, ANSI_TO_TCHAR(__FUNCTION__));
-	if (!AdditionalEffectRow)
+	FName AdditionalEffectName = CurrentEffectRow->FindValue<FName>(TEXT("AdditionalSourceEffect"), false);
+	if (!AdditionalEffectName.IsValid() || AdditionalEffectName.IsNone())
 	{
 		return;
 	}
-	if (const TSubclassOf<UGameplayEffect> AdditionalEffect = AdditionalEffectRow->EffectClass)
-	{
-		if (UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent())
-		{
-			FGameplayEffectContextHandle AdditionalEffectContext = SourceASC->MakeEffectContext();
-			FGameplayEffectSpecHandle AdditionalGESpec = SourceASC->MakeOutgoingSpec(AdditionalEffect, GELevel, AdditionalEffectContext);
-			if (AdditionalGESpec.IsValid())
-			{
-				// Data table feedback.
-				FDataTableRowHandle AdditionalTableRowHandle;
-				AdditionalTableRowHandle.DataTable = RowHandle.DataTable;
-				AdditionalTableRowHandle.RowName = AdditionalEffectName;
-				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*AdditionalGESpec.Data, &AdditionalTableRowHandle);
-				
-				SourceASC->ApplyGameplayEffectSpecToSelf(*AdditionalGESpec.Data, PredictionKey);
-			}
-		}
-	}
+	FGameplayEffectSpecHandle GESpecHandle = TargetASC->MakeOutgoingSpecFromSharedTable(AdditionalEffectName, GELevel);
+	TargetASC->BP_ApplyGameplayEffectSpecToTarget(GESpecHandle, SourceASC);
 }
 
 void URsAdditionalSourceEffectComponent::OnActiveGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, FActiveGameplayEffectsContainer* ActiveGEContainer) const

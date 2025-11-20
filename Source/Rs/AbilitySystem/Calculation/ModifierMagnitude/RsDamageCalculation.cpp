@@ -4,6 +4,7 @@
 #include "RsDamageCalculation.h"
 
 #include "RsCoefficientCalculationBase.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
@@ -14,6 +15,7 @@ float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FG
 		FString Expression = Row->HealthDamageExpression;
 		return FRsExpressionParser::GetParseResult(Expression, Spec, this);
 	}
+	UE_LOG(RsLog, Warning, TEXT("Cannot find HealthDamageExpression of [ %s ]"), *Spec.ToSimpleString());
 	return 0.f;
 }
 
@@ -24,5 +26,6 @@ float URsStaggerDamageCalculation::CalculateBaseMagnitude_Implementation(const F
 		FString Expression = Row->StaggerDamageExpression;
 		return FRsExpressionParser::GetParseResult(Expression, Spec, this);
 	}
+	UE_LOG(RsLog, Warning, TEXT("Cannot find StaggerDamageExpression of [ %s ]"), *Spec.ToSimpleString());
 	return 0.f;
 }
