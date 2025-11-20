@@ -136,8 +136,7 @@ T FRsEffectTableRow::FindValue(FName Key, bool bWarnIfNotFound) const
 	else if constexpr (TIsEnum<T>::Value)
 	{
 		UEnum* EnumPtr = StaticEnum<T>();
-		check(EnumPtr);
-		int64 EnumValue = EnumPtr->GetValueByNameString(StringValue, EGetByNameFlags::ErrorIfNotFound);
+		int64 EnumValue = EnumPtr->GetValueByNameString(StringValue);
 		return static_cast<T>(EnumValue);
 	}
 	else
