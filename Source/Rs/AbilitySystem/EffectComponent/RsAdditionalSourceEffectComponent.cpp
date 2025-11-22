@@ -103,7 +103,7 @@ void URsAdditionalSourceEffectComponent::OnActiveGameplayEffectRemoved(const FGa
 	}
 
 	// Apply to source!!!
-	UAbilitySystemComponent* ASC = RemovalInfo.EffectContext.GetInstigatorAbilitySystemComponent();
+	UAbilitySystemComponent* ASC = ActiveGEContainer->Owner;
 	if (!ASC)
 	{
 		UE_LOG(LogGameplayEffects, Verbose, TEXT("InstigatorAbilitySystemComponent was invalid in OnActiveGameplayEffectRemoved"));
