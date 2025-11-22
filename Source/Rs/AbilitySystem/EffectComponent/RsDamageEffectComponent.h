@@ -78,7 +78,4 @@ public:
 #if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif // WITH_EDITOR
-
-private:
-	const FRsDamageTableRow* GetDamageTableRow(const FGameplayEffectSpec& GESpec) const;
 };

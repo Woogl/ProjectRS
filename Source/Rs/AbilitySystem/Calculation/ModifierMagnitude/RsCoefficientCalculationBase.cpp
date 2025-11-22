@@ -86,7 +86,8 @@ float FRsExpressionParser::GetParseResult(const FString& Expression, const FGame
 		}
 	}
 
-	return FCString::Atof(*Stack.Pop());
+	float Result = FCString::Atof(*Stack.Pop());
+	return Result;
 }
 
 const FRsExpressionParser& FRsExpressionParser::Get()

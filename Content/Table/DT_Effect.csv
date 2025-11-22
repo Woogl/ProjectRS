@@ -1,0 +1,4 @@
+---,Key1,Value1,Key2,Value2,Key3,Value3,Key4,Value4,Key5,Value5,Key6,Value6,Key7,Value7,Key8,Value8,Key9,Value9,Duration,Title,Description,EffectClass
+BuffATK,"MagnitudeExpression","100","None","","None","","None","","None","","None","","None","","None","","None","","5.000000","","","/Script/Engine.BlueprintGeneratedClass'/Game/AbilitySystem/Effects/Shared/GE_BuffATK.GE_BuffATK_C'"
+BuffBP,"MagnitudeExpression","10","None","","None","","None","","None","","None","","None","","None","","None","","1.000000","","","/Script/Engine.BlueprintGeneratedClass'/Game/AbilitySystem/Effects/Shared/GE_BuffBP.GE_BuffBP_C'"
+CooldownControl,"CooldownTag","Cooldown.Skill.Q","ModifyingType","Set","Amount","0","None","","None","","None","","None","","None","","None","","0.000000","","","/Script/Engine.BlueprintGeneratedClass'/Game/AbilitySystem/Effects/Shared/GE_CooldownControl.GE_CooldownControl_C'"

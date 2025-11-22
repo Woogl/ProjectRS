@@ -35,7 +35,7 @@ bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffec
 {
 	bool bResult;
 	float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, RsGameplayTags::STAT_INV);
-	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow(GESpec))
+	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
 	{
 		bResult = StatValue <= DamageTableRow->InvinciblePierce;
 	}
@@ -67,10 +67,10 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	float LocalTargetHitStopTime;
 	float LocalManaGain;
 	float LocalUltimateGain;
-	TArray<FGameplayEffectSpec> AdditionalSourceEffectSpecs;
-	TArray<FGameplayEffectSpec> AdditionalTargetEffectSpecs;
+	TArray<FGameplayEffectSpecHandle> AdditionalSourceEffectSpecs;
+	TArray<FGameplayEffectSpecHandle> AdditionalTargetEffectSpecs;
 	
-	if (const FRsDamageTableRow* DamageTableRow = GetDamageTableRow(GESpec))
+	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
 	{
 		LocalSuperArmorPierce = DamageTableRow->SuperArmorPierce;
 		LocalHitReaction = DamageTableRow->HitReaction;
@@ -83,7 +83,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 			FGameplayEffectSpecHandle SpecHandle = RsTargetASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalSourceEffect, GESpec.GetLevel());
 			if (SpecHandle.IsValid())
 			{
-				AdditionalSourceEffectSpecs.Add(*SpecHandle.Data);
+				AdditionalSourceEffectSpecs.Add(SpecHandle);
 			}
 		}
 		if (URsAbilitySystemComponent* RsSourceASC = Cast<URsAbilitySystemComponent>(SourceASC))
@@ -91,7 +91,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 			FGameplayEffectSpecHandle SpecHandle = RsSourceASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalTargetEffect, GESpec.GetLevel());
 			if (SpecHandle.IsValid())
 			{
-				AdditionalTargetEffectSpecs.Add(*SpecHandle.Data);
+				AdditionalTargetEffectSpecs.Add(SpecHandle);
 			}
 		}
 	}
@@ -103,17 +103,24 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		LocalTargetHitStopTime = TargetHitStopTime;
 		LocalManaGain = ManaGain;
 		LocalUltimateGain = UltimateGain;
-		for (const TSubclassOf<UGameplayEffect>& AdditionalSourceEffect : AdditionalSourceEffects)
+		for (const TSubclassOf<UGameplayEffect>& SourceEffect : AdditionalSourceEffects)
 		{
-			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-			FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(AdditionalSourceEffect, GESpec.GetLevel(), EffectContext);
-			AdditionalSourceEffectSpecs.Add(*Spec.Data);
+			// Swap source and target.
+			FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = TargetASC->MakeOutgoingSpec(SourceEffect, GESpec.GetLevel(), EffectContext);
+			if (SpecHandle.IsValid())
+			{
+				AdditionalSourceEffectSpecs.Add(SpecHandle);
+			}
 		}
-		for (const TSubclassOf<UGameplayEffect>& AdditionalTargetEffect : AdditionalTargetEffects)
+		for (const TSubclassOf<UGameplayEffect>& TargetEffect : AdditionalTargetEffects)
 		{
 			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-			FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(AdditionalTargetEffect, GESpec.GetLevel(), EffectContext);
-			AdditionalTargetEffectSpecs.Add(*Spec.Data);
+			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(TargetEffect, GESpec.GetLevel(), EffectContext);
+			if (SpecHandle.IsValid())
+			{
+				AdditionalTargetEffectSpecs.Add(SpecHandle);
+			}
 		}
 	}
 
@@ -152,7 +159,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 
 	// Advantage to damage source
-	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP_GainUP"));
+	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP,UP"));
 	GE->DurationPolicy = EGameplayEffectDurationType::Instant;
 	int32 Idx = GE->Modifiers.Num();
 	GE->Modifiers.SetNum(Idx + 2);
@@ -170,13 +177,13 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
 
 	// Additional effects
-	for (const FGameplayEffectSpec& SourceSpec : AdditionalSourceEffectSpecs)
+	for (const FGameplayEffectSpecHandle& SourceSpec : AdditionalSourceEffectSpecs)
 	{
-		TargetASC->ApplyGameplayEffectSpecToTarget(SourceSpec, SourceASC, PredictionKey);
+		TargetASC->BP_ApplyGameplayEffectSpecToTarget(SourceSpec, SourceASC);
 	}
-	for (const FGameplayEffectSpec& TargetSpec : AdditionalTargetEffectSpecs)
+	for (const FGameplayEffectSpecHandle& TargetSpec : AdditionalTargetEffectSpecs)
 	{
-		SourceASC->ApplyGameplayEffectSpecToTarget(TargetSpec, TargetASC, PredictionKey);
+		SourceASC->BP_ApplyGameplayEffectSpecToTarget(TargetSpec, TargetASC);
 	}
 }
 
@@ -237,7 +244,3 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 }
 #endif // WITH_EDITOR
 
-const FRsDamageTableRow* URsDamageEffectComponent::GetDamageTableRow(const FGameplayEffectSpec& GESpec) const
-{
-	return URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec);
-}
