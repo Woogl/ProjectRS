@@ -11,7 +11,6 @@ public class RsEditor : ModuleRules
             {
                 "Core",
                 "UnrealEd",
-                "Rs",
             }
         );
 
@@ -24,6 +23,7 @@ public class RsEditor : ModuleRules
                 "SlateCore",
                 "GameplayAbilities",
                 "GameplayAbilitiesEditor",
+                "Rs",
             }
         );
     }

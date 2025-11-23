@@ -10,6 +10,6 @@ public class RsEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
-		ExtraModuleNames.Add("Rs");
+		ExtraModuleNames.AddRange(new string[] { "Rs", "RsEditor" });
 	}
 }
