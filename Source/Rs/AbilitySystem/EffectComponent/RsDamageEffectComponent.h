@@ -20,14 +20,12 @@ class RS_API URsDamageEffectComponent : public UGameplayEffectComponent
 public:
 	URsDamageEffectComponent();
 	
-#if WITH_EDITORONLY_DATA
 	/** Modifiers data */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> HealthDamageCoefficients;
 
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Coefficient", ForceInlineRow))
 	TMap<FGameplayTag, float> StaggerDamageCoefficients;
-#endif // WITH_EDITORONLY_DATA
 
 	/** Can apply */
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))

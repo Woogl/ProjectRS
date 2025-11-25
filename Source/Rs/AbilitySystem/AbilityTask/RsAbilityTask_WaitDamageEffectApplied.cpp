@@ -75,11 +75,11 @@ void URsAbilityTask_WaitDamageEffectApplied::OnApplyDamageEffectCallback(UAbilit
 
 	AActor* AvatarActor = Target ? Target->GetAvatarActor_Direct() : nullptr;
 
-	if (Locked)
-	{
-		ABILITY_LOG(Error, TEXT("WaitGameplayEffectApplied recursion detected. Ability: %s. Applied Spec: %s. This could cause an infinite loop! Ignoring"), *GetNameSafe(Ability), *SpecApplied.ToSimpleString());
-		return;
-	}
+	// if (Locked)
+	// {
+	// 	ABILITY_LOG(Error, TEXT("WaitGameplayEffectApplied recursion detected. Ability: %s. Applied Spec: %s. This could cause an infinite loop! Ignoring"), *GetNameSafe(Ability), *SpecApplied.ToSimpleString());
+	// 	return;
+	// }
 
 	FGameplayTagContainer GEAssetTags;
 	SpecApplied.GetAllAssetTags(GEAssetTags);
@@ -90,10 +90,10 @@ void URsAbilityTask_WaitDamageEffectApplied::OnApplyDamageEffectCallback(UAbilit
 	
 	FGameplayEffectSpecHandle	SpecHandle(new FGameplayEffectSpec(SpecApplied));
 
-	{
-		TGuardValue<bool> GuardValue(Locked, true);	
-		BroadcastDelegate(AvatarActor, SpecHandle, ActiveHandle);
-	}
+	// {
+	// 	TGuardValue<bool> GuardValue(Locked, true);	
+	// 	BroadcastDelegate(AvatarActor, SpecHandle, ActiveHandle);
+	// }
 
 	if (TriggerOnce)
 	{

@@ -36,10 +36,10 @@ public:
 	static bool IsOwningPlayerUsingGamepad(const UUserWidget* WidgetContextObject);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
-	static UCommonActivatableWidget* PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<UCommonActivatableWidget> WidgetClass);
+	static UCommonActivatableWidget* PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
-	static void PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<UCommonActivatableWidget> WidgetClass);
+	static void PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<UCommonActivatableWidget> WidgetClass);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
 	static void PopContentFromLayer(UCommonActivatableWidget* ActivatableWidget);

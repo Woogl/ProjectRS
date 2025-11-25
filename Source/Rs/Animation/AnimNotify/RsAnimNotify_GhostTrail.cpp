@@ -9,7 +9,7 @@ void URsAnimNotify_GhostTrail::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	SpawnedGhostTrail == nullptr;
+	SpawnedGhostTrail = nullptr;
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		FActorSpawnParameters SpawnParameters;

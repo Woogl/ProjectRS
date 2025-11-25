@@ -56,7 +56,7 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	UGameplayCameraComponent* GameplayCameraComponent = Controller->FindComponentByClass<UGameplayCameraComponent>();
 	if (Controller->IsLocalPlayerController() && GameplayCameraComponent)
 	{
-		FRotator CurrentRotation = GameplayCameraComponent->GetInitialPose().Rotation;
+		FRotator CurrentRotation/* = GameplayCameraComponent->GetInitialPose().Rotation*/;
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
 		TargetRotation += ControlRotationOffset;
 		TargetRotation.Roll = 0.f;
@@ -224,7 +224,7 @@ void URsLockOnComponent::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPa
 	UGameplayCameraComponent* GameplayCameraComponent = OwnerController->FindComponentByClass<UGameplayCameraComponent>();
 	if (GameplayCameraComponent)
 	{
-		OwnerController->SetControlRotation(GameplayCameraComponent->GetInitialPose().Rotation);
+		//OwnerController->SetControlRotation(GameplayCameraComponent->GetInitialPose().Rotation);
 	}
 }
 

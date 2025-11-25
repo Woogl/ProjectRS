@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.MaterialInterface,/Script/Engine.Texture2D"))
 	TObjectPtr<UObject> Icon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")

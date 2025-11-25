@@ -16,10 +16,7 @@ class RS_API URsAbilityTask_WaitDamageEffectApplied : public UAbilityTask_WaitGa
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
 	FGameplayTagContainer DamageTags;
-
-	UPROPERTY()
 	bool bEnablePerfectDodgeCapsule = false;
 
 	virtual void Activate() override;

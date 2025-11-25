@@ -33,6 +33,8 @@ public class Rs : ModuleRules
 			"GameplayMessageRuntime",
 			"NavigationSystem",
 			"Niagara",
-		});
+            "DeveloperSettings",
+            "AIModule",
+        });
 	}
 }

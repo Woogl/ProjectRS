@@ -22,7 +22,7 @@ public:
 	int32 GetPriority() const { return Priority; }
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "RS | UI", meta=(DisplayThumbnail="true", AllowedClasses="MaterialInterface,Texture2D", AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "RS | UI", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.MaterialInterface,/Script/Engine.Texture2D", AllowPrivateAccess = true))
 	TObjectPtr<UObject> Icon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS | UI", meta = (AllowPrivateAccess = true))

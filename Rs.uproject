@@ -1,44 +1,19 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.5",
+	"EngineAssociation": "5.7",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "Rs",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"GameplayAbilities",
-				"ModelViewViewModel",
-				"CommonUI",
-				"CommonGame",
-				"AIModule",
-				"TargetingSystem",
-				"CoreUObject",
-				"GameplayCameras",
-				"UMG",
-				"DeveloperSettings"
-			]
-		},
-		{
-			"Name": "RsEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"UnrealEd",
-				"Rs"
-			]
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
-			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
-			]
+			"Enabled": true
 		},
 		{
 			"Name": "GameplayAbilities",
@@ -84,5 +59,9 @@
 			"Name": "GameSubtitles",
 			"Enabled": true
 		}
-	]
+	],
+	"TargetPlatforms": [],
+	"AdditionalRootDirectories": [],
+	"AdditionalPluginDirectories": [],
+	"EpicSampleNameHash": ""
 }
