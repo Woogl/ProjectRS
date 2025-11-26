@@ -102,4 +102,3 @@ void UAsyncAction_CommonUserInitialize::Activate()
 		SetReadyToDestroy();
 	}	
 }
-
