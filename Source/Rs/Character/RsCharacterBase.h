@@ -43,10 +43,6 @@ public:
 	//~ IGameplayTagAssetInterface
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& OutTagContainer) const override;
 
-	// This event is fired after Ability System Component initialization is finished.
-	UFUNCTION(BlueprintImplementableEvent)
-	void PostInitializeAbilitySystem();
-
 	// IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;

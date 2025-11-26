@@ -8,7 +8,6 @@
 #include "AIController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/HUD.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
@@ -18,14 +17,8 @@
 
 ARsPlayerController::ARsPlayerController()
 {
-	bShouldPerformFullTickWhenPaused = true;
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
-
-	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
-	GameplayCameraComponent->SetupAttachment(GetRootComponent());
-	GameplayCameraComponent->AutoActivateForPlayer = EAutoReceiveInput::Player0;
-	GameplayCameraComponent->bAutoActivate = true;
 }
 
 void ARsPlayerController::BeginPlay()
@@ -46,11 +39,6 @@ URsPartyComponent* ARsPlayerController::GetPartyComponent() const
 void ARsPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
-	if (GameplayCameraComponent)
-	{
-		GameplayCameraComponent->ActivateCameraForPlayerController(this);
-	}
 
 	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
 }
@@ -84,11 +72,6 @@ bool ARsPlayerController::ShouldShowLoadingScreen(FString& OutReason) const
 		return LoadingInterface->ShouldShowLoadingScreen(OutReason);
 	}
 	return false;
-}
-
-UGameplayCameraComponent* ARsPlayerController::GetGameplayCameraComponent() const
-{
-	return GameplayCameraComponent;
 }
 
 URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const

@@ -9,6 +9,7 @@
 #include "Component/RsHealthComponent.h"
 #include "Component/RsStaggerComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
@@ -17,6 +18,10 @@
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
+	GameplayCameraComponent->SetupAttachment(GetRootComponent());
+	GameplayCameraComponent->bAutoActivate = false;
+	
 	PerfectDodgeCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PerfectDodgeCapsuleComponent"));
 	PerfectDodgeCapsuleComponent->SetupAttachment(RootComponent);
 	PerfectDodgeCapsuleComponent->InitCapsuleSize(100.0f, 100.0f);
@@ -60,6 +65,12 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 
 	// Server side
 	InitAbilitySystem();
+
+	if (NewController->IsLocalPlayerController())
+	{
+		APlayerController* NewPlayerController = Cast<APlayerController>(NewController);
+		GameplayCameraComponent->ActivateCameraForPlayerController(NewPlayerController);
+	}
 }
 
 void ARsPlayerCharacter::UnPossessed()
@@ -73,6 +84,8 @@ void ARsPlayerCharacter::UnPossessed()
 	Super::UnPossessed();
 
 	GetMovementComponent()->StopMovementImmediately();
+	
+	GameplayCameraComponent->DeactivateCamera();
 }
 
 void ARsPlayerCharacter::OnRep_PlayerState()
@@ -97,7 +110,6 @@ void ARsPlayerCharacter::InitAbilitySystem()
 			}
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
-			PostInitializeAbilitySystem();
 		}
 	}
 
@@ -134,4 +146,19 @@ void ARsPlayerCharacter::HandleLook(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+UGameplayCameraComponent* ARsPlayerCharacter::GetGameplayCameraComponent() const
+{
+	return GameplayCameraComponent;
+}
+
+UCapsuleComponent* ARsPlayerCharacter::GetPerfectDodgeCapsuleComponent() const
+{
+	return PerfectDodgeCapsuleComponent;
+}
+
+UInputMappingContext* ARsPlayerCharacter::GetDefaultMappingContext() const
+{
+	return DefaultMappingContext;
 }

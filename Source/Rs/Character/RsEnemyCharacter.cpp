@@ -30,7 +30,6 @@ void ARsEnemyCharacter::BeginPlay()
 		}
 		HealthComponent->Initialize(AbilitySystemComponent);
 		StaggerComponent->Initialize(AbilitySystemComponent);
-		PostInitializeAbilitySystem();
 	}
 	
 	Super::BeginPlay();

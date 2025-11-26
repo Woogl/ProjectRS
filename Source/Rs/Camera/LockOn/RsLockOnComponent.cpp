@@ -9,8 +9,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
-#include "Rs/Player/RsPlayerController.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsLockOnComponent::URsLockOnComponent()
@@ -53,7 +53,7 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 
 	// Update control rotation
-	UGameplayCameraComponent* GameplayCameraComponent = Controller->FindComponentByClass<UGameplayCameraComponent>();
+	UGameplayCameraComponent* GameplayCameraComponent = ControlledPawn->FindComponentByClass<UGameplayCameraComponent>();
 	if (Controller->IsLocalPlayerController() && GameplayCameraComponent)
 	{
 		FRotator CurrentRotation/* = GameplayCameraComponent->GetInitialPose().Rotation*/;
@@ -101,12 +101,6 @@ bool URsLockOnComponent::LockOn(AActor* Target)
 	{
 		HealthComponent->OnDeathStarted.AddUniqueDynamic(this, &ThisClass::HandleTargetDeath);
 	}
-	
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
-	{
-		RsPlayerController->CameraRig = ERsCameraRig::LockOn;
-		RsPlayerController->SetIgnoreLookInput(true);
-	}
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
@@ -134,11 +128,11 @@ void URsLockOnComponent::LockOff()
 		SpawnedReticleWidget.Reset();
 	}
 	
-	if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetOwner()))
-	{
-		RsPlayerController->CameraRig = ERsCameraRig::FreeCam;
-		RsPlayerController->SetIgnoreLookInput(false);
-	}
+	// if (ARsPlayerCharacter* PlayerCharacter = GetPlayerCharacter())
+	// {
+	// 	PlayerCharacter->CameraRig = ERsCameraRig::ThirdPersonView;
+	// 	OwnerController->SetIgnoreLookInput(false);
+	// }
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
@@ -179,6 +173,15 @@ AActor* URsLockOnComponent::GetLockOnTarget() const
 {
 	return LockOnTarget.Get();
 }
+
+// ARsPlayerCharacter* URsLockOnComponent::GetPlayerCharacter() const
+// {
+// 	if (ACharacter* Character = OwnerController->GetCharacter())
+// 	{
+// 		return Cast<ARsPlayerCharacter>(Character);
+// 	}
+// 	return nullptr;
+// }
 
 UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 {

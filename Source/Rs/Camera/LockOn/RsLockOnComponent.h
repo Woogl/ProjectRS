@@ -8,6 +8,7 @@
 #include "RsLockOnComponent.generated.h"
 
 
+class ARsPlayerCharacter;
 class UWidgetComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -73,6 +74,8 @@ protected:
 	FName ReticleWidgetSocket = FName("pelvis");
 
 private:
+	//ARsPlayerCharacter* GetPlayerCharacter() const;
+	
 	UWidgetComponent* RespawnReticleWidget(AActor* Target);
 
 	UFUNCTION()

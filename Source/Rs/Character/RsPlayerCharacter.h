@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "RsCharacterBase.h"
+#include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerCharacter.generated.h"
 
+class UGameplayCameraComponent;
 class AAIController;
 class UInputAction;
 struct FInputActionValue;
@@ -17,18 +19,21 @@ UCLASS(Abstract, Blueprintable)
 class RS_API ARsPlayerCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCapsuleComponent> PerfectDodgeCapsuleComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
 	
 public:
 	ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer);
@@ -55,6 +60,10 @@ public:
 	UPROPERTY()
 	TObjectPtr<AAIController> FriendlyAIController = nullptr;
 	
-	FORCEINLINE UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const { return PerfectDodgeCapsuleComponent; }
-	FORCEINLINE UInputMappingContext* GetDefaultMappingContext() const { return DefaultMappingContext; }
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Camera")
+	ERsCameraRig CameraRig = ERsCameraRig::ThirdPersonView;
+
+	UGameplayCameraComponent* GetGameplayCameraComponent() const;
+	UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const;
+	UInputMappingContext* GetDefaultMappingContext() const;
 };

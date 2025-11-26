@@ -32,9 +32,6 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsLockOnComponent> LockOnComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> ControllerMappingContext;
 
@@ -58,12 +55,8 @@ public:
 
 	// ILoadingProcessInterface
 	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsCameraRig CameraRig = ERsCameraRig::FreeCam;
 	
 	URsPartyComponent* GetPartyComponent() const;
-	UGameplayCameraComponent* GetGameplayCameraComponent() const;
 	URsLockOnComponent* GetLockOnComponent() const;
 	
 protected:
