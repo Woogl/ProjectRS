@@ -50,6 +50,9 @@ protected:
 	virtual void OnRep_PlayerState() override;
 
 	void InitAbilitySystem();
+	
+	UFUNCTION(Client, Unreliable)
+	void SetupCamera_Client();
 
 private:
 	void HandleMove(const FInputActionValue& Value);

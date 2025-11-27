@@ -19,7 +19,9 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
-	GameplayCameraComponent->SetupAttachment(GetRootComponent());
+	GameplayCameraComponent->SetupAttachment(GetMesh());
+	GameplayCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	GameplayCameraComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	GameplayCameraComponent->bAutoActivate = false;
 	
 	PerfectDodgeCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PerfectDodgeCapsuleComponent"));
@@ -65,12 +67,8 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 
 	// Server side
 	InitAbilitySystem();
-
-	if (NewController->IsLocalPlayerController())
-	{
-		APlayerController* NewPlayerController = Cast<APlayerController>(NewController);
-		GameplayCameraComponent->ActivateCameraForPlayerController(NewPlayerController);
-	}
+	
+	SetupCamera_Client();
 }
 
 void ARsPlayerCharacter::UnPossessed()
@@ -117,6 +115,15 @@ void ARsPlayerCharacter::InitAbilitySystem()
 	if (AbilitySystemComponent && IsPlayerControlled() && IsLocallyControlled())
 	{
 		AbilitySystemComponent->SetupAbilityInputBindings();
+	}
+}
+
+void ARsPlayerCharacter::SetupCamera_Client_Implementation()
+{
+	if (Controller)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(Controller);
+		GameplayCameraComponent->ActivateCameraForPlayerController(PlayerController);
 	}
 }
 
