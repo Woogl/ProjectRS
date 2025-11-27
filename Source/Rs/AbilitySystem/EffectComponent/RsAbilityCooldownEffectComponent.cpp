@@ -1,14 +1,14 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsCooldownEffectComponent.h"
+#include "RsAbilityCooldownEffectComponent.h"
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
-void URsCooldownEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
+void URsAbilityCooldownEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
 	Super::OnGameplayEffectApplied(ActiveGEContainer, GESpec, PredictionKey);
 

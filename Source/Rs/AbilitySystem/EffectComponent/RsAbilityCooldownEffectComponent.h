@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
 #include "GameplayTagContainer.h"
-#include "RsCooldownEffectComponent.generated.h"
+#include "RsAbilityCooldownEffectComponent.generated.h"
 
 UENUM()
 enum class ECooldownModifingType
@@ -18,7 +18,7 @@ enum class ECooldownModifingType
  * 
  */
 UCLASS()
-class RS_API URsCooldownEffectComponent : public UGameplayEffectComponent
+class RS_API URsAbilityCooldownEffectComponent : public UGameplayEffectComponent
 {
 	GENERATED_BODY()
 

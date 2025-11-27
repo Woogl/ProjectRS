@@ -20,7 +20,7 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 {
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetMesh());
-	GameplayCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	GameplayCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 	GameplayCameraComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	GameplayCameraComponent->bAutoActivate = false;
 	

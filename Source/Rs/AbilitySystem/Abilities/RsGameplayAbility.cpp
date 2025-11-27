@@ -94,9 +94,12 @@ void URsGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 	{
 		return;
 	}
-	if (CooldownGameplayEffectClass == URsAbilitySystemSettings::Get().DefaultCooldownEffect && CooldownDuration == 0.f)
+	if (CooldownGameplayEffectClass == URsAbilitySystemSettings::Get().DefaultCooldownEffect)
 	{
-		return;
+		if (CooldownDuration == 0.f || !CooldownTag.IsValid())
+		{
+			return;
+		}
 	}
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 	SpecHandle.Data.Get()->DynamicGrantedTags.AddTag(CooldownTag);
