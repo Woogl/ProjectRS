@@ -9,7 +9,6 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -56,7 +55,7 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	UGameplayCameraComponent* GameplayCameraComponent = ControlledPawn->FindComponentByClass<UGameplayCameraComponent>();
 	if (Controller->IsLocalPlayerController() && GameplayCameraComponent)
 	{
-		FRotator CurrentRotation/* = GameplayCameraComponent->GetInitialPose().Rotation*/;
+		FRotator CurrentRotation = GameplayCameraComponent->GetEvaluatedCameraRotation();
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
 		TargetRotation += ControlRotationOffset;
 		TargetRotation.Roll = 0.f;
