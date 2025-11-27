@@ -49,10 +49,10 @@ public:
 	TObjectPtr<UObject> Icon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
-	FText DisplayName;
+	FText AbilityName = FText::GetEmpty();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
-	FText Description;
+	FText Description = FText::GetEmpty();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
