@@ -243,6 +243,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
 		{
 			MontageTask->OnCompleted.AddDynamic(this, &ThisClass::HandleMontageCompleted);
+			MontageTask->OnBlendOut.AddDynamic(this, &ThisClass::HandleMontageCompleted);
 			MontageTask->OnInterrupted.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->OnCancelled.AddDynamic(this, &ThisClass::HandleMontageCancelled);
 			MontageTask->ReadyForActivation();
