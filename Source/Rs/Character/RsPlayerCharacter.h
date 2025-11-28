@@ -53,6 +53,8 @@ protected:
 	
 	UFUNCTION(Client, Unreliable)
 	void SetupCamera_Client();
+	
+	ERsCameraRig CameraRig = ERsCameraRig::ThirdPersonView;
 
 private:
 	void HandleMove(const FInputActionValue& Value);
@@ -63,8 +65,11 @@ public:
 	UPROPERTY()
 	TObjectPtr<AAIController> FriendlyAIController = nullptr;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Camera")
-	ERsCameraRig CameraRig = ERsCameraRig::ThirdPersonView;
+	UFUNCTION(BlueprintPure)
+	ERsCameraRig GetCameraRig() const;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetCameraRig(ERsCameraRig InCameraRig);
 
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
 	UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const;

@@ -6,17 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-
-// void URsCameraLibrary::SetCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
-// {
-// 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
-// 	{
-// 		if (ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(PlayerController))
-// 		{
-// 			RsPlayerController->CameraRig = CameraRig;
-// 		}
-// 	}
-// }
+#include "Rs/Character/RsPlayerCharacter.h"
 
 UGameplayCameraComponent* URsCameraLibrary::GetPlayerGameplayCameraComponent(const UObject* WorldContextObject)
 {
@@ -25,4 +15,15 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerGameplayCameraComponent(con
 		return PlayerCharacter->FindComponentByClass<UGameplayCameraComponent>();
 	}
 	return nullptr;
+}
+
+void URsCameraLibrary::SetPlayerCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
+{
+	if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(WorldContextObject, 0))
+	{
+		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(PlayerCharacter))
+		{
+			RsPlayerCharacter->SetCameraRig(CameraRig);
+		}
+	}
 }

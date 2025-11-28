@@ -14,6 +14,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
+#include "Rs/Player/RsPlayerController.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -152,6 +153,31 @@ void ARsPlayerCharacter::HandleLook(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+ERsCameraRig ARsPlayerCharacter::GetCameraRig() const
+{
+	return CameraRig;
+}
+
+void ARsPlayerCharacter::SetCameraRig(ERsCameraRig InCameraRig)
+{
+	CameraRig = InCameraRig;
+	
+	ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetController());
+	if (!RsPlayerController)
+	{
+		return;
+	}
+	
+	if (CameraRig == ERsCameraRig::ThirdPersonView)
+	{
+		RsPlayerController->bCanControlRotation = true;
+	}
+	else if (CameraRig == ERsCameraRig::ActionView)
+	{
+		RsPlayerController->bCanControlRotation = false;
 	}
 }
 

@@ -8,6 +8,8 @@ UENUM(BlueprintType)
 enum class ERsCameraRig : uint8
 {
 	ThirdPersonView,
-	//FirstPersonView,
+	ActionView,
 	//ShoulderView,
+	//FirstPersonView,
+	//TopView,
 };

@@ -59,6 +59,8 @@ public:
 	URsPartyComponent* GetPartyComponent() const;
 	URsLockOnComponent* GetLockOnComponent() const;
 	
+	bool bCanControlRotation = true;
+	
 protected:
 	virtual void SetupInputComponent() override;
 	
