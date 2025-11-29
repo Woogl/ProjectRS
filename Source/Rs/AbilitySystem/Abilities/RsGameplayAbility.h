@@ -44,10 +44,7 @@ public:
 	// Which Input Action to bind the activation event to.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
-	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
-
+	
 	// TODO: Editor detail customization
 	// Only RsEffectTableRowBase can be selected.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect")
@@ -55,6 +52,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, GetValueOptions="GetEffectTableRowNames"))
 	TMap<FGameplayTag, FName> EffectMapDataTable;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
+	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;

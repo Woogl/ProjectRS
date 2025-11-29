@@ -45,7 +45,9 @@ public:	/** Gameplay Ability */
 	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
 public: /** Gameplay Effect */
-
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (DataTablePin="DataTable"))
+	static FActiveGameplayEffectHandle ApplyEffectByTable(UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level);
+	
 public: /** Gameplay Attribute */
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
 	static FGameplayAttribute GetAttributeByTag(FGameplayTag StatTag);

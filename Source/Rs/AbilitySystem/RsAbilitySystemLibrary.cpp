@@ -6,8 +6,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "RsAbilitySystemComponent.h"
+#include "RsAbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
 #include "Abilities/RsGameplayAbility.h"
+#include "Effect/RsEffectTable.h"
 #include "Rs/RsLogChannels.h"
 
 URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
@@ -92,6 +94,20 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	{
 		FoundRsAbility->SetCooldownRemaining(NewRemaining);
 	}
+}
+
+FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level)
+{
+	if (FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRow>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, Source->MakeEffectContext());
+		FDataTableRowHandle TableRowHandle;
+		TableRowHandle.DataTable = DataTable;
+		TableRowHandle.RowName = RowName;
+		URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*Spec.Data, &TableRowHandle);
+		return Source->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target);
+	}
+	return FActiveGameplayEffectHandle();
 }
 
 FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByTag(FGameplayTag StatTag)
