@@ -79,6 +79,11 @@ URsLockOnComponent* ARsPlayerController::GetLockOnComponent() const
 	return LockOnComponent;
 }
 
+void ARsPlayerController::LockControlRotation(bool bLock)
+{
+	bCanControlRotation = !bLock;
+}
+
 void ARsPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

@@ -164,21 +164,6 @@ ERsCameraRig ARsPlayerCharacter::GetCameraRig() const
 void ARsPlayerCharacter::SetCameraRig(ERsCameraRig InCameraRig)
 {
 	CameraRig = InCameraRig;
-	
-	ARsPlayerController* RsPlayerController = Cast<ARsPlayerController>(GetController());
-	if (!RsPlayerController)
-	{
-		return;
-	}
-	
-	if (CameraRig == ERsCameraRig::ThirdPersonView)
-	{
-		RsPlayerController->bCanControlRotation = true;
-	}
-	else if (CameraRig == ERsCameraRig::ActionView)
-	{
-		RsPlayerController->bCanControlRotation = false;
-	}
 }
 
 UGameplayCameraComponent* ARsPlayerCharacter::GetGameplayCameraComponent() const

@@ -59,7 +59,8 @@ public:
 	URsPartyComponent* GetPartyComponent() const;
 	URsLockOnComponent* GetLockOnComponent() const;
 	
-	bool bCanControlRotation = true;
+	UFUNCTION(BlueprintCallable, Category = "RS|Camera")
+	void LockControlRotation(bool bLock);
 	
 protected:
 	virtual void SetupInputComponent() override;
@@ -67,5 +68,7 @@ protected:
 	void HandleShowCursor(const FInputActionValue& Value);
 	void HandleResetCursor(const FInputActionValue& Value);
 	void HandleOpenMenu(const FInputActionValue& Value, FGameplayTag WidgetTag);
+	
+	bool bCanControlRotation = true;
 };
 
