@@ -93,7 +93,7 @@ struct FRsEffectTableRow : public FRsEffectTableRowBase
 
 	/** UI Data (Optional) */
 	UPROPERTY(EditDefaultsOnly)
-	FText Title = FText::GetEmpty();
+	FText EffectName = FText::GetEmpty();
 	
 	UPROPERTY(EditDefaultsOnly)
 	FText Description = FText::GetEmpty();
