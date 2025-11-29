@@ -35,9 +35,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
-
-	UPROPERTY(EditDefaultsOnly, config, Category = "Effect")
-	TArray<TSoftObjectPtr<UDataTable>> SharedEffectTables;
 	
 	// Data used to initialize the environmental effects source.
 	UPROPERTY(EditDefaultsOnly, config, Category = "Environments")

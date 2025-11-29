@@ -9,6 +9,7 @@
 #include "Misc/DataValidation.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 #define LOCTEXT_NAMESPACE "RsAdditionalSourceEffectComponent"
@@ -87,8 +88,14 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	{
 		return;
 	}
-	FGameplayEffectSpecHandle GESpecHandle = TargetASC->MakeOutgoingSpecFromSharedTable(AdditionalEffectName, GELevel);
-	TargetASC->BP_ApplyGameplayEffectSpecToTarget(GESpecHandle, SourceASC);
+	if (const UGameplayAbility* Ability = GESpec.GetContext().GetAbility())
+	{
+		if (const URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(Ability))
+		{
+			FGameplayEffectSpecHandle AdditionalEffectSpec = RsAbility->MakeOutgoingTableEffect(AdditionalEffectName, TargetASC, TargetASC->MakeEffectContext());
+			TargetASC->BP_ApplyGameplayEffectSpecToTarget(AdditionalEffectSpec, SourceASC);
+		}
+	}
 }
 
 void URsAdditionalSourceEffectComponent::OnActiveGameplayEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo, FActiveGameplayEffectsContainer* ActiveGEContainer) const

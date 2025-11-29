@@ -12,4 +12,5 @@ enum class ERsCameraRig : uint8
 	//ShoulderView,
 	//FirstPersonView,
 	//TopView,
+	//SideScrollView,
 };

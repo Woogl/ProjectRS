@@ -11,6 +11,7 @@
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
@@ -78,20 +79,25 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		LocalTargetHitStopTime = DamageTableRow->TargetHitStopTime;
 		LocalManaGain = DamageTableRow->ManaGain;
 		LocalUltimateGain = DamageTableRow->UltimateGain;
-		if (URsAbilitySystemComponent* RsTargetASC = Cast<URsAbilitySystemComponent>(TargetASC))
+
+		const UGameplayAbility* Ability = GESpec.GetContext().GetAbility();
+		if (const URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(Ability))
 		{
-			FGameplayEffectSpecHandle SpecHandle = RsTargetASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalSourceEffect, GESpec.GetLevel());
-			if (SpecHandle.IsValid())
+			if (!DamageTableRow->AdditionalSourceEffect.IsNone())
 			{
-				AdditionalSourceEffectSpecs.Add(SpecHandle);
+				FGameplayEffectSpecHandle SpecHandle = RsAbility->MakeOutgoingTableEffect(DamageTableRow->AdditionalSourceEffect, TargetASC, TargetASC->MakeEffectContext());
+				if (SpecHandle.IsValid())
+				{
+					AdditionalSourceEffectSpecs.Add(SpecHandle);
+				}
 			}
-		}
-		if (URsAbilitySystemComponent* RsSourceASC = Cast<URsAbilitySystemComponent>(SourceASC))
-		{
-			FGameplayEffectSpecHandle SpecHandle = RsSourceASC->MakeOutgoingSpecFromSharedTable(DamageTableRow->AdditionalTargetEffect, GESpec.GetLevel());
-			if (SpecHandle.IsValid())
+			if (!DamageTableRow->AdditionalTargetEffect.IsNone())
 			{
-				AdditionalTargetEffectSpecs.Add(SpecHandle);
+				FGameplayEffectSpecHandle SpecHandle = RsAbility->MakeOutgoingTableEffect(DamageTableRow->AdditionalTargetEffect, SourceASC, GESpec.GetContext());
+				if (SpecHandle.IsValid())
+				{
+					AdditionalSourceEffectSpecs.Add(SpecHandle);
+				}
 			}
 		}
 	}

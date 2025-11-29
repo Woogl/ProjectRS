@@ -4,8 +4,8 @@
 #include "RsAdditionalTargetEffectComponent.h"
 
 #include "AbilitySystemComponent.h"
-#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 struct FRsEffectTableRowBase;
@@ -14,11 +14,8 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 {
 	Super::OnGameplayEffectApplied(ActiveGEContainer, GESpec, PredictionKey);
 
+	UAbilitySystemComponent* SourceASC = GESpec.GetContext().GetInstigatorAbilitySystemComponent();
 	UAbilitySystemComponent* TargetASC = ActiveGEContainer.Owner;
-	if (!TargetASC)
-	{
-		return;
-	}
 	
 	// Check data table
 	const FRsEffectTableRow* CurrentEffectRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(GESpec);
@@ -31,9 +28,10 @@ void URsAdditionalTargetEffectComponent::OnGameplayEffectApplied(FActiveGameplay
 	{
 		return;
 	}
-	if (URsAbilitySystemComponent* RsSourceASC = Cast<URsAbilitySystemComponent>(ActiveGEContainer.Owner))
+	if (const UGameplayAbility* Ability = GESpec.GetContext().GetAbility())
 	{
-		FGameplayEffectSpecHandle GESpecHandle = RsSourceASC->MakeOutgoingSpecFromSharedTable(AdditionalEffectName, GESpec.GetLevel());
-		RsSourceASC->BP_ApplyGameplayEffectSpecToTarget(GESpecHandle, TargetASC);
+		const URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(Ability);
+		FGameplayEffectSpecHandle AdditionalEffectSpec = RsAbility->MakeOutgoingTableEffect(AdditionalEffectName, SourceASC, GESpec.GetContext());
+		SourceASC->BP_ApplyGameplayEffectSpecToTarget(AdditionalEffectSpec, TargetASC);
 	}
 }

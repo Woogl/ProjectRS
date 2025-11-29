@@ -28,8 +28,6 @@ public:
 
 	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* OwningActor);
 
-	FGameplayEffectSpecHandle MakeOutgoingSpecFromSharedTable(FName RowName, float EffectLevel);
-
 private:
 	// Handles to the granted abilities.
 	UPROPERTY()

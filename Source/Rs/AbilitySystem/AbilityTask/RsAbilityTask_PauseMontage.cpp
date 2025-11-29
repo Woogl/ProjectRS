@@ -4,7 +4,6 @@
 #include "RsAbilityTask_PauseMontage.h"
 
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 URsAbilityTask_PauseMontage::URsAbilityTask_PauseMontage()
 {
@@ -46,10 +45,6 @@ void URsAbilityTask_PauseMontage::Activate()
 					AnimInstance->Montage_Pause();
 				}
 				
-				if (UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent()))
-				{
-					CharMoveComp->DisableMovement();
-				}
 				AvatarActor->GetWorldTimerManager().SetTimer(Timer, this, &ThisClass::HandleEndTimer, Duration, false);
 			}
 		}
@@ -65,10 +60,6 @@ void URsAbilityTask_PauseMontage::OnDestroy(bool AbilityIsEnding)
 			if (UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance())
 			{
 				AnimInstance->Montage_Resume(nullptr);
-				if (UCharacterMovementComponent* CharMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent()))
-				{
-					CharMoveComp->SetMovementMode(MOVE_Falling);
-				}
 			}
 		}
 	}
