@@ -19,7 +19,7 @@ namespace RsTargetingGlobals
 
 bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
-	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, Params.Collision);
+	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, Params.Collision, false);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
 	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Params.Sorter);
 	ResultActors = SortedActors;
@@ -76,7 +76,7 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	return bSuccess;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision)
+TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug)
 {
 	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
@@ -113,6 +113,11 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, F
 		{
 			ResultActors.AddUnique(Actor);
 		}
+	}
+	
+	if (bDrawDebug)
+	{
+		DrawDebugShape(World, Transform, Shape, Collision, FColor::Yellow);
 	}
 	
 	return ResultActors;
