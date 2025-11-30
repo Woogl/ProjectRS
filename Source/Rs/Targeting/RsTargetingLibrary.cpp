@@ -117,7 +117,8 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, F
 	
 	if (bDrawDebug)
 	{
-		DrawDebugShape(World, Transform, Shape, Collision, FColor::Yellow);
+		FColor Color = ResultActors.IsEmpty() ? FColor::Red : FColor::Green;
+		DrawDebugShape(World, Transform, Shape, Collision, Color);
 	}
 	
 	return ResultActors;
