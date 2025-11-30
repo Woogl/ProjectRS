@@ -24,8 +24,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Movement)
 	FGameplayAttributeData Movement;
 	ATTRIBUTE_ACCESSORS(URsSpeedSet, Movement)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ActionSpeed)
+	FGameplayAttributeData ActionSpeed;
+	ATTRIBUTE_ACCESSORS(URsSpeedSet, ActionSpeed)
 
 protected:
 	UFUNCTION()
 	virtual void OnRep_Movement(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_ActionSpeed(const FGameplayAttributeData& OldValue);
 };

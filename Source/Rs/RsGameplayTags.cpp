@@ -30,7 +30,8 @@ namespace RsGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_CRTdmg, "Stat.CRTdmg", "Critical Damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_INV, "Stat.INV", "Invincible");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_SUA, "Stat.SUA", "Super Armor");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_MOV, "Stat.MOV", "Movement");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_MOV, "Stat.MOV", "Movement Speed");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_ATS, "Stat.ATS", "Action Speed");
 	// Meta stat
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEHP, "Meta.DamageHP", "Base Health Damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEGP, "Meta.DamageGP", "Base Stagger Damage");

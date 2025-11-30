@@ -84,6 +84,10 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return 1.f;
 	}
+	if (Attribute == URsSpeedSet::GetActionSpeedAttribute())
+	{
+		return 1.f;
+	}
 	if (Attribute == URsHealthSet::GetBaseDamageAttribute())
 	{
 		return 0.f;
