@@ -98,7 +98,7 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 
 FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level)
 {
-	if (FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRow>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
+	if (FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
 	{
 		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, Source->MakeEffectContext());
 		FDataTableRowHandle TableRowHandle;
