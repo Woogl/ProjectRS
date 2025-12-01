@@ -19,6 +19,8 @@
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	bReplicates = true;
+	
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetMesh());
 	GameplayCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
@@ -65,9 +67,6 @@ void ARsPlayerCharacter::BeginPlay()
 void ARsPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	// Server side
-	InitAbilitySystem();
 	
 	SetupCamera_Client();
 }
@@ -85,14 +84,6 @@ void ARsPlayerCharacter::UnPossessed()
 	GetMovementComponent()->StopMovementImmediately();
 	
 	GameplayCameraComponent->DeactivateCamera();
-}
-
-void ARsPlayerCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	// Client side
-	InitAbilitySystem();
 }
 
 void ARsPlayerCharacter::InitAbilitySystem()

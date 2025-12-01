@@ -46,10 +46,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
-	// Called on the client when the Character is assigned its Player State.
-	virtual void OnRep_PlayerState() override;
-
-	void InitAbilitySystem();
+	virtual void InitAbilitySystem() override;
 	
 	UFUNCTION(Client, Unreliable)
 	void SetupCamera_Client();

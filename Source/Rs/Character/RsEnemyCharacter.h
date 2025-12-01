@@ -6,6 +6,12 @@
 #include "RsCharacterBase.h"
 #include "RsEnemyCharacter.generated.h"
 
+class URsSpeedSet;
+class URsDefenseSet;
+class URsAttackSet;
+class URsEnergySet;
+class URsStaggerSet;
+class URsHealthSet;
 /**
  * Base class to use for Server controlled Characters.
  * This class contains its own Ability System Component.
@@ -20,4 +26,24 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	virtual void InitAbilitySystem() override;
+	
+	UPROPERTY()
+	TObjectPtr<const URsHealthSet> HealthSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsStaggerSet> StaggerSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsEnergySet> EnergySet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsAttackSet> AttackSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsDefenseSet> DefenseSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsSpeedSet> SpeedSet;
 };

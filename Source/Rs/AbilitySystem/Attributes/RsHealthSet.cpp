@@ -20,15 +20,10 @@ URsHealthSet::URsHealthSet()
 void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
 	
-	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, CurrentHealth, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, MaxHealth, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsHealthSet, Barrier, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsHealthSet, CurrentHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsHealthSet, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsHealthSet, Barrier, COND_None, REPNOTIFY_Always);
 }
 
 void URsHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

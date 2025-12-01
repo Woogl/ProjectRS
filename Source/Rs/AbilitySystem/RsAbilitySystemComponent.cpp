@@ -7,7 +7,6 @@
 #include "RsAbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
 #include "Attributes/RsAttributeTableRow.h"
-#include "Effect/RsEffectTable.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
@@ -21,6 +20,11 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 
 void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor)
 {
+	if (bInitialized)
+	{
+		return;
+	}
+	
 	// Set the Owning Actor and Avatar Actor. (Used throughout the Gameplay Ability System to get references etc.)
 	InitAbilityActorInfo(InOwnerActor, InAvatarActor);
 
@@ -85,6 +89,8 @@ void URsAbilitySystemComponent::InitializeAbilitySystem(URsAbilitySet* AbilitySe
 			GrantedEffectHandles.Add(GrantedEffectHandle);
 		}
 	}
+	
+	bInitialized = true;
 }
 
 void URsAbilitySystemComponent::SetupAbilityInputBindings()

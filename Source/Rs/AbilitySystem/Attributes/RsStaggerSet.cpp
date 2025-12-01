@@ -76,16 +76,14 @@ void URsStaggerSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDa
 void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
-
+	
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, CurrentStagger, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, MaxStagger, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, CurrentStagger, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, MaxStagger, COND_None, REPNOTIFY_Always);
 
 	// Owner Only
+	FDoRepLifetimeParams Params{};
+	Params.bIsPushBased = true;
 	Params.Condition = COND_OwnerOnly;
 	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, StaggerDecay, Params);
 }

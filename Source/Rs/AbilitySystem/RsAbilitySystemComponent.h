@@ -36,4 +36,6 @@ private:
 	// Handles to the granted gameplay effects.
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
+	
+	bool bInitialized = false;
 };
