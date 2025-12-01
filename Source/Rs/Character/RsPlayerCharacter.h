@@ -45,6 +45,8 @@ protected:
 	// Called on the server to acknowledge possession of this Character.
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
+	
+	virtual void OnRep_PlayerState() override;
 
 	virtual void InitAbilitySystem() override;
 	

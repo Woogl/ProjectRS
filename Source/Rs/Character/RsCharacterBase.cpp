@@ -38,34 +38,6 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 }
 
-void ARsCharacterBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	InitAbilitySystem();
-}
-
-void ARsCharacterBase::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	
-	InitAbilitySystem();
-}
-
-void ARsCharacterBase::OnRep_Controller()
-{
-	Super::OnRep_Controller();
-	
-	InitAbilitySystem();
-}
-
-void ARsCharacterBase::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	
-	InitAbilitySystem();
-}
-
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

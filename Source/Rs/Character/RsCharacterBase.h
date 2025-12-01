@@ -35,11 +35,6 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
-	virtual void BeginPlay() override;
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_Controller() override;
-	virtual void OnRep_PlayerState() override;
-	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 

@@ -15,6 +15,7 @@
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/Player/RsPlayerController.h"
+#include "Rs/UI/Component/RsNameplateComponent.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -68,6 +69,9 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	
+	// Server-side
+	InitAbilitySystem();
+	
 	SetupCamera_Client();
 }
 
@@ -86,6 +90,14 @@ void ARsPlayerCharacter::UnPossessed()
 	GameplayCameraComponent->DeactivateCamera();
 }
 
+void ARsPlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	// Client-side
+	InitAbilitySystem();
+}
+
 void ARsPlayerCharacter::InitAbilitySystem()
 {
 	// Initialize the ASC once.
@@ -94,12 +106,11 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
 		if (AbilitySystemComponent)
 		{
-			for (URsAbilitySet* AbilitySet : AbilitySets)
-			{
-				AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetPlayerState(), this);
-			}
+			AbilitySystemComponent->InitializeAbilitySystem(AbilitySets, GetPlayerState(), this);
+			
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
+			NameplateComponent->Initialize(this);
 		}
 	}
 

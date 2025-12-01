@@ -12,6 +12,7 @@
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
+#include "Rs/UI/Component/RsNameplateComponent.h"
 
 
 ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer)
@@ -21,6 +22,7 @@ ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer
 	
 	// Set the pointer from Character Base to the Ability System Component sub-object.
 	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
 	// Minimal Mode means that no GameplayEffects will replicate. They will only live on the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
@@ -41,8 +43,11 @@ ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer
 void ARsEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	InitAbilitySystem();
+
+	if (HasAuthority())
+	{
+		InitAbilitySystem();
+	}
 }
 
 void ARsEnemyCharacter::InitAbilitySystem()
@@ -52,11 +57,10 @@ void ARsEnemyCharacter::InitAbilitySystem()
 	// The Ability System Component is created in the class constructor, so it should always be valid at this point.
 	if (AbilitySystemComponent)
 	{
-		for (URsAbilitySet* AbilitySet : AbilitySets)
-		{
-			AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, this, this);
-		}
+		AbilitySystemComponent->InitializeAbilitySystem(AbilitySets, this, this);
+		
 		HealthComponent->Initialize(AbilitySystemComponent);
 		StaggerComponent->Initialize(AbilitySystemComponent);
+		NameplateComponent->Initialize(this);
 	}
 }

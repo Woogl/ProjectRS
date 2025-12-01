@@ -18,29 +18,7 @@ URsNameplateComponent::URsNameplateComponent()
 void URsNameplateComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (GetWidget())
-	{
-		if (ARsCharacterBase* OwnerCharacter = Cast<ARsCharacterBase>(GetOwner()))
-		{
-			if (URsCharacterViewModel* CharacterViewModel = URsCharacterViewModel::CreateRsCharacterViewModel(OwnerCharacter))
-			{
-				if (UMVVMView* MVVM = Cast<UMVVMView>(GetWidget()->GetExtension(UMVVMView::StaticClass())))
-				{
-					MVVM->SetViewModelByClass(CharacterViewModel);
-				}
-			}
-
-			if (OwnerCharacter->IsA(ARsPlayerCharacter::StaticClass()))
-			{
-				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-				{
-					HandlePossessChanged(nullptr, nullptr);
-					PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePossessChanged);
-				}
-			}
-		}
-	}
+	
 }
 
 void URsNameplateComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -54,6 +32,34 @@ void URsNameplateComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 	
 	Super::EndPlay(EndPlayReason);
+}
+
+void URsNameplateComponent::Initialize(ARsCharacterBase* InOwnerCharacter)
+{
+	if (!GetWidget())
+	{
+		return;
+	}
+	
+	if (ARsCharacterBase* OwnerCharacter = Cast<ARsCharacterBase>(InOwnerCharacter))
+	{
+		if (URsCharacterViewModel* CharacterViewModel = URsCharacterViewModel::CreateRsCharacterViewModel(OwnerCharacter))
+		{
+			if (UMVVMView* MVVM = Cast<UMVVMView>(GetWidget()->GetExtension(UMVVMView::StaticClass())))
+			{
+				MVVM->SetViewModelByClass(CharacterViewModel);
+			}
+		}
+
+		if (OwnerCharacter->IsA(ARsPlayerCharacter::StaticClass()))
+		{
+			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+			{
+				HandlePossessChanged(nullptr, nullptr);
+				PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessChanged);
+			}
+		}
+	}
 }
 
 void URsNameplateComponent::HandlePossessChanged(APawn* OldPawn, APawn* NewPawn)

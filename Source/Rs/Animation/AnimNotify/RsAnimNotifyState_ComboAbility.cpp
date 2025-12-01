@@ -57,7 +57,7 @@ void URsAnimNotifyState_ComboAbility::HandleGameplayEvent(FGameplayEventData Pay
 
 void URsAnimNotifyState_ComboAbility::HandleInputAction(const FInputActionValue& Value)
 {
-	if (OwnerASC.IsValid() && AbilityTag.IsValid())
+	if (OwnerASC.IsValid() && AbilityTag.IsValid() && CurrentAbility.IsValid())
 	{
 		CurrentAbility.Get()->K2_CancelAbility();
 		OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());

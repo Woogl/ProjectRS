@@ -27,12 +27,9 @@ void ARsBattleActor::BeginPlay()
 {
 	if (AbilitySystemComponent)
 	{
-		for (URsAbilitySet* AbilitySet : AbilitySets)
-		{
-			// Owner Actor = Summoner of this actor
-			// Avatar Actor = This actor
-			AbilitySystemComponent->InitializeAbilitySystem(AbilitySet, GetInstigator(), this);
-		}
+		// Owner Actor = Summoner of this actor
+		// Avatar Actor = This actor
+		AbilitySystemComponent->InitializeAbilitySystem(AbilitySets, GetInstigator(), this);
 	}
 	
 	Super::BeginPlay();

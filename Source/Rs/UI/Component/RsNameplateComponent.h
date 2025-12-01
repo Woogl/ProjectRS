@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "RsNameplateComponent.generated.h"
 
+class ARsCharacterBase;
 /**
  * 
  */
@@ -19,6 +20,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	void Initialize(ARsCharacterBase* InOwnerCharacter);
 
 protected:
 	UFUNCTION()

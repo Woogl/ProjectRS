@@ -21,7 +21,12 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	URsAbilitySystemComponent();
 
-	void InitializeAbilitySystem(URsAbilitySet* AbilitySet, AActor* InOwnerActor, AActor* InAvatarActor);
+	void InitializeAbilitySystem(TArray<URsAbilitySet*> AbilitySets, AActor* InOwnerActor, AActor* InAvatarActor);
+	
+	void GrantAttribute(FGameplayAttribute Attribute, float BaseValue);
+	void GrantAbility(TSubclassOf<UGameplayAbility> Ability);
+	void GrantEffect(TSubclassOf<UGameplayEffect> Effect);
+	void GrantTags(FGameplayTagContainer Tags);
 	
 	void SetupAbilityInputBindings();
 	void TearDownAbilityInputBindings();
@@ -36,6 +41,4 @@ private:
 	// Handles to the granted gameplay effects.
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
-	
-	bool bInitialized = false;
 };
