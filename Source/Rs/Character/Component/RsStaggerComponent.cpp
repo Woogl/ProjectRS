@@ -34,7 +34,7 @@ void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompo
 	StaggerSet = AbilitySystemComponent->GetSet<URsStaggerSet>();
 	if (StaggerSet)
 	{
-		OnStaggerChange.Broadcast(StaggerSet->GetCurrentStagger(), StaggerSet->GetCurrentStagger(), nullptr);
+		OnStaggerChange.Broadcast(StaggerSet->GetCurrentStagger(), StaggerSet->GetCurrentStagger());
 	}
 }
 
@@ -58,16 +58,7 @@ float URsStaggerComponent::GetMaxStagger()
 
 void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& ChangeData)
 {
-	AActor* Instigator = nullptr;
-	if (const FGameplayEffectModCallbackData* EffectModData = ChangeData.GEModData)
-	{
-		const FGameplayEffectContextHandle& EffectContext = EffectModData->EffectSpec.GetEffectContext();
-		if (EffectContext.IsValid())
-		{
-			Instigator = EffectContext.GetOriginalInstigator();
-		}
-	}
-	OnStaggerChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
+	OnStaggerChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
 
 	bool GroggyCondition = ChangeData.NewValue >= GetMaxStagger();
 	if (GroggyCondition != bIsGroggy)

@@ -35,6 +35,8 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
+	virtual void NotifyRestarted() override;
+	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -51,7 +53,7 @@ public:
 	virtual bool IsLockableTarget_Implementation() const override;
 
 protected:
-	virtual void InitAbilitySystem() {};
+	virtual void InitializeAbilitySystem() {};
 	
 	// Creates a pointer to the Ability System Component associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.

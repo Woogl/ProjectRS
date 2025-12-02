@@ -40,13 +40,19 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	GetAbilitySystemComponent()->AddLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+	{
+		ASC->AddLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+	}
 }
 
 void ARsPlayerController::OnUnPossess()
 {
 	APawn* ReleasedPawn = GetPawn();
-	GetAbilitySystemComponent()->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+	{
+		ASC->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+	}
 	
 	Super::OnUnPossess();
 

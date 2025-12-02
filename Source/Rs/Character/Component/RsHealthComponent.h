@@ -52,12 +52,18 @@ protected:
 	void HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 	void HandleBarrierRemove(const FGameplayEffectRemovalInfo& RemovalInfo, float Magnitude);
 	void HandleBarrierBroke(const FActiveGameplayEffectHandle& BrokenBarrierHandle);
-
+	
 	UPROPERTY(ReplicatedUsing = OnRep_bIsDead)
 	bool bIsDead = false;
 
+	UPROPERTY(ReplicatedUsing = OnRep_bIsInitialized)
+	bool bIsInitialized = false;
+
 	UFUNCTION()
 	void OnRep_bIsDead(bool OldValue);
+	
+	UFUNCTION()
+	void OnRep_bIsInitialized(bool OldValue);
 	
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> ActiveBarrierHandles;

@@ -48,7 +48,7 @@ protected:
 	
 	virtual void OnRep_PlayerState() override;
 
-	virtual void InitAbilitySystem() override;
+	virtual void InitializeAbilitySystem() override;
 	
 	UFUNCTION(Client, Unreliable)
 	void SetupCamera_Client();

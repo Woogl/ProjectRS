@@ -111,11 +111,6 @@ void ARsHUD::OpenMenuWidget(FGameplayTag WidgetTag, bool bSuspendInputUntilCompl
 		case EAsyncWidgetLayerState::Initialize:
 			break;
 		case EAsyncWidgetLayerState::AfterPush:
-			if (GameHUDInstance)
-			{
-				GameHUDInstance->SetVisibility(ESlateVisibility::Hidden);
-			}
-			Widget->OnDeactivated().AddUObject(this, &ThisClass::HandleDeactivateMenuWidget);
 			break;
 		case EAsyncWidgetLayerState::Canceled:
 			break;
@@ -159,10 +154,3 @@ void ARsHUD::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Typ
 	}
 }
 
-void ARsHUD::HandleDeactivateMenuWidget()
-{
-	if (GameHUDInstance)
-	{
-		GameHUDInstance->SetVisibility(ESlateVisibility::Visible);
-	}
-}

@@ -70,7 +70,7 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	// Server-side
-	InitAbilitySystem();
+	//InitAbilitySystem();
 	
 	SetupCamera_Client();
 }
@@ -95,10 +95,10 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	
 	// Client-side
-	InitAbilitySystem();
+	//InitAbilitySystem();
 }
 
-void ARsPlayerCharacter::InitAbilitySystem()
+void ARsPlayerCharacter::InitializeAbilitySystem()
 {
 	// Initialize the ASC once.
 	if (AbilitySystemComponent == nullptr)
@@ -106,8 +106,11 @@ void ARsPlayerCharacter::InitAbilitySystem()
 		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
 		if (AbilitySystemComponent)
 		{
-			AbilitySystemComponent->InitializeAbilitySystem(AbilitySets, GetPlayerState(), this);
-			
+			AbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
+			for (URsAbilitySet* AbilitySet : AbilitySets)
+			{
+				AbilitySystemComponent->InitializeAbilitySet(AbilitySet);
+			}
 			HealthComponent->Initialize(AbilitySystemComponent);
 			StaggerComponent->Initialize(AbilitySystemComponent);
 			NameplateComponent->Initialize(this);

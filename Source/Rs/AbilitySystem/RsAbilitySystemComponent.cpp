@@ -18,56 +18,44 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 	SetIsReplicatedByDefault(true);
 }
 
-void URsAbilitySystemComponent::InitializeAbilitySystem(TArray<URsAbilitySet*> AbilitySets, AActor* InOwnerActor, AActor* InAvatarActor)
+void URsAbilitySystemComponent::InitializeAbilitySet(URsAbilitySet* AbilitySet)
 {
-	// Set the Owning Actor and Avatar Actor. (Used throughout the Gameplay Ability System to get references etc.)
-	InitAbilityActorInfo(InOwnerActor, InAvatarActor);
-
-	if (AbilitySets.IsEmpty())
+	if (!AbilitySet)
 	{
-		UE_LOG(RsLog, Error, TEXT("%s does not have ABS!"), *InAvatarActor->GetName());
+		UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
 	
-	// Attribute Sets / Attribute Base Values / Gameplay Abilities / Gameplay Effects should only be added -or- set on authority and will be replicated to the client automatically.
-	if (!GetOwnerActor()->HasAuthority())
+	if (!IsOwnerActorAuthoritative())
 	{
+		// Must be authoritative to give or take ability sets.
 		return;
 	}
-
-	for (URsAbilitySet* AbilitySet : AbilitySets)
+		
+	GrantTags(AbilitySet->GrantedTags);
+		
+	for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
 	{
-		if (!AbilitySet)
-		{
-			UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *InAvatarActor->GetName());
-			continue;
-		}
+		GrantAttribute(Attribute, BaseValue.GetValueAtLevel(0));
+	}
 		
-		GrantTags(AbilitySet->GrantedTags);
-		
-		for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
-		{
-			GrantAttribute(Attribute, BaseValue.GetValueAtLevel(0));
-		}
-		
-		for (const TSubclassOf<UGameplayAbility>& Ability : AbilitySet->GrantedAbilities)
-		{
-			GrantAbility(Ability);
-		}
+	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitySet->GrantedAbilities)
+	{
+		GrantAbility(Ability);
+	}
 
-		for (const TSubclassOf<UGameplayEffect>& Effect : AbilitySet->GrantedEffects)
-		{
-			GrantEffect(Effect);
-		}
+	for (const TSubclassOf<UGameplayEffect>& Effect : AbilitySet->GrantedEffects)
+	{
+		GrantEffect(Effect);
+	}
 		
-		// Grant attributes from data table row.
-		if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+	// Grant attributes from data table row.
+	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
 		{
-			for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
-			{
-				float BaseValue = Row->GetBaseValue(Attribute);
-				GrantAttribute(Attribute, BaseValue);
-			}
+			float BaseValue = Row->GetBaseValue(Attribute);
+			GrantAttribute(Attribute, BaseValue);
 		}
 	}
 }
@@ -78,7 +66,11 @@ void URsAbilitySystemComponent::GrantAttribute(FGameplayAttribute Attribute, flo
 	{
 		if (UClass* AttributeSetClass = Attribute.GetAttributeSetClass())
 		{
-			const UAttributeSet* GrantedAttributeSet = GetOrCreateAttributeSubobject(AttributeSetClass);
+			if (!GetAttributeSubobject(AttributeSetClass))
+			{
+				UAttributeSet* NewSet = NewObject<UAttributeSet>(GetOwner(), AttributeSetClass);
+				AddAttributeSetSubobject(NewSet);
+			}
 			SetNumericAttributeBase(Attribute, BaseValue);
 		}
 	}

@@ -21,7 +21,7 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	URsAbilitySystemComponent();
 
-	void InitializeAbilitySystem(TArray<URsAbilitySet*> AbilitySets, AActor* InOwnerActor, AActor* InAvatarActor);
+	void InitializeAbilitySet(URsAbilitySet* AbilitySet);
 	
 	void GrantAttribute(FGameplayAttribute Attribute, float BaseValue);
 	void GrantAbility(TSubclassOf<UGameplayAbility> Ability);

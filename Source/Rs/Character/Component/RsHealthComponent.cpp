@@ -36,8 +36,8 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 	HealthSet = AbilitySystemComponent->GetSet<URsHealthSet>();
 	if (HealthSet)
 	{
-		OnHealthChange.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth(), nullptr);
-		OnBarrierChange.Broadcast(HealthSet->GetBarrier(), HealthSet->GetBarrier(), nullptr);
+		OnHealthChange.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth());
+		OnBarrierChange.Broadcast(HealthSet->GetBarrier(), HealthSet->GetBarrier());
 	}
 	
 	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleBarrierAdded);
@@ -104,16 +104,7 @@ float URsHealthComponent::GetBarrier()
 
 void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& ChangeData)
 {
-	AActor* Instigator = nullptr;
-	if (const FGameplayEffectModCallbackData* EffectModData = ChangeData.GEModData)
-	{
-		const FGameplayEffectContextHandle& EffectContext = EffectModData->EffectSpec.GetEffectContext();
-		if (EffectContext.IsValid())
-		{
-			Instigator = EffectContext.GetOriginalInstigator();
-		}
-	}
-	OnHealthChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
+	OnHealthChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
 
 	if (ChangeData.NewValue <= 0.f && bIsDead == false)
 	{
@@ -125,16 +116,7 @@ void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Change
 
 void URsHealthComponent::HandleBarrierChange(const FOnAttributeChangeData& ChangeData)
 {
-	AActor* Instigator = nullptr;
-	if (const FGameplayEffectModCallbackData* EffectModData = ChangeData.GEModData)
-	{
-		const FGameplayEffectContextHandle& EffectContext = EffectModData->EffectSpec.GetEffectContext();
-		if (EffectContext.IsValid())
-		{
-			Instigator = EffectContext.GetOriginalInstigator();
-		}
-	}
-	OnBarrierChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue, Instigator);
+	OnBarrierChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
 }
 
 void URsHealthComponent::HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle)
@@ -193,5 +175,18 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 		OnDeathStarted.Broadcast(GetOwner());
+	}
+}
+
+void URsHealthComponent::OnRep_bIsInitialized(bool OldValue)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		HealthSet = ASC->GetSet<URsHealthSet>();
+		if (HealthSet)
+		{
+			OnHealthChange.Broadcast(HealthSet->GetCurrentHealth(), HealthSet->GetCurrentHealth());
+			OnBarrierChange.Broadcast(HealthSet->GetBarrier(), HealthSet->GetBarrier());
+		}
 	}
 }
