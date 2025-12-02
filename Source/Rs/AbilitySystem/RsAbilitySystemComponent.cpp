@@ -3,6 +3,7 @@
 
 #include "RsAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
@@ -131,12 +132,37 @@ void URsAbilitySystemComponent::TearDownAbilityInputBindings()
 	}
 }
 
-URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(AActor* OwningActor)
+URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(AActor* Actor)
 {
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor))
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor))
 	{
 		return Cast<URsAbilitySystemComponent>(ASC);
 	}
 	return nullptr;
+}
+
+void URsAbilitySystemComponent::SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)
+{
+	if (IsValid(Actor) && EventTag.IsValid())
+	{
+		if (Actor->HasAuthority())
+		{
+			SendGameplayEventToActor_Multicast(Actor, EventTag, Payload);
+		}
+		else
+		{
+			SendGameplayEventToActor_Server(Actor, EventTag, Payload);
+		}
+	}
+}
+
+void URsAbilitySystemComponent::SendGameplayEventToActor_Multicast_Implementation(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)
+{
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Actor, EventTag, Payload);
+}
+
+void URsAbilitySystemComponent::SendGameplayEventToActor_Server_Implementation(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)
+{
+	SendGameplayEventToActor_Multicast(Actor, EventTag, Payload);
 }
 

@@ -12,9 +12,9 @@
 #include "Effect/RsEffectTable.h"
 #include "Rs/RsLogChannels.h"
 
-URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* OwningActor)
+URsAbilitySystemComponent* URsAbilitySystemLibrary::GetRsAbilitySystemComponent(AActor* Actor)
 {
-	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
+	return URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(Actor);
 }
 
 UAbilitySystemComponent* URsAbilitySystemLibrary::GetWorldAbilitySystemComponent(const UObject* WorldContextObject)
@@ -34,6 +34,17 @@ UAbilitySystemComponent* URsAbilitySystemLibrary::GetWorldAbilitySystemComponent
 		return ASI->GetAbilitySystemComponent();
 	}
 	return nullptr;
+}
+
+void URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)
+{
+	if (Actor && EventTag.IsValid())
+	{
+		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(GetWorldAbilitySystemComponent(Actor)))
+		{
+			RsASC->SendGameplayEventToActor_Replicated(Actor, EventTag, Payload);
+		}
+	}
 }
 
 UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)

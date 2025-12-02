@@ -23,11 +23,15 @@ class RS_API URsAbilitySystemLibrary : public UAbilitySystemBlueprintLibrary
 	
 public: /** Ability System Component */
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library")
-	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* OwningActor);
+	static URsAbilitySystemComponent* GetRsAbilitySystemComponent(AActor* Actor);
 
 	// Get ASC for applying environmental effects. All attribute is always 0.
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (WorldContext = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
 	static UAbilitySystemComponent* GetWorldAbilitySystemComponent(const UObject* WorldContextObject);
+	
+	// Sends a replicated gameplay event to an actor.
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta=(DisplayName="Send Gameplay Event To Actor (Replicated)"))
+	static void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
 
 public:	/** Gameplay Ability */
 	// Find the first ability that matches tags. 

@@ -6,6 +6,7 @@
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/System/RsGameSettingDataAsset.h"
 
@@ -168,12 +169,9 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 {
 	if (OldValue == false && bIsDead == true)
 	{
-		if (UAbilitySystemComponent* ASC = HealthSet->GetOwningAbilitySystemComponent())
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = URsGameSettingDataAsset::Get().DeathAbilityTag;
-			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
-		}
+		FGameplayEventData Payload;
+		Payload.EventTag = URsGameSettingDataAsset::Get().DeathAbilityTag;
+		URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(GetOwner(), Payload.EventTag, Payload);
 		OnDeathStarted.Broadcast(GetOwner());
 	}
 }

@@ -70,7 +70,7 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	// Server-side
-	//InitAbilitySystem();
+	InitializeAbilitySystem();
 	
 	SetupCamera_Client();
 }
@@ -95,7 +95,7 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	
 	// Client-side
-	//InitAbilitySystem();
+	InitializeAbilitySystem();
 }
 
 void ARsPlayerCharacter::InitializeAbilitySystem()

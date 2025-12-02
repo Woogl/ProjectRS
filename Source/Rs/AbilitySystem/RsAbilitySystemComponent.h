@@ -31,9 +31,20 @@ public:
 	void SetupAbilityInputBindings();
 	void TearDownAbilityInputBindings();
 
-	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* OwningActor);
+	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* Actor);
+
+	// Sends a replicated gameplay event to an actor.
+	void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
 
 private:
+	// Server RPC for sending gameplay events. 
+	UFUNCTION(Server, Reliable)
+	void SendGameplayEventToActor_Server(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
+
+	// Multicast RPC for sending gameplay events. 
+	UFUNCTION(NetMulticast, Reliable)
+	void SendGameplayEventToActor_Multicast(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
+	
 	// Handles to the granted abilities.
 	UPROPERTY()
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;

@@ -144,7 +144,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 			Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
 			Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
 			Payload.ContextHandle = GESpec.GetEffectContext();
-			TargetASC->HandleGameplayEvent(LocalHitReaction, &Payload);
+			URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(TargetASC->GetAvatarActor(), LocalHitReaction, Payload);
 		}
 	}
 
