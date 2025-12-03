@@ -5,6 +5,7 @@
 
 #include "Extensions/UserWidgetExtension.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/UI/MVVM/ViewModel/RsCharacterViewModel.h"
 #include "View/MVVMView.h"
@@ -19,6 +20,10 @@ void URsNameplateComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (URsAbilitySystemComponent* RsASC = URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		RsASC->CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::HandleAbilitySystemInitialized));
+	}
 }
 
 void URsNameplateComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -59,6 +64,14 @@ void URsNameplateComponent::Initialize(ARsCharacterBase* InOwnerCharacter)
 				PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessChanged);
 			}
 		}
+	}
+}
+
+void URsNameplateComponent::HandleAbilitySystemInitialized()
+{
+	if (ARsCharacterBase* OwnerCharacter = Cast<ARsCharacterBase>(GetOwner()))
+	{
+		Initialize(OwnerCharacter);
 	}
 }
 

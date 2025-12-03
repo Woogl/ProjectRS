@@ -22,6 +22,7 @@ public:
 	URsAbilitySystemComponent();
 
 	void InitializeAbilitySet(URsAbilitySet* AbilitySet);
+	void NotifyAbilitySystemInitialized();
 	
 	void GrantAttribute(FGameplayAttribute Attribute, float BaseValue);
 	void GrantAbility(TSubclassOf<UGameplayAbility> Ability);
@@ -32,6 +33,8 @@ public:
 	void TearDownAbilityInputBindings();
 
 	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* Actor);
+	
+	void CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate Delegate);
 
 	// Sends a replicated gameplay event to an actor.
 	void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
@@ -52,4 +55,6 @@ private:
 	// Handles to the granted gameplay effects.
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
+	
+	FSimpleMulticastDelegate OnAbilitySystemInitialized;
 };

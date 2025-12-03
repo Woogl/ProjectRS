@@ -61,6 +61,11 @@ void URsAbilitySystemComponent::InitializeAbilitySet(URsAbilitySet* AbilitySet)
 	}
 }
 
+void URsAbilitySystemComponent::NotifyAbilitySystemInitialized()
+{
+	OnAbilitySystemInitialized.Broadcast();
+}
+
 void URsAbilitySystemComponent::GrantAttribute(FGameplayAttribute Attribute, float BaseValue)
 {
 	if (Attribute.IsValid())
@@ -139,6 +144,21 @@ URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentF
 		return Cast<URsAbilitySystemComponent>(ASC);
 	}
 	return nullptr;
+}
+
+void URsAbilitySystemComponent::CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate Delegate)
+{
+	// Bind unique
+	if (!OnAbilitySystemInitialized.IsBoundToObject(Delegate.GetUObject()))
+	{
+		OnAbilitySystemInitialized.Add(Delegate);
+	}
+
+	// If there is an OwnerActor and an AvatarActor, it is considered that initialization is complete.
+	if (GetOwnerActor() && GetAvatarActor())
+	{
+		Delegate.Execute();
+	}
 }
 
 void URsAbilitySystemComponent::SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)

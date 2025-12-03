@@ -5,6 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/System/RsGameSettingDataAsset.h"
 
@@ -14,6 +15,16 @@ URsStaggerComponent::URsStaggerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	SetIsReplicatedByDefault(true);
+}
+
+void URsStaggerComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (URsAbilitySystemComponent* RsASC = URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		RsASC->CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::HandleAbilitySystemInitialized));
+	}
 }
 
 void URsStaggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -32,10 +43,6 @@ void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompo
 	
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::HandleStaggerChange);
 	StaggerSet = AbilitySystemComponent->GetSet<URsStaggerSet>();
-	if (StaggerSet)
-	{
-		OnStaggerChange.Broadcast(StaggerSet->GetCurrentStagger(), StaggerSet->GetCurrentStagger());
-	}
 }
 
 float URsStaggerComponent::GetCurrentStagger()
@@ -56,6 +63,14 @@ float URsStaggerComponent::GetMaxStagger()
 	return 0.f;
 }
 
+void URsStaggerComponent::HandleAbilitySystemInitialized()
+{
+	if (URsAbilitySystemComponent* RsASC = URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(GetOwner()))
+	{
+		Initialize(RsASC);
+	}
+}
+
 void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& ChangeData)
 {
 	OnStaggerChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
@@ -71,7 +86,7 @@ void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& Chan
 
 void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (bIsGroggy == true)
+	if (OldValue == false && bIsGroggy == true)
 	{
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{

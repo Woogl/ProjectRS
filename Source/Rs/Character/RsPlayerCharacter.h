@@ -61,7 +61,7 @@ private:
 
 public:
 	// Reference of the previous possessed friendly AI controller.
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<AAIController> FriendlyAIController = nullptr;
 	
 	UFUNCTION(BlueprintPure)

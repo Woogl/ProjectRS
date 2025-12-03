@@ -3,10 +3,7 @@
 
 #include "RsEnemyCharacter.h"
 
-#include "Component/RsHealthComponent.h"
-#include "Component/RsStaggerComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
-#include "Rs/UI/Component/RsNameplateComponent.h"
 
 
 ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer)
@@ -45,8 +42,6 @@ void ARsEnemyCharacter::InitializeAbilitySystem()
 		{
 			AbilitySystemComponent->InitializeAbilitySet(AbilitySet);
 		}
-		HealthComponent->Initialize(AbilitySystemComponent);
-		StaggerComponent->Initialize(AbilitySystemComponent);
-		NameplateComponent->Initialize(this);
+		AbilitySystemComponent->NotifyAbilitySystemInitialized();
 	}
 }

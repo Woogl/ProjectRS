@@ -18,6 +18,8 @@ class RS_API URsHealthComponent : public UActorComponent
 
 public:	
 	URsHealthComponent();
+	
+	virtual void BeginPlay() override;
 
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
@@ -43,8 +45,10 @@ public:
 	float GetBarrier();
 
 protected:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<const URsHealthSet> HealthSet;
+	
+	void HandleAbilitySystemInitialized();
 	
 	void HandleHealthChange(const FOnAttributeChangeData& ChangeData);
 	void HandleBarrierChange(const FOnAttributeChangeData& ChangeData);
@@ -56,14 +60,8 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_bIsDead)
 	bool bIsDead = false;
 
-	UPROPERTY(ReplicatedUsing = OnRep_bIsInitialized)
-	bool bIsInitialized = false;
-
 	UFUNCTION()
 	void OnRep_bIsDead(bool OldValue);
-	
-	UFUNCTION()
-	void OnRep_bIsInitialized(bool OldValue);
 	
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> ActiveBarrierHandles;

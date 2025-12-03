@@ -18,6 +18,8 @@ class RS_API URsStaggerComponent : public UActorComponent
 
 public:	
 	URsStaggerComponent();
+	
+	virtual void BeginPlay() override;
 
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
@@ -34,9 +36,11 @@ public:
 	float GetMaxStagger();
 
 protected:
+	void HandleAbilitySystemInitialized();
+	
 	void HandleStaggerChange(const FOnAttributeChangeData& ChangeData);
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<const URsStaggerSet> StaggerSet;
 
 	UPROPERTY(ReplicatedUsing = OnRep_bIsGroggy)

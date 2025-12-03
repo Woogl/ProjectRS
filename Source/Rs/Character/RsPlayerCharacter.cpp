@@ -6,8 +6,6 @@
 #include "AbilitySystemGlobals.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Component/RsHealthComponent.h"
-#include "Component/RsStaggerComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -15,7 +13,6 @@
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/Player/RsPlayerController.h"
-#include "Rs/UI/Component/RsNameplateComponent.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -111,9 +108,7 @@ void ARsPlayerCharacter::InitializeAbilitySystem()
 			{
 				AbilitySystemComponent->InitializeAbilitySet(AbilitySet);
 			}
-			HealthComponent->Initialize(AbilitySystemComponent);
-			StaggerComponent->Initialize(AbilitySystemComponent);
-			NameplateComponent->Initialize(this);
+			AbilitySystemComponent->NotifyAbilitySystemInitialized();
 		}
 	}
 

@@ -24,6 +24,8 @@ public:
 	void Initialize(ARsCharacterBase* InOwnerCharacter);
 
 protected:
+	void HandleAbilitySystemInitialized();
+	
 	UFUNCTION()
 	void HandlePossessChanged(APawn* OldPawn, APawn* NewPawn);
 };
