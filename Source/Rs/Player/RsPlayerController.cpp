@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/HUD.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -42,7 +43,7 @@ void ARsPlayerController::OnPossess(APawn* InPawn)
 
 	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		ASC->AddLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+		ASC->AddLooseGameplayTag(RsGameplayTags::CHARACTER_PLAYERCONTROLLED);
 	}
 }
 
@@ -51,7 +52,7 @@ void ARsPlayerController::OnUnPossess()
 	APawn* ReleasedPawn = GetPawn();
 	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		ASC->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().PlayerControlledTag);
+		ASC->RemoveLooseGameplayTag(RsGameplayTags::CHARACTER_PLAYERCONTROLLED);
 	}
 	
 	Super::OnUnPossess();

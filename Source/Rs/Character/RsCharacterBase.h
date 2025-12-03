@@ -77,7 +77,7 @@ protected:
 	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
 
 	// Data used to initialize the Ability System Component.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS")
 	TArray<URsAbilitySet*> AbilitySets;
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")

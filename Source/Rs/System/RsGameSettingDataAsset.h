@@ -43,12 +43,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | UI")
 	FGameplayTag TripleLinkSkillUITag;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Character")
-	FGameplayTag PlayerControlledTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Character")
-	FGameplayTag FallingTag;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Battle")
 	float DefenseConstant = 190.f;
 

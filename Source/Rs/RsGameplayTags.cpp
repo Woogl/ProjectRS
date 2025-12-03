@@ -32,7 +32,7 @@ namespace RsGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_SUA, "Stat.SUA", "Super Armor");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_MOV, "Stat.MOV", "Movement Speed");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(STAT_ATS, "Stat.ATS", "Action Speed");
-	// Meta stat
+
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEHP, "Meta.DamageHP", "Base Health Damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_DAMAGEGP, "Meta.DamageGP", "Base Stagger Damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(META_HEALINGHP, "Meta.HealingHP", "Health Healing");
@@ -54,4 +54,7 @@ namespace RsGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(COEFFICIENT_CONSTANT, "Coefficient.Constant", "");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(EFFECT_DAMAGE, "Effect.Damage", "");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(CHARACTER_PLAYERCONTROLLED, "Character.PlayerControlled", "");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(MOVEMENT_FALLING, "Movement.Falling", "");
 }

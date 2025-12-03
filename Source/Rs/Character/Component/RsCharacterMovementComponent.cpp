@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 #include "Rs/System/RsGameSettingDataAsset.h"
 
@@ -36,11 +37,11 @@ void URsCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previous
 	{
 		if (IsFalling())
 		{
-			ASC->AddLooseGameplayTag(URsGameSettingDataAsset::Get().FallingTag);
+			ASC->AddLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
 		}
 		else
 		{
-			ASC->RemoveLooseGameplayTag(URsGameSettingDataAsset::Get().FallingTag);
+			ASC->RemoveLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
 		}
 	}
 }
