@@ -516,7 +516,5 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
 		}
 	}
-	
-	K2_OnAbilityEvent(EventData);
 }
 

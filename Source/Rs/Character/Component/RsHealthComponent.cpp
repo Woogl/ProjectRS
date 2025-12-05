@@ -123,9 +123,13 @@ void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Change
 
 	if (ChangeData.NewValue <= 0.f && bIsDead == false)
 	{
-		bIsDead = true;
-		OnRep_bIsDead(false);
-		GetOwner()->ForceNetUpdate();
+		if (GetOwner()->HasAuthority())
+		{
+			const bool bOldDead = bIsDead;
+			bIsDead = true;
+			OnRep_bIsDead(bOldDead);
+			GetOwner()->ForceNetUpdate();
+		}
 	}
 }
 
@@ -192,6 +196,7 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 {
 	if (OldValue == false && bIsDead == true)
 	{
+		// Handle death
 		FGameplayEventData Payload;
 		Payload.EventTag = URsGameSettingDataAsset::Get().DeathAbilityTag;
 		URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(GetOwner(), Payload.EventTag, Payload);

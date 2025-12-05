@@ -40,6 +40,9 @@ public:
 	void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
 
 private:
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TArray<URsAbilitySet*> AbilitySets;
+	
 	// Server RPC for sending gameplay events. 
 	UFUNCTION(Server, Reliable)
 	void SendGameplayEventToActor_Server(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
@@ -56,5 +59,6 @@ private:
 	UPROPERTY()
 	TArray<FActiveGameplayEffectHandle> GrantedEffectHandles;
 	
+	bool bAbilitySystemInitialized = false;
 	FSimpleMulticastDelegate OnAbilitySystemInitialized;
 };

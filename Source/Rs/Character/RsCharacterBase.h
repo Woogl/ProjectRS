@@ -35,8 +35,6 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
-	virtual void NotifyRestarted() override;
-	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 

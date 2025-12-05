@@ -148,9 +148,6 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityEvent")
-	void K2_OnAbilityEvent(const FGameplayEventData& EventData);
-
 	// Override in BP to select a montage. Defaults to a random one.
 	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
 	UAnimMontage* SelectMontageToPlay();

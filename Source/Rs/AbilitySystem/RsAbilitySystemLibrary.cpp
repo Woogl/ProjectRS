@@ -40,7 +40,7 @@ void URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(AActor* Actor,
 {
 	if (Actor && EventTag.IsValid())
 	{
-		if (URsAbilitySystemComponent* RsASC = Cast<URsAbilitySystemComponent>(GetWorldAbilitySystemComponent(Actor)))
+		if (URsAbilitySystemComponent* RsASC = GetRsAbilitySystemComponent(Actor))
 		{
 			RsASC->SendGameplayEventToActor_Replicated(Actor, EventTag, Payload);
 		}

@@ -63,6 +63,7 @@ void URsAbilitySystemComponent::InitializeAbilitySet(URsAbilitySet* AbilitySet)
 
 void URsAbilitySystemComponent::NotifyAbilitySystemInitialized()
 {
+	bAbilitySystemInitialized = true;
 	OnAbilitySystemInitialized.Broadcast();
 }
 
@@ -148,16 +149,13 @@ URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentF
 
 void URsAbilitySystemComponent::CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate Delegate)
 {
-	// Bind unique
-	if (!OnAbilitySystemInitialized.IsBoundToObject(Delegate.GetUObject()))
-	{
-		OnAbilitySystemInitialized.Add(Delegate);
-	}
-
-	// If there is an OwnerActor and an AvatarActor, it is considered that initialization is complete.
-	if (GetOwnerActor() && GetAvatarActor())
+	if (bAbilitySystemInitialized)
 	{
 		Delegate.Execute();
+	}
+	else if (!OnAbilitySystemInitialized.IsBoundToObject(Delegate.GetUObject()))
+	{
+		OnAbilitySystemInitialized.Add(Delegate);
 	}
 }
 
