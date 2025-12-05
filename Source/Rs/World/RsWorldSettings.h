@@ -11,7 +11,7 @@ class URsAbilitySystemComponent;
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class RS_API ARsWorldSettings : public AWorldSettings, public IAbilitySystemInterface
 {
 	GENERATED_BODY()

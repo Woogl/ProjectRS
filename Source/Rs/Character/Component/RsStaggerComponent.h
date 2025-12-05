@@ -10,6 +10,8 @@
 class URsStaggerSet;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGroggyEvent, AActor*, OwningActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRsStagger_AttributeChanged, URsStaggerComponent*, StaggerComponent, float, OldValue, float, NewValue, AActor*, Instigator);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RS_API URsStaggerComponent : public UActorComponent
@@ -24,10 +26,10 @@ public:
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChange OnStaggerChange;
+	FRsStagger_AttributeChanged OnStaggerChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnGroggyEvent OnGroggyEvent;
+	FOnGroggyEvent OnGroggyStarted;
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentStagger();
@@ -38,7 +40,7 @@ public:
 protected:
 	void HandleAbilitySystemInitialized();
 	
-	void HandleStaggerChange(const FOnAttributeChangeData& ChangeData);
+	void HandleStaggerChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
 
 	UPROPERTY(Transient)
 	TObjectPtr<const URsStaggerSet> StaggerSet;

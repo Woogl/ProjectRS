@@ -7,8 +7,6 @@
 
 ARsFriendlyAIController::ARsFriendlyAIController()
 {
-	// RsPlayerCharacter want player state to initialize ability system.
-	bWantsPlayerState = true;
 }
 
 void ARsFriendlyAIController::BeginPlay()

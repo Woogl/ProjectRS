@@ -8,11 +8,10 @@
 #include "Rs/Character/Component/RsHealthComponent.h"
 
 URsHealthSet::URsHealthSet()
+	: CurrentHealth(0.f)
+	, MaxHealth(1.f)
+	, Barrier(0.f)
 {
-	MaxHealth = 1.f;
-	CurrentHealth = 0.f;
-	Barrier = 0.f;
-
 	HealthDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Health"));
 	HealingCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Healing"));
 }
@@ -54,9 +53,27 @@ void URsHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, floa
 	}
 }
 
+bool URsHealthSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
+{
+	if (!Super::PreGameplayEffectExecute(Data))
+	{
+		return false;
+	}
+
+	// Save the current health
+	CurrentHealthBeforeChange = GetCurrentHealth();
+	MaxHealthBeforeChange = GetMaxHealth();
+
+	return true;
+}
+
 void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+	
+	const FGameplayEffectContextHandle& EffectContext = Data.EffectSpec.GetEffectContext();
+	AActor* Instigator = EffectContext.GetOriginalInstigator();
+	AActor* Causer = EffectContext.GetEffectCauser();
 
 	if (Data.EvaluatedData.Attribute == GetFinalDamageAttribute())
 	{
@@ -102,16 +119,48 @@ void URsHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.f, GetMaxHealth()));
 	}
+	
+	else if (Data.EvaluatedData.Attribute == GetMaxHealthAttribute())
+	{
+		OnMaxHealthChanged.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, MaxHealthBeforeChange, GetMaxHealth());
+	}
+	
+	if (GetCurrentHealth() != CurrentHealthBeforeChange)
+	{
+		OnCurrentHealthChanged.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, CurrentHealthBeforeChange, GetCurrentHealth());
+	}
+
+	if ((GetCurrentHealth() <= 0.f) && !bOutOfHealth)
+	{
+		OnOutOfHealth.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, CurrentHealthBeforeChange, GetCurrentHealth());
+	}
+
+	// Check health again in case an event above changed it.
+	bOutOfHealth = (GetCurrentHealth() <= 0.0f);
 }
 
 void URsHealthSet::OnRep_CurrentHealth(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, CurrentHealth, OldValue);
+	
+	const float LocalCurrentHealth = GetCurrentHealth();
+	const float EstimatedMagnitude = LocalCurrentHealth - OldValue.GetCurrentValue();
+	
+	OnCurrentHealthChanged.Broadcast(nullptr, nullptr, nullptr, EstimatedMagnitude, OldValue.GetCurrentValue(), LocalCurrentHealth);
+
+	if (!bOutOfHealth && LocalCurrentHealth <= 0.0f)
+	{
+		OnOutOfHealth.Broadcast(nullptr, nullptr, nullptr, EstimatedMagnitude, OldValue.GetCurrentValue(), LocalCurrentHealth);
+	}
+
+	bOutOfHealth = (LocalCurrentHealth <= 0.0f);
 }
 
 void URsHealthSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsHealthSet, MaxHealth, OldValue);
+	
+	OnMaxHealthChanged.Broadcast(nullptr, nullptr, nullptr, GetMaxHealth() - OldValue.GetCurrentValue(), OldValue.GetCurrentValue(), GetMaxHealth());
 }
 
 void URsHealthSet::OnRep_Barrier(const FGameplayAttributeData& OldValue)

@@ -19,6 +19,7 @@ public:
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
@@ -47,6 +48,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Healing;
 	ATTRIBUTE_ACCESSORS(URsHealthSet, Healing)
+	
+	mutable FRsAttributeEvent OnCurrentHealthChanged;
+	mutable FRsAttributeEvent OnMaxHealthChanged;
+	mutable FRsAttributeEvent OnOutOfHealth;
 
 protected:
 	UFUNCTION()
@@ -61,4 +66,12 @@ protected:
 	// Gameplay cue
 	FGameplayTag HealthDamageCueTag;
 	FGameplayTag HealingCueTag;
+	
+private:
+	// Used to track when the health reaches 0.
+	bool bOutOfHealth = false;
+	
+	// Store the health before any changes 
+	float MaxHealthBeforeChange = 0.f;
+	float CurrentHealthBeforeChange = 0.f;
 };

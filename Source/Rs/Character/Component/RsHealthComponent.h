@@ -10,6 +10,7 @@
 class URsHealthSet;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathEvent, AActor*, OwningActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRsHealth_AttributeChanged, URsHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
 class RS_API URsHealthComponent : public UActorComponent
@@ -27,10 +28,13 @@ public:
 	void ApplyDamageToBarriers(UAbilitySystemComponent* AbilitySystemComponent, float DamageAmount);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChange OnHealthChange;
+	FRsHealth_AttributeChanged OnCurrentHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable)
+	FRsHealth_AttributeChanged OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChange OnBarrierChange;
+	FRsHealth_AttributeChanged OnBarrierChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathEvent OnDeathStarted;
@@ -50,7 +54,9 @@ protected:
 	
 	void HandleAbilitySystemInitialized();
 	
-	void HandleHealthChange(const FOnAttributeChangeData& ChangeData);
+	void HandleCurrentHealthChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+	void HandleMaxHealthChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+	void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
 	void HandleBarrierChange(const FOnAttributeChangeData& ChangeData);
 	
 	void HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle);

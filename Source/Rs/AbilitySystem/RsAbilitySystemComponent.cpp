@@ -17,95 +17,37 @@ URsAbilitySystemComponent::URsAbilitySystemComponent()
 {
 	// Explicitly set the Ability System Component to replicate.
 	SetIsReplicatedByDefault(true);
+	
+	bReplicateUsingRegisteredSubObjectList = true;
 }
 
-void URsAbilitySystemComponent::InitializeAbilitySet(URsAbilitySet* AbilitySet)
+void URsAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
-	if (!AbilitySet)
-	{
-		UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
-		return;
-	}
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
 	
 	if (!IsOwnerActorAuthoritative())
 	{
 		// Must be authoritative to give or take ability sets.
 		return;
 	}
-		
-	GrantTags(AbilitySet->GrantedTags);
-		
-	for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
+	
+	if (AbilitySets.IsEmpty())
 	{
-		GrantAttribute(Attribute, BaseValue.GetValueAtLevel(0));
-	}
-		
-	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitySet->GrantedAbilities)
-	{
-		GrantAbility(Ability);
+		UE_LOG(RsAbilityLog, Error, TEXT("[%s]'s ABS is empty!"), *InOwnerActor->GetActorLabel());
+		return;
 	}
 
-	for (const TSubclassOf<UGameplayEffect>& Effect : AbilitySet->GrantedEffects)
+	if (bAbilitySystemInitialized == true)
 	{
-		GrantEffect(Effect);
+		return;
 	}
-		
-	// Grant attributes from data table row.
-	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+	
+	for (URsAbilitySet* AbilitySet : AbilitySets)
 	{
-		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
-		{
-			float BaseValue = Row->GetBaseValue(Attribute);
-			GrantAttribute(Attribute, BaseValue);
-		}
+		InitAbilitySet(AbilitySet);
 	}
-}
-
-void URsAbilitySystemComponent::NotifyAbilitySystemInitialized()
-{
 	bAbilitySystemInitialized = true;
 	OnAbilitySystemInitialized.Broadcast();
-}
-
-void URsAbilitySystemComponent::GrantAttribute(FGameplayAttribute Attribute, float BaseValue)
-{
-	if (Attribute.IsValid())
-	{
-		if (UClass* AttributeSetClass = Attribute.GetAttributeSetClass())
-		{
-			if (!GetAttributeSubobject(AttributeSetClass))
-			{
-				UAttributeSet* NewSet = NewObject<UAttributeSet>(GetOwner(), AttributeSetClass);
-				AddAttributeSetSubobject(NewSet);
-			}
-			SetNumericAttributeBase(Attribute, BaseValue);
-		}
-	}
-}
-
-void URsAbilitySystemComponent::GrantAbility(TSubclassOf<UGameplayAbility> Ability)
-{
-	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 0, INDEX_NONE, GetOwnerActor());
-	FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);
-	GrantedAbilityHandles.Add(GrantedAbilityHandle);
-}
-
-void URsAbilitySystemComponent::GrantEffect(TSubclassOf<UGameplayEffect> Effect)
-{
-	FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-	if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(Effect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
-	{
-		FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
-		GrantedEffectHandles.Add(GrantedEffectHandle);
-	}
-}
-
-void URsAbilitySystemComponent::GrantTags(FGameplayTagContainer Tags)
-{
-	// Apply the Gameplay Tag container as loose Gameplay Tags.
-	// These are not replicated by default and should be applied on both server and client respectively.
-	AddLooseGameplayTags(Tags);
 }
 
 void URsAbilitySystemComponent::SetupAbilityInputBindings()
@@ -172,6 +114,82 @@ void URsAbilitySystemComponent::SendGameplayEventToActor_Replicated(AActor* Acto
 			SendGameplayEventToActor_Server(Actor, EventTag, Payload);
 		}
 	}
+}
+
+void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
+{
+	if (!AbilitySet)
+	{
+		UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
+		return;
+	}
+		
+	InitTags(AbilitySet->GrantedTags);
+		
+	for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
+	{
+		InitAttribute(Attribute, BaseValue.GetValueAtLevel(0));
+	}
+		
+	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitySet->GrantedAbilities)
+	{
+		InitAbility(Ability);
+	}
+
+	for (const TSubclassOf<UGameplayEffect>& Effect : AbilitySet->GrantedEffects)
+	{
+		InitEffect(Effect);
+	}
+		
+	// Grant attributes from data table row.
+	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
+		{
+			float BaseValue = Row->GetBaseValue(Attribute);
+			InitAttribute(Attribute, BaseValue);
+		}
+	}
+}
+
+void URsAbilitySystemComponent::InitAttribute(FGameplayAttribute Attribute, float BaseValue)
+{
+	if (!Attribute.IsValid())
+	{
+		return;
+	}
+
+	if (!GetAttributeSet(Attribute.GetAttributeSetClass()))
+	{
+		UAttributeSet* NewSet = NewObject<UAttributeSet>(GetOwner(), Attribute.GetAttributeSetClass());
+		AddAttributeSetSubobject(NewSet);
+	}
+	SetNumericAttributeBase(Attribute, BaseValue);
+}
+
+void URsAbilitySystemComponent::InitAbility(TSubclassOf<UGameplayAbility> Ability)
+{
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 0, INDEX_NONE, GetOwnerActor());
+	FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);
+	GrantedAbilityHandles.Add(GrantedAbilityHandle);
+}
+
+void URsAbilitySystemComponent::InitEffect(TSubclassOf<UGameplayEffect> Effect)
+{
+	FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
+	if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(Effect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
+		GrantedEffectHandles.Add(GrantedEffectHandle);
+	}
+}
+
+void URsAbilitySystemComponent::InitTags(FGameplayTagContainer Tags)
+{
+	// Apply the Gameplay Tag container as loose Gameplay Tags.
+	// These are not replicated by default and should be applied on both server and client respectively.
+	AddLooseGameplayTags(Tags);
 }
 
 void URsAbilitySystemComponent::SendGameplayEventToActor_Multicast_Implementation(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)

@@ -5,9 +5,10 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 
 URsStaggerComponent::URsStaggerComponent()
 {
@@ -41,8 +42,17 @@ void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompo
 		return;
 	}
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::HandleStaggerChange);
+	//AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::HandleStaggerChange);
 	StaggerSet = AbilitySystemComponent->GetSet<URsStaggerSet>();
+	if (!StaggerSet)
+	{
+		UE_LOG(RsAbilityLog, Error, TEXT("Cannot initialize RsStaggerComponent for owner [%s] with NULL stagger set."), *GetNameSafe(GetOwner()));
+		return;
+	}
+	
+	//StaggerSet->OnStaggerChanged.AddUObject(this, &ThisClass::HandleStaggerChange);
+	// StaggerSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChange);
+	// StaggerSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 }
 
 float URsStaggerComponent::GetCurrentStagger()
@@ -71,29 +81,21 @@ void URsStaggerComponent::HandleAbilitySystemInitialized()
 	}
 }
 
-void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& ChangeData)
+void URsStaggerComponent::HandleStaggerChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
-	OnStaggerChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
-
-	bool GroggyCondition = ChangeData.NewValue >= GetMaxStagger();
-	if (GroggyCondition != bIsGroggy)
-	{
-		bIsGroggy = !bIsGroggy;
-		OnRep_bIsGroggy(!bIsGroggy);
-		GetOwner()->ForceNetUpdate();
-	}
+	OnStaggerChanged.Broadcast(this, OldValue, NewValue, DamageInstigator);
 }
 
 void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (OldValue == false && bIsGroggy == true)
+	if (OldValue == false && bIsGroggy == true && StaggerSet)
 	{
 		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
 		{
 			FGameplayEventData Payload;
-			Payload.EventTag = URsGameSettingDataAsset::Get().GroggyAbilityTag;
+			Payload.EventTag = RsGameplayTags::ABILITY_GROGGY;
 			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
-		OnGroggyEvent.Broadcast(GetOwner());
+		OnGroggyStarted.Broadcast(GetOwner());
 	}
 }

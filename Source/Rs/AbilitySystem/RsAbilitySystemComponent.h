@@ -8,8 +8,6 @@
 
 class URsAbilitySet;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDealDamage, UAbilitySystemComponent*, TargetASC, FGameplayEffectSpecHandle, DamageEffectHandle);
-
 /**
  * 
  */
@@ -20,14 +18,8 @@ class RS_API URsAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	URsAbilitySystemComponent();
-
-	void InitializeAbilitySet(URsAbilitySet* AbilitySet);
-	void NotifyAbilitySystemInitialized();
 	
-	void GrantAttribute(FGameplayAttribute Attribute, float BaseValue);
-	void GrantAbility(TSubclassOf<UGameplayAbility> Ability);
-	void GrantEffect(TSubclassOf<UGameplayEffect> Effect);
-	void GrantTags(FGameplayTagContainer Tags);
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	
 	void SetupAbilityInputBindings();
 	void TearDownAbilityInputBindings();
@@ -38,8 +30,16 @@ public:
 
 	// Sends a replicated gameplay event to an actor.
 	void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
+	
+protected:
+	void InitAbilitySet(URsAbilitySet* AbilitySet);
+	void InitAttribute(FGameplayAttribute Attribute, float BaseValue);
+	void InitAbility(TSubclassOf<UGameplayAbility> Ability);
+	void InitEffect(TSubclassOf<UGameplayEffect> Effect);
+	void InitTags(FGameplayTagContainer Tags);
 
 private:
+	// Data used to initialize the Ability System Component.
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TArray<URsAbilitySet*> AbilitySets;
 	

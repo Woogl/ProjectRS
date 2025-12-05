@@ -3,13 +3,11 @@
 
 #include "RsPlayerCharacter.h"
 
-#include "AbilitySystemGlobals.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
-#include "GameFramework/PlayerState.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/Player/RsPlayerController.h"
@@ -17,7 +15,8 @@
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bReplicates = true;
+	// This will replicate minimal Gameplay Effects to Simulated Proxies and full info to everyone else.
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetMesh());
@@ -75,15 +74,14 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 void ARsPlayerCharacter::UnPossessed()
 {
 	// Unbind old ability inputs.
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->TearDownAbilityInputBindings();
-	}
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->TearDownAbilityInputBindings();
 	
 	Super::UnPossessed();
 
 	GetMovementComponent()->StopMovementImmediately();
 	
+	check(GameplayCameraComponent);
 	GameplayCameraComponent->DeactivateCamera();
 }
 
@@ -97,23 +95,11 @@ void ARsPlayerCharacter::OnRep_PlayerState()
 
 void ARsPlayerCharacter::InitializeAbilitySystem()
 {
-	// Initialize the ASC once.
-	if (AbilitySystemComponent == nullptr)
-	{
-		AbilitySystemComponent = Cast<URsAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPlayerState()));
-		if (AbilitySystemComponent)
-		{
-			AbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
-			for (URsAbilitySet* AbilitySet : AbilitySets)
-			{
-				AbilitySystemComponent->InitializeAbilitySet(AbilitySet);
-			}
-			AbilitySystemComponent->NotifyAbilitySystemInitialized();
-		}
-	}
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	// Bind ability input for player controlled character.
-	if (AbilitySystemComponent && IsPlayerControlled() && IsLocallyControlled())
+	if (IsPlayerControlled() && IsLocallyControlled())
 	{
 		AbilitySystemComponent->SetupAbilityInputBindings();
 	}

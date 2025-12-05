@@ -10,12 +10,14 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsEnergySet;
+class URsStaggerSet;
+class URsHealthSet;
 class URsBattleActorManagerComponent;
 class URsShieldComponent;
 class URsNameplateComponent;
 class URsStaggerComponent;
 class URsHealthComponent;
-class URsAbilitySet;
 class URsAbilitySystemComponent;
 class UBehaviorTree;
 
@@ -35,6 +37,8 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
 	
+	virtual void PostInitializeComponents() override;
+	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -51,8 +55,6 @@ public:
 	virtual bool IsLockableTarget_Implementation() const override;
 
 protected:
-	virtual void InitializeAbilitySystem() {};
-	
 	// Creates a pointer to the Ability System Component associated with this Character.
 	// Player Characters will set this in OnRep_PlayerState() locally, and in OnPossessed() server side.
 	// Non Player Characters will set this in its constructor.
@@ -73,13 +75,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
-
-	// Data used to initialize the Ability System Component.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS")
-	TArray<URsAbilitySet*> AbilitySets;
 	
-	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
-	ERsTeamId TeamId = ERsTeamId::Neutral;
+	UFUNCTION()
+	virtual void HandleDeathStarted(AActor* OwningActor);
+
+	UFUNCTION()
+	virtual void HandleGroggyStarted(AActor* OwningActor);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.MaterialInterface,/Script/Engine.Texture2D"))
@@ -93,4 +94,20 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BehaviorTree;
+	
+	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
+	ERsTeamId TeamId = ERsTeamId::Neutral;
+	
+private:
+	UPROPERTY()
+	TObjectPtr<const URsHealthSet> HealthSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsStaggerSet> StaggerSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsEnergySet> EnergySet;
+
+	// UPROPERTY()
+	// TObjectPtr<const URsCombatSet> CombatSet;
 };

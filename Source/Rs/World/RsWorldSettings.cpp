@@ -3,9 +3,7 @@
 
 #include "RsWorldSettings.h"
 
-#include "Rs/AbilitySystem/RsAbilitySet.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 
 ARsWorldSettings::ARsWorldSettings()
 {
@@ -19,12 +17,7 @@ void ARsWorldSettings::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	TObjectPtr<URsAbilitySet> AbilitySet = URsAbilitySystemSettings::Get().WorldAbilitySet.LoadSynchronous();
-	if (AbilitySystemComponent && AbilitySet)
-	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-		AbilitySystemComponent->InitializeAbilitySet(AbilitySet);
-	}
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 UAbilitySystemComponent* ARsWorldSettings::GetAbilitySystemComponent() const

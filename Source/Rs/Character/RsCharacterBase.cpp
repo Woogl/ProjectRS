@@ -7,8 +7,12 @@
 #include "Component/RsCharacterMovementComponent.h"
 #include "Component/RsHealthComponent.h"
 #include "Component/RsStaggerComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
@@ -16,11 +20,29 @@
 ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<URsCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
+	// Avoid ticking characters if possible.
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	
+	GetCapsuleComponent()->InitCapsuleSize(40.f, 90.f);
+	
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	
+	// Set the pointer from Character Base to the Ability System Component sub-object.
+	AbilitySystemComponent = CreateDefaultSubobject<URsAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	
+	// These attribute sets will be detected by AbilitySystemComponent::InitializeComponent. Keeping a reference so that the sets don't get garbage collected before that.
+	HealthSet = CreateDefaultSubobject<URsHealthSet>(TEXT("HealthSet"));
+	StaggerSet = CreateDefaultSubobject<URsStaggerSet>(TEXT("StaggerSet"));
+	EnergySet = CreateDefaultSubobject<URsEnergySet>(TEXT("EnergySet"));
+	
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::HandleDeathStarted);
+	
 	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
+	StaggerComponent->OnGroggyStarted.AddDynamic(this, &ThisClass::HandleGroggyStarted);
 	
 	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
 	NameplateComponent->SetupAttachment(RootComponent);
@@ -36,6 +58,18 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	CharacterAppearance->SetCollisionProfileName(TEXT("CharacterMesh"));
 
 	BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
+	
+	// AbilitySystemComponent needs to be updated at a high frequency.
+	SetNetUpdateFrequency(100.0f);
+	bReplicates = true;
+}
+
+void ARsCharacterBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -57,12 +91,10 @@ URsAbilitySystemComponent* ARsCharacterBase::GetRsAbilitySystemComponent() const
 
 void ARsCharacterBase::GetOwnedGameplayTags(FGameplayTagContainer& OutTagContainer) const
 {
-	if (AbilitySystemComponent)
-	{
-		FGameplayTagContainer OwnedTags;
-		AbilitySystemComponent->GetOwnedGameplayTags(OwnedTags);
-		OutTagContainer = MoveTemp(OwnedTags);
-	}
+	check(AbilitySystemComponent);
+	FGameplayTagContainer OwnedTags;
+	AbilitySystemComponent->GetOwnedGameplayTags(OwnedTags);
+	OutTagContainer = MoveTemp(OwnedTags);
 }
 
 void ARsCharacterBase::SetGenericTeamId(const FGenericTeamId& InTeamID)
@@ -83,4 +115,27 @@ bool ARsCharacterBase::IsLockableTarget_Implementation() const
 		return false;
 	}
 	return true;
+}
+
+void ARsCharacterBase::HandleDeathStarted(AActor* OwningActor)
+{
+	if (GetController())
+	{
+		GetController()->SetIgnoreMoveInput(true);
+	}
+
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	check(CapsuleComp);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
+	UCharacterMovementComponent* CharMoveComp = GetCharacterMovement();
+	check(CharMoveComp);
+	CharMoveComp->StopMovementImmediately();
+	CharMoveComp->DisableMovement();
+}
+
+void ARsCharacterBase::HandleGroggyStarted(AActor* OwningActor)
+{
+	
 }

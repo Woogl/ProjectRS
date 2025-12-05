@@ -13,7 +13,6 @@
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 #include "Rs/UI/RsUILibrary.h"
 
 ARsPlayerController::ARsPlayerController()

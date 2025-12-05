@@ -6,10 +6,11 @@
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 
 URsHealthComponent::URsHealthComponent()
 {
@@ -43,9 +44,16 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 		return;
 	}
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChange);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetBarrierAttribute()).AddUObject(this, &ThisClass::HandleBarrierChange);
 	HealthSet = AbilitySystemComponent->GetSet<URsHealthSet>();
+	if (!HealthSet)
+	{
+		UE_LOG(RsAbilityLog, Error, TEXT("Cannot initialize RsHealthComponent for owner [%s] with NULL health set."), *GetNameSafe(GetOwner()));
+		return;
+	}
+	
+	HealthSet->OnCurrentHealthChanged.AddUObject(this, &ThisClass::HandleCurrentHealthChange);
+	HealthSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChange);
+	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 	
 	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleBarrierAdded);
 }
@@ -111,31 +119,49 @@ float URsHealthComponent::GetBarrier()
 
 void URsHealthComponent::HandleAbilitySystemInitialized()
 {
-	if (URsAbilitySystemComponent* RsASC = URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(GetOwner()))
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		Initialize(RsASC);
+		Initialize(ASC);
 	}
 }
 
-void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& ChangeData)
+void URsHealthComponent::HandleCurrentHealthChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
-	OnHealthChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
+	OnCurrentHealthChanged.Broadcast(this, OldValue, NewValue, DamageInstigator);
+}
 
-	if (ChangeData.NewValue <= 0.f && bIsDead == false)
+void URsHealthComponent::HandleMaxHealthChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+	OnMaxHealthChanged.Broadcast(this, OldValue, NewValue, DamageInstigator);
+}
+
+void URsHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+#if WITH_SERVER_CODE
+	auto AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+	if (AbilitySystemComponent && DamageEffectSpec)
 	{
-		if (GetOwner()->HasAuthority())
-		{
-			const bool bOldDead = bIsDead;
-			bIsDead = true;
-			OnRep_bIsDead(bOldDead);
-			GetOwner()->ForceNetUpdate();
-		}
+		// Send the "GameplayEvent.Death" gameplay event through the owner's ability system.  This can be used to trigger a death gameplay ability.
+		FGameplayEventData Payload;
+		Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
+		Payload.Instigator = DamageInstigator;
+		Payload.Target = AbilitySystemComponent->GetAvatarActor();
+		Payload.OptionalObject = DamageEffectSpec->Def;
+		Payload.ContextHandle = DamageEffectSpec->GetEffectContext();
+		Payload.InstigatorTags = *DamageEffectSpec->CapturedSourceTags.GetAggregatedTags();
+		Payload.TargetTags = *DamageEffectSpec->CapturedTargetTags.GetAggregatedTags();
+		Payload.EventMagnitude = DamageMagnitude;
+
+		FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+		AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
 	}
+
+#endif // #if WITH_SERVER_CODE
 }
 
 void URsHealthComponent::HandleBarrierChange(const FOnAttributeChangeData& ChangeData)
 {
-	OnBarrierChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
+	//OnBarrierChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
 }
 
 void URsHealthComponent::HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle)
@@ -198,8 +224,8 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 	{
 		// Handle death
 		FGameplayEventData Payload;
-		Payload.EventTag = URsGameSettingDataAsset::Get().DeathAbilityTag;
-		URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(GetOwner(), Payload.EventTag, Payload);
+		Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
+		URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(GetOwner(), RsGameplayTags::ABILITY_DEATH, Payload);
 		OnDeathStarted.Broadcast(GetOwner());
 	}
 }
