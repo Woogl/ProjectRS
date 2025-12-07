@@ -4,6 +4,7 @@
 #include "RsEnemyCharacter.h"
 
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/UI/Component/RsNameplateComponent.h"
 
 
 ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer)
@@ -11,6 +12,10 @@ ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer
 {
 	// Minimal Mode means that no GameplayEffects will replicate. They will only live on the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	
+	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
+	NameplateComponent->SetupAttachment(RootComponent);
+	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 
 	TeamId = ERsTeamId::Enemy;
 }
@@ -21,4 +26,7 @@ void ARsEnemyCharacter::BeginPlay()
 	
 	check(AbilitySystemComponent);
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	
+	check(NameplateComponent);
+	NameplateComponent->Initialize(this);
 }

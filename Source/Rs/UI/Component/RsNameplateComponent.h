@@ -17,16 +17,7 @@ class RS_API URsNameplateComponent : public UWidgetComponent
 
 public:
 	URsNameplateComponent();
-
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	UFUNCTION(BlueprintCallable)
 	void Initialize(ARsCharacterBase* InOwnerCharacter);
-
-protected:
-	void HandleAbilitySystemInitialized();
-	
-	UFUNCTION()
-	void HandlePossessChanged(APawn* OldPawn, APawn* NewPawn);
 };

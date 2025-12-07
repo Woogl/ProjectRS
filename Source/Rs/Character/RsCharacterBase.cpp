@@ -16,9 +16,8 @@
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
-
 #include "Rs/Battle/RsBattleLibrary.h"
-#include "Rs/UI/Component/RsNameplateComponent.h"
+
 
 ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<URsCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -48,10 +47,6 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	
 	StaggerComponent = CreateDefaultSubobject<URsStaggerComponent>(TEXT("StaggerComponent"));
 	StaggerComponent->OnGroggyStarted.AddDynamic(this, &ThisClass::HandleGroggyStarted);
-	
-	NameplateComponent = CreateDefaultSubobject<URsNameplateComponent>(TEXT("NameplateComponent"));
-	NameplateComponent->SetupAttachment(RootComponent);
-	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));

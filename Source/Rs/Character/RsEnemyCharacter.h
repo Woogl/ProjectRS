@@ -15,6 +15,10 @@ class RS_API ARsEnemyCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()
 	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsNameplateComponent> NameplateComponent;
+	
 public:
 	ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 

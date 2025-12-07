@@ -69,9 +69,6 @@ protected:
 	TObjectPtr<URsStaggerComponent> StaggerComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
-	TObjectPtr<URsNameplateComponent> NameplateComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
