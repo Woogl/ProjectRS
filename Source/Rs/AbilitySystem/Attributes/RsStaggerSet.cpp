@@ -5,6 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
 
 URsStaggerSet::URsStaggerSet()
 {
@@ -13,6 +14,11 @@ URsStaggerSet::URsStaggerSet()
 	StaggerDecay = 0.f;
 
 	StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger"));
+	
+	RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_GPmax, GetMaxStaggerAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_GPdec, GetStaggerDecayAttribute());
+	RegisterTagToStat(RsGameplayTags::META_DAMAGEGP, GetBaseDamageAttribute());
 }
 
 void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

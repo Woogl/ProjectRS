@@ -21,9 +21,9 @@ public:
 	
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Movement)
-	FGameplayAttributeData Movement;
-	ATTRIBUTE_ACCESSORS(URsSpeedSet, Movement)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeed)
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(URsSpeedSet, MoveSpeed)
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ActionSpeed)
 	FGameplayAttributeData ActionSpeed;
@@ -31,7 +31,7 @@ public:
 
 protected:
 	UFUNCTION()
-	virtual void OnRep_Movement(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
 	virtual void OnRep_ActionSpeed(const FGameplayAttributeData& OldValue);

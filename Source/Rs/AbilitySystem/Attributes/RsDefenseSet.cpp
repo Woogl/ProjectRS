@@ -4,10 +4,17 @@
 #include "RsDefenseSet.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
 
 URsDefenseSet::URsDefenseSet()
+	: Defense(0.f)
 {
-	Defense = 0.f;
+	RegisterTagToStat(RsGameplayTags::STAT_DEF, GetDefenseAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_INV, GetInvincibleAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_SUA, GetSuperArmorAttribute());
+	
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_DEF_SOURCE, GetDefenseAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_DEF_TARGET, GetDefenseAttribute());
 }
 
 void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

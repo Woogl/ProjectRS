@@ -6,20 +6,23 @@
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
+#include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 
 URsCoefficientCalculationBase::URsCoefficientCalculationBase()
 {
 	// Capture every attribute of source and target
 	// NOTE: Attributes to be captured must exist in the source and target!
-    for (const TTuple<FGameplayTag, FGameplayAttribute>& CoefficientTag : URsAbilitySystemSettings::Get().Coefficients)
+    for (const auto [Tag, Coefficient] : URsAttributeSetBase::GetCoefficientMap())
     {
-	    FString CoeffString = CoefficientTag.Key.ToString();
-    	FGameplayTag SourceTag = FGameplayTag::RequestGameplayTag(FName(CoeffString + TEXT(".Source")));
-    	FGameplayTag TargetTag = FGameplayTag::RequestGameplayTag(FName(CoeffString + TEXT(".Target")));
-    	
-    	CaptureAttribute(SourceTag, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Source, true);
-    	CaptureAttribute(TargetTag, CoefficientTag.Value, EGameplayEffectAttributeCaptureSource::Target, false);
+	    FString CoeffString = Tag.ToString();
+	    if (CoeffString.EndsWith(TEXT(".Source")))
+	    {
+	    	CaptureAttribute(Tag, Coefficient, EGameplayEffectAttributeCaptureSource::Source, true);
+	    }
+    	else if (CoeffString.EndsWith(TEXT(".Target")))
+    	{
+    		CaptureAttribute(Tag, Coefficient, EGameplayEffectAttributeCaptureSource::Target, false);
+    	}
 	}
 }
 

@@ -9,6 +9,7 @@
 #include "RsAbilitySystemGlobals.h"
 #include "RsAbilitySystemSettings.h"
 #include "Abilities/RsGameplayAbility.h"
+#include "Attributes/RsAttributeSetBase.h"
 #include "Effect/RsEffectTable.h"
 #include "Rs/RsLogChannels.h"
 
@@ -123,11 +124,7 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(UDataTab
 
 FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByTag(FGameplayTag StatTag)
 {
-	if (const FGameplayAttribute* FoundStat = URsAbilitySystemSettings::Get().Attributes.Find(StatTag))
-	{
-		return *FoundStat;
-	}
-	return nullptr;
+	return URsAttributeSetBase::TagToAttribute(StatTag);
 }
 
 float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag)
@@ -143,12 +140,5 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 
 FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByCoefficientTag(FGameplayTag CoefficientTag)
 {
-	for (const TTuple<FGameplayTag, FGameplayAttribute>& Coeff : URsAbilitySystemSettings::Get().Coefficients)
-	{
-		if (CoefficientTag.MatchesTag(Coeff.Key))
-		{
-			return Coeff.Value;
-		}
-	}
-	return FGameplayAttribute();
+	return URsAttributeSetBase::TagToAttribute(CoefficientTag);
 }

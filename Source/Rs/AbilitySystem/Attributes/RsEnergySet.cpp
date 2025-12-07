@@ -6,13 +6,18 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
 
 URsEnergySet::URsEnergySet()
+	: CurrentUltimate(0.f)
+	, MaxUltimate(1.f)
+	, CurrentMana(0.f)
+	, MaxMana(1.f)
 {
-	CurrentUltimate = 0.f;
-	MaxUltimate = 1.f;
-	CurrentMana = 0.f;
-	MaxMana = 1.f;
+	RegisterTagToStat(RsGameplayTags::STAT_UPcur, GetCurrentUltimateAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_UPmax, GetMaxUltimateAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_MPcur, GetCurrentManaAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_MPmax, GetMaxManaAttribute());
 }
 
 void URsEnergySet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

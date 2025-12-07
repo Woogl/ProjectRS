@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttributeSet.h"
-#include "GameplayTagContainer.h"
 #include "Engine/DeveloperSettings.h"
 #include "RsAbilitySystemSettings.generated.h"
 
@@ -23,12 +21,6 @@ public:
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
-	
-	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Stat,Meta", ForceInlineRow))
-	TMap<FGameplayTag, FGameplayAttribute> Attributes;
-
-	UPROPERTY(EditDefaultsOnly, config, Category = "Attribute", meta = (Categories = "Coefficient", ForceInlineRow))
-	TMap<FGameplayTag, FGameplayAttribute> Coefficients;
 
 	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCostEffect;

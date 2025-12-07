@@ -80,7 +80,7 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return SuperArmor;
 	}
-	if (Attribute == URsSpeedSet::GetMovementAttribute())
+	if (Attribute == URsSpeedSet::GetMoveSpeedAttribute())
 	{
 		return 1.f;
 	}

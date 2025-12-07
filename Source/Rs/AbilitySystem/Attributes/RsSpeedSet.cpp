@@ -4,31 +4,30 @@
 #include "RsSpeedSet.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Rs/RsGameplayTags.h"
 
 URsSpeedSet::URsSpeedSet()
+	: MoveSpeed(1.f)
+	, ActionSpeed(1.f)
 {
-	Movement = 1.f;
-	ActionSpeed = 1.f;
+	RegisterTagToStat(RsGameplayTags::STAT_MOV, GetMoveSpeedAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_ATS, GetActionSpeedAttribute());
 }
 
 void URsSpeedSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
-
 	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsSpeedSet, Movement, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsSpeedSet, ActionSpeed, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsSpeedSet, MoveSpeed, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsSpeedSet, ActionSpeed, COND_None, REPNOTIFY_Always);
 }
 
 void URsSpeedSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
 {
 	Super::PreAttributeBaseChange(Attribute, NewValue);
 
-	if (Attribute == GetMovementAttribute())
+	if (Attribute == GetMoveSpeedAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 0.f);
 	}
@@ -38,9 +37,9 @@ void URsSpeedSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, fl
 	}
 }
 
-void URsSpeedSet::OnRep_Movement(const FGameplayAttributeData& OldValue)
+void URsSpeedSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsSpeedSet, Movement, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsSpeedSet, MoveSpeed, OldValue);
 }
 
 void URsSpeedSet::OnRep_ActionSpeed(const FGameplayAttributeData& OldValue)

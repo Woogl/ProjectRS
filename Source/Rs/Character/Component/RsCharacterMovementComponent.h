@@ -24,5 +24,5 @@ protected:
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 	
 	UPROPERTY()
-	TObjectPtr<const URsSpeedSet> MovementSet = nullptr;
+	TObjectPtr<const URsSpeedSet> SpeedSet = nullptr;
 };

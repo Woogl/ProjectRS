@@ -132,7 +132,7 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 	// Grant attributes from data table row.
 	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
 	{
-		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
+		for (const FGameplayAttribute& Attribute : URsAttributeSetBase::GetStats())
 		{
 			float BaseValue = Row->GetBaseValue(Attribute);
 			InitAttribute(Attribute, BaseValue);

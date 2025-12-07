@@ -24,6 +24,21 @@ class RS_API URsAttributeSetBase : public UAttributeSet
 {
 	GENERATED_BODY()
 
+public:
+	static FGameplayAttribute TagToAttribute(const FGameplayTag& Tag);
+	static TArray<FGameplayAttribute> GetStats();
+	static TArray<FGameplayAttribute> GetCoefficients();
+	
+	static TMap<FGameplayTag, FGameplayAttribute> GetStatMap();
+	static TMap<FGameplayTag, FGameplayAttribute> GetCoefficientMap();
+	
 protected:
 	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
+	
+	void RegisterTagToStat(FGameplayTag Tag, FGameplayAttribute Attribute);
+	void RegisterTagToCoefficient(FGameplayTag Tag, FGameplayAttribute Attribute);
+	
+private:
+	inline static TMap<FGameplayTag, FGameplayAttribute> StatMap;
+	inline static TMap<FGameplayTag, FGameplayAttribute> CoefficientMap;
 };

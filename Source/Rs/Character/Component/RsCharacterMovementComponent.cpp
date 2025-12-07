@@ -15,16 +15,16 @@ void URsCharacterMovementComponent::BeginPlay()
 
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 	{
-		MovementSet = ASC->GetSet<URsSpeedSet>();
+		SpeedSet = ASC->GetSet<URsSpeedSet>();
 	}
 }
 
 float URsCharacterMovementComponent::GetMaxSpeed() const
 {
 	float MovementSpeedMultiplier = 1.f;
-	if (MovementSet)
+	if (SpeedSet)
 	{
-		MovementSpeedMultiplier = MovementSet->GetMovement();
+		MovementSpeedMultiplier = SpeedSet->GetMoveSpeed();
 	}
 	return Super::GetMaxSpeed() * MovementSpeedMultiplier;
 }
