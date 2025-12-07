@@ -10,6 +10,9 @@
 #include "Rs/Camera/LockOn/RsLockOnInterface.h"
 #include "RsCharacterBase.generated.h"
 
+class URsRagdollComponent;
+class URsDefenseSet;
+class URsAttackSet;
 class URsEnergySet;
 class URsStaggerSet;
 class URsHealthSet;
@@ -36,8 +39,6 @@ class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterfac
 
 public:
 	ARsCharacterBase(const FObjectInitializer& ObjectInitializer);
-	
-	virtual void PostInitializeComponents() override;
 	
 	// Implement the IAbilitySystemInterface. (This is used to find the Ability System Component.)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -72,6 +73,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<USkeletalMeshComponent> CharacterAppearance;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	TObjectPtr<URsRagdollComponent> RagdollComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
@@ -107,7 +111,13 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<const URsEnergySet> EnergySet;
-
+	
+	UPROPERTY()
+	TObjectPtr<const URsAttackSet> AttackSet;
+	
+	UPROPERTY()
+	TObjectPtr<const URsDefenseSet> DefenseSet;
+	
 	// UPROPERTY()
 	// TObjectPtr<const URsCombatSet> CombatSet;
 };

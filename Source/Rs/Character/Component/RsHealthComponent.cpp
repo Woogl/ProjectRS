@@ -5,6 +5,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
+#include "RsRagdollComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
@@ -51,9 +52,12 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 		return;
 	}
 	
-	HealthSet->OnCurrentHealthChanged.AddUObject(this, &ThisClass::HandleCurrentHealthChange);
-	HealthSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChange);
-	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChange);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetBarrierAttribute()).AddUObject(this, &ThisClass::HandleBarrierChange);
+	
+	// HealthSet->OnCurrentHealthChanged.AddUObject(this, &ThisClass::HandleCurrentHealthChange);
+	// HealthSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChange);
+	// HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 	
 	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleBarrierAdded);
 }
@@ -159,6 +163,23 @@ void URsHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 #endif // #if WITH_SERVER_CODE
 }
 
+void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& ChangeData)
+{
+	UE_LOG(LogTemp, Warning, TEXT("health changed: %f -> %f"), ChangeData.OldValue, ChangeData.NewValue);
+	
+	if (ChangeData.NewValue <= 0.f && bIsDead == false)
+	{
+		if (GetOwner()->HasAuthority())
+		{
+			const bool bOldDead = bIsDead;
+			bIsDead = true;
+			OnRep_bIsDead(bOldDead);
+			GetOwner()->ForceNetUpdate();
+		}
+	}
+	//HealthChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
+}
+
 void URsHealthComponent::HandleBarrierChange(const FOnAttributeChangeData& ChangeData)
 {
 	//OnBarrierChange.Broadcast(ChangeData.OldValue, ChangeData.NewValue);
@@ -225,7 +246,14 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 		// Handle death
 		FGameplayEventData Payload;
 		Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
-		URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(GetOwner(), RsGameplayTags::ABILITY_DEATH, Payload);
+		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+		{
+			OwnerASC->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
+		}
+		if (URsRagdollComponent* RagdollComp = GetOwner()->FindComponentByClass<URsRagdollComponent>())
+		{
+			RagdollComp->StartRagdoll_Local();
+		}
 		OnDeathStarted.Broadcast(GetOwner());
 	}
 }

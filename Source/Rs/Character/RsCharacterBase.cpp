@@ -6,10 +6,13 @@
 #include "Component/RsBattleActorManagerComponent.h"
 #include "Component/RsCharacterMovementComponent.h"
 #include "Component/RsHealthComponent.h"
+#include "Component/RsRagdollComponent.h"
 #include "Component/RsStaggerComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
@@ -37,6 +40,8 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	HealthSet = CreateDefaultSubobject<URsHealthSet>(TEXT("HealthSet"));
 	StaggerSet = CreateDefaultSubobject<URsStaggerSet>(TEXT("StaggerSet"));
 	EnergySet = CreateDefaultSubobject<URsEnergySet>(TEXT("EnergySet"));
+	AttackSet = CreateDefaultSubobject<URsAttackSet>(TEXT("AttackSet"));
+	DefenseSet = CreateDefaultSubobject<URsDefenseSet>(TEXT("DefenseSet"));
 	
 	HealthComponent = CreateDefaultSubobject<URsHealthComponent>(TEXT("HealthComponent"));
 	HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::HandleDeathStarted);
@@ -52,6 +57,8 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	//GetMesh()->SetVisibility(false);
 	
+	RagdollComponent = CreateDefaultSubobject<URsRagdollComponent>(TEXT("RagdollComponent"));
+	
 	CharacterAppearance = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterAppearance"));
 	CharacterAppearance->SetupAttachment(GetMesh());
 	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
@@ -62,14 +69,7 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	// AbilitySystemComponent needs to be updated at a high frequency.
 	SetNetUpdateFrequency(100.0f);
 	bReplicates = true;
-}
-
-void ARsCharacterBase::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	
-	check(AbilitySystemComponent);
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	bAlwaysRelevant = true;
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
