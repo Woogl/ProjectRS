@@ -124,11 +124,19 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 		return;
 	}
 		
-	InitTags(AbilitySet->GrantedTags);
-		
 	for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
 	{
 		InitAttribute(Attribute, BaseValue.GetValueAtLevel(0));
+	}
+	
+	// Grant attributes from data table row.
+	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
+		{
+			float BaseValue = Row->GetBaseValue(Attribute);
+			InitAttribute(Attribute, BaseValue);
+		}
 	}
 		
 	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitySet->GrantedAbilities)
@@ -140,22 +148,15 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 	{
 		InitEffect(Effect);
 	}
-		
-	// Grant attributes from data table row.
-	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
-	{
-		for (const auto& [Tag, Attribute] : URsAbilitySystemSettings::Get().Attributes)
-		{
-			float BaseValue = Row->GetBaseValue(Attribute);
-			InitAttribute(Attribute, BaseValue);
-		}
-	}
+	
+	InitTags(AbilitySet->GrantedTags);
 }
 
 void URsAbilitySystemComponent::InitAttribute(FGameplayAttribute Attribute, float BaseValue)
 {
 	if (!Attribute.IsValid())
 	{
+		UE_LOG(RsAbilityLog, Warning, TEXT("[%s] has invalid attribute in ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
 
@@ -170,18 +171,16 @@ void URsAbilitySystemComponent::InitAttribute(FGameplayAttribute Attribute, floa
 void URsAbilitySystemComponent::InitAbility(TSubclassOf<UGameplayAbility> Ability)
 {
 	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 0, INDEX_NONE, GetOwnerActor());
-	FGameplayAbilitySpecHandle GrantedAbilityHandle = GiveAbility(AbilitySpec);
-	GrantedAbilityHandles.Add(GrantedAbilityHandle);
+	FGameplayAbilitySpecHandle Handle = GiveAbility(AbilitySpec);
+	GrantedAbilityHandles.Add(Handle);
 }
 
 void URsAbilitySystemComponent::InitEffect(TSubclassOf<UGameplayEffect> Effect)
 {
-	FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-	if (FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingSpec(Effect, 0, EffectContextHandle); GameplayEffectSpecHandle.IsValid())
+	FActiveGameplayEffectHandle Handle = BP_ApplyGameplayEffectToSelf(Effect, 0, MakeEffectContext());
+	if (Handle.IsValid())
 	{
-		FActiveGameplayEffectHandle GrantedEffectHandle = ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get(), this);
-		GrantedEffectHandles.Add(GrantedEffectHandle);
+		GrantedEffectHandles.Add(Handle);
 	}
 }
 
