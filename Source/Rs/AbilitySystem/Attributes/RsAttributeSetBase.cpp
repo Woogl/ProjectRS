@@ -19,26 +19,12 @@ FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 	return FGameplayAttribute();
 }
 
-TArray<FGameplayAttribute> URsAttributeSetBase::GetStats()
-{
-	TArray<FGameplayAttribute> OutValues;
-	StatMap.GenerateValueArray(OutValues);
-	return OutValues;
-}
-
-TArray<FGameplayAttribute> URsAttributeSetBase::GetCoefficients()
-{
-	TArray<FGameplayAttribute> OutValues;
-	CoefficientMap.GenerateValueArray(OutValues);
-	return OutValues;
-}
-
-TMap<FGameplayTag, FGameplayAttribute> URsAttributeSetBase::GetStatMap()
+const TMap<FGameplayTag, FGameplayAttribute>& URsAttributeSetBase::GetStatMap()
 {
 	return StatMap;
 }
 
-TMap<FGameplayTag, FGameplayAttribute> URsAttributeSetBase::GetCoefficientMap()
+const TMap<FGameplayTag, FGameplayAttribute>& URsAttributeSetBase::GetCoefficientMap()
 {
 	return CoefficientMap;
 }
