@@ -7,7 +7,6 @@
 #include "AbilitySystemInterface.h"
 #include "RsAbilitySystemComponent.h"
 #include "RsAbilitySystemGlobals.h"
-#include "RsAbilitySystemSettings.h"
 #include "Abilities/RsGameplayAbility.h"
 #include "Attributes/RsAttributeSetBase.h"
 #include "Effect/RsEffectTable.h"
@@ -48,7 +47,7 @@ void URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(AActor* Actor,
 	}
 }
 
-UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
+UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
 	if (AbilitySystemComponent == nullptr)
 	{
@@ -73,9 +72,9 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTag(const UAbilitySyst
 	return AbilityInstance;
 }
 
-URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
+URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch)
 {
-	if (UGameplayAbility* FoundAbility = FindAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch))
+	if (UGameplayAbility* FoundAbility = FindAbilityWithTags(AbilitySystemComponent, AbilityTag.GetSingleTagContainer(), bExactMatch))
 	{
 		if (URsGameplayAbility* FoundRsAbility = Cast<URsGameplayAbility>(FoundAbility))
 		{
@@ -83,25 +82,25 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbility
 		}
 		else
 		{
-			UE_LOG(RsLog, Warning, TEXT("Cannot find Ability: %s"), *AbilityTags.ToString());
+			UE_LOG(RsLog, Warning, TEXT("Cannot find Ability: %s"), *AbilityTag.ToString());
 		}
 	}
 	
 	return nullptr;
 }
 
-void URsAbilitySystemLibrary::ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff)
+void URsAbilitySystemLibrary::ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float TimeDiff)
 {
-	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch);
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTag, bExactMatch);
 	if (FoundRsAbility)
 	{
 		FoundRsAbility->ModifyCooldownRemaining(TimeDiff);
 	}
 }
 
-void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining)
+void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float NewRemaining)
 {
-	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTags, bExactMatch);
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTag, bExactMatch);
 	if (FoundRsAbility)
 	{
 		FoundRsAbility->SetCooldownRemaining(NewRemaining);

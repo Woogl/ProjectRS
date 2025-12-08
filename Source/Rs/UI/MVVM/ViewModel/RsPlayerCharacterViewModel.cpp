@@ -10,6 +10,7 @@
 #include "RsHealthSetViewModel.h"
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
@@ -34,15 +35,15 @@ void URsPlayerCharacterViewModel::Initialize()
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
 			}
-			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get().ESkillTag.GetSingleTagContainer(), true))
+			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_E, true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));
 			}
-			if (URsGameplayAbility* Skill_Q = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get().QSkillTag.GetSingleTagContainer(), true))
+			if (URsGameplayAbility* Skill_Q = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_Q, true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Q, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Q));
 			}
-			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get().UltSkillTag.GetSingleTagContainer(), true))
+			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get().UltSkillTag, true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Ult, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult));
 			}
@@ -173,7 +174,7 @@ bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 	if (UAbilitySystemComponent* ASC = GetModel<ThisClass>()->GetAbilitySystemComponent())
 	{
 		FGameplayTagContainer LinkSkillTag = URsGameSettingDataAsset::Get().LinkSkillTag.GetSingleTagContainer();
-		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTag(ASC, LinkSkillTag, false))
+		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTags(ASC, LinkSkillTag, false))
 		{
 			if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(LinkSkillAbility->GetClass()))
 			{

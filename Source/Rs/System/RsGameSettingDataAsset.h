@@ -20,18 +20,6 @@ public:
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
-	FGameplayTag DeathAbilityTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
-	FGameplayTag GroggyAbilityTag;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
-	FGameplayTag ESkillTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
-	FGameplayTag QSkillTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
 	FGameplayTag UltSkillTag;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Tag for Native Code | Ability")
@@ -44,7 +32,7 @@ public:
 	FGameplayTag TripleLinkSkillUITag;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle")
-	float DefenseConstant = 190.f;
+	float DamageReductionConstant = 190.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle")
 	float GroggyDamageMultiplier = 1.6f;
