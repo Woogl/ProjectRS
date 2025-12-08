@@ -20,14 +20,14 @@ public:
 	// Override ModelType in child class.
 	using ModelType = UObject;
 
-	template <class T>
-	static T* CreateViewModel(typename T::ModelType* Model);
+	template <typename T>
+	static T* CreateViewModel(T::ModelType* Model);
 	
 	template <typename T>
-	static T* CreateViewModel(const typename T::ModelType* Model);
+	static T* CreateViewModel(const T::ModelType* Model);
 	
 	template <typename T>
-	typename T::ModelType* GetModel() const;
+	T::ModelType* GetModel() const;
 	
 protected:
 	virtual void Initialize() {};
@@ -53,12 +53,12 @@ T* URsViewModelBase::CreateViewModel(typename T::ModelType* Model)
 template <typename T>
 T* URsViewModelBase::CreateViewModel(const typename T::ModelType* Model)
 {
-	typename T::ModelType* MutableModel = const_cast<typename T::ModelType*>(Model);
+	typename T::ModelType* MutableModel = const_cast<T::ModelType*>(Model);
 	return CreateViewModel<T>(MutableModel);
 }
 
 template <typename T>
-typename T::ModelType* URsViewModelBase::GetModel() const
+T::ModelType* URsViewModelBase::GetModel() const
 {
 	static_assert(TIsDerivedFrom<T, URsViewModelBase>::IsDerived, "T must be derived from URsViewModelBase");
 	return Cast<typename T::ModelType>(Model.Get());

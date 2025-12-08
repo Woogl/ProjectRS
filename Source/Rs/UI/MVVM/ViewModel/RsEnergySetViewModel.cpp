@@ -14,10 +14,22 @@ void URsEnergySetViewModel::Initialize()
 {
 	Super::Initialize();
 	
+	// Data bindings
 	if (ASC.IsValid())
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).AddUObject(this, &ThisClass::MaxUltimateChanged);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).AddUObject(this, &ThisClass::CurrentUltimateChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxManaAttribute()).AddUObject(this, &ThisClass::MaxManaChanged);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentManaAttribute()).AddUObject(this, &ThisClass::CurrentManaChanged);
+	}
+
+	// Initial value set
+	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
+	{
+		SetMaxUltimate(EnergySet->GetMaxUltimate());
+		SetCurrentUltimate(EnergySet->GetCurrentUltimate());
+		SetMaxMana(EnergySet->GetMaxMana());
+		SetCurrentMana(EnergySet->GetCurrentMana());
 	}
 }
 
@@ -27,33 +39,82 @@ void URsEnergySetViewModel::Deinitialize()
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).RemoveAll(this);
 		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxManaAttribute()).RemoveAll(this);
+		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentManaAttribute()).RemoveAll(this);
 	}
+	
 	Super::Deinitialize();
 }
 
 float URsEnergySetViewModel::GetCurrentUltimate() const
 {
-	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
+	return CurrentUltimate;
+}
+
+void URsEnergySetViewModel::SetCurrentUltimate(float Value)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentUltimate, Value))
 	{
-		return EnergySet->GetCurrentUltimate();
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
 	}
-	return 0.f;
 }
 
 float URsEnergySetViewModel::GetMaxUltimate() const
 {
-	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
+	return MaxUltimate;
+}
+
+void URsEnergySetViewModel::SetMaxUltimate(float Value)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(MaxUltimate, Value))
 	{
-		return EnergySet->GetMaxUltimate();
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
 	}
-	return 0.f;
 }
 
 float URsEnergySetViewModel::GetUltimatePercent() const
 {
-	if (GetMaxUltimate() != 0.f)
+	if (MaxUltimate != 0.f)
 	{
-		return GetCurrentUltimate() / GetMaxUltimate();
+		return CurrentUltimate / MaxUltimate;
+	}
+	else
+	{
+		return 0.f;
+	}
+}
+
+float URsEnergySetViewModel::GetCurrentMana() const
+{
+	return CurrentMana;
+}
+
+void URsEnergySetViewModel::SetCurrentMana(float Value)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(CurrentMana, Value))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetManaPercent);
+	}
+}
+
+float URsEnergySetViewModel::GetMaxMana() const
+{
+	return MaxMana;
+}
+
+void URsEnergySetViewModel::SetMaxMana(float Value)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(MaxMana, Value))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetManaPercent);
+	}
+}
+
+float URsEnergySetViewModel::GetManaPercent() const
+{
+	if (MaxMana != 0.f)
+	{
+		return CurrentMana / MaxMana;
 	}
 	else
 	{
@@ -63,12 +124,20 @@ float URsEnergySetViewModel::GetUltimatePercent() const
 
 void URsEnergySetViewModel::MaxUltimateChanged(const FOnAttributeChangeData& Data)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetMaxUltimate);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
+	SetMaxUltimate(Data.NewValue);
 }
 
 void URsEnergySetViewModel::CurrentUltimateChanged(const FOnAttributeChangeData& Data)
 {
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetCurrentUltimate);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetUltimatePercent);
+	SetCurrentUltimate(Data.NewValue);
+}
+
+void URsEnergySetViewModel::MaxManaChanged(const FOnAttributeChangeData& Data)
+{
+	SetMaxMana(Data.NewValue);
+}
+
+void URsEnergySetViewModel::CurrentManaChanged(const FOnAttributeChangeData& Data)
+{
+	SetCurrentMana(Data.NewValue);
 }

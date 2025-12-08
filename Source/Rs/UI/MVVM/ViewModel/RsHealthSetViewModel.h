@@ -28,38 +28,47 @@ protected:
 	virtual void Deinitialize() override;
 
 public:
-	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetCurrentHealth() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
+	void SetCurrentHealth(float Value);
+	
 	float GetMaxHealth() const;
-
+	void SetMaxHealth(float Value);
+	
 	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetBarrier() const;
+	FText GetCurrentHealthText() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetMaxHealthText() const;
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetHealthPercent() const;
+	
+	float GetBarrier() const;
+	void SetBarrier(float Value);
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	float GetBarrierPercent() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	FText GetCurrentHealthText() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	FText GetMaxHealthText() const;
-
+	
 	UFUNCTION(FieldNotify, BlueprintPure)
 	bool IsDead() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	FLinearColor GetColorByDeathState() const;
+	FLinearColor GetPortraitColor() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
-	FLinearColor GetColorByHealthPercent() const;
+	FLinearColor GetHealthBarColor() const;
 	
 private:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void CurrentHealthChanged(const FOnAttributeChangeData& Data);
 	void BarrierChanged(const FOnAttributeChangeData& Data);
+	
+	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
+	float CurrentHealth = 0.f;
+	
+	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
+	float MaxHealth = 0.f;
+	
+	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
+	float Barrier = 0.f;
 };

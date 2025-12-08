@@ -20,7 +20,7 @@ public:
 	static T* GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
 
 	template <typename T>
-	static T* GetOrCreateViewModel(typename T::ModelType* Model, bool bWarnIfNotFound = true);
+	static T* GetOrCreateViewModel(T::ModelType* Model, bool bWarnIfNotFound = true);
 };
 
 template <typename T>
