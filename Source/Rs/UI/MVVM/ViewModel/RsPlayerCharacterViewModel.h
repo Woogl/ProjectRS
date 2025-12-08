@@ -82,5 +82,5 @@ private:
 	TObjectPtr<URsAbilityViewModel> AbilityViewModel_Q;
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsAbilityViewModel> AbilityViewModel_Ult;
+	TObjectPtr<URsAbilityViewModel> AbilityViewModel_R;
 };

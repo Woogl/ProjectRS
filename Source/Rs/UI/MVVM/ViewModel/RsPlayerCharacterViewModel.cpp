@@ -43,9 +43,9 @@ void URsPlayerCharacterViewModel::Initialize()
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Q, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Q));
 			}
-			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, URsGameSettingDataAsset::Get().UltSkillTag, true))
+			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_R, true))
 			{
-				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Ult, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult));
+				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_R, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult));
 			}
 		}
 
