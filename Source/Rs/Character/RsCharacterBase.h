@@ -17,8 +17,6 @@ class URsEnergySet;
 class URsStaggerSet;
 class URsHealthSet;
 class URsBattleActorManagerComponent;
-class URsShieldComponent;
-class URsNameplateComponent;
 class URsStaggerComponent;
 class URsHealthComponent;
 class URsAbilitySystemComponent;

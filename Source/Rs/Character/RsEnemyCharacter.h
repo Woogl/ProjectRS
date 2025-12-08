@@ -6,9 +6,9 @@
 #include "RsCharacterBase.h"
 #include "RsEnemyCharacter.generated.h"
 
+class URsNameplateComponent;
 /**
  * Base class to use for Server controlled Characters.
- * This class contains its own Ability System Component.
  */
 UCLASS(Abstract, Blueprintable)
 class RS_API ARsEnemyCharacter : public ARsCharacterBase

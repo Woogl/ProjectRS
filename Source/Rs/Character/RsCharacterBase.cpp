@@ -128,6 +128,8 @@ void ARsCharacterBase::HandleDeathStarted(AActor* OwningActor)
 	check(CharMoveComp);
 	CharMoveComp->StopMovementImmediately();
 	CharMoveComp->DisableMovement();
+	
+	RagdollComponent->StartRagdoll_Local();
 }
 
 void ARsCharacterBase::HandleGroggyStarted(AActor* OwningActor)

@@ -5,7 +5,6 @@
 
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
-#include "RsRagdollComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
@@ -220,10 +219,6 @@ void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
 		{
 			OwnerASC->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
-		}
-		if (URsRagdollComponent* RagdollComp = GetOwner()->FindComponentByClass<URsRagdollComponent>())
-		{
-			RagdollComp->StartRagdoll_Local();
 		}
 		OnDeathStarted.Broadcast(GetOwner());
 	}

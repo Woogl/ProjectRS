@@ -85,9 +85,9 @@ void ARsPlayerCharacter::UnPossessed()
 	GameplayCameraComponent->DeactivateCamera();
 }
 
-void ARsPlayerCharacter::OnRep_PlayerState()
+void ARsPlayerCharacter::OnRep_Controller()
 {
-	Super::OnRep_PlayerState();
+	Super::OnRep_Controller();
 	
 	// Client-side
 	InitializeAbilitySystem();
