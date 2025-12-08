@@ -137,8 +137,6 @@ void URsHealthComponent::HandleAbilitySystemInitialized()
 
 void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Warning, TEXT("health changed: %f -> %f"), Data.OldValue, Data.NewValue);
-	
 	if (Data.NewValue <= 0.f && bIsDead == false)
 	{
 		if (GetOwner()->HasAuthority())
