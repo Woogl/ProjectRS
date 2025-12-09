@@ -64,7 +64,6 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	// AbilitySystemComponent needs to be updated at a high frequency.
 	SetNetUpdateFrequency(100.0f);
 	bReplicates = true;
-	bAlwaysRelevant = true;
 }
 
 void ARsCharacterBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

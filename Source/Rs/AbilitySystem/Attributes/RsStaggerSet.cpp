@@ -86,12 +86,7 @@ void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	// Replicated to all
 	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, CurrentStagger, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, MaxStagger, COND_None, REPNOTIFY_Always);
-
-	// Owner Only
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_OwnerOnly;
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsStaggerSet, StaggerDecay, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, StaggerDecay, COND_None, REPNOTIFY_Always);
 }
 
 void URsStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
