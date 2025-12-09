@@ -7,7 +7,6 @@
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/AbilitySystem/Calculation/Execution/RsHealthDamageExecution.h"
@@ -86,7 +85,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 {
 	for (const FModifierCoefficient& ModCoeff : ModifierDataComp->ModifierCoefficients)
 	{
-		FGameplayAttribute StatToModify = URsAbilitySystemLibrary::GetAttributeByTag(ModCoeff.Stat);
+		FGameplayAttribute StatToModify = URsAttributeSetBase::TagToAttribute(ModCoeff.Stat);
 
 		for (const auto [CoeffTag, CoeffNum] : ModCoeff.Coefficients)
 		{
@@ -101,7 +100,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			
 			// (Coefficient.ATK.source * 1.5) + 500
 			//               ^
-			FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
+			FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
 			// (Coefficient.ATK.source * 1.5) + 500
 			//                    ^
 			EGameplayEffectAttributeCaptureSource SourceOrTarget;
@@ -115,7 +114,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			}
 			else
 			{
-				UE_LOG(RsLog, Error, TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+				UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 				continue;
 			}
 			bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
@@ -154,7 +153,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 			
 		// (Coefficient.ATK.source * 1.5) + 500
 		//               ^
-		FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
+		FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
 		// (Coefficient.ATK.source * 1.5) + 500
 		//                    ^
 		EGameplayEffectAttributeCaptureSource SourceOrTarget;
@@ -168,7 +167,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 		}
 		else
 		{
-			UE_LOG(RsLog, Error, TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+			UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 			continue;
 		}
 		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
@@ -198,7 +197,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 			
 		// (Coefficient.IMP.source * 1.5) + 500
 		//               ^
-		FGameplayAttribute StatToCapture = URsAbilitySystemLibrary::GetAttributeByCoefficientTag(CoeffTag);
+		FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
 		// (Coefficient.IMP.source * 1.5) + 500
 		//                    ^
 		EGameplayEffectAttributeCaptureSource SourceOrTarget;
@@ -212,7 +211,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 		}
 		else
 		{
-			UE_LOG(RsLog, Error, TEXT("Coefficient tag { %s } must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+			UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 			continue;
 		}
 		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
