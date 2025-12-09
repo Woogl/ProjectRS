@@ -24,7 +24,7 @@ URsHealthSet::URsHealthSet()
 	
 	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_SOURCE, GetCurrentHealthAttribute());
 	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_TARGET, GetCurrentHealthAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_TARGET, GetMaxHealthAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_SOURCE, GetMaxHealthAttribute());
 	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_TARGET, GetMaxHealthAttribute());
 	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_SOURCE, GetBarrierAttribute());
 	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_TARGET, GetBarrierAttribute());

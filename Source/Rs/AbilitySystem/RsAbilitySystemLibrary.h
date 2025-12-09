@@ -53,13 +53,9 @@ public: /** Gameplay Effect */
 	static FActiveGameplayEffectHandle ApplyEffectByTable(UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level);
 	
 public: /** Gameplay Attribute */
-	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
-	static FGameplayAttribute GetAttributeByTag(FGameplayTag StatTag);
+	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat,Coefficient"))
+	static FGameplayAttribute GetAttributeByTag(FGameplayTag Tag);
 	
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat"))
 	static float GetNumericAttributeByTag(UAbilitySystemComponent* ASC, FGameplayTag StatTag);
-
-	// ex. Coefficient.ATK.Source -> AttackAttribute
-	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Coefficient"))
-	static FGameplayAttribute GetAttributeByCoefficientTag(FGameplayTag CoefficientTag);
 };

@@ -32,8 +32,8 @@ public:
 protected:
 	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
 	
-	void RegisterTagToStat(FGameplayTag Tag, FGameplayAttribute Attribute);
-	void RegisterTagToCoefficient(FGameplayTag Tag, FGameplayAttribute Attribute);
+	void RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute);
+	void RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute);
 	
 private:
 	inline static TMap<FGameplayTag, FGameplayAttribute> StatMap;

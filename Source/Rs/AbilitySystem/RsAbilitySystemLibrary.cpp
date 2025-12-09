@@ -136,8 +136,3 @@ float URsAbilitySystemLibrary::GetNumericAttributeByTag(UAbilitySystemComponent*
 	FGameplayAttribute Attribute = GetAttributeByTag(StatTag);
 	return ASC->GetNumericAttribute(Attribute);
 }
-
-FGameplayAttribute URsAbilitySystemLibrary::GetAttributeByCoefficientTag(FGameplayTag CoefficientTag)
-{
-	return URsAttributeSetBase::TagToAttribute(CoefficientTag);
-}
