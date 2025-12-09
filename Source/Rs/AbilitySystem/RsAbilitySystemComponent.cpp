@@ -123,19 +123,23 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 		UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
-		
-	for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
+
+	if (AbilitySet->GrantedAttributeTableRow.IsNull())
 	{
-		InitAttribute(Attribute, BaseValue.GetValueAtLevel(0));
-	}
-	
-	// Grant attributes from data table row.
-	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
-	{
-		for (const auto [Tag, Attribute] : URsAttributeSetBase::GetStatMap())
+		for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
 		{
-			float BaseValue = Row->GetBaseValue(Attribute);
-			InitAttribute(Attribute, BaseValue);
+			InitAttribute(Attribute, BaseValue.GetValueAtLevel(0));
+		}
+	}
+	else
+	{
+		if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
+		{
+			for (const auto [Tag, Attribute] : URsAttributeSetBase::GetStatMap())
+			{
+				float BaseValue = Row->GetBaseValue(Attribute);
+				InitAttribute(Attribute, BaseValue);
+			}
 		}
 	}
 		
