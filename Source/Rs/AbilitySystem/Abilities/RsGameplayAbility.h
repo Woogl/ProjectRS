@@ -47,16 +47,16 @@ public:
 	
 	// TODO: Editor detail customization
 	// Only RsEffectTableRowBase can be selected.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect")
 	TArray<TObjectPtr<UDataTable>> EffectTables;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, GetValueOptions="GetEffectTableRowNames"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, GetValueOptions="GetEffectTableRowNames"))
 	TMap<FGameplayTag, FName> EffectMapDataTable;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI", meta=(DisplayThumbnail="true", AllowedClasses="/Script/Engine.MaterialInterface,/Script/Engine.Texture2D"))
@@ -68,16 +68,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
 	FText Description = FText::GetEmpty();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldowns", meta = (Categories = "Cooldown"))
 	FGameplayTag CooldownTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldowns")
 	float CooldownDuration = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldowns")
 	ERsCooldownApplyTiming CooldownApplyTiming = ERsCooldownApplyTiming::OnActivate;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldowns", meta = (ClampMin = "0"))
 	int32 MaxRechargeStacks = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Costs", meta = (ClampMin = "0"))
@@ -149,8 +149,8 @@ protected:
 	void K2_OnRemoveAbility();
 
 	// Override in BP to select a montage. Defaults to a random one.
-	UFUNCTION(BlueprintNativeEvent, Category = "RS|Mongage")
-	UAnimMontage* SelectMontageToPlay();
+	UFUNCTION(BlueprintNativeEvent, Category = "RS|Animation")
+	UAnimMontage* SelectMontageToPlay() const;
 	
 	UFUNCTION()
 	void HandleMontageCompleted();

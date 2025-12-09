@@ -14,6 +14,8 @@
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
+#include "Rs/Player/RsPlayerState.h"
+#include "Rs/System/RsGameplayStatics.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -474,16 +476,35 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	K2_OnRemoveAbility();
 }
 
-UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation()
+UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation() const
 {
-	// TODO: Replicate
-	int32 RandomIndex = FMath::RandRange(0, Montages.Num() - 1);
-	if (Montages.IsValidIndex(RandomIndex))
+	if (Montages.Num() == 0)
 	{
-		return Montages[RandomIndex];
+		return nullptr;
 	}
 	
-	return nullptr;
+	if (Montages.Num() == 1)
+	{
+		return Montages[0];
+	}
+	
+	int16 PredKey = CurrentActivationInfo.GetActivationPredictionKey().Current;
+	int32 UserId = 0;
+	if (const AController* Controller = GetController())
+	{
+		if (const APlayerState* PS = Controller->PlayerState)
+		{
+			// TODO: UserId
+			UserId = PS->GetPlayerId();
+		}
+	}
+	
+	uint32 Seed = GetTypeHash(PredKey);
+	Seed = HashCombineFast(Seed, GetTypeHash(UserId));
+
+	FRandomStream Stream(Seed);
+	const int32 RandomIndex = Stream.RandHelper(Montages.Num());
+	return Montages[RandomIndex];
 }
 
 void URsGameplayAbility::HandleMontageCompleted()
