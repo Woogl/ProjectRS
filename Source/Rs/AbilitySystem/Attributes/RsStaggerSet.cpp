@@ -8,15 +8,14 @@
 #include "Rs/RsGameplayTags.h"
 
 URsStaggerSet::URsStaggerSet()
+	: MaxStagger(1.f)
+ 	, CurrentStagger(0.f)
+ 	, StaggerDecay(0.f)
 {
-	MaxStagger = 1.f;
-	CurrentStagger = 0.f;
-	StaggerDecay = 0.f;
-
-	StaggerDamageCueTag = FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Damage.Stagger"));
+	StaggerDamageCueTag = RsGameplayTags::GAMEPLAYCUE_DAMAGE_STAGGER;
 	
-	RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
 	RegisterTagToStat(RsGameplayTags::STAT_GPmax, GetMaxStaggerAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
 	RegisterTagToStat(RsGameplayTags::STAT_GPdec, GetStaggerDecayAttribute());
 	RegisterTagToStat(RsGameplayTags::META_DAMAGEGP, GetBaseDamageAttribute());
 }
@@ -83,20 +82,19 @@ void URsStaggerSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	// Replicated to all
-	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, CurrentStagger, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, MaxStagger, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, CurrentStagger, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsStaggerSet, StaggerDecay, COND_None, REPNOTIFY_Always);
-}
-
-void URsStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, CurrentStagger, OldValue);
 }
 
 void URsStaggerSet::OnRep_MaxStagger(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, MaxStagger, OldValue);
+}
+
+void URsStaggerSet::OnRep_CurrentStagger(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsStaggerSet, CurrentStagger, OldValue);
 }
 
 void URsStaggerSet::OnRep_StaggerDecay(const FGameplayAttributeData& OldValue)

@@ -23,16 +23,11 @@ URsEnergySet::URsEnergySet()
 void URsEnergySet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
 	
-	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentUltimate, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxUltimate, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, CurrentMana, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsEnergySet, MaxMana, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsEnergySet, CurrentUltimate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsEnergySet, MaxUltimate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsEnergySet, CurrentMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsEnergySet, MaxMana, COND_None, REPNOTIFY_Always);
 }
 
 void URsEnergySet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

@@ -26,16 +26,11 @@ URsAttackSet::URsAttackSet()
 void URsAttackSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
 	
-	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, Attack, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, Impact, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, CriticalRate, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsAttackSet, CriticalDamage, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, Attack, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, Impact, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, CriticalRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, CriticalDamage, COND_None, REPNOTIFY_Always);
 }
 
 void URsAttackSet::OnRep_Attack(const FGameplayAttributeData& OldValue)

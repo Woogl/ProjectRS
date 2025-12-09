@@ -21,14 +21,9 @@ void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	FDoRepLifetimeParams Params{};
-	Params.bIsPushBased = true;
-	Params.Condition = COND_None;
-	
-	// Replicated to all
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Defense, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, Invincible, Params);
-	DOREPLIFETIME_WITH_PARAMS_FAST(URsDefenseSet, SuperArmor, Params);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, Defense, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, Invincible, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, SuperArmor, COND_None, REPNOTIFY_Always);
 }
 
 void URsDefenseSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

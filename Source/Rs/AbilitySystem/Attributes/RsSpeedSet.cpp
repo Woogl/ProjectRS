@@ -18,7 +18,6 @@ void URsSpeedSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// Replicated to all
 	DOREPLIFETIME_CONDITION_NOTIFY(URsSpeedSet, MoveSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsSpeedSet, ActionSpeed, COND_None, REPNOTIFY_Always);
 }

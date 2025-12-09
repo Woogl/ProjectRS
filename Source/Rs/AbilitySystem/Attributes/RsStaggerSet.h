@@ -22,13 +22,13 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentStagger)
-	FGameplayAttributeData CurrentStagger;
-	ATTRIBUTE_ACCESSORS(URsStaggerSet, CurrentStagger)
-
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxStagger)
 	FGameplayAttributeData MaxStagger;
 	ATTRIBUTE_ACCESSORS(URsStaggerSet, MaxStagger)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentStagger)
+	FGameplayAttributeData CurrentStagger;
+	ATTRIBUTE_ACCESSORS(URsStaggerSet, CurrentStagger)
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaggerDecay)
 	FGameplayAttributeData StaggerDecay;
@@ -46,10 +46,10 @@ public:
 
 protected:
 	UFUNCTION()
-	virtual void OnRep_CurrentStagger(const FGameplayAttributeData& OldValue);
-
-	UFUNCTION()
 	virtual void OnRep_MaxStagger(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_CurrentStagger(const FGameplayAttributeData& OldValue);
 
 	UFUNCTION()
 	virtual void OnRep_StaggerDecay(const FGameplayAttributeData& OldValue);
