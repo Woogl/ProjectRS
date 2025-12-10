@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "RsPlayerState.generated.h"
 
+#define INVALID_USER_ID 0
+
 /**
  * 
  */
@@ -17,15 +19,18 @@ class RS_API ARsPlayerState : public APlayerState
 public:
 	ARsPlayerState();
 	
-	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	uint32 GetUserId() const;
 	void SetUserId(uint32 NewUserId);
 	
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_UserId)
-	uint32 UserId = 0;
+	uint32 UserId = INVALID_USER_ID;
 	
 	UFUNCTION()
 	virtual void OnRep_UserId();
+	
+	UFUNCTION()
+	void SetUserId_Cheat(const TArray<FString>& Args);
 };
