@@ -16,4 +16,16 @@ class RS_API ARsPlayerState : public APlayerState
 
 public:
 	ARsPlayerState();
+	
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+	
+	uint32 GetUserId() const;
+	void SetUserId(uint32 NewUserId);
+	
+private:
+	UPROPERTY(ReplicatedUsing = OnRep_UserId)
+	uint32 UserId = 0;
+	
+	UFUNCTION()
+	virtual void OnRep_UserId();
 };

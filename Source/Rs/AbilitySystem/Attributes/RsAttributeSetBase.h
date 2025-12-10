@@ -32,7 +32,10 @@ public:
 protected:
 	void AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const;
 	
+	// Registers a Tag-to-Stat mapping on the CDO.
 	void RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute);
+	
+	// Registers a Tag-to-Coefficient mapping on the CDO.
 	void RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute);
 	
 private:

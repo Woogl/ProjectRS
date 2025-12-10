@@ -147,6 +147,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
+	
+	UFUNCTION(BlueprintPure, Category = "RS")
+	int32 GetDeterministicRandomNumber(int32 Min, int32 Max) const;
 
 	// Override in BP to select a montage. Defaults to a random one.
 	UFUNCTION(BlueprintNativeEvent, Category = "RS|Animation")

@@ -15,7 +15,6 @@
 #include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Player/RsPlayerState.h"
-#include "Rs/System/RsGameplayStatics.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -478,33 +477,41 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 
 UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation() const
 {
-	if (Montages.Num() == 0)
+	const int32 MontagesNum = Montages.Num();
+	if (MontagesNum == 0)
 	{
 		return nullptr;
 	}
 	
-	if (Montages.Num() == 1)
+	if (MontagesNum == 1)
 	{
 		return Montages[0];
 	}
 	
+	int32 Index = GetDeterministicRandomNumber(0, MontagesNum - 1);
+	return Montages[Index];
+}
+
+int32 URsGameplayAbility::GetDeterministicRandomNumber(int32 Min, int32 Max) const
+{
 	int16 PredKey = CurrentActivationInfo.GetActivationPredictionKey().Current;
 	int32 UserId = 0;
+	int32 StartTime = 0;
 	if (const AController* Controller = GetController())
 	{
-		if (const APlayerState* PS = Controller->PlayerState)
+		if (const ARsPlayerState* PS = Controller->GetPlayerState<ARsPlayerState>())
 		{
-			// TODO: UserId
-			UserId = PS->GetPlayerId();
+			UserId = PS->GetUserId();
+			StartTime = PS->GetStartTime();
 		}
 	}
 	
 	uint32 Seed = GetTypeHash(PredKey);
 	Seed = HashCombineFast(Seed, GetTypeHash(UserId));
+	Seed = HashCombineFast(Seed, GetTypeHash(StartTime));
 
 	FRandomStream Stream(Seed);
-	const int32 RandomIndex = Stream.RandHelper(Montages.Num());
-	return Montages[RandomIndex];
+	return Stream.RandRange(Min, Max);
 }
 
 void URsGameplayAbility::HandleMontageCompleted()
