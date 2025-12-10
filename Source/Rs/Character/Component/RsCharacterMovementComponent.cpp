@@ -38,9 +38,11 @@ void URsCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previous
 		if (IsFalling())
 		{
 			ASC->AddLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
+			ASC->RemoveLooseGameplayTag(RsGameplayTags::MOVEMENT_GROUNDED);
 		}
 		else
 		{
+			ASC->AddLooseGameplayTag(RsGameplayTags::MOVEMENT_GROUNDED);
 			ASC->RemoveLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
 		}
 	}

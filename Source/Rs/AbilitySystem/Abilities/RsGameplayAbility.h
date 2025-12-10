@@ -152,7 +152,7 @@ protected:
 	int32 GetDeterministicRandomNumber(int32 Min, int32 Max) const;
 
 	// Override in BP to select a montage. Defaults to a random one.
-	UFUNCTION(BlueprintNativeEvent, Category = "RS|Animation")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "RS|Animation")
 	UAnimMontage* SelectMontageToPlay() const;
 	
 	UFUNCTION()

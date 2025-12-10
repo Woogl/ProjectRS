@@ -137,9 +137,12 @@ void ARsHUD::BeginPlay()
 
 void ARsHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (URsBattleSubsystem* BattleSubsystem = GetOwningLocalPlayer()->GetSubsystem<URsBattleSubsystem>())
+	if (GetOwningLocalPlayer())
 	{
-		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
+		if (URsBattleSubsystem* BattleSubsystem = GetOwningLocalPlayer()->GetSubsystem<URsBattleSubsystem>())
+		{
+			BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
+		}
 	}
 	
 	Super::EndPlay(EndPlayReason);
