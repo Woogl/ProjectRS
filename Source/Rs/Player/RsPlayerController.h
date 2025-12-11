@@ -7,9 +7,9 @@
 #include "CommonPlayerController.h"
 #include "GameplayTagContainer.h"
 #include "LoadingProcessInterface.h"
-#include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
+class URsProjectilePredictionComponent;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -31,6 +31,9 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URsLockOnComponent> LockOnComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Prediction", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<URsProjectilePredictionComponent> ProjectilePredictionComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> ControllerMappingContext;

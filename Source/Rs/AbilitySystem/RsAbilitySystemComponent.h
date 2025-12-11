@@ -24,12 +24,17 @@ public:
 	void SetupAbilityInputBindings();
 	void TearDownAbilityInputBindings();
 
-	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* Actor);
+	static URsAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor);
 	
 	void CallOrRegister_OnAbilitySystemInitialized(FSimpleMulticastDelegate::FDelegate Delegate);
 
 	// Sends a replicated gameplay event to an actor.
 	void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
+	
+	// Consumes cached TargetData from client (only TargetData) and returns whether any data was actually consumed.
+	bool TryConsumeClientReplicatedTargetData(FGameplayAbilitySpecHandle AbilityHandle, FPredictionKey AbilityOriginalPredictionKey);
+	
+	FGameplayEffectSpecHandle MakeOutgoingSpecWithHitResult(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level, const FHitResult& HitResult) const;
 	
 protected:
 	void InitAbilitySet(URsAbilitySet* AbilitySet);

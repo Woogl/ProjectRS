@@ -80,7 +80,7 @@ void URsAbilitySystemComponent::TearDownAbilityInputBindings()
 	}
 }
 
-URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(AActor* Actor)
+URsAbilitySystemComponent* URsAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor)
 {
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor))
 	{
@@ -114,6 +114,28 @@ void URsAbilitySystemComponent::SendGameplayEventToActor_Replicated(AActor* Acto
 			SendGameplayEventToActor_Server(Actor, EventTag, Payload);
 		}
 	}
+}
+
+bool URsAbilitySystemComponent::TryConsumeClientReplicatedTargetData(FGameplayAbilitySpecHandle AbilityHandle, FPredictionKey AbilityOriginalPredictionKey)
+{
+	TSharedPtr<FAbilityReplicatedDataCache> CachedData = AbilityTargetDataMap.Find(FGameplayAbilitySpecHandleAndPredictionKey(AbilityHandle, AbilityOriginalPredictionKey));
+	if (CachedData.IsValid())
+	{
+		const bool bConsumed = CachedData->TargetData.Num() > 0;
+		CachedData->TargetData.Clear();
+		CachedData->bTargetConfirmed = false;
+		CachedData->bTargetCancelled = false;
+		return bConsumed;
+	}
+	return false;
+}
+
+FGameplayEffectSpecHandle URsAbilitySystemComponent::MakeOutgoingSpecWithHitResult(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level, const FHitResult& HitResult) const
+{
+	FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+	EffectContext.AddHitResult(HitResult);
+ 
+	return MakeOutgoingSpec(GameplayEffectClass, Level, EffectContext);
 }
 
 void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
