@@ -35,7 +35,6 @@ public class Rs : ModuleRules
 			"Niagara",
             "DeveloperSettings",
             "AIModule",
-            "NetCore",
         });
 	}
 }

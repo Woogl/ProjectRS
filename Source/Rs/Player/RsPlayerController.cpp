@@ -8,7 +8,6 @@
 #include "AIController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "RsProjectilePredictionComponent.h"
 #include "GameFramework/HUD.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
@@ -20,7 +19,6 @@ ARsPlayerController::ARsPlayerController()
 {
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
-	ProjectilePredictionComponent = CreateDefaultSubobject<URsProjectilePredictionComponent>(TEXT("ProjectilePredictionComponent"));
 }
 
 void ARsPlayerController::BeginPlay()
