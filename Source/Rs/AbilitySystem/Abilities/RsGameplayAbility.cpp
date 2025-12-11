@@ -128,12 +128,9 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
-	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
 	CurrentCooldownTags.Reset();
-	if (ParentTags)
-	{
-		CurrentCooldownTags.AppendTags(*ParentTags);
-	}
+	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
+	CurrentCooldownTags.AppendTags(*ParentTags);
 	CurrentCooldownTags.AddTag(CooldownTag);
 	return &CurrentCooldownTags;
 }
