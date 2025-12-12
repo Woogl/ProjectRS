@@ -6,6 +6,7 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
+class UArrowComponent;
 class USphereComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
@@ -17,10 +18,13 @@ class RS_API ARsProjectile : public AActor
 	
 public:
 	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Collision;
+	TObjectPtr<USphereComponent> Collision;
 	
 	UPROPERTY(VisibleAnywhere)
-	UProjectileMovementComponent* ProjectileMovement;
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UArrowComponent> Arrow;
 
 public:
 	// Apply when collision overlapped or blocked.

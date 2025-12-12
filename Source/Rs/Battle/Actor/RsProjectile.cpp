@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
@@ -25,6 +26,9 @@ ARsProjectile::ARsProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
+	
+	Arrow = CreateDefaultSubobject<UArrowComponent>("Arrow");
+	Arrow->SetupAttachment(GetRootComponent());
 	
 	InitialLifeSpan = 10.f;
 }
