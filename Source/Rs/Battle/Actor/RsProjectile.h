@@ -36,7 +36,7 @@ public:
 	FDataTableRowHandle EffectTableRow;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
-	FRsTargetingFilter EffectFilter;
+	FRsTargetingFilter TargetFilter;
 
 	// Limit on effect application counts (0 means no limit).
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
