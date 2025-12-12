@@ -25,12 +25,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (GetOptions="GetSocketNames"))
 	FName SpawnSocketName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bFireAtLeastOne = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
-	FGameplayTag DamageEventTag;
-
 protected:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 

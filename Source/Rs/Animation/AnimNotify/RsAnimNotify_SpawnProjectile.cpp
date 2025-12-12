@@ -3,73 +3,65 @@
 
 #include "RsAnimNotify_SpawnProjectile.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "GameFramework/Character.h"
+#include "Abilities/Tasks/AbilityTask_SpawnActor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
+
 
 URsAnimNotify_SpawnProjectile::URsAnimNotify_SpawnProjectile()
 {
 	bIsNativeBranchingPoint = true;
-	
-#if WITH_EDITORONLY_DATA
-	bShouldFireInEditor = true;
-#endif // WITH_EDITORONLY_DATA
 }
 
 void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!MeshComp || !ProjectileClass)
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		return;
-	}
-	
-	ACharacter* Character = Cast<ACharacter>(MeshComp->GetOwner());
-	if (!Character)
-	{
-		return;
-	}
-
-	UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character);
-	if (!OwnerASC)
-	{
-		return;
-	}
-	
-	if (Targets.Num() == 0 && bFireAtLeastOne)
-	{
-		Targets.Add(nullptr);
-	}
-			
-	const FVector CharacterForward = Character->GetActorForwardVector();
-	for (AActor* Target : Targets)
-	{
-		FVector SpawnLocation = !SpawnSocketName.IsNone() ? Character->GetMesh()->GetSocketLocation(SpawnSocketName) : Character->GetActorLocation();
-		FVector TargetLocation = Target ? Target->GetActorLocation() : SpawnLocation + CharacterForward * DefaultTargetDistance;
-
-		if (ARsProjectile* Projectile = Character->GetWorld()->SpawnActorDeferred<ARsProjectile>(ProjectileClass, FTransform(), Character, Character))
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
-			FRotator SpawnRotation;
-			switch (Projectile->Direction)
+			if (UGameplayAbility* OwningAbility = ASC->GetAnimatingAbility())
 			{
-			case ERsProjectileDirection::SourceForward:
-				SpawnRotation = CharacterForward.Rotation();
-				break;
-
-			case ERsProjectileDirection::SourceToTarget:
-				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
-				break;
-
-			case ERsProjectileDirection::SkyToTarget:
-				SpawnLocation = TargetLocation + FVector(0, 0, Projectile->SpawnHeight) + CharacterForward * (Projectile->FallbackSpawnDistance - DefaultTargetDistance);
-				SpawnRotation = (TargetLocation - SpawnLocation).GetSafeNormal().Rotation();
-				break;
+				FGameplayAbilityTargetingLocationInfo StartInfo;
+				StartInfo.LiteralTransform = MeshComp->GetSocketTransform(SocketName);
+				
+				FGameplayAbilityTargetingLocationInfo EndInfo;
+				if (Targets.IsValidIndex(0))
+				{
+					EndInfo.LiteralTransform = Targets[0]->GetActorTransform();
+				}
+				else
+				{
+					FTransform EndTransform = Owner->GetActorTransform();
+					EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 100.f);
+					EndInfo.LiteralTransform = EndTransform;
+				}
+				
+				FGameplayAbilityTargetDataHandle TargetData = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromLocations(StartInfo, EndInfo);
+				
+				if (UAbilityTask_SpawnActor* SpawnTask = UAbilityTask_SpawnActor::SpawnActor(OwningAbility, TargetData, ProjectileClass))
+				{
+					AActor* SpawnedActor;
+					SpawnTask->BeginSpawningActor(OwningAbility, TargetData, ProjectileClass, SpawnedActor);
+					if (SpawnedActor)
+					{
+						SpawnedActor->SetInstigator(Cast<APawn>(ASC->GetOwnerActor()));
+						if (ARsProjectile* Projectile = Cast<ARsProjectile>(SpawnedActor))
+						{
+							Projectile->OwningAbility = OwningAbility;
+							if (Projectile->ProjectileMovement->bIsHomingProjectile && Targets.IsValidIndex(0))
+							{
+								Projectile->ProjectileMovement->HomingTargetComponent = Targets[0]->GetRootComponent();
+							}
+						}
+					}
+					SpawnTask->FinishSpawningActor(OwningAbility, TargetData, SpawnedActor);
+				}
 			}
-
-			Projectile->SetDamage(DamageEventTag);
-			Projectile->FinishSpawning(FTransform(SpawnRotation, SpawnLocation));
 		}
 	}
 }

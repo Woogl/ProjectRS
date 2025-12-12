@@ -1,4 +1,4 @@
-// Copyright 2024 Team BH.
+// Copyright 2025 Team BH.
 
 #pragma once
 
@@ -6,70 +6,57 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
-class UNiagaraSystem;
-class URsGameplayAbility;
+class USphereComponent;
+class UGameplayEffect;
 class UProjectileMovementComponent;
-class UCapsuleComponent;
 
-UENUM()
-enum class ERsProjectileDirection : uint8
-{
-	SourceForward,
-	SourceToTarget,
-	SkyToTarget,
-};
-
-UCLASS()
+UCLASS(Abstract)
 class RS_API ARsProjectile : public AActor
 {
 	GENERATED_BODY()
 	
+public:
 	UPROPERTY(VisibleAnywhere)
-	UCapsuleComponent* Capsule;
+	USphereComponent* Collision;
 	
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovement;
 
 public:
+	// Apply when collision overlapped or blocked.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
-	UNiagaraSystem* DestroyParticle;
+	TSubclassOf<UGameplayEffect> Effect;
+	
+	// Apply when collision overlapped or blocked.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS", meta = (RowType ="RsEffectTableRowBase"))
+	FDataTableRowHandle EffectTableRow;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
+	FRsTargetingFilter EffectFilter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
-	float MaxRange = 5000.f;
-
-	// 0 or Minus value means infinite hit
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
-	int32 MaxHitCount = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
-	FRsTargetingFilter DamageFilter;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true), Category = "RS")
-	ERsProjectileDirection Direction;
-
-	// Relative spawn height when the direction is set to "SkyToTarget".
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true, EditCondition = "Direction == ERsProjectileDirection::SkyToTarget"), Category = "RS")
-	float SpawnHeight = 1000.f;
-
-	// Relative distance when targeting failed.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true, EditCondition = "Direction == ERsProjectileDirection::SkyToTarget"), Category = "RS")
-	float FallbackSpawnDistance = 300.f;
+	// Limit on effect application counts (0 means no limit).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
+	int32 MaxEffectApplyCounts = 1;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UGameplayAbility> OwningAbility;
 	
 public:	
 	ARsProjectile();
-	virtual void Destroyed() override;
 	
-	void SetDamage(FGameplayTag DamageEventTag);
+	bool ApplyEffect(AActor* Target, const FHitResult& HitResult);
 
 protected:
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn))
-	FGameplayTag DamageEvent;
 	
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void HandleBlock(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	TArray<FGameplayEffectSpecHandle> EffectSpecs;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UAbilitySystemComponent> InstigatorASC;
 };
