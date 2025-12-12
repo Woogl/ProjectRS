@@ -9,7 +9,6 @@
 #include "Rs/RsGameplayTags.h"
 #include "RsHUDLayout.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 
 ARsHUD::ARsHUD()
 {
@@ -152,8 +151,8 @@ void ARsHUD::HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Typ
 {
 	if (Type == ERsLinkSkillType::Triple)
 	{
-		FGameplayTag TripleLinkSkillTag = URsGameSettingDataAsset::Get().TripleLinkSkillUITag;
-		OpenMenuWidget(TripleLinkSkillTag, false);
+		// FGameplayTag TripleLinkSkillTag = URsGameSettingDataAsset::Get().TripleLinkSkillUITag;
+		// OpenMenuWidget(TripleLinkSkillTag, false);
 	}
 }
 

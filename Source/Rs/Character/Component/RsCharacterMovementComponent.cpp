@@ -7,7 +7,6 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 
 void URsCharacterMovementComponent::BeginPlay()
 {

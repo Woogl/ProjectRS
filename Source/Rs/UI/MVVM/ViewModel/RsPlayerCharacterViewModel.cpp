@@ -17,7 +17,6 @@
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/System/RsGameSettingDataAsset.h"
 
 URsPlayerCharacterViewModel* URsPlayerCharacterViewModel::CreateRsPlayerCharacterViewModel(ARsPlayerCharacter* PlayerCharacter)
 {
@@ -147,7 +146,7 @@ FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 	{
 		if (UAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent())
 		{
-			FGameplayTag CooldownTag = URsGameSettingDataAsset::Get().SwitchMemberCooldownTag;
+			FGameplayTag CooldownTag = RsGameplayTags::COOLDOWN_GLOBALPARTYSWITCH;
 			FGameplayEffectQuery EffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(CooldownTag.GetSingleTagContainer());
 			TArray<float> TimeRemaining = ASC->GetActiveEffectsTimeRemaining(EffectQuery);
 			if (TimeRemaining.IsValidIndex(0))
@@ -162,26 +161,27 @@ FText URsPlayerCharacterViewModel::GetPartySwitchCooldownRemaining() const
 
 bool URsPlayerCharacterViewModel::CanActivateLinkSkill() const
 {
-	if (IsPlayerControlled())
-	{
-		return false;
-	}
-	URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(GetModel<ThisClass>());
-	if (!BattleSubsystem || !BattleSubsystem->IsLinkSkillReady())
-	{
-		return false;
-	}
-	if (UAbilitySystemComponent* ASC = GetModel<ThisClass>()->GetAbilitySystemComponent())
-	{
-		FGameplayTagContainer LinkSkillTag = URsGameSettingDataAsset::Get().LinkSkillTag.GetSingleTagContainer();
-		if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTags(ASC, LinkSkillTag, false))
-		{
-			if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(LinkSkillAbility->GetClass()))
-			{
-				return LinkSkillAbility->CanActivateAbility(Spec->Handle, LinkSkillAbility->GetCurrentActorInfo());
-			}
-		}
-	}
+	// TODO: Link Skill
+	// if (IsPlayerControlled())
+	// {
+	// 	return false;
+	// }
+	// URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(GetModel<ThisClass>());
+	// if (!BattleSubsystem || !BattleSubsystem->IsLinkSkillReady())
+	// {
+	// 	return false;
+	// }
+	// if (UAbilitySystemComponent* ASC = GetModel<ThisClass>()->GetAbilitySystemComponent())
+	// {
+	// 	FGameplayTagContainer LinkSkillTag = URsGameSettingDataAsset::Get().LinkSkillTag.GetSingleTagContainer();
+	// 	if (UGameplayAbility* LinkSkillAbility = URsAbilitySystemLibrary::FindAbilityWithTags(ASC, LinkSkillTag, false))
+	// 	{
+	// 		if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(LinkSkillAbility->GetClass()))
+	// 		{
+	// 			return LinkSkillAbility->CanActivateAbility(Spec->Handle, LinkSkillAbility->GetCurrentActorInfo());
+	// 		}
+	// 	}
+	// }
 	return false;
 }
 

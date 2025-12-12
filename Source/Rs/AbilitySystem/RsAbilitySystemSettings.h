@@ -22,9 +22,15 @@ public:
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCostEffect;
 
-	UPROPERTY(EditDefaultsOnly, config, Category = "Ability")
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	float DamageReductionConstant = 190.f;
+
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	float GroggyDamageMultiplier = 1.6f;
 };
