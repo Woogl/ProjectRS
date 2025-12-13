@@ -14,10 +14,13 @@ URsStaggerSet::URsStaggerSet()
 {
 	StaggerDamageCueTag = RsGameplayTags::GAMEPLAYCUE_DAMAGE_STAGGER;
 	
-	RegisterTagToStat(RsGameplayTags::STAT_GPmax, GetMaxStaggerAttribute());
-	RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
-	RegisterTagToStat(RsGameplayTags::STAT_GPdec, GetStaggerDecayAttribute());
-	RegisterTagToStat(RsGameplayTags::META_DAMAGEGP, GetBaseDamageAttribute());
+	if (HasAnyFlags(RF_ClassDefaultObject))
+	{
+		RegisterTagToStat(RsGameplayTags::STAT_GPmax, GetMaxStaggerAttribute());
+		RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
+		RegisterTagToStat(RsGameplayTags::STAT_GPdec, GetStaggerDecayAttribute());
+		RegisterTagToStat(RsGameplayTags::META_DAMAGEGP, GetBaseDamageAttribute());
+	}
 }
 
 void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

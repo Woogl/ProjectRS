@@ -72,8 +72,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsRagdollComponent> RagdollComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
-	TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
+	// TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
 	
 	UFUNCTION()
 	virtual void HandleDeathStarted(AActor* OwningActor);
@@ -91,7 +91,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "RS|UI")
 	FText Description;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")

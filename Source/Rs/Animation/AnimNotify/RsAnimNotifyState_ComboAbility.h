@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(Categories="Ability"), Category="AnimNotify")
 	FGameplayTag AbilityTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(Categories="Ability"), Category="AnimNotify")
+	bool bCancelCurrentAbility = false;
 
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

@@ -59,7 +59,10 @@ void URsAnimNotifyState_ComboAbility::HandleInputAction(const FInputActionValue&
 {
 	if (OwnerASC.IsValid() && AbilityTag.IsValid() && CurrentAbility.IsValid())
 	{
-		CurrentAbility.Get()->K2_CancelAbility();
+		if (bCancelCurrentAbility)
+		{
+			CurrentAbility.Get()->K2_CancelAbility();
+		}
 		OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 	}
 }
