@@ -24,6 +24,15 @@ public:
 private:
 	ARsPlayerState* GetRsPlayerState() const;
 	
+	// Useful for testing crash reporting tools
+	UFUNCTION(exec)
+	void ForceCrash();
+
+	// Useful for identifying hanging pointers that could cause a crash when garbage collection eventually happens
+	UFUNCTION(exec)
+	void ForceGarbageCollection();
+
+	// Set User ID of local player.
 	UFUNCTION(Exec)
-	void SetUserId(int32 NewId);
+	void SetUserId(uint32 NewId);
 };

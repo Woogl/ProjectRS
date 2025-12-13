@@ -7,7 +7,6 @@
 #include "CommonPlayerController.h"
 #include "GameplayTagContainer.h"
 #include "LoadingProcessInterface.h"
-#include "Rs/Camera/RsCameraTypes.h"
 #include "RsPlayerController.generated.h"
 
 struct FInputActionValue;
@@ -45,7 +44,8 @@ class RS_API ARsPlayerController : public ACommonPlayerController, public IAbili
 	TObjectPtr<UInputAction> ResetCursorAction;
 	
 public:
-	ARsPlayerController();
+	ARsPlayerController(const FObjectInitializer& ObjectInitializer);
+	
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;

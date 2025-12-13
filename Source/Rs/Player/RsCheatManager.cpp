@@ -21,12 +21,24 @@ ARsPlayerState* URsCheatManager::GetRsPlayerState() const
 	return nullptr;
 }
 
-void URsCheatManager::SetUserId(int32 NewId)
+void URsCheatManager::ForceCrash()
+{
+	// Let's definitely crash
+	*((int*)0) = 0;
+	check(false);
+}
+
+void URsCheatManager::ForceGarbageCollection()
+{
+	GEngine->ForceGarbageCollection(true);
+}
+
+void URsCheatManager::SetUserId(uint32 NewId)
 {
 	if (ARsPlayerState* RsPlayerState = GetRsPlayerState())
 	{
 		RsPlayerState->SetUserId(NewId);
 		
-		UE_LOG(LogRsCheat, Log, TEXT("[%s]'s User ID : [%d]"), *RsPlayerState->GetName(), RsPlayerState->GetUserId());
+		UE_LOG(LogRsCheat, Log, TEXT("%s's User ID = %d"), *RsPlayerState->GetName(), RsPlayerState->GetUserId());
 	}
 }

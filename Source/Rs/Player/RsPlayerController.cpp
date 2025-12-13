@@ -8,6 +8,7 @@
 #include "AIController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "RsCheatManager.h"
 #include "GameFramework/HUD.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/Camera/LockOn/RsLockOnComponent.h"
@@ -15,10 +16,13 @@
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/UI/RsUILibrary.h"
 
-ARsPlayerController::ARsPlayerController()
+ARsPlayerController::ARsPlayerController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	PartyComponent = CreateDefaultSubobject<URsPartyComponent>(TEXT("PartyComponent"));
 	LockOnComponent = CreateDefaultSubobject<URsLockOnComponent>(TEXT("LockOnComponent"));
+	
+	CheatClass = URsCheatManager::StaticClass();
 }
 
 void ARsPlayerController::BeginPlay()
