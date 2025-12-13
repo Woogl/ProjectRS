@@ -30,7 +30,4 @@ private:
 	
 	UFUNCTION()
 	virtual void OnRep_UserId();
-	
-	UFUNCTION()
-	void SetUserId_Cheat(const TArray<FString>& Args);
 };
