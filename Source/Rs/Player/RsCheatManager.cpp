@@ -4,7 +4,8 @@
 #include "RsCheatManager.h"
 
 #include "RsPlayerState.h"
-#include "Rs/RsLogChannels.h"
+
+DEFINE_LOG_CATEGORY(LogRsCheat);
 
 void URsCheatManager::InitCheatManager()
 {
@@ -26,6 +27,6 @@ void URsCheatManager::SetUserId(int32 NewId)
 	{
 		RsPlayerState->SetUserId(NewId);
 		
-		UE_LOG(RsLog, Log, TEXT("[%s]'s User ID : [%d]"), *RsPlayerState->GetName(), RsPlayerState->GetUserId());
+		UE_LOG(LogRsCheat, Log, TEXT("[%s]'s User ID : [%d]"), *RsPlayerState->GetName(), RsPlayerState->GetUserId());
 	}
 }

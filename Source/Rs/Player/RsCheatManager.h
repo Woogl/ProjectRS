@@ -7,6 +7,9 @@
 #include "RsCheatManager.generated.h"
 
 class ARsPlayerState;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogRsCheat, Log, All);
+
 /**
  * 
  */
