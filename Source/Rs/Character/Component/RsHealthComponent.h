@@ -41,6 +41,12 @@ public:
 	float GetBarrier();
 
 protected:
+	UPROPERTY(BlueprintAssignable)
+	FRsAttributeChangedEvent OnHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable)
+	FRsAttributeChangedEvent OnBarrierChanged;
+	
 	UPROPERTY(Transient)
 	TObjectPtr<const URsHealthSet> HealthSet;
 	

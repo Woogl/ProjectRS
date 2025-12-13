@@ -6,7 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "RsGameplayAbility.generated.h"
 
-class URsGameplayEffect;
+class UGameplayEffect;
 class UInputAction;
 class ARsCharacterBase;
 
@@ -54,7 +54,7 @@ public:
 	TMap<FGameplayTag, FName> EffectMapDataTable;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
-	TMap<FGameplayTag, TSubclassOf<URsGameplayEffect>> EffectMap;
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> EffectMap;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;

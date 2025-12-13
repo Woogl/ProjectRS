@@ -37,12 +37,12 @@ void URsStaggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemComponent)
 {
-	if (AbilitySystemComponent == nullptr)
+	OwnerAbilitySystemComponent = Cast<URsAbilitySystemComponent>(AbilitySystemComponent);
+	if (OwnerAbilitySystemComponent == nullptr)
 	{
 		return;
 	}
 	
-	//AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::HandleStaggerChange);
 	StaggerSet = AbilitySystemComponent->GetSet<URsStaggerSet>();
 	if (!StaggerSet)
 	{
@@ -50,9 +50,15 @@ void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompo
 		return;
 	}
 	
-	//StaggerSet->OnStaggerChanged.AddUObject(this, &ThisClass::HandleStaggerChange);
-	// StaggerSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChange);
-	// StaggerSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
+	OwnerAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::HandleStaggerChange);
+}
+
+void URsStaggerComponent::Deinitialize()
+{
+	if (OwnerAbilitySystemComponent)
+	{
+		OwnerAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
+	}
 }
 
 float URsStaggerComponent::GetCurrentStagger()
@@ -81,21 +87,34 @@ void URsStaggerComponent::HandleAbilitySystemInitialized()
 	}
 }
 
-void URsStaggerComponent::HandleStaggerChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& Data)
 {
-	OnStaggerChanged.Broadcast(this, OldValue, NewValue, DamageInstigator);
+	if (Data.NewValue >= GetMaxStagger() && bIsGroggy == false)
+	{
+		if (GetOwner()->HasAuthority())
+		{
+			const bool bOldGroggy = bIsGroggy;
+			bIsGroggy = true;
+			OnRep_bIsGroggy(bOldGroggy);
+			GetOwner()->ForceNetUpdate();
+		}
+	}
+	else if (bIsGroggy == true && Data.NewValue < GetMaxStagger())
+	{
+		bIsGroggy = false;
+	}
+	
+	OnStaggerChanged.Broadcast(Data.OldValue, Data.NewValue);
 }
 
 void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (OldValue == false && bIsGroggy == true && StaggerSet)
+	if (OldValue == false && bIsGroggy == true && OwnerAbilitySystemComponent)
 	{
-		if (UAbilitySystemComponent* ASC = StaggerSet->GetOwningAbilitySystemComponent())
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = RsGameplayTags::ABILITY_GROGGY;
-			ASC->HandleGameplayEvent(Payload.EventTag, &Payload);
-		}
+		FGameplayEventData Payload;
+		Payload.EventTag = RsGameplayTags::ABILITY_GROGGY;
+		OwnerAbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
+		
 		OnGroggyStarted.Broadcast(GetOwner());
 	}
 }

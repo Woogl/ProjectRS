@@ -7,10 +7,10 @@
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 #include "RsStaggerComponent.generated.h"
 
+class URsAbilitySystemComponent;
 class URsStaggerSet;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGroggyEvent, AActor*, OwningActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRsStagger_AttributeChanged, URsStaggerComponent*, StaggerComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -24,9 +24,10 @@ public:
 	virtual void BeginPlay() override;
 
 	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
+	void Deinitialize();
 
 	UPROPERTY(BlueprintAssignable)
-	FRsStagger_AttributeChanged OnStaggerChanged;
+	FRsAttributeChangedEvent OnStaggerChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGroggyEvent OnGroggyStarted;
@@ -40,8 +41,11 @@ public:
 protected:
 	void HandleAbilitySystemInitialized();
 	
-	void HandleStaggerChange(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+	void HandleStaggerChange(const FOnAttributeChangeData& Data);
 
+	UPROPERTY(Transient)
+	TObjectPtr<URsAbilitySystemComponent> OwnerAbilitySystemComponent;
+	
 	UPROPERTY(Transient)
 	TObjectPtr<const URsStaggerSet> StaggerSet;
 

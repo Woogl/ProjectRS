@@ -14,7 +14,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FRsAttributeEvent, const FOnAttributeChangeData&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRsAttributeChangedEvent, float, OldValue, float, NewValue);
 
 /**
  * 

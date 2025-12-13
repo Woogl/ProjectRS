@@ -12,7 +12,6 @@
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
-#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Player/RsPlayerState.h"
 
@@ -129,8 +128,10 @@ void URsGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 const FGameplayTagContainer* URsGameplayAbility::GetCooldownTags() const
 {
 	CurrentCooldownTags.Reset();
-	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
-	CurrentCooldownTags.AppendTags(*ParentTags);
+	if (const FGameplayTagContainer* ParentTags = Super::GetCooldownTags())
+	{
+		CurrentCooldownTags.AppendTags(*ParentTags);
+	}
 	CurrentCooldownTags.AddTag(CooldownTag);
 	return &CurrentCooldownTags;
 }
@@ -344,7 +345,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 
-	for (const TTuple<FGameplayTag, TSubclassOf<URsGameplayEffect>>& EffectContainer : EffectMap)
+	for (const TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>>& EffectContainer : EffectMap)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EffectContainer.Key))
 		{
@@ -526,7 +527,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
 	
-	if (TSubclassOf<URsGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
+	if (const TSubclassOf<UGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);

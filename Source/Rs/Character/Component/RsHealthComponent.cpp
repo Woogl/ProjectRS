@@ -147,10 +147,13 @@ void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Data)
 			GetOwner()->ForceNetUpdate();
 		}
 	}
+	
+	OnHealthChanged.Broadcast(Data.OldValue, Data.NewValue);
 }
 
 void URsHealthComponent::HandleBarrierChange(const FOnAttributeChangeData& Data)
 {
+	OnBarrierChanged.Broadcast(Data.OldValue, Data.NewValue);
 }
 
 void URsHealthComponent::HandleBarrierAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GESpec, FActiveGameplayEffectHandle ActiveEffectHandle)
@@ -209,15 +212,13 @@ void URsHealthComponent::HandleBarrierBroke(const FActiveGameplayEffectHandle& B
 
 void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 {
-	if (OldValue == false && bIsDead == true)
+	if (OldValue == false && bIsDead == true && OwnerAbilitySystemComponent)
 	{
 		// Start death
 		FGameplayEventData Payload;
 		Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
-		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
-		{
-			OwnerASC->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
-		}
+		OwnerAbilitySystemComponent->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
+		
 		OnDeathStarted.Broadcast(GetOwner());
 	}
 }
