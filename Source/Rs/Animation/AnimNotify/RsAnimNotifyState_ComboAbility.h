@@ -45,6 +45,9 @@ protected:
 	UFUNCTION()
 	void HandleInputAction(const FInputActionValue& Value);
 
-	TWeakObjectPtr<UAbilityTask_WaitGameplayEvent> WaitEventTask;
-	TWeakObjectPtr<URsAbilityTask_WaitEnhancedInput> WaitInputTask;
+	UPROPERTY()
+	TObjectPtr<UAbilityTask_WaitGameplayEvent> WaitEventTask;
+	
+	UPROPERTY()
+	TObjectPtr<URsAbilityTask_WaitEnhancedInput> WaitInputTask;
 };

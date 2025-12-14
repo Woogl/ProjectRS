@@ -37,12 +37,12 @@ void URsAnimNotifyState_ComboAbility::NotifyEnd(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (WaitEventTask.IsValid())
+	if (WaitEventTask)
 	{
 		WaitEventTask->EndTask();
 	}
 	
-	if (WaitInputTask.IsValid())
+	if (WaitInputTask)
 	{
 		WaitInputTask->EndTask();
 	}
