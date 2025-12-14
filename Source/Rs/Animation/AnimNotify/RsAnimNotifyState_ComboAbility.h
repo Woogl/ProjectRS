@@ -5,10 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "RsAnimNotifyState_AbilityBase.h"
-#include "Abilities/GameplayAbilityTypes.h"
 #include "RsAnimNotifyState_ComboAbility.generated.h"
 
-class UAbilityTask_WaitGameplayEvent;
 class URsAbilityTask_WaitEnhancedInput;
 struct FInputActionValue;
 class UInputAction;
@@ -23,9 +21,6 @@ class RS_API URsAnimNotifyState_ComboAbility : public URsAnimNotifyState_Ability
 public:
 	URsAnimNotifyState_ComboAbility();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Condition")
-	FGameplayTag WaitEventTag;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	TObjectPtr<UInputAction> InputAction;
 
@@ -38,15 +33,9 @@ public:
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
-
-	UFUNCTION()
-	void HandleGameplayEvent(FGameplayEventData Payload);
 	
 	UFUNCTION()
 	void HandleInputAction(const FInputActionValue& Value);
-
-	UPROPERTY()
-	TObjectPtr<UAbilityTask_WaitGameplayEvent> WaitEventTask;
 	
 	UPROPERTY()
 	TObjectPtr<URsAbilityTask_WaitEnhancedInput> WaitInputTask;
