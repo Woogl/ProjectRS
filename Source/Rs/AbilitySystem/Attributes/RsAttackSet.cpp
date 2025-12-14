@@ -17,7 +17,7 @@ URsAttackSet::URsAttackSet()
 		RegisterTagToStat(RsGameplayTags::STAT_ATK, GetAttackAttribute());
 		RegisterTagToStat(RsGameplayTags::STAT_IMP, GetImpactAttribute());
 		RegisterTagToStat(RsGameplayTags::STAT_CRTrate, GetCriticalRateAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_CRTdmg, GetCriticalRateAttribute());
+		RegisterTagToStat(RsGameplayTags::STAT_CRTdmg, GetCriticalDamageAttribute());
 	
 		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_SOURCE, GetAttackAttribute());
 		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_TARGET, GetAttackAttribute());

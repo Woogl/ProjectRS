@@ -79,15 +79,15 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Critical Rate should be 0 ~ 100 range.
 	CriticalRate = FMath::Clamp(CriticalRate, 0.f, 100.f);
 	
-	float CriticalBonus = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDamageDef, EvaluationParameters, CriticalBonus);
+	float CriticalDamage = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->CriticalDamageDef, EvaluationParameters, CriticalDamage);
 	
 	// Damage calculation start
 	float FinalDamage = BaseDamage;
 
 	// Check critical hit
 	float RandomValue = FMath::RandRange(0.f, 100.f);
-	bool bCriticalHit = CriticalRate >= RandomValue;
+	bool bCriticalHit = CriticalRate > RandomValue;
 	if (bCriticalHit)
 	{
 		FGameplayEffectSpec* MutableSpec = ExecutionParams.GetOwningSpecForPreExecuteMod();
@@ -95,14 +95,15 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 		ContextHandle->bIsCriticalHit = true;
 	}
 	
-	// Critical calc
-	FinalDamage *= bCriticalHit ? (1 + CriticalBonus * 0.01f) : 1.f;
-	// Defense rate calc
+	// Critical damage calc
+	FinalDamage *= bCriticalHit ? (1 + CriticalDamage * 0.01f) : 1.f;
+	
+	// Damage reduction rate calc
 	float DefenseConstant = URsAbilitySystemSettings::Get().DamageReductionConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
 
 	// Groggy has 160 % damage bonus
-	if (EvaluationParameters.TargetTags->HasTagExact(RsGameplayTags::ABILITY_GROGGY))
+	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::ABILITY_GROGGY))
 	{
 		FinalDamage *= URsAbilitySystemSettings::Get().GroggyDamageMultiplier;
 	}
