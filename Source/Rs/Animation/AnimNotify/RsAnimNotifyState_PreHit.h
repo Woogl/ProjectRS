@@ -17,7 +17,6 @@ class RS_API URsAnimNotifyState_PreHit : public URsAnimNotifyState_TargetingBase
 	
 public:
 	URsAnimNotifyState_PreHit();
-	virtual FString GetNotifyName_Implementation() const override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag GrantTargetTag;

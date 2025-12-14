@@ -9,6 +9,7 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Rs/RsLogChannels.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -21,6 +22,21 @@ URsLockOnComponent::URsLockOnComponent()
 	TargetingShape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
 	
 	TargetingSorter.ByDistance = ERsSortingOrder::Ascending;
+}
+
+void URsLockOnComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	OwnerController = Cast<AController>(GetOwner());
+	if (OwnerController.IsValid())
+	{
+		OwnerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawnChanged);
+	}
+	else
+	{
+		UE_LOG(RsLog, Error, TEXT("Cannot find LockOnComponent's owner controller: %s"), *GetOwner()->GetActorLabel());
+	}
 }
 
 void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -62,12 +78,6 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, ControlRotationInterpSpeed);
 		Controller->SetControlRotation(NewRotation);
 	}
-}
-
-void URsLockOnComponent::SetController(AController* Controller)
-{
-	OwnerController = Controller;
-	Controller->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawnChanged);
 }
 
 void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)

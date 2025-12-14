@@ -67,6 +67,7 @@ void ARsProjectile::BeginPlay()
 	
 	FGameplayEffectContextHandle EffectContext = InstigatorASC->MakeEffectContext();
 	int32 Level = OwningAbility ? OwningAbility->GetAbilityLevel() : 0;
+	EffectContext.Get()->SetEffectCauser(this);
 	FGameplayEffectSpecHandle GESpec = InstigatorASC->MakeOutgoingSpec(Effect, Level, EffectContext);
 	if (GESpec.IsValid())
 	{

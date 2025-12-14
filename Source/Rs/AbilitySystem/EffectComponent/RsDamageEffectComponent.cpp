@@ -15,6 +15,7 @@
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
+#include "Rs/Battle/Actor/RsProjectile.h"
 
 URsDamageEffectComponent::URsDamageEffectComponent()
 {
@@ -151,9 +152,13 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	// Trigger hit stops
 	if (LocalSourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
 	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), LocalSourceHitStopTime))
+		AActor* EffectCauser = GESpec.GetEffectContext().GetEffectCauser();
+		if (!EffectCauser || EffectCauser != GESpec.GetEffectContext().GetInstigator())
 		{
-			PauseMontageTask->ReadyForActivation();
+			if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), LocalSourceHitStopTime))
+			{
+				PauseMontageTask->ReadyForActivation();
+			}
 		}
 	}
 	if (LocalTargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())

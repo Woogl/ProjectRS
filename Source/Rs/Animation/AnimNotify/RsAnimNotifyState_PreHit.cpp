@@ -68,13 +68,6 @@ static void ProcessGameplayCue(GameplayCueFunc Func, USkeletalMeshComponent* Mes
 URsAnimNotifyState_PreHit::URsAnimNotifyState_PreHit()
 {
 	bIsNativeBranchingPoint = true;
-	
-	GrantTargetTag = RsGameplayTags::CHARACTER_CANJUSTDODGE;
-}
-
-FString URsAnimNotifyState_PreHit::GetNotifyName_Implementation() const
-{
-	return Super::GetNotifyName_Implementation();
 }
 
 void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)

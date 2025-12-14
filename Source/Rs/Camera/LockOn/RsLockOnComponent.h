@@ -18,10 +18,9 @@ class RS_API URsLockOnComponent : public UActorComponent
 
 public:	
 	URsLockOnComponent();
+	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
-
-	void SetController(AController* Controller);
-
+	
 	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
