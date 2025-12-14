@@ -3,7 +3,6 @@
 
 #include "RsCharacterMovementComponent.h"
 
-#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
@@ -12,7 +11,7 @@ void URsCharacterMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+	if (UAbilitySystemComponent* ASC = TryGetAbilitySystemComponent())
 	{
 		SpeedSet = ASC->GetSet<URsSpeedSet>();
 	}
@@ -31,18 +30,50 @@ float URsCharacterMovementComponent::GetMaxSpeed() const
 void URsCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
-	
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+
+	if (IsFalling())
 	{
-		if (IsFalling())
+		AddMovementTag(RsGameplayTags::MOVEMENT_FALLING);
+		RemoveMovementTag(RsGameplayTags::MOVEMENT_GROUNDED);
+	}
+	else
+	{
+		AddMovementTag(RsGameplayTags::MOVEMENT_GROUNDED);
+		RemoveMovementTag(RsGameplayTags::MOVEMENT_FALLING);
+	}
+}
+
+void URsCharacterMovementComponent::AddMovementTag(const FGameplayTag MovementTag)
+{
+	if (UAbilitySystemComponent* ASC = TryGetAbilitySystemComponent())
+	{
+		if (!ASC->HasMatchingGameplayTag(MovementTag))
 		{
-			ASC->AddLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
-			ASC->RemoveLooseGameplayTag(RsGameplayTags::MOVEMENT_GROUNDED);
+			ASC->AddLooseGameplayTag(MovementTag);
 		}
-		else
+	}
+}
+
+void URsCharacterMovementComponent::RemoveMovementTag(const FGameplayTag MovementTag)
+{
+	if (UAbilitySystemComponent* ASC = TryGetAbilitySystemComponent())
+	{
+		if (ASC->HasMatchingGameplayTag(MovementTag))
 		{
-			ASC->AddLooseGameplayTag(RsGameplayTags::MOVEMENT_GROUNDED);
-			ASC->RemoveLooseGameplayTag(RsGameplayTags::MOVEMENT_FALLING);
+			ASC->RemoveLooseGameplayTag(MovementTag);
 		}
+	}
+}
+
+UAbilitySystemComponent* URsCharacterMovementComponent::TryGetAbilitySystemComponent() const
+{
+	if (CachedASC)
+	{
+		return CachedASC;
+	}
+	else
+	{
+		CachedASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+		return CachedASC;
 	}
 }

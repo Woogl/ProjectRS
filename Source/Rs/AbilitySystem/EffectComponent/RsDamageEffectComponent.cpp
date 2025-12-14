@@ -158,7 +158,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 	if (LocalTargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
 	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), LocalTargetHitStopTime, LocalTargetHitStopTime))
+		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), LocalTargetHitStopTime))
 		{
 			PauseMontageTask->ReadyForActivation();
 		}

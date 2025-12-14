@@ -22,9 +22,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnPauseMontageFinished OnFinished;
 
-	// Should make this gameplay cue?
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration, float MontageSkipTime = 0.f);
+	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration);
 
 protected:
 	virtual void Activate() override;
@@ -32,8 +31,14 @@ protected:
 	
 	void HandleEndTimer();
 	
+	UAnimInstance* GetAnimInstance() const;
+	
 private:
-	FTimerHandle Timer;
+	FTimerHandle TimerHandle;
+	
+	UPROPERTY()
 	float Duration = 0.f;
-	float MontageSkipTime = 0.f;
+	
+	UPROPERTY()
+	TObjectPtr<UAnimMontage> TargetMontage;
 };
