@@ -89,32 +89,42 @@ void URsStaggerComponent::HandleAbilitySystemInitialized()
 
 void URsStaggerComponent::HandleStaggerChange(const FOnAttributeChangeData& Data)
 {
-	if (Data.NewValue >= GetMaxStagger() && bIsGroggy == false)
-	{
-		if (GetOwner()->HasAuthority())
+	if (GetOwner()->HasAuthority())
+    {
+    	if (Data.NewValue >= GetMaxStagger() && !bIsGroggy)
+		{
+    		const bool bOldGroggy = bIsGroggy;
+			bIsGroggy = true;
+    		OnRep_bIsGroggy(bOldGroggy);
+			GetOwner()->ForceNetUpdate();
+		}
+		else if (Data.NewValue < GetMaxStagger() && bIsGroggy)
 		{
 			const bool bOldGroggy = bIsGroggy;
-			bIsGroggy = true;
+			bIsGroggy = false;
 			OnRep_bIsGroggy(bOldGroggy);
 			GetOwner()->ForceNetUpdate();
 		}
-	}
-	else if (bIsGroggy == true && Data.NewValue < GetMaxStagger())
-	{
-		bIsGroggy = false;
-	}
-	
-	OnStaggerChanged.Broadcast(Data.OldValue, Data.NewValue);
+    }
+    
+    OnStaggerChanged.Broadcast(Data.OldValue, Data.NewValue);
 }
 
 void URsStaggerComponent::OnRep_bIsGroggy(bool OldValue)
 {
-	if (OldValue == false && bIsGroggy == true && OwnerAbilitySystemComponent)
+	if (!OldValue && bIsGroggy)
 	{
-		FGameplayEventData Payload;
-		Payload.EventTag = RsGameplayTags::ABILITY_GROGGY;
-		OwnerAbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
-		
-		OnGroggyStarted.Broadcast(GetOwner());
+		if (OwnerAbilitySystemComponent)
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = RsGameplayTags::ABILITY_GROGGY;
+			OwnerAbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
+
+			OnGroggyStarted.Broadcast(GetOwner());
+		}
+	}
+	else if (OldValue && !bIsGroggy)
+	{
+		// HandleGroggyEnded();
 	}
 }

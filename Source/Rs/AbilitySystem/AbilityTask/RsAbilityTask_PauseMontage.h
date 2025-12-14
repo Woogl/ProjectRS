@@ -22,6 +22,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnPauseMontageFinished OnFinished;
 
+	// Should make this gameplay cue?
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
 	static URsAbilityTask_PauseMontage* PauseMontage(UGameplayAbility* OwningAbility, float Duration, float MontageSkipTime = 0.f);
 
@@ -33,6 +34,6 @@ protected:
 	
 private:
 	FTimerHandle Timer;
-	float Duration;
-	float MontageSkipTime;
+	float Duration = 0.f;
+	float MontageSkipTime = 0.f;
 };
