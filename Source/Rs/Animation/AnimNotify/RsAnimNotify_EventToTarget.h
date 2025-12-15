@@ -6,7 +6,6 @@
 #include "RsAnimNotify_Targeting.h"
 #include "RsAnimNotify_EventToTarget.generated.h"
 
-class URsEffectDefinition;
 /**
  * 
  */

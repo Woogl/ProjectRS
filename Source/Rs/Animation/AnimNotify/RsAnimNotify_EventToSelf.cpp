@@ -25,15 +25,18 @@ void URsAnimNotify_EventToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (AActor* Owner = MeshComp->GetOwner())
+	AActor* Owner = MeshComp->GetOwner();
+	if (Targets.IsEmpty() || !Owner)
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = EventTag;
-			Payload.Instigator = Owner;
-			Payload.Target = Owner;
-			ASC->HandleGameplayEvent(EventTag, &Payload);
-		}
+		return;
+	}
+	
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+	{
+		FGameplayEventData Payload;
+		Payload.EventTag = EventTag;
+		Payload.Instigator = Owner;
+		Payload.Target = Owner;
+		ASC->HandleGameplayEvent(EventTag, &Payload);
 	}
 }

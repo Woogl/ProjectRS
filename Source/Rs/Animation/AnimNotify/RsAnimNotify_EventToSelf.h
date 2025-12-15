@@ -4,15 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Animation/AnimNotifies/AnimNotify.h"
+#include "RsAnimNotify_Targeting.h"
 #include "RsAnimNotify_EventToSelf.generated.h"
 
-class URsEffectDefinition;
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_EventToSelf : public UAnimNotify
+class RS_API URsAnimNotify_EventToSelf : public URsAnimNotify_Targeting
 {
 	GENERATED_BODY()
 

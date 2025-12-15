@@ -105,7 +105,8 @@ public:
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 	
-	FGameplayEffectSpecHandle MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const;
+	// Only effect that has duration can revert.
+	void RevertGameplayEvent(FGameplayTag EventTag);
 
 protected:
 	// Add logic here that should run when the Ability is first initialized.
@@ -148,11 +149,14 @@ protected:
 
 	UFUNCTION()
 	void HandleGameplayEvent(FGameplayEventData EventData);
+	
+	FGameplayEffectSpecHandle MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const;
 
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
+	TMap<FGameplayTag, FActiveGameplayEffectHandle> EventEffectHandles;
 	mutable FActiveGameplayEffectHandle CurrentCooldownHandle;
 	mutable FGameplayTagContainer CurrentCooldownTags;
 	int32 CurrentRechargeStacks = 0;

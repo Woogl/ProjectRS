@@ -200,28 +200,12 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 	}
 }
 
-FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const
+void URsGameplayAbility::RevertGameplayEvent(FGameplayTag EventTag)
 {
-	if (!EffectTableRow)
+	if (FActiveGameplayEffectHandle* EffectHandle = EventEffectHandles.Find(EventTag))
 	{
-		return FGameplayEffectSpecHandle();
+		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(*EffectHandle);
 	}
-	
-	if (FRsEffectTableRowBase* TableRow = EffectTableRow->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
-	{
-		if (const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass)
-		{
-			FGameplayEffectContextHandle EffectContextHandle = EffectContext.IsValid() ? EffectContext : ASC->MakeEffectContext();
-			FGameplayEffectSpecHandle GESpec = ASC->MakeOutgoingSpec(EffectClass, GetAbilityLevel(), EffectContext);
-			if (GESpec.IsValid())
-			{
-				// Set table data in GE spec
-				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, EffectTableRow);
-				return GESpec;
-			}
-		}
-	}
-	return FGameplayEffectSpecHandle();
 }
 
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -460,7 +444,11 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	if (const TSubclassOf<UGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
-		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
+		FActiveGameplayEffectHandle Handle = SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
+		if (Handle.IsValid())
+		{
+			EventEffectHandles.Add(EventData.EventTag, Handle);
+		}
 	}
 
 	if (FDataTableRowHandle* EffectTableRow = EffectMapDataTable.Find(EventData.EventTag))
@@ -469,8 +457,36 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingTableEffect(EffectTableRow, SourceASC, EffectContext);
 		if (EffectSpec.IsValid())
 		{
-			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
+			FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
+			if (Handle.IsValid())
+			{
+				EventEffectHandles.Add(EventData.EventTag, Handle);
+			}
 		}
 	}
+}
+
+FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const
+{
+	if (!EffectTableRow)
+	{
+		return FGameplayEffectSpecHandle();
+	}
+	
+	if (const FRsEffectTableRowBase* TableRow = EffectTableRow->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		if (const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass)
+		{
+			FGameplayEffectContextHandle EffectContextHandle = EffectContext.IsValid() ? EffectContext : ASC->MakeEffectContext();
+			FGameplayEffectSpecHandle GESpec = ASC->MakeOutgoingSpec(EffectClass, GetAbilityLevel(), EffectContext);
+			if (GESpec.IsValid())
+			{
+				// Set table data in GE spec
+				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, EffectTableRow);
+				return GESpec;
+			}
+		}
+	}
+	return FGameplayEffectSpecHandle();
 }
 
