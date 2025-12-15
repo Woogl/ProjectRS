@@ -51,13 +51,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float UltimateGain = 0.f;
-
-	/** Additional Effects */
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalSourceEffects;
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UGameplayEffect>> AdditionalTargetEffects;
 	
 	/** GE asset tags */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Effect.Damage"))

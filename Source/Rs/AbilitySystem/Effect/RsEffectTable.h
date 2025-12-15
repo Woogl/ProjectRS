@@ -185,11 +185,4 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	float UltimateGain = 0.f;
-
-	/** Additional Effect */
-	UPROPERTY(EditDefaultsOnly)
-	FName AdditionalSourceEffect = NAME_None;
-
-	UPROPERTY(EditDefaultsOnly)
-	FName AdditionalTargetEffect = NAME_None;
 };

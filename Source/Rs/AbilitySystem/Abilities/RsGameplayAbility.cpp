@@ -24,65 +24,6 @@ URsGameplayAbility::URsGameplayAbility()
 	CooldownGameplayEffectClass = URsAbilitySystemSettings::Get().DefaultCooldownEffect;
 }
 
-#if WITH_EDITOR
-void URsGameplayAbility::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-	
-	FName MemberPropertyName = PropertyChangedEvent.GetMemberPropertyName();
-	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, EffectTables))
-	{
-		for (int32 i = EffectTables.Num() - 1; i >= 0; --i)
-		{
-			UDataTable* Table = EffectTables[i];
-			if (!Table)
-			{
-				continue;
-			}
-
-			const UScriptStruct* RowStruct = Table->GetRowStruct();
-			if (RowStruct && !RowStruct->IsChildOf(FRsEffectTableRowBase::StaticStruct()))
-			{
-				FMessageDialog::Open(EAppMsgType::Type::Ok, FText::FromString(TEXT("EffectTable's row type must be RsEffectTableRowBase.")));
-				EffectTables[i] = nullptr;
-			}
-		}
-	}
-}
-
-bool URsGameplayAbility::CanEditChange(const FProperty* InProperty) const
-{
-	const bool ParentVal = Super::CanEditChange(InProperty);
-	
-	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, EffectMapDataTable))
-	{
-		for (TObjectPtr<UDataTable> EffectTable : EffectTables)
-		{
-			if (!EffectTable)
-			{
-				return false;
-			}
-		}
-		return ParentVal && !EffectTables.IsEmpty();
-	}
-	return ParentVal;
-}
-
-TArray<FName> URsGameplayAbility::GetEffectTableRowNames() const
-{
-	TArray<FName> RowNames;
-	for (TObjectPtr<UDataTable> EffectTable : EffectTables)
-	{
-		if (EffectTable)
-		{
-			TArray<FName> NewNames = EffectTable->GetRowNames();
-			RowNames.Append(NewNames);
-		}
-	}
-	return RowNames;
-}
-#endif // WITH_EDITOR
-
 ARsCharacterBase* URsGameplayAbility::GetAvatarCharacter() const
 {
 	if (AActor* AvatarActor = GetAvatarActorFromActorInfo())
@@ -259,26 +200,14 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 	}
 }
 
-FDataTableRowHandle URsGameplayAbility::FindEffectTableRowHandle(FName EffectRowName) const
+FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const
 {
-	FDataTableRowHandle TableRowHandle;
-	for (TObjectPtr<UDataTable> EffectTable : EffectTables)
+	if (!EffectTableRow)
 	{
-		if (FRsEffectTableRowBase* FoundRow = EffectTable->FindRow<FRsEffectTableRowBase>(EffectRowName, ANSI_TO_TCHAR(__FUNCTION__), false))
-		{
-			TableRowHandle.DataTable = EffectTable;
-			TableRowHandle.RowName = EffectRowName;
-			return TableRowHandle;
-		}
+		return FGameplayEffectSpecHandle();
 	}
-	UE_LOG(RsLog, Warning, TEXT("Cannot find [ %s ] in [ %s ] ability's effect tables"), *EffectRowName.ToString(), *this->GetName());
-	return TableRowHandle;
-}
-
-FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(FName EffectRowName, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const
-{
-	FDataTableRowHandle TableRowHandle = FindEffectTableRowHandle(EffectRowName);
-	if (FRsEffectTableRowBase* TableRow = TableRowHandle.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
+	
+	if (FRsEffectTableRowBase* TableRow = EffectTableRow->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
 	{
 		if (const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass)
 		{
@@ -287,7 +216,7 @@ FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(FName Effe
 			if (GESpec.IsValid())
 			{
 				// Set table data in GE spec
-				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, &TableRowHandle);
+				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, EffectTableRow);
 				return GESpec;
 			}
 		}
@@ -354,7 +283,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 	
-	for (const TTuple<FGameplayTag, FName>& DataTableEffectContainer : EffectMapDataTable)
+	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectMapDataTable)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
 		{
@@ -509,6 +438,7 @@ int32 URsGameplayAbility::GetDeterministicRandomNumber(int32 Min, int32 Max) con
 	Seed = HashCombineFast(Seed, GetTypeHash(StartTime));
 
 	FRandomStream Stream(Seed);
+	UE_LOG(RsAbilityLog, Verbose, TEXT("%s Deterministic Seed : %d"), *GetName(), Stream.GetCurrentSeed());
 	return Stream.RandRange(Min, Max);
 }
 
@@ -533,10 +463,10 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
 	}
 
-	if (FName* EffectRowName = EffectMapDataTable.Find(EventData.EventTag))
+	if (FDataTableRowHandle* EffectTableRow = EffectMapDataTable.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
-		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingTableEffect(*EffectRowName, SourceASC, EffectContext);
+		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingTableEffect(EffectTableRow, SourceASC, EffectContext);
 		if (EffectSpec.IsValid())
 		{
 			SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);

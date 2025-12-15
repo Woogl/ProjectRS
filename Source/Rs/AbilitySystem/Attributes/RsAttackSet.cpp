@@ -12,18 +12,15 @@ URsAttackSet::URsAttackSet()
 	, CriticalRate(0.f)
 	, CriticalDamage(0.f)
 {
-	if (HasAnyFlags(RF_ClassDefaultObject))
-	{
-		RegisterTagToStat(RsGameplayTags::STAT_ATK, GetAttackAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_IMP, GetImpactAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_CRTrate, GetCriticalRateAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_CRTdmg, GetCriticalDamageAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_ATK, GetAttackAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_IMP, GetImpactAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_CRTrate, GetCriticalRateAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_CRTdmg, GetCriticalDamageAttribute());
 	
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_SOURCE, GetAttackAttribute());
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_TARGET, GetAttackAttribute());
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_IMP_SOURCE, GetImpactAttribute());
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_IMP_TARGET, GetImpactAttribute());
-	}
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_SOURCE, GetAttackAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATK_TARGET, GetAttackAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_IMP_SOURCE, GetImpactAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_IMP_TARGET, GetImpactAttribute());
 }
 
 void URsAttackSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

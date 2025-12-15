@@ -13,7 +13,7 @@ EDataValidationResult FRsEffectTableRowBase::IsDataValid(FDataValidationContext&
 	if (!EffectClass || !EffectClass->IsChildOf(UGameplayEffect::StaticClass()))
 	{
 		FString EffectString = EffectClass ? EffectClass->GetName() : TEXT("NULL");
-		FString ErrorString = FString::Printf(TEXT("EffectClass [ %s ] is not a child of UGameplayEffect."), *EffectString);
+		FString ErrorString = FString::Printf(TEXT("EffectClass [%s] is not a child of UGameplayEffect."), *EffectString);
 		Context.AddError(FText::FromString(ErrorString));
 		return EDataValidationResult::Invalid;
 	}

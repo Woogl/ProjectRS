@@ -14,13 +14,10 @@ URsEnergySet::URsEnergySet()
 	, CurrentMana(0.f)
 	, MaxMana(1.f)
 {
-	if (HasAnyFlags(RF_ClassDefaultObject))
-	{
-		RegisterTagToStat(RsGameplayTags::STAT_UPcur, GetCurrentUltimateAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_UPmax, GetMaxUltimateAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_MPcur, GetCurrentManaAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_MPmax, GetMaxManaAttribute());
-	}
+	RegisterTagToStat(RsGameplayTags::STAT_UPcur, GetCurrentUltimateAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_UPmax, GetMaxUltimateAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_MPcur, GetCurrentManaAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_MPmax, GetMaxManaAttribute());
 }
 
 void URsEnergySet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

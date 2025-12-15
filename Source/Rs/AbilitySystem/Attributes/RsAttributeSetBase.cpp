@@ -11,9 +11,12 @@ FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 	{
 		return *Found;
 	}
-	if (FGameplayAttribute* Found = CoefficientMap.Find(Tag))
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& Coefficient : CoefficientMap)
 	{
-		return *Found;
+		if (Coefficient.Key.MatchesTag(Tag))
+		{
+			return Coefficient.Value;
+		}
 	}
 	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Attribute for [%s] tag"), *Tag.ToString());
 	return FGameplayAttribute();
@@ -48,20 +51,10 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 
 void URsAttributeSetBase::RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
-	if (StatMap.Contains(Tag))
-	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Already registered stat tag! [%s]"), *Tag.ToString());
-		ensure(false);
-	}
 	StatMap.Add(Tag, Attribute);
 }
 
 void URsAttributeSetBase::RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
-	if (CoefficientMap.Contains(Tag))
-	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Already registered coefficient tag! [%s]"), *Tag.ToString());
-		ensure(false);
-	}
 	CoefficientMap.Add(Tag, Attribute);
 }

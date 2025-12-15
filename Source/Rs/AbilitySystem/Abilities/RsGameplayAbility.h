@@ -28,15 +28,6 @@ class RS_API URsGameplayAbility : public UGameplayAbility
 public:
 	URsGameplayAbility();
 	
-#if WITH_EDITOR
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-	
-	virtual bool CanEditChange(const FProperty* InProperty) const override;
-	
-	UFUNCTION()
-	TArray<FName> GetEffectTableRowNames() const;
-#endif // WITH_EDITOR
-	
 	// Tells an ability to activate immediately when it's granted. (Useful for passive abilities and abilities forced on others)
 	UPROPERTY(EditDefaultsOnly, Category = "RS|Activation")
 	bool bActivateOnGranted = false;
@@ -45,16 +36,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|Activation")
 	TObjectPtr<UInputAction> ActivationInputAction = nullptr;
 	
-	// TODO: Editor detail customization
-	// Only RsEffectTableRowBase can be selected.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect")
-	TArray<TObjectPtr<UDataTable>> EffectTables;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, GetValueOptions="GetEffectTableRowNames"))
-	TMap<FGameplayTag, FName> EffectMapDataTable;
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> EffectMap;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, RowType="RsEffectTableRowBase"))
+	TMap<FGameplayTag, FDataTableRowHandle> EffectMapDataTable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
@@ -119,8 +105,7 @@ public:
 	// Clear the bindings from the Enhanced Input Component.
 	void TeardownEnhancedInputBindings(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec);
 	
-	FDataTableRowHandle FindEffectTableRowHandle(FName EffectRowName) const;
-	FGameplayEffectSpecHandle MakeOutgoingTableEffect(FName EffectRowName, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const;
+	FGameplayEffectSpecHandle MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const;
 
 protected:
 	// Add logic here that should run when the Ability is first initialized.

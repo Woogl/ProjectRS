@@ -10,14 +10,11 @@ URsSpeedSet::URsSpeedSet()
 	: MoveSpeed(1.f)
 	, ActionSpeed(1.f)
 {
-	if (HasAnyFlags(RF_ClassDefaultObject))
-	{
-		RegisterTagToStat(RsGameplayTags::STAT_MOV, GetMoveSpeedAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_ATS, GetActionSpeedAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_MOV, GetMoveSpeedAttribute());
+	RegisterTagToStat(RsGameplayTags::STAT_ATS, GetActionSpeedAttribute());
 	
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATS_SOURCE, GetActionSpeedAttribute());
-		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATS_TARGET, GetActionSpeedAttribute());
-	}
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATS_SOURCE, GetActionSpeedAttribute());
+	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_ATS_TARGET, GetActionSpeedAttribute());
 }
 
 void URsSpeedSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
