@@ -5,12 +5,10 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"
-#include "Rs/Player/RsPlayerController.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -23,13 +21,6 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	GameplayCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 	GameplayCameraComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	GameplayCameraComponent->bAutoActivate = false;
-	
-	PerfectDodgeCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PerfectDodgeCapsuleComponent"));
-	PerfectDodgeCapsuleComponent->SetupAttachment(RootComponent);
-	PerfectDodgeCapsuleComponent->InitCapsuleSize(100.0f, 100.0f);
-	PerfectDodgeCapsuleComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
-	PerfectDodgeCapsuleComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
-	PerfectDodgeCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	TeamId = ERsTeamId::Player;
 }
@@ -155,11 +146,6 @@ void ARsPlayerCharacter::SetCameraRig(ERsCameraRig InCameraRig)
 UGameplayCameraComponent* ARsPlayerCharacter::GetGameplayCameraComponent() const
 {
 	return GameplayCameraComponent;
-}
-
-UCapsuleComponent* ARsPlayerCharacter::GetPerfectDodgeCapsuleComponent() const
-{
-	return PerfectDodgeCapsuleComponent;
 }
 
 UInputMappingContext* ARsPlayerCharacter::GetDefaultMappingContext() const

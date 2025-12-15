@@ -14,7 +14,7 @@ void URsAbilityTask_WaitDamageEffectBlockedImmunity::Activate()
 	{
 		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
 		{
-			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			//RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		}
 	}
 }
@@ -59,7 +59,7 @@ void URsAbilityTask_WaitDamageEffectBlockedImmunity::OnDestroy(bool AbilityEnded
 	{
 		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
 		{
-			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			//RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 	

@@ -28,9 +28,6 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCapsuleComponent> PerfectDodgeCapsuleComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
@@ -71,6 +68,5 @@ public:
 	void SetCameraRig(ERsCameraRig InCameraRig);
 
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
-	UCapsuleComponent* GetPerfectDodgeCapsuleComponent() const;
 	UInputMappingContext* GetDefaultMappingContext() const;
 };

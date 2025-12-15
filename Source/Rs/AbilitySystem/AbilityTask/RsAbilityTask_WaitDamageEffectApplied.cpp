@@ -4,8 +4,6 @@
 #include "RsAbilityTask_WaitDamageEffectApplied.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemLog.h"
-#include "Components/CapsuleComponent.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 
 void URsAbilityTask_WaitDamageEffectApplied::Activate()
@@ -16,7 +14,7 @@ void URsAbilityTask_WaitDamageEffectApplied::Activate()
 	{
 		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
 		{
-			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			//RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		}
 	}
 }
@@ -62,7 +60,7 @@ void URsAbilityTask_WaitDamageEffectApplied::OnDestroy(bool AbilityEnded)
 	{
 		if (ARsPlayerCharacter* RsPlayerCharacter = Cast<ARsPlayerCharacter>(GetAvatarActor()))
 		{
-			RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			//RsPlayerCharacter->GetPerfectDodgeCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 	
