@@ -29,11 +29,11 @@ public:
 public:
 	// Apply when collision overlapped or blocked.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
-	TSubclassOf<UGameplayEffect> Effect;
+	TArray<TSubclassOf<UGameplayEffect>> Effects;
 	
 	// Apply when collision overlapped or blocked.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS", meta = (RowType ="RsEffectTableRowBase"))
-	FDataTableRowHandle EffectTableRow;
+	TArray<FDataTableRowHandle> EffectTableRowHandles;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS")
 	FRsTargetingFilter TargetFilter;

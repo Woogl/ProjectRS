@@ -68,21 +68,27 @@ void ARsProjectile::BeginPlay()
 	FGameplayEffectContextHandle EffectContext = InstigatorASC->MakeEffectContext();
 	int32 Level = OwningAbility ? OwningAbility->GetAbilityLevel() : 0;
 	EffectContext.Get()->SetEffectCauser(this);
-	FGameplayEffectSpecHandle GESpec = InstigatorASC->MakeOutgoingSpec(Effect, Level, EffectContext);
-	if (GESpec.IsValid())
+	for (const TSubclassOf<UGameplayEffect>& Effect : Effects)
 	{
-		EffectSpecs.Add(GESpec);
-	}
-	
-	if (const FRsEffectTableRowBase* TableRow = EffectTableRow.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
-	{
-		const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass;
-		FGameplayEffectSpecHandle TableGESpec = InstigatorASC->MakeOutgoingSpec(EffectClass, 0, EffectContext);
-		if (TableGESpec.IsValid())
+		FGameplayEffectSpecHandle GESpec = InstigatorASC->MakeOutgoingSpec(Effect, Level, EffectContext);
+		if (GESpec.IsValid())
 		{
-			// Set table data in GE spec
-			URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*TableGESpec.Data, &EffectTableRow);
-			EffectSpecs.Add(TableGESpec);
+			EffectSpecs.Add(GESpec);
+		}
+	}
+
+	for (const FDataTableRowHandle& EffectTableRowHandle : EffectTableRowHandles)
+	{
+		if (const FRsEffectTableRowBase* TableRow = EffectTableRowHandle.GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
+		{
+			const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass;
+			FGameplayEffectSpecHandle TableGESpec = InstigatorASC->MakeOutgoingSpec(EffectClass, 0, EffectContext);
+			if (TableGESpec.IsValid())
+			{
+				// Set table data in GE spec
+				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*TableGESpec.Data, &EffectTableRowHandle);
+				EffectSpecs.Add(TableGESpec);
+			}
 		}
 	}
 }

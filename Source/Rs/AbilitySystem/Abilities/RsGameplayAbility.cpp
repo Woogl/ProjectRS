@@ -267,7 +267,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 	
-	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectMapDataTable)
+	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectTableMap)
 	{
 		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
 		{
@@ -451,7 +451,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		}
 	}
 
-	if (FDataTableRowHandle* EffectTableRow = EffectMapDataTable.Find(EventData.EventTag))
+	if (FDataTableRowHandle* EffectTableRow = EffectTableMap.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingTableEffect(EffectTableRow, SourceASC, EffectContext);

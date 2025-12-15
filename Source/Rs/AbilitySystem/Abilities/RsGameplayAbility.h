@@ -39,8 +39,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow))
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> EffectMap;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", ForceInlineRow, RowType="RsEffectTableRowBase"))
-	TMap<FGameplayTag, FDataTableRowHandle> EffectMapDataTable;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Effect", meta = (Categories = "AnimNotify", RowType="RsEffectTableRowBase"))
+	TMap<FGameplayTag, FDataTableRowHandle> EffectTableMap;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RS|Animation")
 	TArray<UAnimMontage*> Montages;
