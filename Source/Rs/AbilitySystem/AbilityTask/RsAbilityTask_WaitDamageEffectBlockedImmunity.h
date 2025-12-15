@@ -20,9 +20,6 @@ class RS_API URsAbilityTask_WaitDamageEffectBlockedImmunity : public UAbilityTas
 	UPROPERTY()
 	FGameplayTagContainer DamageTags;
 
-	UPROPERTY()
-	bool bEnablePerfectDodgeCapsule = false;
-
 	virtual void Activate() override;
 
 public:

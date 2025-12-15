@@ -39,6 +39,7 @@ void URsAnimNotifyState_EventToSelf::NotifyBegin(USkeletalMeshComponent* MeshCom
 		Payload.EventTag = EventTag;
 		Payload.EventMagnitude = TotalDuration;
 		Payload.Instigator = MeshComp->GetOwner();
+		Payload.Target = MeshComp->GetOwner();
 		SourceASC->HandleGameplayEvent(EventTag, &Payload);
 	}
 }

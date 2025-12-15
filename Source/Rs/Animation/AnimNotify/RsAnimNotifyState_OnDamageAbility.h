@@ -47,6 +47,9 @@ protected:
 	UFUNCTION()
 	void HandleBlockDamage(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
 	
-	TWeakObjectPtr<URsAbilityTask_WaitDamageEffectApplied> WaitAppliedTask;
-	TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> WaitBlockedTask;
+	UPROPERTY(Transient)
+	TObjectPtr<URsAbilityTask_WaitDamageEffectApplied> WaitAppliedTask;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> WaitBlockedTask;
 };

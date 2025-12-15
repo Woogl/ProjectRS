@@ -32,19 +32,18 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 			WaitBlockedTask->ReadyForActivation();
 		}
 	}
-	
 }
 
 void URsAnimNotifyState_OnDamageAbility::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (WaitAppliedTask.IsValid())
+	if (WaitAppliedTask)
 	{
 		WaitAppliedTask->EndTask();
 	}
 
-	if (WaitBlockedTask.IsValid())
+	if (WaitBlockedTask)
 	{
 		WaitBlockedTask->EndTask();
 	}
