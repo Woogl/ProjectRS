@@ -31,6 +31,8 @@ void URsAnimNotify_HitScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	PerformTargeting(MeshComp);
+	
 	AActor* Owner = MeshComp->GetOwner();
 	UWorld* World = Owner->GetWorld();
 	for (AActor* ResultActor : Targets)

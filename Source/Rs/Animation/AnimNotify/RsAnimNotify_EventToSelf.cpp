@@ -11,26 +11,57 @@ URsAnimNotify_EventToSelf::URsAnimNotify_EventToSelf()
 	bIsNativeBranchingPoint = true;
 }
 
-FString URsAnimNotify_EventToSelf::GetNotifyName_Implementation() const
+#if WITH_EDITOR
+bool URsAnimNotify_EventToSelf::CanEditChange(const FProperty* InProperty) const
 {
-	if (EventTag.IsValid())
+	const bool ParentVal = Super::CanEditChange(InProperty);
+	
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, SocketName))
 	{
-		FString EventTagString = EventTag.ToString();
-		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
+		return ParentVal && !bAlwaysSuccess;
 	}
-	return Super::GetNotifyName_Implementation();
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, PositionOffset))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, RotationOffset))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Shape))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Collision))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Filter))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Sorter))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+
+	return ParentVal;
 }
+#endif // WITH_EDITOR
 
 void URsAnimNotify_EventToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	AActor* Owner = MeshComp->GetOwner();
-	if (Targets.IsEmpty() || !Owner)
+	if (!bAlwaysSuccess)
 	{
-		return;
+		if (!PerformTargeting(MeshComp))
+		{
+			return;
+		}
 	}
 	
+	AActor* Owner = MeshComp->GetOwner();
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{
 		FGameplayEventData Payload;

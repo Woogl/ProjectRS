@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
-#include "RsAnimNotify_Targeting.generated.h"
+#include "RsAnimNotify_TargetingBase.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_Targeting : public UAnimNotify
+class RS_API URsAnimNotify_TargetingBase : public UAnimNotify
 {
 	GENERATED_BODY()
 
@@ -40,6 +40,7 @@ public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	
 protected:
+	// Perform targeting in child class
 	bool PerformTargeting(USkeletalMeshComponent* MeshComp);
 	
 	UPROPERTY(BlueprintReadOnly)

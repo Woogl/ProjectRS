@@ -11,6 +11,44 @@ URsAnimNotifyState_EventToSelf::URsAnimNotifyState_EventToSelf()
 {
 }
 
+#if WITH_EDITOR
+bool URsAnimNotifyState_EventToSelf::CanEditChange(const FProperty* InProperty) const
+{
+	const bool ParentVal = Super::CanEditChange(InProperty);
+	
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, SocketName))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, PositionOffset))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, RotationOffset))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Shape))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Collision))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Filter))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+	if (InProperty->GetFName() == GET_MEMBER_NAME_CHECKED(ThisClass, Sorter))
+	{
+		return ParentVal && !bAlwaysSuccess;
+	}
+
+	return ParentVal;
+}
+#endif // WITH_EDITOR
+
 void URsAnimNotifyState_EventToSelf::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
@@ -26,11 +64,13 @@ void URsAnimNotifyState_EventToSelf::NotifyBegin(USkeletalMeshComponent* MeshCom
 	{
 		CurrentAbility = Cast<URsGameplayAbility>(SourceASC->GetAnimatingAbility());
 	}
-	
-	PerformTargeting(MeshComp, Targets);
-	if (Targets.IsEmpty())
+
+	if (!bAlwaysSuccess)
 	{
-		return;
+		if (!PerformTargeting(MeshComp, Targets))
+		{
+			return;
+		}
 	}
 
 	if (SourceASC)

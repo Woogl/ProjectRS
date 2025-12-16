@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "RsAnimNotify_Targeting.h"
+#include "RsAnimNotify_TargetingBase.h"
 #include "RsAnimNotify_SpawnProjectile.generated.h"
 
 class ARsProjectile;
@@ -12,7 +12,7 @@ class ARsProjectile;
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_SpawnProjectile : public URsAnimNotify_Targeting
+class RS_API URsAnimNotify_SpawnProjectile : public URsAnimNotify_TargetingBase
 {
 	GENERATED_BODY()
 

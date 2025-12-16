@@ -20,6 +20,8 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	PerformTargeting(MeshComp);
+	
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))

@@ -1,23 +1,21 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsAnimNotify_Targeting.h"
+#include "RsAnimNotify_TargetingBase.h"
 
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 
-void URsAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotify_TargetingBase::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-	
-	PerformTargeting(MeshComp);
 
 #if WITH_EDITOR
 	SocketNames = MeshComp->GetAllSocketNames();
 #endif // WITH_EDITOR
 }
 
-bool URsAnimNotify_Targeting::PerformTargeting(USkeletalMeshComponent* MeshComp)
+bool URsAnimNotify_TargetingBase::PerformTargeting(USkeletalMeshComponent* MeshComp)
 {
 	if (!MeshComp)
 	{

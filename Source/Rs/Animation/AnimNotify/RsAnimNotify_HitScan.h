@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotify_Targeting.h"
+#include "RsAnimNotify_TargetingBase.h"
 #include "RsAnimNotify_HitScan.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_HitScan : public URsAnimNotify_Targeting
+class RS_API URsAnimNotify_HitScan : public URsAnimNotify_TargetingBase
 {
 	GENERATED_BODY()
 

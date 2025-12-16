@@ -24,7 +24,9 @@ FString URsAnimNotify_EventToTarget::GetNotifyName_Implementation() const
 void URsAnimNotify_EventToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-
+	
+	PerformTargeting(MeshComp);
+	
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		if (UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
