@@ -9,19 +9,18 @@
 
 URsAnimNotifyState_OnDamageAbility::URsAnimNotifyState_OnDamageAbility()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (CurrentAbility.IsValid())
+	if (CurrentAbility)
 	{
 		// Handle damage received.
 		// TODO: Delete URsAbilityTask_WaitDamageEffectApplied
 		FGameplayTagRequirements Requirements;
-		WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(CurrentAbility.Get(), ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
+		WaitAppliedTask = URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(CurrentAbility.Get(), ReceivedDamageTags, bTriggerOnce);
 		WaitAppliedTask->OnApplied.AddDynamic(this, &ThisClass::HandleReceiveDamage);
 		WaitAppliedTask->ReadyForActivation();
 
@@ -29,7 +28,7 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 		// TODO: Delete URsAbilityTask_WaitDamageEffectBlockedImmunity
 		if (bTriggerOnDamageImmunity == true)
 		{
-			WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(CurrentAbility.Get(),ReceivedDamageTags, bEnablePerfectDodgeCapsuleCollision, bTriggerOnce);
+			WaitBlockedTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(CurrentAbility.Get(),ReceivedDamageTags, bTriggerOnce);
 			WaitBlockedTask->Blocked.AddDynamic(this, &ThisClass::HandleBlockDamage);
 			WaitBlockedTask->ReadyForActivation();
 		}
@@ -53,7 +52,7 @@ void URsAnimNotifyState_OnDamageAbility::NotifyEnd(USkeletalMeshComponent* MeshC
 
 void URsAnimNotifyState_OnDamageAbility::HandleReceiveDamage(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle)
 {
-	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
+	if (OwnerASC && TriggeredAbilityTag.IsValid())
 	{
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}
@@ -61,7 +60,7 @@ void URsAnimNotifyState_OnDamageAbility::HandleReceiveDamage(AActor* Source, FGa
 
 void URsAnimNotifyState_OnDamageAbility::HandleBlockDamage(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
 {
-	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
+	if (OwnerASC && TriggeredAbilityTag.IsValid())
 	{
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}

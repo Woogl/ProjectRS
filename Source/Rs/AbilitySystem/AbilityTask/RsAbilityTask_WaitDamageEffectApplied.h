@@ -24,7 +24,7 @@ public:
 	FWaitDamageEffectDelegate OnApplied;
 
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static URsAbilityTask_WaitDamageEffectApplied* WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool bInEnablePerfectDodgeCapsule, bool TriggerOnce = false);
+	static URsAbilityTask_WaitDamageEffectApplied* WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer InDamageTags, bool TriggerOnce = false);
 
 protected:
 	virtual void BroadcastDelegate(AActor* Avatar, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle) override;

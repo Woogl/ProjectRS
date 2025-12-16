@@ -4,12 +4,7 @@
 #include "RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 
 
-void URsAbilityTask_WaitDamageEffectBlockedImmunity::Activate()
-{
-	Super::Activate();
-}
-
-URsAbilityTask_WaitDamageEffectBlockedImmunity* URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool bEnablePerfectDodgeCapsule, bool TriggerOnce)
+URsAbilityTask_WaitDamageEffectBlockedImmunity* URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool TriggerOnce)
 {
 	URsAbilityTask_WaitDamageEffectBlockedImmunity* MyObj = NewAbilityTask<URsAbilityTask_WaitDamageEffectBlockedImmunity>(OwningAbility);
 	MyObj->TriggerOnce = TriggerOnce;
@@ -31,7 +26,8 @@ void URsAbilityTask_WaitDamageEffectBlockedImmunity::ImmunityCallback(const FGam
 
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
-		Blocked.Broadcast(SpecHandle, ImmunityGE->Handle);
+		FActiveGameplayEffectHandle Handle = ImmunityGE ? ImmunityGE->Handle : FActiveGameplayEffectHandle();
+		Blocked.Broadcast(SpecHandle, Handle);
 	}
 	
 	if (TriggerOnce)

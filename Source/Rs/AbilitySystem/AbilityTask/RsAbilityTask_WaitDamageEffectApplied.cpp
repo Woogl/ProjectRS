@@ -10,7 +10,7 @@ void URsAbilityTask_WaitDamageEffectApplied::Activate()
 	Super::Activate();
 }
 
-URsAbilityTask_WaitDamageEffectApplied* URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool bEnablePerfectDodgeCapsule, bool TriggerOnce)
+URsAbilityTask_WaitDamageEffectApplied* URsAbilityTask_WaitDamageEffectApplied::WaitDamageEffect(UGameplayAbility* OwningAbility, FGameplayTagContainer DamageTags, bool TriggerOnce)
 {
 	URsAbilityTask_WaitDamageEffectApplied* MyObj = NewAbilityTask<URsAbilityTask_WaitDamageEffectApplied>(OwningAbility);
 	MyObj->DamageTags = DamageTags;

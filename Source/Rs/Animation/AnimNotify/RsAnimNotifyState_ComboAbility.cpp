@@ -4,18 +4,19 @@
 #include "RsAnimNotifyState_ComboAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitEnhancedInput.h"
 
 URsAnimNotifyState_ComboAbility::URsAnimNotifyState_ComboAbility()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (CurrentAbility.IsValid())
+	if (CurrentAbility)
 	{
 		WaitInputTask = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility.Get(), NAME_None, InputAction);
 		WaitInputTask->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputAction);
@@ -35,12 +36,13 @@ void URsAnimNotifyState_ComboAbility::NotifyEnd(USkeletalMeshComponent* MeshComp
 
 void URsAnimNotifyState_ComboAbility::HandleInputAction(const FInputActionValue& Value)
 {
-	if (OwnerASC.IsValid() && AbilityTag.IsValid() && CurrentAbility.IsValid())
+	if (OwnerASC && AbilityTag.IsValid())
 	{
-		if (bCancelCurrentAbility)
+		if (bCancelCurrentAbility && CurrentAbility)
 		{
-			CurrentAbility.Get()->K2_CancelAbility();
+			CurrentAbility->K2_CancelAbility();
 		}
+		auto Ability = URsAbilitySystemLibrary::FindAbilityWithTags(OwnerASC, AbilityTag.GetSingleTagContainer(), false);
 		OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 	}
 }

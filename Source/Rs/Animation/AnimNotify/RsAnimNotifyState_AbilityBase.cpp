@@ -13,7 +13,7 @@ void URsAnimNotifyState_AbilityBase::NotifyBegin(USkeletalMeshComponent* MeshCom
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-		if (OwnerASC.IsValid())
+		if (OwnerASC)
 		{
 			CurrentAbility = OwnerASC->GetAnimatingAbility();
 		}

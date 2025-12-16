@@ -19,6 +19,9 @@ class RS_API URsAnimNotifyState_AbilityBase : public UAnimNotifyState
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	
-	TWeakObjectPtr<UAbilitySystemComponent> OwnerASC;
-	TWeakObjectPtr<UGameplayAbility> CurrentAbility;
+	UPROPERTY(Transient)
+	TObjectPtr<UAbilitySystemComponent> OwnerASC;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UGameplayAbility> CurrentAbility;
 };
