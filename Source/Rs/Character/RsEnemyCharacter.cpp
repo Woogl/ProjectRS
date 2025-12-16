@@ -4,6 +4,7 @@
 #include "RsEnemyCharacter.h"
 
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AI/AIController/RsEnemyAIController.h"
 #include "Rs/UI/Component/RsNameplateComponent.h"
 
 
@@ -18,6 +19,7 @@ ARsEnemyCharacter::ARsEnemyCharacter(const FObjectInitializer& ObjectInitializer
 	NameplateComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 
 	TeamId = ERsTeamId::Enemy;
+	AIControllerClass = ARsEnemyAIController::StaticClass();
 }
 
 void ARsEnemyCharacter::BeginPlay()

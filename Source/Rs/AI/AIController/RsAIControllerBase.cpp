@@ -41,17 +41,6 @@ ETeamAttitude::Type ARsAIControllerBase::GetTeamAttitudeTowards(const AActor& Ot
 void ARsAIControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-	{
-		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
-	}
-
-	if (const TObjectPtr<APawn> MyPawn = GetPawn())
-	{
-		const FVector StartLocation = MyPawn->GetActorLocation();
-		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), StartLocation);
-	}
 }
 
 void ARsAIControllerBase::OnPossess(APawn* InPawn)
@@ -65,6 +54,17 @@ void ARsAIControllerBase::OnPossess(APawn* InPawn)
 			BehaviorTree = RsAvatarCharacter->BehaviorTree;
 			RunBehaviorTree(BehaviorTree);
 			GetBlackboardComponent()->SetValueAsObject(TEXT("SelfActor"), InPawn);
+			
+			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+			{
+				PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
+			}
+
+			if (const TObjectPtr<APawn> MyPawn = GetPawn())
+			{
+				const FVector StartLocation = MyPawn->GetActorLocation();
+				GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), StartLocation);
+			}
 		}
 	}
 }

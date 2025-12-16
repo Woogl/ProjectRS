@@ -8,6 +8,7 @@
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
+#include "Rs/AI/AIController/RsFriendlyAIController.h"
 #include "Rs/Party/RsPartyLibrary.h"
 
 ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -23,6 +24,7 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	GameplayCameraComponent->bAutoActivate = false;
 	
 	TeamId = ERsTeamId::Player;
+	AIControllerClass = ARsFriendlyAIController::StaticClass();
 }
 
 void ARsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

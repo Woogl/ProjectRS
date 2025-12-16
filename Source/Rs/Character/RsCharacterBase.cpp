@@ -3,7 +3,6 @@
 
 #include "RsCharacterBase.h"
 
-#include "Component/RsBattleActorManagerComponent.h"
 #include "Component/RsCharacterMovementComponent.h"
 #include "Component/RsHealthComponent.h"
 #include "Component/RsRagdollComponent.h"
@@ -58,8 +57,6 @@ ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	CharacterAppearance->SetupAttachment(GetMesh());
 	CharacterAppearance->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
 	CharacterAppearance->SetCollisionProfileName(TEXT("CharacterMesh"));
-
-	// BattleActorManagerComponent = CreateDefaultSubobject<URsBattleActorManagerComponent>(TEXT("BattleActorManagerComponent"));
 	
 	// AbilitySystemComponent needs to be updated at a high frequency.
 	SetNetUpdateFrequency(100.0f);

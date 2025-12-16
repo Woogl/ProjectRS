@@ -49,7 +49,8 @@ void URsAnimNotify_LockOn::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 		}
 		if (URsLockOnComponent* LockOnComponent = Controller->FindComponentByClass<URsLockOnComponent>())
 		{
-			LockOnComponent->TryTargetingLockOn(Shape, Collision, Filter, Sorter);
+			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+			LockOnComponent->TargetingLockOn(Params);
 		}
 	}
 }

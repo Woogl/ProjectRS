@@ -16,7 +16,6 @@ class URsAttackSet;
 class URsEnergySet;
 class URsStaggerSet;
 class URsHealthSet;
-class URsBattleActorManagerComponent;
 class URsStaggerComponent;
 class URsHealthComponent;
 class URsAbilitySystemComponent;
@@ -71,9 +70,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
 	TObjectPtr<URsRagdollComponent> RagdollComponent;
-
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS")
-	// TObjectPtr<URsBattleActorManagerComponent> BattleActorManagerComponent;
 	
 	UFUNCTION()
 	virtual void HandleDeathStarted(AActor* OwningActor);

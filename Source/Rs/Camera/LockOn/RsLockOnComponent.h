@@ -21,8 +21,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	
-	void SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
-	
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
 	bool LockOn(AActor* Target);
 
@@ -30,28 +28,19 @@ public:
 	void LockOff();
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	bool TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
+	bool TargetingLockOn(const FRsTargetingParams& Params);
 
 	UFUNCTION(BlueprintCallable, Category = "RS|Lock On")
-	bool ToggleLockOn();
+	bool ToggleLockOn(const FRsTargetingParams& Params);
 
 	UFUNCTION(BlueprintPure, Category = "RS|Lock On")
 	AActor* GetLockOnTarget() const;
 	
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	FRsTargetingShape TargetingShape;
+	UPROPERTY(EditDefaultsOnly, Category = "RS|Lock On")
+	FRsTargetingParams TargetingParams;
 
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	FRsTargetingCollision TargetingCollision;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	FRsTargetingFilter TargetingFilter;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
-	FRsTargetingSorter TargetingSorter;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RS")
+	UPROPERTY(EditDefaultsOnly, Category = "RS|Lock On")
 	float MaxTargetDistance = 1500.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RS|Player")
@@ -73,17 +62,17 @@ protected:
 	FName ReticleWidgetSocket = FName("pelvis");
 
 private:
-	//ARsPlayerCharacter* GetPlayerCharacter() const;
-	
 	UWidgetComponent* RespawnReticleWidget(AActor* Target);
-
-	UFUNCTION()
-	void HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
 	
 	UFUNCTION()
 	void HandleTargetDeath(AActor* DeadActor);
 
-	TWeakObjectPtr<AController> OwnerController;
+	UPROPERTY(Transient)
+	TObjectPtr<ACharacter> OwnerCharacter;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<AController> OwnerController;
+	
 	TWeakObjectPtr<AActor> LockOnTarget;
 	TWeakObjectPtr<UWidgetComponent> SpawnedReticleWidget;
 };

@@ -7,9 +7,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Rs/RsLogChannels.h"
 #include "Rs/Character/Component/RsHealthComponent.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -18,10 +18,10 @@ URsLockOnComponent::URsLockOnComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
-	TargetingShape.ShapeType = ERsTargetingShapeType::Sphere;
-	TargetingShape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
-	
-	TargetingSorter.ByDistance = ERsSortingOrder::Ascending;
+	TargetingParams.Shape.ShapeType = ERsTargetingShapeType::Sphere;
+	TargetingParams.Shape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
+	TargetingParams.Collision.CollisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+	TargetingParams.Sorter.ByDistance = ERsSortingOrder::Ascending;
 }
 
 void URsLockOnComponent::BeginPlay()
@@ -29,13 +29,9 @@ void URsLockOnComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	OwnerController = Cast<AController>(GetOwner());
-	if (OwnerController.IsValid())
+	if (OwnerController)
 	{
-		OwnerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::HandlePossessedPawnChanged);
-	}
-	else
-	{
-		UE_LOG(RsLog, Error, TEXT("Cannot find LockOnComponent's owner controller: %s"), *GetOwner()->GetActorLabel());
+		OwnerCharacter = OwnerController->GetCharacter();
 	}
 }
 
@@ -44,23 +40,13 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	AActor* Target = GetLockOnTarget();
-	if (!Target)
-	{
-		return;
-	}
-	AController* Controller = OwnerController.Get();
-	if (!Controller)
-	{
-		return;
-	}
-	APawn* ControlledPawn = Controller->GetPawn();
-	if (!ControlledPawn)
+	if (!Target || !OwnerController || !OwnerCharacter)
 	{
 		return;
 	}
 
 	FVector TargetLocation = Target->GetActorLocation();
-	FVector SourceLocation = ControlledPawn->GetActorLocation();
+	FVector SourceLocation = OwnerCharacter->GetActorLocation();
 	if (FVector::DistSquared(TargetLocation, SourceLocation) > MaxTargetDistance * MaxTargetDistance)
 	{
 		LockOff();
@@ -68,24 +54,16 @@ void URsLockOnComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 
 	// Update control rotation
-	UGameplayCameraComponent* GameplayCameraComponent = ControlledPawn->FindComponentByClass<UGameplayCameraComponent>();
-	if (Controller->IsLocalPlayerController() && GameplayCameraComponent)
+	UGameplayCameraComponent* GameplayCameraComponent = OwnerCharacter->FindComponentByClass<UGameplayCameraComponent>();
+	if (OwnerController->IsLocalPlayerController() && GameplayCameraComponent)
 	{
 		FRotator CurrentRotation = GameplayCameraComponent->GetEvaluatedCameraRotation();
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(SourceLocation, TargetLocation);
 		TargetRotation += ControlRotationOffset;
 		TargetRotation.Roll = 0.f;
 		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, ControlRotationInterpSpeed);
-		Controller->SetControlRotation(NewRotation);
+		OwnerController->SetControlRotation(NewRotation);
 	}
-}
-
-void URsLockOnComponent::SetTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
-{
-	TargetingShape = Shape;
-	TargetingCollision = Collision;
-	TargetingFilter = Filter;
-	TargetingSorter = Sorter;
 }
 
 bool URsLockOnComponent::LockOn(AActor* Target)
@@ -136,12 +114,6 @@ void URsLockOnComponent::LockOff()
 		SpawnedReticleWidget.Get()->DestroyComponent();
 		SpawnedReticleWidget.Reset();
 	}
-	
-	// if (ARsPlayerCharacter* PlayerCharacter = GetPlayerCharacter())
-	// {
-	// 	PlayerCharacter->CameraRig = ERsCameraRig::ThirdPersonView;
-	// 	OwnerController->SetIgnoreLookInput(false);
-	// }
 
 	if (UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetOwner()))
 	{
@@ -151,13 +123,12 @@ void URsLockOnComponent::LockOff()
 	SetComponentTickEnabled(false);
 }
 
-bool URsLockOnComponent::TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
+bool URsLockOnComponent::TargetingLockOn(const FRsTargetingParams& Params)
 {
 	if (AController* Controller = OwnerController.Get())
 	{
 		if (APawn* ControlledPawn = Controller->GetPawn())
 		{
-			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 			TArray<AActor*> OutActors;
 			if (URsTargetingLibrary::PerformTargeting(ControlledPawn, ControlledPawn->GetTransform(), Params, OutActors))
 			{
@@ -168,11 +139,11 @@ bool URsLockOnComponent::TryTargetingLockOn(FRsTargetingShape Shape, FRsTargetin
 	return false;
 }
 
-bool URsLockOnComponent::ToggleLockOn()
+bool URsLockOnComponent::ToggleLockOn(const FRsTargetingParams& Params)
 {
 	if (GetLockOnTarget() == nullptr)
 	{
-		return TryTargetingLockOn(TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter);
+		return TargetingLockOn(Params);
 	}
 	LockOff();
 	return false;
@@ -182,15 +153,6 @@ AActor* URsLockOnComponent::GetLockOnTarget() const
 {
 	return LockOnTarget.Get();
 }
-
-// ARsPlayerCharacter* URsLockOnComponent::GetPlayerCharacter() const
-// {
-// 	if (ACharacter* Character = OwnerController->GetCharacter())
-// 	{
-// 		return Cast<ARsPlayerCharacter>(Character);
-// 	}
-// 	return nullptr;
-// }
 
 UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 {
@@ -224,22 +186,6 @@ UWidgetComponent* URsLockOnComponent::RespawnReticleWidget(AActor* Target)
 	return nullptr;
 }
 
-void URsLockOnComponent::HandlePossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
-{
-	AActor* Target = GetLockOnTarget();
-	if (!OwnerController.IsValid() || !Target)
-	{
-		return;
-	}
-
-	// Update control rotation
-	UGameplayCameraComponent* GameplayCameraComponent = OwnerController->FindComponentByClass<UGameplayCameraComponent>();
-	if (GameplayCameraComponent)
-	{
-		//OwnerController->SetControlRotation(GameplayCameraComponent->GetInitialPose().Rotation);
-	}
-}
-
 void URsLockOnComponent::HandleTargetDeath(AActor* DeadActor)
 {
 	LockOff();
@@ -247,7 +193,7 @@ void URsLockOnComponent::HandleTargetDeath(AActor* DeadActor)
 	// Target will dead in next tick, so try lock on next tick.
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 	{
-		TryTargetingLockOn(TargetingShape, TargetingCollision, TargetingFilter, TargetingSorter);
+		TargetingLockOn(TargetingParams);
 	});
 }
 
