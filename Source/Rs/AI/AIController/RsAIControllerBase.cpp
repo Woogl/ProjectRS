@@ -47,9 +47,9 @@ void ARsAIControllerBase::BeginPlay()
 		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::HandlePlayerControllingPawnChanged);
 	}
 
-	if (TObjectPtr<APawn> MyPawn = GetPawn())
+	if (const TObjectPtr<APawn> MyPawn = GetPawn())
 	{
-		FVector StartLocation = MyPawn->GetActorLocation();
+		const FVector StartLocation = MyPawn->GetActorLocation();
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), StartLocation);
 	}
 }
