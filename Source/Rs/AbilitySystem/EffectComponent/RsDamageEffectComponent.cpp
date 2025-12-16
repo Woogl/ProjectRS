@@ -8,9 +8,9 @@
 #include "Misc/DataValidation.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
@@ -34,7 +34,7 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
 	bool bResult;
-	float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, RsGameplayTags::STAT_INV);
+	float StatValue = ActiveGEContainer.Owner->GetNumericAttribute(URsDefenseSet::GetInvincibleAttribute());
 	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
 	{
 		bResult = StatValue <= DamageTableRow->InvinciblePierce;
@@ -88,7 +88,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 
 	// Check super armor
-	float TargetSuperArmor = URsAbilitySystemLibrary::GetNumericAttributeByTag(TargetASC, RsGameplayTags::STAT_SUA);
+	float TargetSuperArmor = TargetASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorAttribute());
 	if (LocalSuperArmorPierce >= TargetSuperArmor)
 	{
 		// Trigger hit reaction

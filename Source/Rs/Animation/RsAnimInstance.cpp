@@ -3,9 +3,9 @@
 
 #include "RsAnimInstance.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/RsGameplayTags.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
+#include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 
 float URsAnimInstance::Montage_PlayInternal(UAnimMontage* MontageToPlay, const FMontageBlendSettings& BlendInSettings, float InPlayRate, EMontagePlayReturnType ReturnValueType, float InTimeToStartMontageAt, bool bStopAllMontages)
 {
@@ -13,7 +13,7 @@ float URsAnimInstance::Montage_PlayInternal(UAnimMontage* MontageToPlay, const F
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Pawn))
 		{
-			float ActionSpeed = URsAbilitySystemLibrary::GetNumericAttributeByTag(ASC, RsGameplayTags::STAT_ATS);
+			float ActionSpeed = ASC->GetNumericAttribute(URsSpeedSet::GetActionSpeedAttribute());
 			InPlayRate *= ActionSpeed;
 		}
 	}

@@ -34,17 +34,17 @@ void URsPlayerCharacterViewModel::Initialize()
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
 			}
-			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_E, true))
+			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTags(ASC, FGameplayTagContainer(RsGameplayTags::ABILITY_SKILL_E), true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));
 			}
-			if (URsGameplayAbility* Skill_Q = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_Q, true))
+			if (URsGameplayAbility* Skill_Q = URsAbilitySystemLibrary::FindRsAbilityWithTags(ASC, FGameplayTagContainer(RsGameplayTags::ABILITY_SKILL_Q), true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_Q, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Q));
 			}
-			if (URsGameplayAbility* Skill_Ult = URsAbilitySystemLibrary::FindRsAbilityWithTag(ASC, RsGameplayTags::ABILITY_SKILL_R, true))
+			if (URsGameplayAbility* Skill_R = URsAbilitySystemLibrary::FindRsAbilityWithTags(ASC, FGameplayTagContainer(RsGameplayTags::ABILITY_SKILL_R), true))
 			{
-				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_R, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_Ult));
+				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_R, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_R));
 			}
 		}
 
@@ -85,6 +85,7 @@ void URsPlayerCharacterViewModel::Deinitialize()
 		BattleSubsystem->OnLinkSkillReady.RemoveAll(this);
 		BattleSubsystem->OnLinkSkillFinish.RemoveAll(this);
 	}
+	
 	Super::Deinitialize();
 }
 

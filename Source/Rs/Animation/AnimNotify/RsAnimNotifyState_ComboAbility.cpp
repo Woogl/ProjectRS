@@ -42,7 +42,6 @@ void URsAnimNotifyState_ComboAbility::HandleInputAction(const FInputActionValue&
 		{
 			CurrentAbility->K2_CancelAbility();
 		}
-		auto Ability = URsAbilitySystemLibrary::FindAbilityWithTags(OwnerASC, AbilityTag.GetSingleTagContainer(), false);
 		OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 	}
 }

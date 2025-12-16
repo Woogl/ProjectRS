@@ -40,13 +40,13 @@ public:	/** Gameplay Ability */
 
 	// Find the first RS ability that matches tags. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
-	static URsGameplayAbility* FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch);
+	static URsGameplayAbility* FindRsAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
-	static void ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float TimeDiff);
+	static void ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
-	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float NewRemaining);
+	static void SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining);
 
 public: /** Gameplay Effect */
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (DataTablePin="DataTable"))

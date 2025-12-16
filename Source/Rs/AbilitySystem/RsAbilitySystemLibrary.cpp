@@ -72,9 +72,9 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySys
 	return AbilityInstance;
 }
 
-URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch)
+URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
-	if (UGameplayAbility* FoundAbility = FindAbilityWithTags(AbilitySystemComponent, AbilityTag.GetSingleTagContainer(), bExactMatch))
+	if (UGameplayAbility* FoundAbility = FindAbilityWithTags(AbilitySystemComponent, AbilityTags, bExactMatch))
 	{
 		if (URsGameplayAbility* FoundRsAbility = Cast<URsGameplayAbility>(FoundAbility))
 		{
@@ -82,25 +82,25 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTag(const UAbility
 		}
 		else
 		{
-			UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTag.ToString());
+			UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
 		}
 	}
 	
 	return nullptr;
 }
 
-void URsAbilitySystemLibrary::ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float TimeDiff)
+void URsAbilitySystemLibrary::ModifyAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float TimeDiff)
 {
-	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTag, bExactMatch);
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTags(AbilitySystemComponent, AbilityTags, bExactMatch);
 	if (FoundRsAbility)
 	{
 		FoundRsAbility->ModifyCooldownRemaining(TimeDiff);
 	}
 }
 
-void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTag AbilityTag, bool bExactMatch, float NewRemaining)
+void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch, float NewRemaining)
 {
-	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTag(AbilitySystemComponent, AbilityTag, bExactMatch);
+	URsGameplayAbility* FoundRsAbility = FindRsAbilityWithTags(AbilitySystemComponent, AbilityTags, bExactMatch);
 	if (FoundRsAbility)
 	{
 		FoundRsAbility->SetCooldownRemaining(NewRemaining);
