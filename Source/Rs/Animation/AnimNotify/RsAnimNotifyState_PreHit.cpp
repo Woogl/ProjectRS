@@ -67,7 +67,6 @@ static void ProcessGameplayCue(GameplayCueFunc Func, USkeletalMeshComponent* Mes
 
 URsAnimNotifyState_PreHit::URsAnimNotifyState_PreHit()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)

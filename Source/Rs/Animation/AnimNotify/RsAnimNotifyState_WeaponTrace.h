@@ -18,9 +18,7 @@ class RS_API URsAnimNotifyState_WeaponTrace : public UAnimNotifyState
 
 public:
 	URsAnimNotifyState_WeaponTrace();
-
-	virtual FString GetNotifyName_Implementation() const override;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	ERsWeaponRecognitionMethod WeaponRecognition = ERsWeaponRecognitionMethod::ByMeshComponent;
 	

@@ -13,8 +13,6 @@ DECLARE_CYCLE_STAT(TEXT("RsAnimNotifyState_HitTrace"), STAT_RsAnimNotifyState_Hi
 
 URsAnimNotifyState_HitTrace::URsAnimNotifyState_HitTrace()
 {
-	bIsNativeBranchingPoint = true;
-	
 #if WITH_EDITORONLY_DATA
 	bShouldFireInEditor = true;
 #endif // WITH_EDITORONLY_DATA
@@ -88,6 +86,11 @@ void URsAnimNotifyState_HitTrace::NotifyTick(USkeletalMeshComponent* MeshComp, U
 
 void URsAnimNotifyState_HitTrace::SendHitEventToResults(USkeletalMeshComponent* MeshComp, TArray<AActor*> ResultActors)
 {
+	if (!EventTag.IsValid())
+	{
+		return;
+	}
+	
 	AActor* Owner = MeshComp->GetOwner();
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
 	if (!ASC)

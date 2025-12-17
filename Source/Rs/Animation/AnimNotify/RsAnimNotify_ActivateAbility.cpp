@@ -9,13 +9,17 @@
 
 URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	if (!AbilityTag.IsValid())
+	{
+		return;
+	}
+	
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
 		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))

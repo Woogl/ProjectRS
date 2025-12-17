@@ -9,7 +9,6 @@
 
 URsAnimNotify_TeleportTo::URsAnimNotify_TeleportTo()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)

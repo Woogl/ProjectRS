@@ -16,7 +16,6 @@ class RS_API URsAnimNotify_EventToTarget : public URsAnimNotify_TargetingBase
 
 public:
 	URsAnimNotify_EventToTarget();
-	virtual FString GetNotifyName_Implementation() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories="AnimNotify"))
 	FGameplayTag EventTag;

@@ -13,7 +13,6 @@
 
 URsAnimNotify_SpawnProjectile::URsAnimNotify_SpawnProjectile()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)

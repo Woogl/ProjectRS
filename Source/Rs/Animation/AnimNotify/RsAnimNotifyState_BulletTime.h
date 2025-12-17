@@ -15,10 +15,8 @@ class RS_API URsAnimNotifyState_BulletTime : public UAnimNotifyState
 	GENERATED_BODY()
 
 public:
-	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeDilation = 0.f;
 

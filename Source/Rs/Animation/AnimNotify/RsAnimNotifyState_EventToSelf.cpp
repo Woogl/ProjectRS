@@ -54,7 +54,7 @@ void URsAnimNotifyState_EventToSelf::NotifyBegin(USkeletalMeshComponent* MeshCom
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	
 	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	if (!Owner || !EventTag.IsValid())
 	{
 		return;
 	}

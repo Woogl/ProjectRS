@@ -9,7 +9,6 @@
 
 URsAnimNotifyState_EventToTarget::URsAnimNotifyState_EventToTarget()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_EventToTarget::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)

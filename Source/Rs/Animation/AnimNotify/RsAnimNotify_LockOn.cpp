@@ -8,7 +8,6 @@
 
 URsAnimNotify_LockOn::URsAnimNotify_LockOn()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotify_LockOn::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)

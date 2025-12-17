@@ -8,7 +8,6 @@
 
 URsAnimNotify_EventToSelf::URsAnimNotify_EventToSelf()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 #if WITH_EDITOR
@@ -59,6 +58,11 @@ void URsAnimNotify_EventToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 		{
 			return;
 		}
+	}
+
+	if (!EventTag.IsValid())
+	{
+		return;
 	}
 	
 	AActor* Owner = MeshComp->GetOwner();

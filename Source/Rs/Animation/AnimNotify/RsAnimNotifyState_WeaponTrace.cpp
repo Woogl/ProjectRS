@@ -10,17 +10,6 @@
 
 URsAnimNotifyState_WeaponTrace::URsAnimNotifyState_WeaponTrace()
 {
-	bIsNativeBranchingPoint = true;
-}
-
-FString URsAnimNotifyState_WeaponTrace::GetNotifyName_Implementation() const
-{
-	if (EventTag.IsValid())
-	{
-		FString EventTagString = EventTag.ToString();
-		return EventTagString.Replace(TEXT("AnimNotify."), TEXT(""));
-	}
-	return Super::GetNotifyName_Implementation();
 }
 
 void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -95,30 +84,33 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Params, ResultActors))
 	{
 		UWorld* World = Owner->GetWorld();
-		// Deal damage to each target.
-		for (AActor* Target : ResultActors)
+		if (World && EventTag.IsValid())
 		{
-			if (!HitTargets.Contains(Target))
+			// Deal damage to each target.
+			for (AActor* Target : ResultActors)
 			{
-				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+				if (!HitTargets.Contains(Target))
 				{
-					FGameplayEventData Payload;
-					Payload.EventTag = EventTag;
-					Payload.Instigator = Owner;
-					Payload.Target = Target;
-					FVector Start = WeaponComponent->GetComponentLocation();
-					FVector End = Target->GetActorLocation();
-					FHitResult HitResult;
-					FCollisionQueryParams Query;
-					Query.AddIgnoredActor(Owner);
-					World->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
-					URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
-					FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
-					EffectContext.AddHitResult(HitResult);
-					Payload.ContextHandle = EffectContext;
-					ASC->HandleGameplayEvent(EventTag, &Payload);
+					if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+					{
+						FGameplayEventData Payload;
+						Payload.EventTag = EventTag;
+						Payload.Instigator = Owner;
+						Payload.Target = Target;
+						FVector Start = WeaponComponent->GetComponentLocation();
+						FVector End = Target->GetActorLocation();
+						FHitResult HitResult;
+						FCollisionQueryParams Query;
+						Query.AddIgnoredActor(Owner);
+						World->LineTraceSingleByChannel(HitResult, Start, End, ECC_RsAttack, Query);
+						URsTargetingLibrary::DrawDebugArrow(World, Start, End, FColor::Cyan);
+						FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+						EffectContext.AddHitResult(HitResult);
+						Payload.ContextHandle = EffectContext;
+						ASC->HandleGameplayEvent(EventTag, &Payload);
+					}
+					HitTargets.Emplace(Target);
 				}
-				HitTargets.Emplace(Target);
 			}
 		}
 	}

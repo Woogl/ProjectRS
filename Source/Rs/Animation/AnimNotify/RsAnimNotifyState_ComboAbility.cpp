@@ -4,8 +4,6 @@
 #include "RsAnimNotifyState_ComboAbility.h"
 
 #include "AbilitySystemComponent.h"
-#include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitEnhancedInput.h"
 
 URsAnimNotifyState_ComboAbility::URsAnimNotifyState_ComboAbility()
