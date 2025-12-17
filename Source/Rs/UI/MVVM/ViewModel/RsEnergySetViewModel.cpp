@@ -125,19 +125,23 @@ float URsEnergySetViewModel::GetManaPercent() const
 void URsEnergySetViewModel::MaxUltimateChanged(const FOnAttributeChangeData& Data)
 {
 	SetMaxUltimate(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
 
 void URsEnergySetViewModel::CurrentUltimateChanged(const FOnAttributeChangeData& Data)
 {
 	SetCurrentUltimate(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
 
 void URsEnergySetViewModel::MaxManaChanged(const FOnAttributeChangeData& Data)
 {
 	SetMaxMana(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
 
 void URsEnergySetViewModel::CurrentManaChanged(const FOnAttributeChangeData& Data)
 {
 	SetCurrentMana(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }

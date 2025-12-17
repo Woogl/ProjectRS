@@ -8,6 +8,7 @@
 #include "RsViewModelBase.h"
 #include "RsCharacterViewModel.generated.h"
 
+class URsEnergySetViewModel;
 class URsActiveEffectViewModel;
 class URsStaggerSetViewModel;
 class URsHealthSetViewModel;
@@ -56,7 +57,10 @@ protected:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsStaggerSetViewModel> StaggerSetViewModel;
+	
+	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;
 
-	UPROPERTY(FieldNotify, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	TArray<TObjectPtr<URsActiveEffectViewModel>> ActiveEffectViewModels;
 };

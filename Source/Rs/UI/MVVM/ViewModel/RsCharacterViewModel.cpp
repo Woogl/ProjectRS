@@ -6,10 +6,12 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "RsActiveEffectViewModel.h"
+#include "RsEnergySetViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "RsStaggerSetViewModel.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Rs/RsLogChannels.h"
+#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/Character/RsCharacterBase.h"
@@ -46,6 +48,10 @@ void URsCharacterViewModel::Initialize()
 			if (const URsStaggerSet* StaggerSet = ASC->GetSet<URsStaggerSet>())
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
+			}
+			if (const URsEnergySet* EnergySet = ASC->GetSet<URsEnergySet>())
+			{
+				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
 			}
 			ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
 		}

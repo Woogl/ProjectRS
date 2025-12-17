@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
 #include "RsViewModelBase.h"
 #include "RsAttributeSetViewModelBase.generated.h"
 
-class UAttributeSet;
 class UAbilitySystemComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributeChanged, FGameplayAttribute, Attribute, float, OldValue, float, NewValue);
+
 /**
  * 
  */
@@ -18,6 +21,9 @@ class RS_API URsAttributeSetViewModelBase : public URsViewModelBase
 
 public:
 	using ModelType = UAttributeSet;
+	
+	UPROPERTY(BlueprintAssignable, BlueprintReadWrite)
+	FOnAttributeChanged OnAttributeChanged;
 	
 protected:
 	virtual void Initialize() override;

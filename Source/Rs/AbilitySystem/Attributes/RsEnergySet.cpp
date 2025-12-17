@@ -38,8 +38,7 @@ void URsEnergySet::PreAttributeChange(const FGameplayAttribute& Attribute, float
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}
-
-	if (Attribute == GetMaxManaAttribute())
+	else if (Attribute == GetMaxManaAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 1.f);
 	}

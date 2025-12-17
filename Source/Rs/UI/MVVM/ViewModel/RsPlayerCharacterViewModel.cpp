@@ -6,13 +6,11 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "RsAbilityViewModel.h"
-#include "RsEnergySetViewModel.h"
 #include "RsHealthSetViewModel.h"
 #include "Components/SlateWrapperTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
@@ -30,10 +28,6 @@ void URsPlayerCharacterViewModel::Initialize()
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PlayerCharacter))
 		{
-			if (const URsEnergySet* EnergySet = ASC->GetSet<URsEnergySet>())
-			{
-				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
-			}
 			if (URsGameplayAbility* Skill_E = URsAbilitySystemLibrary::FindRsAbilityWithTags(ASC, FGameplayTagContainer(RsGameplayTags::ABILITY_SKILL_E), true))
 			{
 				UE_MVVM_SET_PROPERTY_VALUE(AbilityViewModel_E, URsAbilityViewModel::CreateRsAbilityViewModel(Skill_E));

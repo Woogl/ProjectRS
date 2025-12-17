@@ -151,14 +151,17 @@ FLinearColor URsHealthSetViewModel::GetHealthBarColor() const
 void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
 	SetMaxHealth(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
 
 void URsHealthSetViewModel::CurrentHealthChanged(const FOnAttributeChangeData& Data)
 {
 	SetCurrentHealth(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
 
 void URsHealthSetViewModel::BarrierChanged(const FOnAttributeChangeData& Data)
 {
 	SetBarrier(Data.NewValue);
+	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }

@@ -9,7 +9,6 @@
 
 enum class ERsLinkSkillType : uint8;
 class URsAbilityViewModel;
-class URsEnergySetViewModel;
 class ARsPlayerCharacter;
 
 /**
@@ -71,9 +70,6 @@ private:
 	void HandleRemovePartyMember(ARsPlayerCharacter* RemovedMember, int32 MemberIndex);
 	void HandleLinkSkillReady(ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType LinkSkillType, int32 LinkSkillCount);
 	void HandleLinkSkillFinish(ERsLinkSkillType LinkSkillType);
-	
-	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
-	TObjectPtr<URsEnergySetViewModel> EnergySetViewModel;
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsAbilityViewModel> AbilityViewModel_E;
