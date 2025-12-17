@@ -4,9 +4,11 @@
 #include "RsPartyViewModel.h"
 
 #include "RsPlayerCharacterViewModel.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
+#include "Rs/Party/RsPartyLibrary.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 void URsPartyViewModel::Initialize()
@@ -137,4 +139,21 @@ void URsPartyViewModel::HandleRemovePartyMember(ARsPlayerCharacter* PartyMember,
 		PartyMemberViewModels.RemoveAt(MemberIndex);
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(PartyMemberViewModels);
 	}
+}
+
+UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
+{
+	ULocalPlayer* LocalPlayer = UserWidget->GetOwningLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return nullptr;
+	}
+
+	URsPartyComponent* PartyComponent = URsPartyLibrary::GetPartyComponent(LocalPlayer);
+	if (!PartyComponent)
+	{
+		return nullptr;
+	}
+
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsPartyViewModel>(PartyComponent);
 }

@@ -4,6 +4,7 @@
 #include "RsBattleViewModel.h"
 
 #include "RsCharacterViewModel.h"
+#include "Blueprint/UserWidget.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
@@ -77,4 +78,21 @@ void URsBattleViewModel::HandleLinkSkillFinish(ERsLinkSkillType LinkSkillType)
 void URsBattleViewModel::SetBossViewModel(URsCharacterViewModel* InBossViewModel)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(BossViewModel, InBossViewModel);
+}
+
+UObject* URsBattleViewModelResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
+{
+	ULocalPlayer* LocalPlayer = UserWidget->GetOwningLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return nullptr;
+	}
+	
+	URsBattleSubsystem* BattleSubsystem = LocalPlayer->GetSubsystem<URsBattleSubsystem>();
+	if (!BattleSubsystem)
+	{
+		return nullptr;
+	}
+
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsBattleViewModel>(BattleSubsystem);
 }

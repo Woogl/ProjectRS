@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "RsSingletonViewModelBase.h"
 #include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "View/MVVMViewModelContextResolver.h"
 #include "RsBattleViewModel.generated.h"
 
 class ARsCharacterBase;
@@ -45,4 +46,13 @@ private:
 public:
 	UPROPERTY(FieldNotify, Setter, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TObjectPtr<URsCharacterViewModel> BossViewModel;
+};
+
+UCLASS()
+class RS_API URsBattleViewModelResolver : public UMVVMViewModelContextResolver
+{
+	GENERATED_BODY()
+
+public:
+	virtual UObject* CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const override;
 };

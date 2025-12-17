@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RsSingletonViewModelBase.h"
+#include "View/MVVMViewModelContextResolver.h"
 #include "RsPartyViewModel.generated.h"
 
 class URsPlayerCharacterViewModel;
@@ -54,4 +55,13 @@ private:
 	
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
 	TArray<TObjectPtr<URsPlayerCharacterViewModel>> PartyMemberViewModels;
+};
+
+UCLASS()
+class RS_API URsPartyViewModelResolver : public UMVVMViewModelContextResolver
+{
+	GENERATED_BODY()
+
+public:
+	virtual UObject* CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const override;
 };
