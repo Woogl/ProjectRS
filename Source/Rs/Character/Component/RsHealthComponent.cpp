@@ -139,6 +139,7 @@ void URsHealthComponent::HandleHealthChange(const FOnAttributeChangeData& Data)
 {
 	if (Data.NewValue <= 0.f && bIsDead == false)
 	{
+		// Death must be initiated on server. 
 		if (GetOwner()->HasAuthority())
 		{
 			const bool bOldDead = bIsDead;
@@ -212,13 +213,16 @@ void URsHealthComponent::HandleBarrierBroke(const FActiveGameplayEffectHandle& B
 
 void URsHealthComponent::OnRep_bIsDead(bool OldValue)
 {
-	if (OldValue == false && bIsDead == true && OwnerAbilitySystemComponent)
+	if (OldValue == false && bIsDead == true)
 	{
 		// Start death
-		FGameplayEventData Payload;
-		Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
-		OwnerAbilitySystemComponent->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()))
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = RsGameplayTags::ABILITY_DEATH;
+			ASC->HandleGameplayEvent(RsGameplayTags::ABILITY_DEATH, &Payload);
 		
-		OnDeathStarted.Broadcast(GetOwner());
+			OnDeathStarted.Broadcast(GetOwner());
+		}
 	}
 }

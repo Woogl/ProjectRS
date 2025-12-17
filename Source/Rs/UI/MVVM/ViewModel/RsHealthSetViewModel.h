@@ -25,7 +25,7 @@ public:
 
 protected:
 	virtual void Initialize() override;
-	virtual void Deinitialize() override;
+	virtual void HandleAttributeChanged(const FOnAttributeChangeData& Data) override;
 
 public:
 	float GetCurrentHealth() const;
@@ -59,10 +59,6 @@ public:
 	FLinearColor GetHealthBarColor() const;
 	
 private:
-	void MaxHealthChanged(const FOnAttributeChangeData& Data);
-	void CurrentHealthChanged(const FOnAttributeChangeData& Data);
-	void BarrierChanged(const FOnAttributeChangeData& Data);
-	
 	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
 	float CurrentHealth = 0.f;
 	

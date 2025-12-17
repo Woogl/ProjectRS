@@ -24,7 +24,7 @@ public:
 
 protected:
 	virtual void Initialize() override;
-	virtual void Deinitialize() override;
+	virtual void HandleAttributeChanged(const FOnAttributeChangeData& Data) override;
 
 public:
 	float GetCurrentUltimate() const;
@@ -46,11 +46,6 @@ public:
 	float GetManaPercent() const;
 	
 private:
-	void MaxUltimateChanged(const FOnAttributeChangeData& Data);
-	void CurrentUltimateChanged(const FOnAttributeChangeData& Data);
-	void MaxManaChanged(const FOnAttributeChangeData& Data);
-	void CurrentManaChanged(const FOnAttributeChangeData& Data);
-	
 	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
 	float CurrentUltimate = 0.f;
 	

@@ -14,15 +14,7 @@ URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(const URs
 void URsHealthSetViewModel::Initialize()
 {
 	Super::Initialize();
-
-	// Data bindings
-	if (ASC.IsValid())
-	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).AddUObject(this, &ThisClass::CurrentHealthChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetBarrierAttribute()).AddUObject(this, &ThisClass::BarrierChanged);
-	}
-
+	
 	// Initial value set
 	if (const URsHealthSet* HealthSet = GetModel<ThisClass>())
 	{
@@ -32,16 +24,22 @@ void URsHealthSetViewModel::Initialize()
 	}
 }
 
-void URsHealthSetViewModel::Deinitialize()
+void URsHealthSetViewModel::HandleAttributeChanged(const FOnAttributeChangeData& Data)
 {
-	if (ASC.IsValid())
+	if (Data.Attribute == URsHealthSet::GetMaxHealthAttribute())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetMaxHealthAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetCurrentHealthAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsHealthSet::GetBarrierAttribute()).RemoveAll(this);
+		SetMaxHealth(Data.NewValue);
+	}
+	else if (Data.Attribute == URsHealthSet::GetCurrentHealthAttribute())
+	{
+		SetCurrentHealth(Data.NewValue);
+	}
+	else if (Data.Attribute == URsHealthSet::GetBarrierAttribute())
+	{
+		SetBarrier(Data.NewValue);
 	}
 	
-	Super::Deinitialize();
+	Super::HandleAttributeChanged(Data);
 }
 
 float URsHealthSetViewModel::GetCurrentHealth() const
@@ -146,22 +144,4 @@ FLinearColor URsHealthSetViewModel::GetPortraitColor() const
 FLinearColor URsHealthSetViewModel::GetHealthBarColor() const
 {
 	return FLinearColor::Green;
-}
-
-void URsHealthSetViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
-{
-	SetMaxHealth(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void URsHealthSetViewModel::CurrentHealthChanged(const FOnAttributeChangeData& Data)
-{
-	SetCurrentHealth(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void URsHealthSetViewModel::BarrierChanged(const FOnAttributeChangeData& Data)
-{
-	SetBarrier(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }

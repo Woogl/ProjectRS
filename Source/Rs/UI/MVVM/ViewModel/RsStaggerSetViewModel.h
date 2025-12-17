@@ -25,7 +25,7 @@ public:
 
 protected:
 	virtual void Initialize() override;
-	virtual void Deinitialize() override;
+	virtual void HandleAttributeChanged(const FOnAttributeChangeData& Data) override;
 
 public:
 	float GetCurrentStagger() const;
@@ -41,10 +41,6 @@ public:
 	float GetStaggerPercent() const;
 	
 private:
-	void MaxStaggerChanged(const FOnAttributeChangeData& Data);
-	void CurrentStaggerChanged(const FOnAttributeChangeData& Data);
-	void StaggerDecayChanged(const FOnAttributeChangeData& Data);
-	
 	UPROPERTY(FieldNotify, Getter, Setter, meta=(AllowPrivateAccess))
 	float CurrentStagger = 0.f;
 	

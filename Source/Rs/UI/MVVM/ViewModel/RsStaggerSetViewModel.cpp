@@ -13,14 +13,6 @@ URsStaggerSetViewModel* URsStaggerSetViewModel::CreateStaggerSetViewModel(const 
 void URsStaggerSetViewModel::Initialize()
 {
 	Super::Initialize();
-	
-	// Data bindings
-	if (ASC.IsValid())
-	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).AddUObject(this, &ThisClass::MaxStaggerChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).AddUObject(this, &ThisClass::CurrentStaggerChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).AddUObject(this, &ThisClass::StaggerDecayChanged);
-	}
 
 	// Initial value set
 	if (URsStaggerSet* StaggerSet = GetModel<ThisClass>())
@@ -31,16 +23,22 @@ void URsStaggerSetViewModel::Initialize()
 	}
 }
 
-void URsStaggerSetViewModel::Deinitialize()
+void URsStaggerSetViewModel::HandleAttributeChanged(const FOnAttributeChangeData& Data)
 {
-	if (ASC.IsValid())
+	if (Data.Attribute == URsStaggerSet::GetMaxStaggerAttribute())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetMaxStaggerAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetCurrentStaggerAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsStaggerSet::GetStaggerDecayAttribute()).RemoveAll(this);
+		SetMaxStagger(Data.NewValue);
+	}
+	else if (Data.Attribute == URsStaggerSet::GetCurrentStaggerAttribute())
+	{
+		SetCurrentStagger(Data.NewValue);
+	}
+	else if (Data.Attribute == URsStaggerSet::GetStaggerDecayAttribute())
+	{
+		SetStaggerDecay(Data.NewValue);
 	}
 	
-	Super::Deinitialize();
+	Super::HandleAttributeChanged(Data);
 }
 
 float URsStaggerSetViewModel::GetCurrentStagger() const
@@ -90,19 +88,3 @@ float URsStaggerSetViewModel::GetStaggerPercent() const
 		return 0.f;
 	}
 }
-
-void URsStaggerSetViewModel::MaxStaggerChanged(const FOnAttributeChangeData& Data)
-{
-	SetMaxStagger(Data.NewValue);
-}
-
-void URsStaggerSetViewModel::CurrentStaggerChanged(const FOnAttributeChangeData& Data)
-{
-	SetCurrentStagger(Data.NewValue);
-}
-
-void URsStaggerSetViewModel::StaggerDecayChanged(const FOnAttributeChangeData& Data)
-{
-	SetStaggerDecay(Data.NewValue);
-}
-

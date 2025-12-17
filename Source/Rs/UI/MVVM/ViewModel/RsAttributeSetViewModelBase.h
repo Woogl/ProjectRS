@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
+#include "GameplayEffectTypes.h"
 #include "RsViewModelBase.h"
 #include "RsAttributeSetViewModelBase.generated.h"
 
@@ -22,11 +23,15 @@ class RS_API URsAttributeSetViewModelBase : public URsViewModelBase
 public:
 	using ModelType = UAttributeSet;
 	
-	UPROPERTY(BlueprintAssignable, BlueprintReadWrite)
-	FOnAttributeChanged OnAttributeChanged;
-	
 protected:
 	virtual void Initialize() override;
+	virtual void Deinitialize() override;
+	
+	virtual void HandleAttributeChanged(const FOnAttributeChangeData& Data);
 
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
+	
+private:
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChanged OnAttributeChanged;
 };

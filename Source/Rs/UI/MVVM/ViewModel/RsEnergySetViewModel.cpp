@@ -13,15 +13,6 @@ URsEnergySetViewModel* URsEnergySetViewModel::CreateEnergySetViewModel(const URs
 void URsEnergySetViewModel::Initialize()
 {
 	Super::Initialize();
-	
-	// Data bindings
-	if (ASC.IsValid())
-	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).AddUObject(this, &ThisClass::MaxUltimateChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).AddUObject(this, &ThisClass::CurrentUltimateChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxManaAttribute()).AddUObject(this, &ThisClass::MaxManaChanged);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentManaAttribute()).AddUObject(this, &ThisClass::CurrentManaChanged);
-	}
 
 	// Initial value set
 	if (URsEnergySet* EnergySet = GetModel<ThisClass>())
@@ -33,17 +24,26 @@ void URsEnergySetViewModel::Initialize()
 	}
 }
 
-void URsEnergySetViewModel::Deinitialize()
+void URsEnergySetViewModel::HandleAttributeChanged(const FOnAttributeChangeData& Data)
 {
-	if (ASC.IsValid())
+	if (Data.Attribute == URsEnergySet::GetMaxUltimateAttribute())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxUltimateAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentUltimateAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetMaxManaAttribute()).RemoveAll(this);
-		ASC->GetGameplayAttributeValueChangeDelegate(URsEnergySet::GetCurrentManaAttribute()).RemoveAll(this);
+		SetMaxUltimate(Data.NewValue);
+	}
+	else if (Data.Attribute == URsEnergySet::GetCurrentUltimateAttribute())
+	{
+		SetCurrentUltimate(Data.NewValue);
+	}
+	else if (Data.Attribute == URsEnergySet::GetMaxManaAttribute())
+	{
+		SetMaxMana(Data.NewValue);
+	}
+	else if (Data.Attribute == URsEnergySet::GetCurrentManaAttribute())
+	{
+		SetCurrentMana(Data.NewValue);
 	}
 	
-	Super::Deinitialize();
+	Super::HandleAttributeChanged(Data);
 }
 
 float URsEnergySetViewModel::GetCurrentUltimate() const
@@ -120,28 +120,4 @@ float URsEnergySetViewModel::GetManaPercent() const
 	{
 		return 0.f;
 	}
-}
-
-void URsEnergySetViewModel::MaxUltimateChanged(const FOnAttributeChangeData& Data)
-{
-	SetMaxUltimate(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void URsEnergySetViewModel::CurrentUltimateChanged(const FOnAttributeChangeData& Data)
-{
-	SetCurrentUltimate(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void URsEnergySetViewModel::MaxManaChanged(const FOnAttributeChangeData& Data)
-{
-	SetMaxMana(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
-}
-
-void URsEnergySetViewModel::CurrentManaChanged(const FOnAttributeChangeData& Data)
-{
-	SetCurrentMana(Data.NewValue);
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.OldValue, Data.NewValue);
 }
