@@ -20,8 +20,8 @@ class RS_API URsCameraLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintPure, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
-	static UGameplayCameraComponent* GetPlayerGameplayCameraComponent(const UObject* WorldContextObject);
+	static UGameplayCameraComponent* GetPlayerGameplayCameraComponent(const UObject* WorldContextObject, int32 PlayerIndex);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Camera Library", meta=(WorldContext="WorldContextObject"))
-	static void SetPlayerCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig);
+	static void SwitchPlayerCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig);
 };

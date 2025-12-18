@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 
-UGameplayCameraComponent* URsCameraLibrary::GetPlayerGameplayCameraComponent(const UObject* WorldContextObject)
+UGameplayCameraComponent* URsCameraLibrary::GetPlayerGameplayCameraComponent(const UObject* WorldContextObject, int32 PlayerIndex)
 {
 	if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(WorldContextObject, 0))
 	{
@@ -17,7 +17,7 @@ UGameplayCameraComponent* URsCameraLibrary::GetPlayerGameplayCameraComponent(con
 	return nullptr;
 }
 
-void URsCameraLibrary::SetPlayerCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
+void URsCameraLibrary::SwitchPlayerCameraRig(const UObject* WorldContextObject, ERsCameraRig CameraRig)
 {
 	if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(WorldContextObject, 0))
 	{

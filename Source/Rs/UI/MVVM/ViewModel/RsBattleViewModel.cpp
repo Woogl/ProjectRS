@@ -94,5 +94,5 @@ UObject* URsBattleViewModelResolver::CreateInstance(const UClass* ExpectedType, 
 		return nullptr;
 	}
 
-	return URsSingletonViewModelBase::GetOrCreateViewModel<URsBattleViewModel>(BattleSubsystem);
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsBattleViewModel>(BattleSubsystem, true);
 }

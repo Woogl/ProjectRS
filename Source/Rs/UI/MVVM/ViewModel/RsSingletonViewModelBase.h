@@ -17,10 +17,10 @@ class RS_API URsSingletonViewModelBase : public URsViewModelBase
 
 public:
 	template <typename T>
-	static T* GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound = true);
+	static T* GetViewModel(const UObject* WorldContext, bool bWarnIfNotFound);
 
 	template <typename T>
-	static T* GetOrCreateViewModel(T::ModelType* Model, bool bWarnIfNotFound = true);
+	static T* GetOrCreateViewModel(T::ModelType* Model, bool bWarnIfNotFound);
 };
 
 template <typename T>

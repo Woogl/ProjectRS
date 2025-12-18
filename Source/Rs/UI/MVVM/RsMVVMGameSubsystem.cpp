@@ -31,7 +31,7 @@ bool URsMVVMGameSubsystem::AddSingletonViewModel(UMVVMViewModelBase* ViewModel, 
 	bool bSuccess = GetViewModelCollection()->AddViewModelInstance(Context, ViewModel);
 	if (!bSuccess && bWarnIfNotFound)
 	{
-		UE_LOG(RsLog, Warning, TEXT("Failed to AddSingletonViewModel(): %s"), *ViewModelClassName.ToString());
+		UE_LOG(RsUILog, Warning, TEXT("Failed to AddSingletonViewModel(): %s"), *ViewModelClassName.ToString());
 	}
 	return bSuccess;
 }
@@ -44,7 +44,7 @@ UMVVMViewModelBase* URsMVVMGameSubsystem::GetSingletonViewModel(TSubclassOf<URsV
 	}
 	if (bWarnIfNotFound)
 	{
-		UE_LOG(RsLog, Warning, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(ViewModelClass));
+		UE_LOG(RsUILog, Warning, TEXT("Failed to GetSingletonViewModel(): %s"), *GetNameSafe(ViewModelClass));
 	}
 	return nullptr;
 }

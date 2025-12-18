@@ -155,5 +155,5 @@ UObject* URsPartyViewModelResolver::CreateInstance(const UClass* ExpectedType, c
 		return nullptr;
 	}
 
-	return URsSingletonViewModelBase::GetOrCreateViewModel<URsPartyViewModel>(PartyComponent);
+	return URsSingletonViewModelBase::GetOrCreateViewModel<URsPartyViewModel>(PartyComponent, true);
 }
