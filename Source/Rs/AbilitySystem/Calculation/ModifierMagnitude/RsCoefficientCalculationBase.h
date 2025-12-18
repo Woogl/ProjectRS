@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
+#include "Rs/AbilitySystem/Calculation/RsCoefficientScriptParser.h"
 #include "RsCoefficientCalculationBase.generated.h"
 
 /**
@@ -26,27 +27,4 @@ protected:
 
 	UPROPERTY()
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> CapturedAttributeDefinitions;
-};
-
-
-USTRUCT()
-struct FRsExpressionParser
-{
-	GENERATED_BODY()
-	
-public:
-	static float GetParseResult(const FString& Expression, const FGameplayEffectSpec& Spec, const URsCoefficientCalculationBase* Calc);
-	
-private:
-	static const FRsExpressionParser& Get();
-	
-	TArray<FString> Tokenize(const FString& Expression) const;
-	TArray<FString> ToPostfix(const TArray<FString>& Tokens) const;
-	FString CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const;
-	
-	bool IsValid(const TArray<FString>& Tokens) const;
-	int32 GetPrecedence(const FString& Operator) const;
-	int32 GetPrecedence(const TCHAR& Operator) const;
-	bool IsOperator(const FString& Operator) const;
-	bool IsOperator(const TCHAR& Operator) const;
 };
