@@ -11,7 +11,7 @@
 void FRsEditorModule::StartupModule()
 {
 	UThumbnailManager::Get().RegisterCustomRenderer(URsGameplayAbility::StaticClass(), URsAbilityThumbnailRenderer::StaticClass());
-	UThumbnailManager::Get().RegisterCustomRenderer(URsGameplayEffect::StaticClass(), URsEffectThumbnailRenderer::StaticClass());
+	UThumbnailManager::Get().RegisterCustomRenderer(UGameplayEffect::StaticClass(), URsEffectThumbnailRenderer::StaticClass());
 }
 
 void FRsEditorModule::ShutdownModule()
