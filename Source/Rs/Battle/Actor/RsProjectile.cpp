@@ -45,8 +45,13 @@ bool ARsProjectile::ApplyEffect(AActor* Target, const FHitResult& HitResult)
 	for (FGameplayEffectSpecHandle& EffectSpec : EffectSpecs)
 	{
 		FGameplayEffectSpec* GESpec = EffectSpec.Data.Get();
-		GESpec->GetContext().AddHitResult(HitResult);
-		FActiveGameplayEffectHandle Handle = InstigatorASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
+		FGameplayEffectContextHandle EffectContext = GESpec->GetContext();
+		if (EffectContext.IsValid())
+		{
+			EffectContext.AddHitResult(HitResult);
+			GESpec->SetContext(EffectContext);
+		}
+		FActiveGameplayEffectHandle Handle = InstigatorASC->ApplyGameplayEffectSpecToTarget(*GESpec, TargetASC);
 		if (Handle.IsValid() || GESpec->Def->DurationPolicy == EGameplayEffectDurationType::Instant)
 		{
 			bSuccess = true;

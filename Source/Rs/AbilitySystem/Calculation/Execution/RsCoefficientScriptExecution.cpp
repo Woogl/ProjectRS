@@ -3,27 +3,34 @@
 
 #include "RsCoefficientScriptExecution.h"
 
+#include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
+#include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
+#include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 #include "Rs/AbilitySystem/Calculation/RsCoefficientScriptParser.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 URsCoefficientScriptExecution::URsCoefficientScriptExecution()
 {
-	// TODO: CoefficientMap is not filled when construction!!!
-	for (const auto [Tag, Coefficient] : URsAttributeSetBase::GetCoefficientMap())
-	{
-		FString CoeffString = Tag.ToString();
-		if (CoeffString.EndsWith(TEXT(".Source")))
-		{
-			CaptureAttribute(Tag, Coefficient, EGameplayEffectAttributeCaptureSource::Source, true);
-		}
-		else if (CoeffString.EndsWith(TEXT(".Target")))
-		{
-			CaptureAttribute(Tag, Coefficient, EGameplayEffectAttributeCaptureSource::Target, false);
-		}
-	}
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATK_SOURCE, URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATS_SOURCE, URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_BP_SOURCE, URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_DEF_SOURCE, URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPcur_SOURCE, URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPmax_SOURCE, URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_IMP_SOURCE, URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATK_TARGET, URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATS_TARGET, URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_BP_TARGET, URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_DEF_TARGET, URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPcur_TARGET, URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPmax_TARGET, URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	CaptureAttribute(RsGameplayTags::COEFFICIENT_IMP_TARGET, URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
 }
 
 float URsCoefficientScriptExecution::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
