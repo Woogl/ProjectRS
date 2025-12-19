@@ -13,7 +13,7 @@ float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FG
 	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec))
 	{
 		const FString Script = Row->HealthDamageExpression;
-		return FRsCoefficientScriptParser::GetParseResult(Script, Spec, this);
+		return FRsParser::CoefficientScriptToFloat(Script, Spec, this);
 	}
 	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find HealthDamageExpression of [%s]"), *Spec.ToSimpleString());
 	return 0.f;
@@ -24,7 +24,7 @@ float URsStaggerDamageCalculation::CalculateBaseMagnitude_Implementation(const F
 	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec))
 	{
 		const FString Script = Row->StaggerDamageExpression;
-		return FRsCoefficientScriptParser::GetParseResult(Script, Spec, this);
+		return FRsParser::CoefficientScriptToFloat(Script, Spec, this);
 	}
 	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find StaggerDamageExpression of [%s]"), *Spec.ToSimpleString());
 	return 0.f;

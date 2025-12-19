@@ -7,8 +7,9 @@
 #include "RsCoefficientScriptExecution.generated.h"
 
 struct FRsEffectTableRow;
+
 /**
- * 
+ * NOTE: This class cannot be used with GameplayEffects that have a duration but no period (Period = 0).
  */
 UCLASS()
 class RS_API URsCoefficientScriptExecution : public UGameplayEffectExecutionCalculation

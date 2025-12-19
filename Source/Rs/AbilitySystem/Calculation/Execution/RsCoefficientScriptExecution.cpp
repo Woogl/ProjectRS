@@ -11,7 +11,7 @@
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
-#include "Rs/AbilitySystem/Calculation/RsCoefficientScriptParser.h"
+#include "Rs/AbilitySystem/Calculation/RsParser.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 URsCoefficientScriptExecution::URsCoefficientScriptExecution()
@@ -80,9 +80,9 @@ void URsCoefficientScriptExecution::CaptureAttribute(FGameplayTag Key, const FGa
 void URsCoefficientScriptExecution::ApplyParseResult(const FRsEffectTableRow* Row, FName TableKey, const FGameplayAttribute& TargetAttribute, const FGameplayEffectSpec& Spec, FGameplayEffectCustomExecutionOutput& Output) const
 {
 	const FString Script = Row->FindValue<FString>(TableKey, false);
-	const float ModifyingMagnitude = FRsCoefficientScriptParser::GetParseResult(Script, Spec, this);
-	if (ModifyingMagnitude != 0.f)
+	const float Modifying = FRsParser::CoefficientScriptToFloat(Script, Spec, this);
+	if (Modifying != 0.f)
 	{
-		Output.AddOutputModifier(FGameplayModifierEvaluatedData(TargetAttribute, EGameplayModOp::Additive, ModifyingMagnitude));
+		Output.AddOutputModifier(FGameplayModifierEvaluatedData(TargetAttribute, EGameplayModOp::Additive, Modifying));
 	}
 }

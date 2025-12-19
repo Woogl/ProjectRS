@@ -1,27 +1,27 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsCoefficientScriptParser.h"
+#include "RsParser.h"
 
 #include "GameplayTagContainer.h"
 #include "Execution/RsCoefficientScriptExecution.h"
 #include "ModifierMagnitude/RsCoefficientCalculationBase.h"
 #include "Rs/RsLogChannels.h"
 
-float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientCalculationBase* Calc)
+float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientCalculationBase* Calc)
 {
 	if (Script.IsNumeric())
 	{
 		return FCString::Atof(*Script);
 	}
 	
-	const FRsCoefficientScriptParser Parser = Get();
+	const FRsParser Parser = Get();
 	
 	const TArray<FString> Tokens = Parser.Tokenize(Script);
 
-	if (!Parser.IsValid(Tokens))
+	if (!Parser.IsValidScript(Tokens))
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid Magnitude Script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
+		UE_LOG(RsAbilityLog, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
 		return 0.f;
 	}
 
@@ -39,7 +39,7 @@ float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FG
 			else
 			{
 				FAggregatorEvaluateParameters EvaluationParameters;
-				float AttributeValue = Calc->FindAttributeMagnitude(FGameplayTag::RequestGameplayTag(FName(Token)),Spec, EvaluationParameters);
+				const float AttributeValue = Calc->FindAttributeMagnitude(FGameplayTag::RequestGameplayTag(FName(Token)),Spec, EvaluationParameters);
 				Stack.Push(FString::Printf(TEXT("%f"), AttributeValue));
 			}
 		}
@@ -56,7 +56,7 @@ float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FG
 	return Result;
 }
 
-float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientScriptExecution* Exec)
+float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientScriptExecution* Exec)
 {
 	if (Script.IsEmpty())
 	{
@@ -68,13 +68,13 @@ float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FG
 		return FCString::Atof(*Script);
 	}
 	
-	const FRsCoefficientScriptParser Parser = Get();
+	const FRsParser Parser = Get();
 	
 	const TArray<FString> Tokens = Parser.Tokenize(Script);
 
-	if (!Parser.IsValid(Tokens))
+	if (!Parser.IsValidScript(Tokens))
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid Magnitude Script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
+		UE_LOG(RsAbilityLog, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
 		return 0.f;
 	}
 
@@ -92,7 +92,7 @@ float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FG
 			else
 			{
 				FAggregatorEvaluateParameters EvaluationParameters;
-				float AttributeValue = Exec->FindAttributeMagnitude(FGameplayTag::RequestGameplayTag(FName(Token)),Spec, EvaluationParameters);
+				const float AttributeValue = Exec->FindAttributeMagnitude(FGameplayTag::RequestGameplayTag(FName(Token)),Spec, EvaluationParameters);
 				Stack.Push(FString::Printf(TEXT("%f"), AttributeValue));
 			}
 		}
@@ -109,13 +109,13 @@ float FRsCoefficientScriptParser::GetParseResult(const FString& Script, const FG
 	return Result;
 }
 
-const FRsCoefficientScriptParser& FRsCoefficientScriptParser::Get()
+const FRsParser& FRsParser::Get()
 {
-	static FRsCoefficientScriptParser Parser;
+	static FRsParser Parser;
 	return Parser;
 }
 
-TArray<FString> FRsCoefficientScriptParser::Tokenize(const FString& Script) const
+TArray<FString> FRsParser::Tokenize(const FString& Script) const
 {
 	TArray<FString> Tokens;
 	FString TempToken;
@@ -147,7 +147,7 @@ TArray<FString> FRsCoefficientScriptParser::Tokenize(const FString& Script) cons
 	return Tokens;
 }
 
-TArray<FString> FRsCoefficientScriptParser::ToPostfix(const TArray<FString>& Tokens) const
+TArray<FString> FRsParser::ToPostfix(const TArray<FString>& Tokens) const
 {
 	TArray<FString> Output;
 	TArray<FString> Stack;
@@ -194,7 +194,7 @@ TArray<FString> FRsCoefficientScriptParser::ToPostfix(const TArray<FString>& Tok
 	return Output;
 }
 
-FString FRsCoefficientScriptParser::CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const
+FString FRsParser::CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const
 {
 	float Value = 0.f;
 	
@@ -219,9 +219,9 @@ FString FRsCoefficientScriptParser::CalculateOperation(const FString& Value1, co
 }
 
 
-bool FRsCoefficientScriptParser::IsValid(const TArray<FString>& Tokens) const
+bool FRsParser::IsValidScript(const TArray<FString>& Tokens) const
 {
-	if(Tokens.IsEmpty())
+	if (Tokens.IsEmpty())
 	{
 		UE_LOG(RsAbilityLog, Error, TEXT("Invalid Script detected."));
 		return false;		
@@ -249,7 +249,7 @@ bool FRsCoefficientScriptParser::IsValid(const TArray<FString>& Tokens) const
 	return true;
 }
 
-int32 FRsCoefficientScriptParser::GetPrecedence(const FString& Operator) const
+int32 FRsParser::GetPrecedence(const FString& Operator) const
 {
 	if (Operator == TEXT("*") || Operator == TEXT("/"))
 	{
@@ -262,7 +262,7 @@ int32 FRsCoefficientScriptParser::GetPrecedence(const FString& Operator) const
 	return 0;
 }
 
-bool FRsCoefficientScriptParser::IsOperator(const FString& Operator) const
+bool FRsParser::IsOperator(const FString& Operator) const
 {
 	if (Operator == TEXT("+") || Operator == TEXT("-") || Operator == TEXT("*") || Operator == TEXT("/"))
 	{
@@ -271,7 +271,7 @@ bool FRsCoefficientScriptParser::IsOperator(const FString& Operator) const
 	return false;
 }
 
-bool FRsCoefficientScriptParser::IsOperator(const TCHAR& Operator) const
+bool FRsParser::IsOperator(const TCHAR& Operator) const
 {
 	if (Operator == '+' || Operator == '-' || Operator == '*' || Operator == '/')
 	{

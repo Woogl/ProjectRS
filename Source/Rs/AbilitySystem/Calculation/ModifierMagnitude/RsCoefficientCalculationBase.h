@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "Rs/AbilitySystem/Calculation/RsCoefficientScriptParser.h"
+#include "Rs/AbilitySystem/Calculation/RsParser.h"
 #include "RsCoefficientCalculationBase.generated.h"
 
 /**
