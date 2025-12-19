@@ -107,11 +107,12 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	}
 }
 
-FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level)
+FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, FGameplayEffectContextHandle Context, float Level)
 {
-	if (FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
+	if (const FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
 	{
-		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, Source->MakeEffectContext());
+		FGameplayEffectContextHandle MyContext = Context.IsValid() ? Context : Source->MakeEffectContext();
+		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, MyContext);
 		FDataTableRowHandle TableRowHandle;
 		TableRowHandle.DataTable = DataTable;
 		TableRowHandle.RowName = RowName;

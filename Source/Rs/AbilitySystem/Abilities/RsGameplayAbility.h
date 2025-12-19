@@ -149,8 +149,6 @@ protected:
 
 	UFUNCTION()
 	void HandleGameplayEvent(FGameplayEventData EventData);
-	
-	FGameplayEffectSpecHandle MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const;
 
 private:
 	UPROPERTY(Transient)

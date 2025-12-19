@@ -9,9 +9,8 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Rs/RsLogChannels.h"
-#include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
-#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Player/RsPlayerState.h"
 
@@ -438,7 +437,7 @@ void URsGameplayAbility::HandleMontageCancelled()
 
 void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 {
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetAvatarActorFromActorInfo());
+	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(EventData.Target);
 	
 	if (const TSubclassOf<UGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
@@ -453,40 +452,10 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 
 	if (FDataTableRowHandle* EffectTableRow = EffectTableMap.Find(EventData.EventTag))
 	{
-		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
-		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingTableEffect(EffectTableRow, SourceASC, EffectContext);
-		if (EffectSpec.IsValid())
+		FActiveGameplayEffectHandle Handle = URsAbilitySystemLibrary::ApplyEffectByTable(EffectTableRow->DataTable, EffectTableRow->RowName, SourceASC, TargetASC, EventData.ContextHandle, GetAbilityLevel());
+		if (Handle.IsValid())
 		{
-			FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, TargetASC);
-			if (Handle.IsValid())
-			{
-				EventEffectHandles.Add(EventData.EventTag, Handle);
-			}
+			EventEffectHandles.Add(EventData.EventTag, Handle);
 		}
 	}
 }
-
-FGameplayEffectSpecHandle URsGameplayAbility::MakeOutgoingTableEffect(const FDataTableRowHandle* EffectTableRow, UAbilitySystemComponent* ASC, FGameplayEffectContextHandle EffectContext) const
-{
-	if (!EffectTableRow)
-	{
-		return FGameplayEffectSpecHandle();
-	}
-	
-	if (const FRsEffectTableRowBase* TableRow = EffectTableRow->GetRow<FRsEffectTableRowBase>(ANSI_TO_TCHAR(__FUNCTION__)))
-	{
-		if (const TSubclassOf<UGameplayEffect> EffectClass = TableRow->EffectClass)
-		{
-			FGameplayEffectContextHandle EffectContextHandle = EffectContext.IsValid() ? EffectContext : ASC->MakeEffectContext();
-			FGameplayEffectSpecHandle GESpec = ASC->MakeOutgoingSpec(EffectClass, GetAbilityLevel(), EffectContext);
-			if (GESpec.IsValid())
-			{
-				// Set table data in GE spec
-				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*GESpec.Data, EffectTableRow);
-				return GESpec;
-			}
-		}
-	}
-	return FGameplayEffectSpecHandle();
-}
-
