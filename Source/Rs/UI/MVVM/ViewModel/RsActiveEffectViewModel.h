@@ -1,4 +1,4 @@
-6// Copyright 2024 Team BH.
+// Copyright 2024 Team BH.
 
 #pragma once
 
