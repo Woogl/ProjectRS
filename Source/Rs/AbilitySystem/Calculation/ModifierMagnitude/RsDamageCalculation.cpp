@@ -3,9 +3,9 @@
 
 #include "RsDamageCalculation.h"
 
-#include "RsCoefficientCalculationBase.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
+#include "Rs/AbilitySystem/Calculation/RsParser.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
 float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const

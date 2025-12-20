@@ -11,9 +11,9 @@
 
 URsNameplateComponent::URsNameplateComponent()
 {
+	PrimaryComponentTick.bCanEverTick = false;
 	Space = EWidgetSpace::Screen;
 	bDrawAtDesiredSize = true;
-	SetVisibility(false);
 }
 
 void URsNameplateComponent::BeginPlay()

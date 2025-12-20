@@ -26,6 +26,7 @@ class RS_API URsAttributeSetBase : public UAttributeSet
 
 public:
 	static FGameplayAttribute TagToAttribute(const FGameplayTag& Tag);
+	static FGameplayTag AttributeToTag(const FGameplayAttribute& Attribute);
 	static const TMap<FGameplayTag, FGameplayAttribute>& GetStatMap();
 	static const TMap<FGameplayTag, FGameplayAttribute>& GetCoefficientMap();
 	
@@ -39,6 +40,7 @@ protected:
 	void RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute);
 	
 private:
-	inline static TMap<FGameplayTag, FGameplayAttribute> StatMap;
-	inline static TMap<FGameplayTag, FGameplayAttribute> CoefficientMap;
+	inline static TMap<FGameplayTag, FGameplayAttribute> TagStatMap;
+	inline static TMap<FGameplayTag, FGameplayAttribute> TagCoefficientMap;
+	inline static TMap<FGameplayAttribute, FGameplayTag> StatTagMap;
 };

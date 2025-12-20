@@ -1,7 +1,7 @@
 // Copyright 2024 Team BH.
 
 
-#include "RsCoefficientCalculationBase.h"
+#include "RsCoefficientScriptCalculation.h"
 
 #include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
@@ -11,8 +11,10 @@
 #include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
+#include "Rs/AbilitySystem/Calculation/RsParser.h"
+#include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 
-URsCoefficientCalculationBase::URsCoefficientCalculationBase()
+URsCoefficientScriptCalculation::URsCoefficientScriptCalculation()
 {
 	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATK_SOURCE, URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATS_SOURCE, URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
@@ -31,7 +33,39 @@ URsCoefficientCalculationBase::URsCoefficientCalculationBase()
 	CaptureAttribute(RsGameplayTags::COEFFICIENT_IMP_TARGET, URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
 }
 
-float URsCoefficientCalculationBase::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
+float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
+{
+	const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec);
+	if (!Row)
+	{
+		UE_LOG(RsAbilityLog, Warning, TEXT("No effect table row in Spec: %s"), *Spec.ToSimpleString());
+		return 0.f;
+	}
+
+	for (const FGameplayModifierInfo& Modifier : Spec.Def->Modifiers)
+	{
+		if (Modifier.ModifierMagnitude.GetCustomMagnitudeCalculationClass() != GetClass())
+		{
+			continue;
+		}
+		const FGameplayTag ModifierStatTag = URsAttributeSetBase::AttributeToTag(Modifier.Attribute);
+		if (!ModifierStatTag.IsValid())
+		{
+			continue;
+		}
+		const FString Script = Row->FindValue<FString>(ModifierStatTag.GetTagName(), false);
+		if (Script.IsEmpty())
+		{
+			continue;
+		}
+		return FRsParser::CoefficientScriptToFloat(Script, Spec, this);
+	}
+	
+	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find coefficient script of [%s]"), *Spec.ToSimpleString());
+	return 0.f;
+}
+
+float URsCoefficientScriptCalculation::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
 {
 	float OutMagnitude = 0.f;
 	if (CapturedAttributeDefinitions.Contains(Key))
@@ -45,7 +79,7 @@ float URsCoefficientCalculationBase::FindAttributeMagnitude(FGameplayTag Key, co
 	return OutMagnitude;
 }
 
-void URsCoefficientCalculationBase::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
+void URsCoefficientScriptCalculation::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
 {
 	FGameplayEffectAttributeCaptureDefinition Definition;
 	Definition.AttributeToCapture = Attribute;

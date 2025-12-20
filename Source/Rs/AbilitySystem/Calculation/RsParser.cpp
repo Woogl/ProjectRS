@@ -5,10 +5,16 @@
 
 #include "GameplayTagContainer.h"
 #include "Execution/RsCoefficientScriptExecution.h"
-#include "ModifierMagnitude/RsCoefficientCalculationBase.h"
+#include "ModifierMagnitude/RsCoefficientScriptCalculation.h"
 #include "Rs/RsLogChannels.h"
 
-float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientCalculationBase* Calc)
+static const FRsParser& Get()
+{
+	static FRsParser ParserStatics;
+	return ParserStatics;
+}
+
+float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientScriptCalculation* Calc)
 {
 	if (Script.IsNumeric())
 	{
@@ -107,12 +113,6 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 
 	float Result = FCString::Atof(*Stack.Pop());
 	return Result;
-}
-
-const FRsParser& FRsParser::Get()
-{
-	static FRsParser Parser;
-	return Parser;
 }
 
 TArray<FString> FRsParser::Tokenize(const FString& Script) const

@@ -4,21 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "Rs/AbilitySystem/Calculation/RsParser.h"
-#include "RsCoefficientCalculationBase.generated.h"
+#include "RsCoefficientScriptCalculation.generated.h"
 
 /**
  * Calculate magnitude based on captured attributes from source and target.
  */
-UCLASS(Abstract)
-class RS_API URsCoefficientCalculationBase : public UGameplayModMagnitudeCalculation
+UCLASS()
+class RS_API URsCoefficientScriptCalculation : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 
 public:
-	URsCoefficientCalculationBase();
+	URsCoefficientScriptCalculation();
 	
-	// virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
+	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 	
 	float FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters = FAggregatorEvaluateParameters()) const;
 

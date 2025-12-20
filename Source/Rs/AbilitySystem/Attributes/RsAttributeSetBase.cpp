@@ -7,11 +7,11 @@
 
 FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 {
-	if (FGameplayAttribute* Found = StatMap.Find(Tag))
+	if (FGameplayAttribute* Found = TagStatMap.Find(Tag))
 	{
 		return *Found;
 	}
-	for (const TTuple<FGameplayTag, FGameplayAttribute>& Coefficient : CoefficientMap)
+	for (const TTuple<FGameplayTag, FGameplayAttribute>& Coefficient : TagCoefficientMap)
 	{
 		if (Coefficient.Key.MatchesTag(Tag))
 		{
@@ -22,14 +22,23 @@ FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 	return FGameplayAttribute();
 }
 
+FGameplayTag URsAttributeSetBase::AttributeToTag(const FGameplayAttribute& Attribute)
+{
+	if (const FGameplayTag* Found = StatTagMap.Find(Attribute))
+	{
+		return *Found;
+	}
+	return FGameplayTag::EmptyTag;
+}
+
 const TMap<FGameplayTag, FGameplayAttribute>& URsAttributeSetBase::GetStatMap()
 {
-	return StatMap;
+	return TagStatMap;
 }
 
 const TMap<FGameplayTag, FGameplayAttribute>& URsAttributeSetBase::GetCoefficientMap()
 {
-	return CoefficientMap;
+	return TagCoefficientMap;
 }
 
 void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const
@@ -51,10 +60,11 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 
 void URsAttributeSetBase::RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
-	StatMap.Add(Tag, Attribute);
+	TagStatMap.Add(Tag, Attribute);
+	StatTagMap.Add(Attribute, Tag);
 }
 
 void URsAttributeSetBase::RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
-	CoefficientMap.Add(Tag, Attribute);
+	TagCoefficientMap.Add(Tag, Attribute);
 }
