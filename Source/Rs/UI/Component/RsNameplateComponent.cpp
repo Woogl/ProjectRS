@@ -11,7 +11,6 @@
 
 URsNameplateComponent::URsNameplateComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
 	Space = EWidgetSpace::Screen;
 	bDrawAtDesiredSize = true;
 }
@@ -58,16 +57,13 @@ void URsNameplateComponent::UpdateVisibility()
 	FVector OwnerLocation = Owner->GetActorLocation();
 	FVector PlayerLocation = PlayerPawn->GetActorLocation();
 	float DistSquared = FVector::DistSquared(OwnerLocation, PlayerLocation);
-
-	ESlateVisibility CurrentVisibility = MyWidget->GetVisibility();
 	
-	if (DistSquared > (HideDistance * HideDistance) && CurrentVisibility != ESlateVisibility::Hidden)
+	if (DistSquared > (HideDistance * HideDistance))
 	{
 		MyWidget->SetVisibility(ESlateVisibility::Hidden);
-		return;
 	}
 
-	if (DistSquared < (ShowDistance * ShowDistance) && CurrentVisibility != ESlateVisibility::SelfHitTestInvisible)
+	else if (DistSquared < (ShowDistance * ShowDistance))
 	{
 		MyWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
