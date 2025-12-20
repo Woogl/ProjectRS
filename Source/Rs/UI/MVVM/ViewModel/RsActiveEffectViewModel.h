@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
 #include "RsViewModelBase.h"
-#include "Components/SlateWrapperTypes.h"
 #include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 #include "RsActiveEffectViewModel.generated.h"
 
@@ -20,22 +19,20 @@ class RS_API URsActiveEffectViewModel : public URsViewModelBase, public FTickabl
 	GENERATED_BODY()
 
 public:
-	URsActiveEffectViewModel();
-	
 	UFUNCTION(BlueprintCallable, Category = "RS | ViewModel")
 	static URsActiveEffectViewModel* CreateRsActiveEffectViewModel(FActiveGameplayEffectHandle EffectHandle);
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	ESlateVisibility GetVisibility() const;
+	
+	int32 GetStacks() const;
+	void SetStacks(int32 Value);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
-	int32 GetStack() const;
+	FText GetStacksText() const;
+	
+	int32 GetMaxStacks() const;
+	void SetMaxStacks(int32 Value);
 	
 	UFUNCTION(FieldNotify, BlueprintPure)
-	FText GetStackText() const;
-
-	UFUNCTION(FieldNotify, BlueprintPure)
-	float GetEffectProgress() const;
+	FText GetMaxStacksText() const;
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	int32 GetPriority() const;
@@ -45,38 +42,50 @@ public:
 
 	UFUNCTION(FieldNotify, BlueprintPure)
 	FText GetDescription() const;
+	
+	void SetDuration(float Value);
+	float GetDuration() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetDurationText() const;
+	
+	void SetRemainingTime(float Value);
+	float GetRemainingTime() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	FText GetRemainingTimeText() const;
+	
+	UFUNCTION(FieldNotify, BlueprintPure)
+	float GetEffectProgress() const;
 
 protected:
-	static const URsUIDataEffectComponent* FindRsUIData(const FActiveGameplayEffect& Effect)
-	{
-		if (TObjectPtr<const UGameplayEffect> EffectDef = Effect.Spec.Def)
-		{
-			if (const URsUIDataEffectComponent* UIData = EffectDef->FindComponent<URsUIDataEffectComponent>())
-			{
-				return UIData;
-			}
-		}
-		return nullptr;
-	};
-
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	virtual void Tick(float DeltaTime) override;
-
-	void OnEffectAdded();
-	void OnEffectRenewed(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration);
-	void OnEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
-	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(URsAbilityViewModel, STATGROUP_Tickables); };
-
+	void HandleEffectTimeChange(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration);
+	void HandleEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
+	
 public:
 	DECLARE_DELEGATE_OneParam(FOnViewModelDisabled, URsActiveEffectViewModel*);
 	FOnViewModelDisabled OnViewModelDisabled;
+	
+	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override;
 
 private:
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	float Duration;
+	
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	float RemainingTime;
+	
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	int32 Stacks;
+	
+	UPROPERTY(FieldNotify, BlueprintReadWrite, Getter, Setter, meta=(AllowPrivateAccess))
+	int32 MaxStacks;
+	
 	const FActiveGameplayEffect* GetActiveEffect() const;
-
-	bool IsStackable = false;
 	
 	TWeakObjectPtr<const URsUIDataEffectComponent> CachedUIData;
 	TWeakObjectPtr<URsAbilitySystemComponent> CachedASC;
