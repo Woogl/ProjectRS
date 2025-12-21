@@ -16,7 +16,6 @@ URsActiveEffectViewModel* URsActiveEffectViewModel::CreateRsActiveEffectViewMode
 	}
 	
 	// Active effect view model must have UI Data.
-
 	const URsUIDataEffectComponent* UIData = ActiveEffect->Spec.Def->FindComponent<URsUIDataEffectComponent>();
 	if (!UIData)
 	{
@@ -76,7 +75,6 @@ int32 URsActiveEffectViewModel::GetPriority() const
 
 UObject* URsActiveEffectViewModel::GetIcon() const
 {
-	UE_LOG(LogTemp, Warning, TEXT("URsActiveEffectViewModel::GetIcon %s"), *CachedUIData->GetIcon()->GetName());
 	return CachedUIData.Get() ? CachedUIData->GetIcon() : nullptr;
 }
 
@@ -147,6 +145,11 @@ void URsActiveEffectViewModel::HandleEffectTimeChange(FActiveGameplayEffectHandl
 void URsActiveEffectViewModel::HandleEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
 {
 	OnViewModelDisabled.Execute(this);
+}
+
+const URsUIDataEffectComponent* URsActiveEffectViewModel::GetUIData() const
+{
+	return CachedUIData.Get();
 }
 
 const FActiveGameplayEffect* URsActiveEffectViewModel::GetActiveEffect() const

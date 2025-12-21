@@ -65,6 +65,9 @@ protected:
 	void HandleEffectTimeChange(FActiveGameplayEffectHandle EffectHandle, float NewStartTime, float NewDuration);
 	void HandleEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
 	
+	UFUNCTION(BlueprintCallable)
+	const URsUIDataEffectComponent* GetUIData() const;
+	
 public:
 	DECLARE_DELEGATE_OneParam(FOnViewModelDisabled, URsActiveEffectViewModel*);
 	FOnViewModelDisabled OnViewModelDisabled;
