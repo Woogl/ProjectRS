@@ -23,12 +23,9 @@ URsCharacterViewModel* URsCharacterViewModel::CreateRsCharacterViewModel(ARsChar
 
 bool URsCharacterViewModel::TryActivateAbility(FGameplayTag AbilityTag)
 {
-	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
-		{
-			return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
-		}
+		return ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 	}
 	return false;
 }
@@ -37,57 +34,69 @@ void URsCharacterViewModel::Initialize()
 {
 	Super::Initialize();
 
-	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
+		if (const URsHealthSet* HealthSet = ASC->GetSet<URsHealthSet>())
 		{
-			if (const URsHealthSet* HealthSet = ASC->GetSet<URsHealthSet>())
-			{
-				UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(HealthSet));
-			}
-			if (const URsStaggerSet* StaggerSet = ASC->GetSet<URsStaggerSet>())
-			{
-				UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
-			}
-			if (const URsEnergySet* EnergySet = ASC->GetSet<URsEnergySet>())
-			{
-				UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
-			}
-			ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAdded);
+			UE_MVVM_SET_PROPERTY_VALUE(HealthSetViewModel, URsHealthSetViewModel::CreateHealthSetViewModel(HealthSet));
 		}
+		if (const URsStaggerSet* StaggerSet = ASC->GetSet<URsStaggerSet>())
+		{
+			UE_MVVM_SET_PROPERTY_VALUE(StaggerSetViewModel, URsStaggerSetViewModel::CreateStaggerSetViewModel(StaggerSet));
+		}
+		if (const URsEnergySet* EnergySet = ASC->GetSet<URsEnergySet>())
+		{
+			UE_MVVM_SET_PROPERTY_VALUE(EnergySetViewModel, URsEnergySetViewModel::CreateEnergySetViewModel(EnergySet));
+		}
+		ASC->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &ThisClass::HandleEffectAdded);
 	}
 }
 
 void URsCharacterViewModel::Deinitialize()
 {
-	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character))
-		{
-			ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
-		}
+		ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
+		ASC->OnAnyGameplayEffectRemovedDelegate().RemoveAll(this);
 	}
 	Super::Deinitialize();
 }
 
-void URsCharacterViewModel::OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)
+void URsCharacterViewModel::HandleEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)
 {
 	if (URsActiveEffectViewModel* NewEffectViewModel = URsActiveEffectViewModel::CreateRsActiveEffectViewModel(EffectHandle))
 	{
-		NewEffectViewModel->OnViewModelDisabled.BindUObject(this, &ThisClass::OnEffectRemoved);
 		ActiveEffectViewModels.Add(NewEffectViewModel);
-		ActiveEffectViewModels.Sort([](const URsActiveEffectViewModel& A, const URsActiveEffectViewModel& B)->bool{return A.GetPriority() > B.GetPriority();});
+		ActiveEffectViewModels.Sort([](const URsActiveEffectViewModel& A, const URsActiveEffectViewModel& B)
+		{
+			return A.GetPriority() > B.GetPriority();
+		});
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
+		
+		ASC->OnGameplayEffectRemoved_InfoDelegate(EffectHandle)->AddUObject(this, &ThisClass::HandleEffectRemoved);
 	}
 }
 
-void URsCharacterViewModel::OnEffectRemoved(URsActiveEffectViewModel* DisabledViewModel)
+void URsCharacterViewModel::HandleEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo)
 {
-	if (DisabledViewModel)
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		DisabledViewModel->OnViewModelDisabled.Unbind();
-		ActiveEffectViewModels.Remove(DisabledViewModel);
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
+		const FActiveGameplayEffect* RemovalEffect = ASC->GetActiveGameplayEffect(RemovalInfo.ActiveEffect->Handle);
+		if (RemovalEffect)
+		{
+			UE_LOG(RsAbilityLog, Error, TEXT("Not removed effect : %s"), *RemovalInfo.ActiveEffect->Spec.ToSimpleString());
+			return;
+		}
+
+		for (TObjectPtr<URsActiveEffectViewModel> ActiveEffectViewModel : ActiveEffectViewModels)
+		{
+			if (ActiveEffectViewModel->GetActiveEffect() == RemovalEffect)
+			{
+				ActiveEffectViewModels.Remove(*ActiveEffectViewModel);
+				UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
+				break;
+			}
+		}
 	}
 }
 
@@ -123,11 +132,11 @@ FText URsCharacterViewModel::GetDescription() const
 	return FText::GetEmpty();
 }
 
-ESlateVisibility URsCharacterViewModel::GetPortraitVisibility() const
+UAbilitySystemComponent* URsCharacterViewModel::GetAbilitySystemComponent() const
 {
-	if (GetPortrait())
+	if (const ARsCharacterBase* Character = GetModel<ThisClass>())
 	{
-		return ESlateVisibility::SelfHitTestInvisible;
+		return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Character);
 	}
-	return ESlateVisibility::Hidden;
+	return nullptr;		
 }

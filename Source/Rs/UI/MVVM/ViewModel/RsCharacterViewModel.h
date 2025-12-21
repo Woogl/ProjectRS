@@ -35,8 +35,8 @@ protected:
 	virtual void Initialize() override;
 	virtual void Deinitialize() override;
 
-	void OnEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle);
-	void OnEffectRemoved(URsActiveEffectViewModel* DisabledViewModel);
+	void HandleEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle);
+	void HandleEffectRemoved(const FGameplayEffectRemovalInfo& RemovalInfo);
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -47,9 +47,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FText GetDescription() const;
-
-	UFUNCTION(BlueprintPure)
-	ESlateVisibility GetPortraitVisibility() const;
 	
 protected:
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess))
@@ -63,4 +60,6 @@ protected:
 
 	UPROPERTY(FieldNotify, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	TArray<TObjectPtr<URsActiveEffectViewModel>> ActiveEffectViewModels;
+	
+	UAbilitySystemComponent* GetAbilitySystemComponent() const;
 };
