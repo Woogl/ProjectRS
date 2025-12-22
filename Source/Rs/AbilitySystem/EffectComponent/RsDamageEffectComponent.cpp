@@ -148,10 +148,10 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		int32 Idx = GainUP->Modifiers.Num();
 		GainUP->Modifiers.SetNum(Idx + 1);
 	
-		FGameplayModifierInfo& InfoMana = GainUP->Modifiers[Idx];
-		InfoMana.ModifierMagnitude = FScalableFloat(LocalUltimateGain);
-		InfoMana.ModifierOp = EGameplayModOp::Additive;
-		InfoMana.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
+		FGameplayModifierInfo& InfoUP = GainUP->Modifiers[Idx];
+		InfoUP.ModifierMagnitude = FScalableFloat(LocalUltimateGain);
+		InfoUP.ModifierOp = EGameplayModOp::Additive;
+		InfoUP.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
 		
 		SourceASC->ApplyGameplayEffectToSelf(GainUP, 0, SourceASC->MakeEffectContext());
 	}
