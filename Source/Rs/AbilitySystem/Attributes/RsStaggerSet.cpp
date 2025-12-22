@@ -17,7 +17,6 @@ URsStaggerSet::URsStaggerSet()
 	RegisterTagToStat(RsGameplayTags::STAT_GPmax, GetMaxStaggerAttribute());
 	RegisterTagToStat(RsGameplayTags::STAT_GPcur, GetCurrentStaggerAttribute());
 	RegisterTagToStat(RsGameplayTags::STAT_GPdec, GetStaggerDecayAttribute());
-	RegisterTagToStat(RsGameplayTags::META_DAMAGEGP, GetBaseDamageAttribute());
 }
 
 void URsStaggerSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

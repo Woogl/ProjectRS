@@ -107,7 +107,21 @@ void URsAbilitySystemLibrary::SetAbilityCooldownRemaining(const UAbilitySystemCo
 	}
 }
 
-FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, FGameplayEffectContextHandle Context, float Level)
+FGameplayEffectSpecHandle URsAbilitySystemLibrary::MakeEffectSpecByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, float Level, FGameplayEffectContextHandle Context)
+{
+	if (const FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
+	{
+		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, Context);
+		FDataTableRowHandle TableRowHandle;
+		TableRowHandle.DataTable = DataTable;
+		TableRowHandle.RowName = RowName;
+		URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*Spec.Data, &TableRowHandle);
+		return Spec;
+	}
+	return FGameplayEffectSpecHandle();
+}
+
+FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level, FGameplayEffectContextHandle Context)
 {
 	if (const FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
 	{

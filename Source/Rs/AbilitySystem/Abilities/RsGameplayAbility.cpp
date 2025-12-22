@@ -443,16 +443,21 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	if (const TSubclassOf<UGameplayEffect>* Effect = EffectMap.Find(EventData.EventTag))
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
-		FActiveGameplayEffectHandle Handle = SourceASC->BP_ApplyGameplayEffectToTarget(*Effect, TargetASC, GetAbilityLevel(), EffectContext);
+		FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
+		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
+		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
 		{
 			EventEffectHandles.Add(EventData.EventTag, Handle);
 		}
 	}
 
-	if (FDataTableRowHandle* EffectTableRow = EffectTableMap.Find(EventData.EventTag))
+	if (const FDataTableRowHandle* EffectTableRow = EffectTableMap.Find(EventData.EventTag))
 	{
-		FActiveGameplayEffectHandle Handle = URsAbilitySystemLibrary::ApplyEffectByTable(EffectTableRow->DataTable, EffectTableRow->RowName, SourceASC, TargetASC, EventData.ContextHandle, GetAbilityLevel());
+		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
+		FGameplayEffectSpecHandle Spec = URsAbilitySystemLibrary::MakeEffectSpecByTable(EffectTableRow->DataTable, EffectTableRow->RowName, SourceASC, GetAbilityLevel(), EffectContext);
+		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
+		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
 		{
 			EventEffectHandles.Add(EventData.EventTag, Handle);

@@ -50,7 +50,10 @@ public:	/** Gameplay Ability */
 
 public: /** Gameplay Effect */
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (DataTablePin="DataTable"))
-	static FActiveGameplayEffectHandle ApplyEffectByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, FGameplayEffectContextHandle Context, float Level);
+	static FGameplayEffectSpecHandle MakeEffectSpecByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, float Level, FGameplayEffectContextHandle Context);
+	
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (DataTablePin="DataTable"))
+	static FActiveGameplayEffectHandle ApplyEffectByTable(const UDataTable* DataTable, FName RowName, UAbilitySystemComponent* Source, UAbilitySystemComponent* Target, float Level, FGameplayEffectContextHandle Context);
 	
 public: /** Gameplay Attribute */
 	UFUNCTION(BlueprintPure, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Stat,Coefficient"))

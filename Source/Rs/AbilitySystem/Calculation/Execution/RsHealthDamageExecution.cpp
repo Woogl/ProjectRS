@@ -110,4 +110,12 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
+	
+	// Feedback to source
+	FGameplayEventData Payload;
+	Payload.EventTag = RsGameplayTags::EFFECT_DAMAGEFEEDBACK;
+	Payload.Instigator = ExecutionParams.GetSourceAbilitySystemComponent()->GetOwner();
+	Payload.Target = ExecutionParams.GetTargetAbilitySystemComponent()->GetOwner();
+	Payload.EventMagnitude = FinalDamage;
+	ExecutionParams.GetSourceAbilitySystemComponent()->HandleGameplayEvent(RsGameplayTags::EFFECT_DAMAGEFEEDBACK, &Payload);
 }
