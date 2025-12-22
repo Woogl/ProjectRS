@@ -126,22 +126,35 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 
 	// Advantage to damage source
-	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP,UP"));
-	GE->DurationPolicy = EGameplayEffectDurationType::Instant;
-	int32 Idx = GE->Modifiers.Num();
-	GE->Modifiers.SetNum(Idx + 2);
+	if (LocalManaGain != 0)
+	{
+		UGameplayEffect* GainMP = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP"));
+		GainMP->DurationPolicy = EGameplayEffectDurationType::Instant;
+		int32 Idx = GainMP->Modifiers.Num();
+		GainMP->Modifiers.SetNum(Idx + 1);
 	
-	FGameplayModifierInfo& InfoMana = GE->Modifiers[Idx];
-	InfoMana.ModifierMagnitude = FScalableFloat(LocalManaGain);
-	InfoMana.ModifierOp = EGameplayModOp::Additive;
-	InfoMana.Attribute = URsEnergySet::GetCurrentManaAttribute();
+		FGameplayModifierInfo& InfoMana = GainMP->Modifiers[Idx];
+		InfoMana.ModifierMagnitude = FScalableFloat(LocalManaGain);
+		InfoMana.ModifierOp = EGameplayModOp::Additive;
+		InfoMana.Attribute = URsEnergySet::GetCurrentManaAttribute();
+		
+		SourceASC->ApplyGameplayEffectToSelf(GainMP, 0, SourceASC->MakeEffectContext());
+	}
 	
-	FGameplayModifierInfo& InfoUltimate = GE->Modifiers[Idx + 1];
-	InfoUltimate.ModifierMagnitude = FScalableFloat(LocalUltimateGain);
-	InfoUltimate.ModifierOp = EGameplayModOp::Additive;
-	InfoUltimate.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
+	if (LocalUltimateGain != 0)
+	{
+		UGameplayEffect* GainUP = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainUP"));
+		GainUP->DurationPolicy = EGameplayEffectDurationType::Instant;
+		int32 Idx = GainUP->Modifiers.Num();
+		GainUP->Modifiers.SetNum(Idx + 1);
 	
-	SourceASC->ApplyGameplayEffectToSelf(GE, 0, SourceASC->MakeEffectContext());
+		FGameplayModifierInfo& InfoMana = GainUP->Modifiers[Idx];
+		InfoMana.ModifierMagnitude = FScalableFloat(LocalManaGain);
+		InfoMana.ModifierOp = EGameplayModOp::Additive;
+		InfoMana.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
+		
+		SourceASC->ApplyGameplayEffectToSelf(GainUP, 0, SourceASC->MakeEffectContext());
+	}
 }
 
 #if WITH_EDITOR
