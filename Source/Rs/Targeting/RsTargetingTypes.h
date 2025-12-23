@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
+#include "Rs/AbilitySystem/Attributes/RsStatQuery.h"
 #include "RsTargetingTypes.generated.h"
 
 #define ECC_RsAttack ECollisionChannel::ECC_GameTraceChannel1
@@ -61,6 +62,9 @@ struct FRsTargetingFilter
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTagRequirements TagRequirements;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRsStatQuery> StatQueries;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> ActorsToIgnore;

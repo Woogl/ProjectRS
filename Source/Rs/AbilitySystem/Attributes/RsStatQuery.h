@@ -36,6 +36,9 @@ struct RS_API FRsStatQuery
 	
 	UPROPERTY(EditAnywhere)
 	float CompareValue = 0.f;
+	
+	bool IsValid() const;
+	bool MatchesQuery(UAbilitySystemComponent* ASC) const;
 };
 
 UCLASS(MinimalAPI)

@@ -3,6 +3,7 @@
 
 #include "RsTargetingLibrary.h"
 
+#include "AbilitySystemGlobals.h"
 #include "GameplayTagAssetInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "Engine/OverlapResult.h"
@@ -173,6 +174,18 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 				{
 					FilteredResult.RemoveAt(i);
 					continue;
+				}
+			}
+
+			if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
+			{
+				for (const FRsStatQuery& StatQuery : Filter.StatQueries)
+				{
+					if (StatQuery.IsValid() && StatQuery.MatchesQuery(ASC) == false)
+					{
+						FilteredResult.RemoveAt(i);
+						break;
+					}
 				}
 			}
 
