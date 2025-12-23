@@ -92,7 +92,7 @@ void URsCharacterViewModel::HandleEffectRemoved(const FGameplayEffectRemovalInfo
 		{
 			if (ActiveEffectViewModel->GetActiveEffect() == RemovalEffect)
 			{
-				ActiveEffectViewModels.Remove(*ActiveEffectViewModel);
+				ActiveEffectViewModels.Remove(ActiveEffectViewModel);
 				UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveEffectViewModels);
 				break;
 			}
