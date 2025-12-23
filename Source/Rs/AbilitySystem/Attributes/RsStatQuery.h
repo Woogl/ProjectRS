@@ -43,6 +43,7 @@ class URsStatQueryLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
+public:
 	UFUNCTION(BlueprintPure, Category = "RS | Stat Query Library")
 	static RS_API bool MatchesStatQuery(UAbilitySystemComponent* ASC, FRsStatQuery StatQuery);
 };
