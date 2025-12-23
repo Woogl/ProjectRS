@@ -103,7 +103,7 @@ void URsRagdollComponent::BeginPlay()
 	
 	if (!MeshComponent)
 	{
-		UE_LOG(RsLog, Error, TEXT("Require skeletal mesh component for the Ragdoll to work."));
+		UE_LOG(LogRs, Error, TEXT("Require skeletal mesh component for the Ragdoll to work."));
 	}
 }
 

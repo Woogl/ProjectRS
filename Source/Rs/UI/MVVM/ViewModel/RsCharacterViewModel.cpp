@@ -84,7 +84,7 @@ void URsCharacterViewModel::HandleEffectRemoved(const FGameplayEffectRemovalInfo
 		const FActiveGameplayEffect* RemovalEffect = ASC->GetActiveGameplayEffect(RemovalInfo.ActiveEffect->Handle);
 		if (RemovalEffect)
 		{
-			UE_LOG(RsAbilityLog, Error, TEXT("Not removed effect : %s"), *RemovalInfo.ActiveEffect->Spec.ToSimpleString());
+			UE_LOG(LogRsAbility, Error, TEXT("Not removed effect : %s"), *RemovalInfo.ActiveEffect->Spec.ToSimpleString());
 			return;
 		}
 
@@ -115,7 +115,7 @@ FText URsCharacterViewModel::GetCharacterName() const
 	{
 		if (Character->CharacterName.IsEmpty())
 		{
-			UE_LOG(RsLog, Warning, TEXT("Character %s has no name."), *Character->GetName());
+			UE_LOG(LogRs, Warning, TEXT("Character %s has no name."), *Character->GetName());
 			return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 		}
 		return Character->CharacterName;

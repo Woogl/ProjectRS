@@ -43,7 +43,7 @@ float URsCoefficientScriptExecution::FindAttributeMagnitude(FGameplayTag Key, co
 	}
 	else
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find [%s] attribute"), *Key.ToString());
+		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find [%s] attribute"), *Key.ToString());
 	}
 	return OutMagnitude;
 }

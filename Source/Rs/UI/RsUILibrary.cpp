@@ -36,7 +36,7 @@ URsActivatableWidget* URsUILibrary::PushWidgetToLayer(ULocalPlayer* LocalPlayer,
 				bool bSuccess = SetViewModelByClass(SceneWidget, ViewModel);
 				if (!bSuccess)
 				{
-					UE_LOG(RsLog, Warning, TEXT("Invalid ViewModel: %s in %s"), *ViewModel->GetClass()->GetName(), *WidgetClass->GetName());
+					UE_LOG(LogRs, Warning, TEXT("Invalid ViewModel: %s in %s"), *ViewModel->GetClass()->GetName(), *WidgetClass->GetName());
 				}
 			}
 		}

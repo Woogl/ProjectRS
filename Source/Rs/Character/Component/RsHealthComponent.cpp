@@ -48,7 +48,7 @@ void URsHealthComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompon
 	HealthSet = OwnerAbilitySystemComponent->GetSet<URsHealthSet>();
 	if (!HealthSet)
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Cannot initialize RsHealthComponent for owner [%s] with NULL health set."), *GetNameSafe(GetOwner()));
+		UE_LOG(LogRsAbility, Error, TEXT("Cannot initialize RsHealthComponent for owner [%s] with NULL health set."), *GetNameSafe(GetOwner()));
 		return;
 	}
 	

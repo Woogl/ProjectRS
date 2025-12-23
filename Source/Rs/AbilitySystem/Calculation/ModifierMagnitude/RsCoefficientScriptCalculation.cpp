@@ -38,7 +38,7 @@ float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(con
 	const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec);
 	if (!Row)
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("No effect table row in Spec: %s"), *Spec.ToSimpleString());
+		UE_LOG(LogRsAbility, Warning, TEXT("No effect table row in Spec: %s"), *Spec.ToSimpleString());
 		return 0.f;
 	}
 
@@ -61,7 +61,7 @@ float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(con
 		return FRsParser::CoefficientScriptToFloat(Script, Spec, this);
 	}
 	
-	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find coefficient script of [%s]"), *Spec.ToSimpleString());
+	UE_LOG(LogRsAbility, Warning, TEXT("Cannot find coefficient script of [%s]"), *Spec.ToSimpleString());
 	return 0.f;
 }
 
@@ -74,7 +74,7 @@ float URsCoefficientScriptCalculation::FindAttributeMagnitude(FGameplayTag Key, 
 	}
 	else
 	{
-		UE_LOG(RsLog, Warning, TEXT("Cannot find [%s] attribute"), *Key.ToString());
+		UE_LOG(LogRs, Warning, TEXT("Cannot find [%s] attribute"), *Key.ToString());
 	}
 	return OutMagnitude;
 }

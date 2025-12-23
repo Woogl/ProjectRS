@@ -27,7 +27,7 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 
 	if (!Parser.IsValidScript(Tokens))
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
+		UE_LOG(LogRsAbility, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
 		return 0.f;
 	}
 
@@ -80,7 +80,7 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 
 	if (!Parser.IsValidScript(Tokens))
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
+		UE_LOG(LogRsAbility, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
 		return 0.f;
 	}
 
@@ -223,7 +223,7 @@ bool FRsParser::IsValidScript(const TArray<FString>& Tokens) const
 {
 	if (Tokens.IsEmpty())
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid Script detected."));
+		UE_LOG(LogRsAbility, Error, TEXT("Invalid Script detected."));
 		return false;		
 	}
 	
@@ -242,7 +242,7 @@ bool FRsParser::IsValidScript(const TArray<FString>& Tokens) const
 
 	if (BracketCount != 0)
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Invalid Bracket Count detected."));
+		UE_LOG(LogRsAbility, Error, TEXT("Invalid Bracket Count detected."));
 		return false;
 	}
 	

@@ -58,7 +58,7 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySys
 	AbilitySystemComponent->FindAllAbilitiesWithTags(OutHandles, AbilityTags, bExactMatch);
 	if (OutHandles.IsEmpty())
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
+		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
 		return nullptr;
 	}
 
@@ -82,7 +82,7 @@ URsGameplayAbility* URsAbilitySystemLibrary::FindRsAbilityWithTags(const UAbilit
 		}
 		else
 		{
-			UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
+			UE_LOG(LogRsAbility, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
 		}
 	}
 	

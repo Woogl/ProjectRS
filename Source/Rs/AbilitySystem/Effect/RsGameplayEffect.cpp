@@ -114,7 +114,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsModifierDataEffectCompone
 			}
 			else
 			{
-				UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+				UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 				continue;
 			}
 			bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
@@ -167,7 +167,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 		}
 		else
 		{
-			UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+			UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 			continue;
 		}
 		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
@@ -211,7 +211,7 @@ void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* Da
 		}
 		else
 		{
-			UE_LOG(RsAbilityLog, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+			UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
 			continue;
 		}
 		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);

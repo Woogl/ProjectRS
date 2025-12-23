@@ -18,7 +18,7 @@ FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 			return Coefficient.Value;
 		}
 	}
-	UE_LOG(RsAbilityLog, Warning, TEXT("Cannot find Attribute for [%s] Tag"), *Tag.ToString());
+	UE_LOG(LogRsAbility, Warning, TEXT("Cannot find Attribute for [%s] Tag"), *Tag.ToString());
 	return FGameplayAttribute();
 }
 

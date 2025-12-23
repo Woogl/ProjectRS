@@ -33,7 +33,7 @@ void URsAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActo
 	
 	if (AbilitySets.IsEmpty())
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("[%s]'s ABS is empty!"), *InOwnerActor->GetActorLabel());
+		UE_LOG(LogRsAbility, Error, TEXT("[%s]'s ABS is empty!"), *InOwnerActor->GetActorLabel());
 		return;
 	}
 
@@ -120,7 +120,7 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 {
 	if (!AbilitySet)
 	{
-		UE_LOG(RsLog, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
+		UE_LOG(LogRs, Warning, TEXT("%s has invalid ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
 
@@ -160,7 +160,7 @@ void URsAbilitySystemComponent::InitAttribute(FGameplayAttribute Attribute, floa
 {
 	if (!Attribute.IsValid())
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("[%s] has invalid attribute in ABS!"), *GetAvatarActor()->GetName());
+		UE_LOG(LogRsAbility, Warning, TEXT("[%s] has invalid attribute in ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
 

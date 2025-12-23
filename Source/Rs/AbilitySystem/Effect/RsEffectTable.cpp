@@ -86,7 +86,7 @@ FString FRsEffectTableRow::FindValueInternal(FName Key, bool bWarnIfNotFound) co
 	}
 	if (bWarnIfNotFound)
 	{
-		UE_LOG(RsLog, Warning, TEXT("Cannot find [ %s ] value in RsEffectTableRow."), *Key.ToString());
+		UE_LOG(LogRs, Warning, TEXT("Cannot find [ %s ] value in RsEffectTableRow."), *Key.ToString());
 	}
 	return FString();
 }

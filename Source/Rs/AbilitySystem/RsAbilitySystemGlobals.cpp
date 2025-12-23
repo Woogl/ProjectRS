@@ -16,14 +16,14 @@ void URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(FGameplayEffectSpec& 
 {
 	if (!RowHandle->DataTable)
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("Invalid table: %s"), *RowHandle->ToDebugString());
+		UE_LOG(LogRsAbility, Warning, TEXT("Invalid table: %s"), *RowHandle->ToDebugString());
 		return;
 	}
 	const FString TablePath = RowHandle->DataTable.GetPath();
 	const int32 TableRowIndex = RowHandle->DataTable->GetRowNames().IndexOfByKey(RowHandle->RowName);
 	if (TableRowIndex == INDEX_NONE)
 	{
-		UE_LOG(RsAbilityLog, Warning, TEXT("Invalid table row: %s"), *RowHandle->ToDebugString());
+		UE_LOG(LogRsAbility, Warning, TEXT("Invalid table row: %s"), *RowHandle->ToDebugString());
 		return;
 	}
 	OutSpec.SetSetByCallerMagnitude(FName(TablePath), TableRowIndex);

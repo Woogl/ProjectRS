@@ -27,7 +27,7 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 			ActivatedAbility = URsAbilitySystemLibrary::FindAbilityWithTags(ASC, AbilityTags, true);
 			if (!ActivatedAbility.IsValid())
 			{
-				UE_LOG(RsLog, Error, TEXT("Character [%s] doesn't have Ability with tag [%s]"), *OwnerComp.GetAIOwner()->GetCharacter()->GetName(), *AbilityTags.ToString());
+				UE_LOG(LogRs, Error, TEXT("Character [%s] doesn't have Ability with tag [%s]"), *OwnerComp.GetAIOwner()->GetCharacter()->GetName(), *AbilityTags.ToString());
 				return EBTNodeResult::Failed;
 			}
 			if (ActivatedAbility->IsActive())

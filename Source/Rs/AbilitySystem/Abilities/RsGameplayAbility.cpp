@@ -421,7 +421,7 @@ int32 URsGameplayAbility::GetDeterministicRandomNumber(int32 Min, int32 Max) con
 	Seed = HashCombineFast(Seed, GetTypeHash(StartTime));
 
 	FRandomStream Stream(Seed);
-	UE_LOG(RsAbilityLog, Verbose, TEXT("%s Deterministic Seed : %d"), *GetName(), Stream.GetCurrentSeed());
+	UE_LOG(LogRsAbility, Verbose, TEXT("%s Deterministic Seed : %d"), *GetName(), Stream.GetCurrentSeed());
 	return Stream.RandRange(Min, Max);
 }
 
@@ -446,7 +446,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
 		if (!Spec.IsValid())
 		{
-			UE_LOG(RsAbilityLog, Error, TEXT("Invalid spec: %s"), *Effect->GetDefaultObject()->GetName());
+			UE_LOG(LogRsAbility, Error, TEXT("Invalid spec: %s"), *Effect->GetDefaultObject()->GetName());
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
@@ -463,7 +463,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 		FGameplayEffectSpecHandle Spec = URsAbilitySystemLibrary::MakeEffectSpecByTable(EffectTableRow->DataTable, EffectTableRow->RowName, SourceASC, GetAbilityLevel(), EffectContext);
 		if (!Spec.IsValid())
 		{
-			UE_LOG(RsAbilityLog, Error, TEXT("Invalid spec: %s, %s"), *EffectTableRow->DataTable.GetName(), *EffectTableRow->RowName.ToString());
+			UE_LOG(LogRsAbility, Error, TEXT("Invalid spec: %s, %s"), *EffectTableRow->DataTable.GetName(), *EffectTableRow->RowName.ToString());
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());

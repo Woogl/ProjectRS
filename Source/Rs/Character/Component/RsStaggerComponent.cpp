@@ -46,7 +46,7 @@ void URsStaggerComponent::Initialize(UAbilitySystemComponent* AbilitySystemCompo
 	StaggerSet = AbilitySystemComponent->GetSet<URsStaggerSet>();
 	if (!StaggerSet)
 	{
-		UE_LOG(RsAbilityLog, Error, TEXT("Cannot initialize RsStaggerComponent for owner [%s] with NULL stagger set."), *GetNameSafe(GetOwner()));
+		UE_LOG(LogRsAbility, Error, TEXT("Cannot initialize RsStaggerComponent for owner [%s] with NULL stagger set."), *GetNameSafe(GetOwner()));
 		return;
 	}
 	
