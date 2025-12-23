@@ -169,7 +169,7 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 		{
 			continue;
 		}
-		FString CoeffTagString = CoeffTag.ToString();
+		const FString CoeffTagString = CoeffTag.ToString();
 		if (CoeffTagString.IsEmpty())
 		{
 			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));
@@ -193,7 +193,7 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 		{
 			continue;
 		}
-		FString CoeffTagString = CoeffTag.ToString();
+		const FString CoeffTagString = CoeffTag.ToString();
 		if (CoeffTagString.IsEmpty())
 		{
 			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));

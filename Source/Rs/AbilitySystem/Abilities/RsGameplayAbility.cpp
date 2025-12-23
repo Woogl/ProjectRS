@@ -444,6 +444,11 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(*Effect, GetAbilityLevel(), EffectContext);
+		if (!Spec.IsValid())
+		{
+			UE_LOG(RsAbilityLog, Error, TEXT("Invalid spec: %s"), *Effect->GetDefaultObject()->GetName());
+			return;
+		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
 		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
@@ -456,6 +461,11 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 	{
 		FGameplayEffectContextHandle EffectContext = EventData.ContextHandle.IsValid() ? EventData.ContextHandle : SourceASC->MakeEffectContext();
 		FGameplayEffectSpecHandle Spec = URsAbilitySystemLibrary::MakeEffectSpecByTable(EffectTableRow->DataTable, EffectTableRow->RowName, SourceASC, GetAbilityLevel(), EffectContext);
+		if (!Spec.IsValid())
+		{
+			UE_LOG(RsAbilityLog, Error, TEXT("Invalid spec: %s, %s"), *EffectTableRow->DataTable.GetName(), *EffectTableRow->RowName.ToString());
+			return;
+		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
 		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
