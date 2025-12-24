@@ -30,7 +30,6 @@ public class Rs : ModuleRules
 			"ModularGameplayActors",
 			"TargetingSystem",
 			"GameplayCameras",
-			"GameplayMessageRuntime",
 			"NavigationSystem",
 			"Niagara",
             "DeveloperSettings",
