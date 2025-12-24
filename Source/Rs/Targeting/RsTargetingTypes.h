@@ -88,15 +88,6 @@ struct FRsTargetingSorter
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERsSortingOrder ByDistance = ERsSortingOrder::None;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsSortingOrder ByTags = ERsSortingOrder::None;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "ByTags != ERsSortingOrder::None", EditConditionHides))
-	FGameplayTagContainer RequiredTags;
-
-	FRsTargetingSorter() {}
-	FRsTargetingSorter(ERsSortingOrder ByDistance, ERsSortingOrder ByTag, FGameplayTag SortingTag);
 };
 
 USTRUCT(BlueprintType)

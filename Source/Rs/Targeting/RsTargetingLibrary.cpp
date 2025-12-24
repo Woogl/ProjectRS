@@ -214,37 +214,11 @@ TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InAct
 			{
 				return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) < FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
 			}
-			else if (Order == ERsSortingOrder::Descending)
+			if (Order == ERsSortingOrder::Descending)
 			{
 				return FVector::DistSquared(A.GetActorLocation(), OwnerLocation) > FVector::DistSquared(B.GetActorLocation(), OwnerLocation);
 			}
-			else
-			{
-				return false;
-			}
-		});
-	}
-
-	if (Sorter.ByTags != ERsSortingOrder::None && Sorter.RequiredTags.IsValid())
-	{
-		SortedResult.Sort([&Sorter](const AActor& A, const AActor& B)
-		{
-			const IGameplayTagAssetInterface* ATagInterface = Cast<IGameplayTagAssetInterface>(&A);
-			const IGameplayTagAssetInterface* BTagInterface = Cast<IGameplayTagAssetInterface>(&B);
-			bool AHasTag = ATagInterface && ATagInterface->HasAllMatchingGameplayTags(Sorter.RequiredTags);
-			bool BHasTag = BTagInterface && BTagInterface->HasAllMatchingGameplayTags(Sorter.RequiredTags);
-			if (Sorter.ByTags == ERsSortingOrder::Ascending)
-			{
-				return AHasTag < BHasTag;
-			}
-			else if (Sorter.ByTags == ERsSortingOrder::Descending)
-			{
-				return AHasTag > BHasTag;
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		});
 	}
 	

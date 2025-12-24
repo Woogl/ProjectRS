@@ -31,11 +31,6 @@ FRsTargetingFilter::FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyT
 {
 }
 
-FRsTargetingSorter::FRsTargetingSorter(ERsSortingOrder ByDistance, ERsSortingOrder ByTag, FGameplayTag SortingTag)
-	: ByDistance(ByDistance), ByTags(ByTag), RequiredTags(SortingTag)
-{
-}
-
 FRsTargetingParams::FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
 	: Shape(Shape), Collision(Collision), Filter(Filter), Sorter(Sorter)
 {
