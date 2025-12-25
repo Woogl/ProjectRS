@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Rs/Battle/Actor/RsWeapon.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
