@@ -21,16 +21,6 @@ FCollisionShape FRsTargetingShape::MakeShape() const
 	return FCollisionShape();
 }
 
-FRsTargetingShape::FRsTargetingShape(ERsTargetingShapeType ShapeType, FVector HalfExtent)
-	: ShapeType(ShapeType), HalfExtent(HalfExtent)
-{
-}
-
-FRsTargetingFilter::FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TagRequirements, TArray<AActor*> ActorsToIgnore)
-	: bIncludeSelf(bIncludeSelf), bIncludeFriendlyTeam(bIncludeFriendlyTeam), bIncludeHostileTeam(bIncludeHostileTeam), TagRequirements(TagRequirements), ActorsToIgnore(ActorsToIgnore)
-{
-}
-
 FRsTargetingParams::FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
 	: Shape(Shape), Collision(Collision), Filter(Filter), Sorter(Sorter)
 {

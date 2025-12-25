@@ -8,6 +8,15 @@
 #include "Rs/Condition/RsCondition.h"
 #include "Rs/Condition/RsConditionTask.h"
 
+bool URsAnimNotifyBase::IsConditionSatisfied(AActor* Owner) const
+{
+	if (!Condition)
+	{
+		return false;
+	}
+	return Condition->IsSatisfied(Owner);
+}
+
 void URsAnimNotifyBase::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

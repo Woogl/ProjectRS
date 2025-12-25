@@ -21,6 +21,9 @@ class RS_API URsAnimNotifyBase : public UAnimNotify
 protected:
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<URsConditionBase> Condition;
+	
+	UFUNCTION(BlueprintCallable)
+	bool IsConditionSatisfied(AActor* Owner) const;
 
 public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

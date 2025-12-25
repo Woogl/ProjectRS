@@ -28,7 +28,7 @@ class RS_API URsCondition_StatQuery : public URsConditionBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	FRsStatQuery StatQuery;
 	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;
@@ -40,7 +40,7 @@ class RS_API URsCondition_TagRequirements : public URsConditionBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	FGameplayTagRequirements TagRequirements;
 	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;
@@ -52,10 +52,17 @@ class RS_API URsCondition_Targeting : public URsConditionBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	FRsTargetingParams TargetingParams;
 	
+	// Mesh space local offset
+	UPROPERTY(EditAnywhere)
+	FTransform MeshOffset = FTransform::Identity;
+	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	
+	UPROPERTY(Transient)
+	mutable TArray<AActor*> OutActors;
 };
 
 UCLASS()
@@ -64,7 +71,7 @@ class RS_API URsCondition_And : public URsConditionBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(Instanced, EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(Instanced, EditAnywhere)
 	TArray<URsConditionBase*> Conditions;
 	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;
@@ -76,7 +83,7 @@ class RS_API URsCondition_Or : public URsConditionBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(Instanced, EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(Instanced, EditAnywhere)
 	TArray<URsConditionBase*> Conditions;
 	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;

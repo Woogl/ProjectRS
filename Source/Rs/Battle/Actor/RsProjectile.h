@@ -6,6 +6,9 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
+class UAbilitySystemComponent;
+struct FGameplayEffectSpecHandle;
+class UGameplayAbility;
 class UArrowComponent;
 class USphereComponent;
 class UGameplayEffect;

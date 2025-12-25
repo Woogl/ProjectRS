@@ -3,10 +3,9 @@
 
 #include "RsTargetingLibrary.h"
 
-#include "AbilitySystemGlobals.h"
-#include "GameplayTagAssetInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "Engine/OverlapResult.h"
+#include "Rs/Condition/RsCondition.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
 namespace RsTargetingGlobals
@@ -166,27 +165,10 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 				continue;
 			}
 			
-			if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(Target))
+			if (Filter.Condition && Filter.Condition->IsSatisfied(Target) == false)
 			{
-				FGameplayTagContainer OutTags;
-				TagInterface->GetOwnedGameplayTags(OutTags);
-				if (Filter.TagRequirements.RequirementsMet(OutTags) == false)
-				{
-					FilteredResult.RemoveAt(i);
-					continue;
-				}
-			}
-
-			if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
-			{
-				for (const FRsStatQuery& StatQuery : Filter.StatQueries)
-				{
-					if (StatQuery.IsValid() && StatQuery.MatchesQuery(ASC) == false)
-					{
-						FilteredResult.RemoveAt(i);
-						break;
-					}
-				}
+				FilteredResult.RemoveAt(i);
+				continue;
 			}
 
 			if (Filter.ActorsToIgnore.Contains(Target))

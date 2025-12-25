@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "RsAnimNotifyState_TargetingBase.h"
 #include "RsAnimNotifyState_HitTrace.generated.h"
 

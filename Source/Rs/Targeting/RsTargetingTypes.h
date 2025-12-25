@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
-#include "Rs/AbilitySystem/Attributes/RsStatQuery.h"
 #include "RsTargetingTypes.generated.h"
 
 #define ECC_RsAttack ECollisionChannel::ECC_GameTraceChannel1
+
+class URsConditionBase;
 
 UENUM()
 enum class ERsTargetingShapeType : uint8
@@ -22,16 +22,13 @@ struct FRsTargetingShape
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	ERsTargetingShapeType ShapeType = ERsTargetingShapeType::Sphere;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
 	
 	FCollisionShape MakeShape() const;
-
-	FRsTargetingShape() {}
-	FRsTargetingShape(ERsTargetingShapeType ShapeType, FVector HalfExtent);
 };
 
 USTRUCT(BlueprintType)
@@ -39,10 +36,10 @@ struct FRsTargetingCollision
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<ECollisionChannel>> CollisionChannels;
 };
 
@@ -51,26 +48,20 @@ struct FRsTargetingFilter
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	bool bIncludeSelf = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	bool bIncludeFriendlyTeam = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	bool bIncludeHostileTeam = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTagRequirements TagRequirements;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FRsStatQuery> StatQueries;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<AActor*> ActorsToIgnore;
 
-	FRsTargetingFilter() {}
-	FRsTargetingFilter(bool bIncludeSelf, bool bIncludeFriendlyTeam, bool bIncludeHostileTeam, FGameplayTagRequirements TagRequirements, TArray<AActor*> ActorsToIgnore);
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<URsConditionBase> Condition;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> ActorsToIgnore;
 };
 
 UENUM()
@@ -95,16 +86,16 @@ struct FRsTargetingParams
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	FRsTargetingShape Shape;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	FRsTargetingCollision Collision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	FRsTargetingFilter Filter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	FRsTargetingSorter Sorter;
 
 	FRsTargetingParams() {}

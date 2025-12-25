@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "GameFramework/Character.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -35,8 +36,12 @@ bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
 {
 	if (const AActor* Actor = Cast<AActor>(ContextObject))
 	{
-		TArray<AActor*> OutActors;
-		return URsTargetingLibrary::PerformTargeting(Actor, Actor->GetActorTransform(), TargetingParams, OutActors);
+		const ACharacter* Character = Cast<ACharacter>(Actor);
+		const USkeletalMeshComponent* MeshComp = Character ? Character->GetMesh() : nullptr;
+		const FTransform BaseTransform = MeshComp ? MeshComp->GetComponentTransform() : Actor->GetActorTransform();
+		const FTransform TargetingTransform = FTransform(MeshOffset) * BaseTransform;
+		
+		return URsTargetingLibrary::PerformTargeting(Actor, TargetingTransform, TargetingParams, OutActors);
 	}
 	return false;
 }

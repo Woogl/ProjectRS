@@ -4,36 +4,39 @@
 #include "RsAnimNotify_EventToTarget.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
+#include "Rs/Condition/RsCondition.h"
 
 URsAnimNotify_EventToTarget::URsAnimNotify_EventToTarget()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotify_EventToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-	
-	PerformTargeting(MeshComp);
 
-	if (!EventTag.IsValid())
+	if (!IsConditionSatisfied(MeshComp->GetOwner()))
 	{
 		return;
 	}
-	
-	if (AActor* Owner = MeshComp->GetOwner())
+
+	if (!EventTag.IsValid() || !OwnerASC.IsValid())
 	{
-		if (UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
-		{
-			for (AActor* Target : Targets)
-			{
-				FGameplayEventData Payload;
-				Payload.EventTag = EventTag;
-				Payload.Instigator = Owner;
-				Payload.Target = Target;
-				SourceASC->HandleGameplayEvent(EventTag, &Payload);
-			}
-		}
+		return;
+	}
+
+	TArray<AActor*> Targets;
+	if (URsCondition_Targeting* TargetingCondition = Cast<URsCondition_Targeting>(Condition))
+	{
+		// Share targeting result
+		Targets = TargetingCondition->OutActors;
+	}
+	
+	for (AActor* Target : Targets)
+	{
+		FGameplayEventData Payload;
+		Payload.EventTag = EventTag;
+		Payload.Instigator = OwnerASC->GetOwnerActor();
+		Payload.Target = Target;
+		OwnerASC->HandleGameplayEvent(EventTag, &Payload);
 	}
 }

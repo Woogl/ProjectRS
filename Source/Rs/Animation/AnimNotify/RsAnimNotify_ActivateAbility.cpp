@@ -15,7 +15,17 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	if (!AbilityTags.IsValid() || !Owner)
+	if (!Owner)
+	{
+		return;
+	}
+	
+	if (!IsConditionSatisfied(Owner))
+	{
+		return;
+	}
+	
+	if (!AbilityTags.IsValid())
 	{
 		return;
 	}

@@ -18,10 +18,10 @@ class RS_API URsAnimNotify_ActivateAbility : public URsAnimNotifyBase
 public:
 	URsAnimNotify_ActivateAbility();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(Categories="Ability"))
+	UPROPERTY(EditAnywhere, Category="AnimNotify", meta=(Categories="Ability"))
 	FGameplayTagContainer AbilityTags;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
+	UPROPERTY(EditAnywhere, Category="AnimNotify")
 	bool bCancelCurrentAbility = false;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
