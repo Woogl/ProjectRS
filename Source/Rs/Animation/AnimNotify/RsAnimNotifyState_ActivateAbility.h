@@ -1,28 +1,27 @@
-// Copyright 2024 Team BH.
+﻿// Copyright 2025 Team BH.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "RsAnimNotifyBase.h"
-#include "RsAnimNotify_ActivateAbility.generated.h"
+#include "RsAnimNotifyState_ActivateAbility.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotify_ActivateAbility : public URsAnimNotifyBase
+class RS_API URsAnimNotifyState_ActivateAbility : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
-
-public:
-	URsAnimNotify_ActivateAbility();
 	
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(Categories="Ability"))
 	FGameplayTagContainer AbilityTags;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify")
 	bool bCancelCurrentAbility = false;
 	
-	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+protected:
+	virtual void HandleConditionTriggered() override;
 };

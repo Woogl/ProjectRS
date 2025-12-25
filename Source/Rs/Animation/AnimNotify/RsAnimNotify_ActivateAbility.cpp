@@ -4,7 +4,6 @@
 #include "RsAnimNotify_ActivateAbility.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 
 URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
@@ -15,23 +14,18 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!AbilityTag.IsValid())
+	AActor* Owner = MeshComp->GetOwner();
+	if (!AbilityTags.IsValid() || !Owner)
 	{
 		return;
 	}
-	
-	if (AActor* Owner = MeshComp->GetOwner())
+
+	if (CurrentAbility.IsValid() && OwnerASC.IsValid())
 	{
-		if (UAbilitySystemComponent* OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		if (bCancelCurrentAbility == true)
 		{
-			if (UGameplayAbility* CurrentAbility = OwnerASC->GetAnimatingAbility())
-			{
-				if (bCancelCurrentAbility == true)
-				{
-					CurrentAbility->K2_CancelAbility();
-				}
-				OwnerASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
-			}
+			CurrentAbility->K2_CancelAbility();
 		}
+		OwnerASC->TryActivateAbilitiesByTag(AbilityTags);
 	}
 }

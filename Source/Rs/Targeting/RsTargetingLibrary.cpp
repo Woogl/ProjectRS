@@ -18,7 +18,7 @@ namespace RsTargetingGlobals
 	static FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), DebugTime, TEXT("Set the duration of the debug shapes for targeting.  ex) rs.Targeting.DebugTime [Sec]"), ECVF_Cheat);
 }
 
-bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
 	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, Params.Collision, false);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
@@ -35,7 +35,7 @@ bool URsTargetingLibrary::PerformTargeting(AActor* Owner, FTransform Transform, 
 	return bSuccess;
 }
 
-bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
 	UWorld* World = Owner->GetWorld();
 	if (!World)
@@ -77,7 +77,7 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(AActor* Owner, FTransform
 	return bSuccess;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug)
+TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug)
 {
 	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
@@ -125,7 +125,7 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(UObject* WorldContext, F
 	return ResultActors;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingFilter& Filter)
+TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter)
 {
 	TArray<AActor*> FilteredResult = InActors;
 
@@ -200,7 +200,7 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 	return FilteredResult;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingSorter& Sorter)
+TArray<AActor*> URsTargetingLibrary::PerformSorting(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingSorter& Sorter)
 {
 	TArray<AActor*> SortedResult = InActors;
 

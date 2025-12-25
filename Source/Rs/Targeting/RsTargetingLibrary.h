@@ -20,20 +20,20 @@ class RS_API URsTargetingLibrary : public UBlueprintFunctionLibrary
 public:
 	// Perform overlapping, filtering and sorting.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargeting(AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 
 	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargetingWithSubsteps(AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static TArray<AActor*> PerformOverlapping(UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug = false);
+	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug = false);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static TArray<AActor*> PerformFiltering(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingFilter& Filter);
+	static TArray<AActor*> PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static TArray<AActor*> PerformSorting(const TArray<AActor*>& InActors, AActor* Owner, const FRsTargetingSorter& Sorter);
+	static TArray<AActor*> PerformSorting(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingSorter& Sorter);
 	
 	// Use gameplay targeting system plugin.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
