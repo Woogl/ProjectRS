@@ -5,10 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 
-void URsAnimNotifyState_ActivateAbility::HandleConditionTriggered()
+void URsAnimNotifyState_ActivateAbility::HandleConditionSatisfied()
 {
-	Super::HandleConditionTriggered();
-
 	if (CurrentAbility.IsValid() && OwnerASC.IsValid() && AbilityTags.IsValid())
 	{
 		if (bCancelCurrentAbility == true)
@@ -17,4 +15,6 @@ void URsAnimNotifyState_ActivateAbility::HandleConditionTriggered()
 		}
 		OwnerASC->TryActivateAbilitiesByTag(AbilityTags);
 	}
+	
+	Super::HandleConditionSatisfied(); 
 }

@@ -15,7 +15,7 @@ void URsAnimNotifyState_OnDamageAbility::NotifyBegin(USkeletalMeshComponent* Mes
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (CurrentAbility)
+	if (CurrentAbility.IsValid())
 	{
 		// Handle damage received.
 		FGameplayTagRequirements Requirements;
@@ -50,7 +50,7 @@ void URsAnimNotifyState_OnDamageAbility::NotifyEnd(USkeletalMeshComponent* MeshC
 
 void URsAnimNotifyState_OnDamageAbility::HandleReceiveDamage(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle)
 {
-	if (OwnerASC && TriggeredAbilityTag.IsValid())
+	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
 	{
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}
@@ -58,7 +58,7 @@ void URsAnimNotifyState_OnDamageAbility::HandleReceiveDamage(AActor* Source, FGa
 
 void URsAnimNotifyState_OnDamageAbility::HandleBlockDamage(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
 {
-	if (OwnerASC && TriggeredAbilityTag.IsValid())
+	if (OwnerASC.IsValid() && TriggeredAbilityTag.IsValid())
 	{
 		OwnerASC->TryActivateAbilitiesByTag(TriggeredAbilityTag.GetSingleTagContainer());
 	}

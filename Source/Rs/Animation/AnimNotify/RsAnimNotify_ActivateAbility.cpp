@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
+#include "Rs/Condition/RsCondition.h"
 
 URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
 {
@@ -20,7 +21,7 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 		return;
 	}
 	
-	if (!IsConditionSatisfied(Owner))
+	if (Condition && !Condition->IsSatisfied(Owner))
 	{
 		return;
 	}

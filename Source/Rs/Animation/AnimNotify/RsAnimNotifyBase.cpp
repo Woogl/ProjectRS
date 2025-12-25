@@ -6,16 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/Condition/RsCondition.h"
-#include "Rs/Condition/RsConditionTask.h"
-
-bool URsAnimNotifyBase::IsConditionSatisfied(AActor* Owner) const
-{
-	if (!Condition)
-	{
-		return false;
-	}
-	return Condition->IsSatisfied(Owner);
-}
+#include "Rs/Condition/RsTriggerCondition.h"
 
 void URsAnimNotifyBase::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
@@ -41,17 +32,40 @@ void URsAnimNotifyStateBase::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 		return;
 	}
 	
+#if WITH_EDITOR
+	SocketNames = MeshComp->GetAllSocketNames();
+#endif // WITH_EDITOR
+	
 	bHasTriggered = false;
 	OwnerASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	CachedTotalDuration = TotalDuration;
 	if (const UAbilitySystemComponent* ASC = OwnerASC.Get())
 	{
 		CurrentAbility = ASC->GetAnimatingAbility();
 	}
-
-	if (URsConditionTaskBase* ConditionTrigger = Cast<URsConditionTaskBase>(Condition))
+	
+	if (!Condition && !Trigger)
 	{
-		ConditionTrigger->Activate(Owner);
-		ConditionTrigger->OnTriggered.AddDynamic(this, &ThisClass::HandleConditionTriggered);
+		// No condition and trigger means always satisfied. 
+		HandleConditionSatisfied();
+		return;
+	}
+
+	if (Condition && Condition->IsSatisfied(Owner))
+	{
+		HandleConditionSatisfied();
+	}
+	
+	if (bShouldOnlyTriggerOnce && bHasTriggered)
+	{
+		return;
+	}
+
+	if (Trigger)
+	{
+		// Register condition to satisfied.
+		Trigger->Initialize(Owner);
+		Trigger->OnTriggered.AddUniqueDynamic(this, &ThisClass::HandleConditionSatisfied);
 	}
 }
 
@@ -70,12 +84,9 @@ void URsAnimNotifyStateBase::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 		return;
 	}
 	
-	if (URsConditionBase* CastedCondition = Cast<URsConditionBase>(Condition))
+	if (Condition && Condition->IsSatisfied(Owner))
 	{
-		if (CastedCondition->IsSatisfied(Owner))
-		{
-			HandleConditionTriggered();
-		}
+		HandleConditionSatisfied();
 	}
 }
 
@@ -89,16 +100,20 @@ void URsAnimNotifyStateBase::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 		return;
 	}
 	
-	if (URsConditionTaskBase* ConditionTrigger = Cast<URsConditionTaskBase>(Condition))
+	if (Trigger)
 	{
-		ConditionTrigger->Deactivate(Owner);
-		ConditionTrigger->OnTriggered.RemoveAll(this);
+		Trigger->Deinitialize(Owner);
+		Trigger->OnTriggered.RemoveAll(this);
 	}
 }
 
-void URsAnimNotifyStateBase::HandleConditionTriggered()
+void URsAnimNotifyStateBase::HandleConditionSatisfied()
 {
-	bHasTriggered = true;
-	
 	// Do something in child class.
+	
+	bHasTriggered = true;
+	if (bShouldOnlyTriggerOnce && Trigger)
+	{
+		Trigger->OnTriggered.RemoveAll(this);
+	}
 }

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
 #include "UObject/Object.h"
-#include "RsConditionTask.generated.h"
+#include "RsTriggerCondition.generated.h"
 
 struct FInputActionValue;
 class URsAbilityTask_WaitEnhancedInput;
@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRsOnConditionTriggered);
  * 
  */
 UCLASS(DefaultToInstanced, EditInlineNew, Abstract)
-class RS_API URsConditionTaskBase : public UObject
+class RS_API URsTriggerConditionBase : public UObject
 {
 	GENERATED_BODY()
 	
@@ -25,10 +25,10 @@ public:
 	FRsOnConditionTriggered OnTriggered;
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void Activate(UObject* ContextObject);
+	virtual void Initialize(UObject* ContextObject);
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void Deactivate(UObject* ContextObject);
+	virtual void Deinitialize(UObject* ContextObject);
 	
 protected:
 	TWeakObjectPtr<UAbilitySystemComponent> OwnerASC;
@@ -36,7 +36,7 @@ protected:
 };
 
 UCLASS()
-class RS_API URsConditionTask_WaitEffect : public URsConditionTaskBase
+class RS_API URsConditionTask_WaitEffect : public URsTriggerConditionBase
 {
 	GENERATED_BODY()
 	
@@ -47,12 +47,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bIncludeBlockedImmunity = false;
 	
-	virtual void Activate(UObject* ContextObject) override;
-	virtual void Deactivate(UObject* ContextObject) override;
+	virtual void Initialize(UObject* ContextObject) override;
+	virtual void Deinitialize(UObject* ContextObject) override;
 };
 
 UCLASS()
-class RS_API URsConditionTask_WaitInput : public URsConditionTaskBase
+class RS_API URsConditionTask_WaitInput : public URsTriggerConditionBase
 {
 	GENERATED_BODY()
 	
@@ -60,8 +60,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputAction;
 	
-	virtual void Activate(UObject* ContextObject) override;
-	virtual void Deactivate(UObject* ContextObject) override;
+	virtual void Initialize(UObject* ContextObject) override;
+	virtual void Deinitialize(UObject* ContextObject) override;
 	
 private:
 	UFUNCTION()

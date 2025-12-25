@@ -23,5 +23,5 @@ public:
 	bool bCancelCurrentAbility = false;
 	
 protected:
-	virtual void HandleConditionTriggered() override;
+	virtual void HandleConditionSatisfied() override;
 };

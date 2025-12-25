@@ -4,6 +4,7 @@
 #include "RsAnimNotify_EventToSelf.h"
 
 #include "AbilitySystemComponent.h"
+#include "Rs/Condition/RsCondition.h"
 
 URsAnimNotify_EventToSelf::URsAnimNotify_EventToSelf()
 {
@@ -13,7 +14,7 @@ void URsAnimNotify_EventToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!IsConditionSatisfied(MeshComp->GetOwner()))
+	if (Condition && !Condition->IsSatisfied(MeshComp->GetOwner()))
 	{
 		return;
 	}

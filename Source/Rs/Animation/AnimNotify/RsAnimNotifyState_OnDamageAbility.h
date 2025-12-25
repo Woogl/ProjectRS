@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "RsAnimNotifyState_AbilityBase.h"
+#include "RsAnimNotifyBase.h"
 #include "RsAnimNotifyState_OnDamageAbility.generated.h"
 
 class URsAbilityTask_WaitDamageEffectBlockedImmunity;
@@ -15,7 +15,7 @@ struct FGameplayEffectSpecHandle;
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_OnDamageAbility : public URsAnimNotifyState_AbilityBase
+class RS_API URsAnimNotifyState_OnDamageAbility : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
 

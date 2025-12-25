@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayCueInterface.h"
-#include "RsAnimNotifyState_TargetingBase.h"
+#include "RsAnimNotifyBase.h"
 #include "RsAnimNotifyState_PreHit.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_PreHit : public URsAnimNotifyState_TargetingBase
+class RS_API URsAnimNotifyState_PreHit : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
 	

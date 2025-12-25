@@ -14,7 +14,7 @@ void URsAnimNotify_EventToTarget::Notify(USkeletalMeshComponent* MeshComp, UAnim
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!IsConditionSatisfied(MeshComp->GetOwner()))
+	if (Condition && !Condition->IsSatisfied(MeshComp->GetOwner()))
 	{
 		return;
 	}

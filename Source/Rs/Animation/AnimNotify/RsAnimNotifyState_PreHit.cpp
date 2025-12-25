@@ -72,7 +72,8 @@ void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	
-	PerformTargeting(MeshComp, ResultActors);
+	// TODO: Refactoring
+	//PerformTargeting(MeshComp, ResultActors);
 	
 	for (AActor* ResultActor : ResultActors)
 	{

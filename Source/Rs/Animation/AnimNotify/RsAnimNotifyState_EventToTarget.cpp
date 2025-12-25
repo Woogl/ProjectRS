@@ -4,60 +4,47 @@
 #include "RsAnimNotifyState_EventToTarget.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
+#include "Rs/Condition/RsCondition.h"
 
 URsAnimNotifyState_EventToTarget::URsAnimNotifyState_EventToTarget()
 {
 }
 
-void URsAnimNotifyState_EventToTarget::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_EventToTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-	
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	Super::NotifyEnd(MeshComp, Animation, EventReference);
+
+	if (UGameplayAbility* Ability = CurrentAbility.Get())
 	{
-		return;
+		if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(Ability))
+		{
+			RsAbility->RevertGameplayEvent(EventTag);
+		}
+	}
+}
+
+void URsAnimNotifyState_EventToTarget::HandleConditionSatisfied()
+{
+	TArray<AActor*> Targets;
+	if (URsCondition_Targeting* TargetingCondition = Cast<URsCondition_Targeting>(Condition))
+	{
+		// Share targeting result
+		Targets = TargetingCondition->OutActors;
 	}
 
-	UAbilitySystemComponent* SourceASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-	if (SourceASC)
-	{
-		CurrentAbility = Cast<URsGameplayAbility>(SourceASC->GetAnimatingAbility());
-	}
-	
-	PerformTargeting(MeshComp, Targets);
-
-	if (SourceASC)
+	if (OwnerASC.IsValid())
 	{
 		for (AActor* Target : Targets)
 		{
 			FGameplayEventData Payload;
 			Payload.EventTag = EventTag;
-			Payload.Instigator = Owner;
+			Payload.EventMagnitude = CachedTotalDuration;
+			Payload.Instigator = OwnerASC->GetOwnerActor();
 			Payload.Target = Target;
-			Payload.EventMagnitude = TotalDuration;
-			SourceASC->HandleGameplayEvent(EventTag, &Payload);
-			
-			//Filter.ActorsToIgnore.Add(Target);
+			OwnerASC->HandleGameplayEvent(EventTag, &Payload);
 		}
 	}
-}
-
-void URsAnimNotifyState_EventToTarget::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	
-	// Should I targeting again?
-}
-
-void URsAnimNotifyState_EventToTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyEnd(MeshComp, Animation, EventReference);
-	
-	if (CurrentAbility)
-	{
-		CurrentAbility->RevertGameplayEvent(EventTag);
-	}
+	Super::HandleConditionSatisfied();
 }
