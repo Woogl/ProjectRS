@@ -4,6 +4,7 @@
 #include "RsTargetingLibrary.h"
 
 #include "GenericTeamAgentInterface.h"
+#include "RsTargetingInterface.h"
 #include "Engine/OverlapResult.h"
 #include "Rs/Condition/RsCondition.h"
 #include "TargetingSystem/TargetingSubsystem.h"
@@ -133,52 +134,65 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 	{
 		OwnerTeamId = OwnerTeamInterface->GetGenericTeamId();
 	}
-	
-	for (int32 i = InActors.Num() - 1; i >= 0; --i)
-	{
-		if (AActor* Target = InActors[i])
-		{
-			FGenericTeamId TargetTeamId = FGenericTeamId::NoTeam;
-			if (const IGenericTeamAgentInterface* TargetTeamInterface = Cast<IGenericTeamAgentInterface>(Target))
-			{
-				TargetTeamId = TargetTeamInterface->GetGenericTeamId();
-			}
-			
-			const bool bSameTeam = (OwnerTeamId == TargetTeamId);
-			const bool bSelfCheck = Target == Owner;
-			
-			if (!Filter.bIncludeSelf && bSelfCheck)
-			{
-				FilteredResult.RemoveAt(i);
-				continue;
-			}
-			
-			if (!Filter.bIncludeFriendlyTeam && bSameTeam && !bSelfCheck)
-			{
-				FilteredResult.RemoveAt(i);
-				continue;
-			}
-			
-			if (!Filter.bIncludeHostileTeam && !bSameTeam && !bSelfCheck)
-			{
-				FilteredResult.RemoveAt(i);
-				continue;
-			}
-			
-			if (Filter.Condition && Filter.Condition->IsSatisfied(Target) == false)
-			{
-				FilteredResult.RemoveAt(i);
-				continue;
-			}
 
-			if (Filter.ActorsToIgnore.Contains(Target))
+	for (int32 i = FilteredResult.Num() - 1; i >= 0; --i)
+	{
+		AActor* Target = FilteredResult[i];
+		if (!Target)
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
+
+		if (IRsTargetingInterface* TargetingInterface = Cast<IRsTargetingInterface>(Target))
+		{
+			if (!TargetingInterface->Execute_IsTargetable(Target))
 			{
 				FilteredResult.RemoveAt(i);
 				continue;
 			}
 		}
+
+		FGenericTeamId TargetTeamId = FGenericTeamId::NoTeam;
+		if (const IGenericTeamAgentInterface* TargetTeamInterface = Cast<IGenericTeamAgentInterface>(Target))
+		{
+			TargetTeamId = TargetTeamInterface->GetGenericTeamId();
+		}
+
+		const bool bSelfCheck = (Target == Owner);
+		const bool bSameTeam = (OwnerTeamId == TargetTeamId);
+
+		if (!Filter.bIncludeSelf && bSelfCheck)
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
+
+		if (!Filter.bIncludeFriendlyTeam && bSameTeam && !bSelfCheck)
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
+
+		if (!Filter.bIncludeHostileTeam && !bSameTeam && !bSelfCheck)
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
+
+		if (Filter.Condition && !Filter.Condition->IsSatisfied(Target))
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
+
+		if (Filter.ActorsToIgnore.Contains(Target))
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
+		}
 	}
-	
+
 	return FilteredResult;
 }
 

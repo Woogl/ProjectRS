@@ -3,7 +3,6 @@
 
 #include "RsLockOnComponent.h"
 
-#include "RsLockOnInterface.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/WidgetComponent.h"
@@ -71,14 +70,6 @@ bool URsLockOnComponent::LockOn(AActor* Target)
 	if (!Target)
 	{
 		return false;
-	}
-	
-	if (IRsLockOnInterface* LockOnInterface = Cast<IRsLockOnInterface>(Target))
-	{
-		if (LockOnInterface->Execute_IsLockableTarget(Target) == false)
-		{
-			return false;
-		}
 	}
 	
 	LockOnTarget = Target;

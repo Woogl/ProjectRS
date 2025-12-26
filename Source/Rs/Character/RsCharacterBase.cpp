@@ -99,7 +99,7 @@ FGenericTeamId ARsCharacterBase::GetGenericTeamId() const
 	return static_cast<uint8>(TeamId);
 }
 
-bool ARsCharacterBase::IsLockableTarget_Implementation() const
+bool ARsCharacterBase::IsTargetable_Implementation() const
 {
 	if (URsBattleLibrary::IsDead(this))
 	{

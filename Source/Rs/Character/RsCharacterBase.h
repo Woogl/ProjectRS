@@ -7,7 +7,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
-#include "Rs/Camera/LockOn/RsLockOnInterface.h"
+#include "Rs/Targeting/RsTargetingInterface.h"
 #include "RsCharacterBase.generated.h"
 
 class URsRagdollComponent;
@@ -30,7 +30,7 @@ enum class ERsTeamId : uint8
 };
 
 UCLASS(Abstract, NotBlueprintable)
-class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGenericTeamAgentInterface, public IRsLockOnInterface
+class RS_API ARsCharacterBase : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGenericTeamAgentInterface, public IRsTargetingInterface
 {
 	GENERATED_BODY()
 
@@ -48,9 +48,9 @@ public:
 	// IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
-
+	
 	// IRsTargetingInterface
-	virtual bool IsLockableTarget_Implementation() const override;
+	virtual bool IsTargetable_Implementation() const override;
 
 protected:
 	// Creates a pointer to the Ability System Component associated with this Character.
