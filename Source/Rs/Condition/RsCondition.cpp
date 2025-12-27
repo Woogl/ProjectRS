@@ -34,9 +34,9 @@ bool URsCondition_TagRequirements::IsSatisfied(UObject* ContextObject) const
 
 bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
 {
-	if (const ACharacter* Character = Cast<ACharacter>(ContextObject))
+	if (const AActor* Actor = Cast<AActor>(ContextObject))
 	{
-		const USkeletalMeshComponent* MeshComp = Character ? Character->GetMesh() : nullptr;
+		const USkeletalMeshComponent* MeshComp = Actor->FindComponentByClass<USkeletalMeshComponent>();
 		return URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutActors);
 	}
 	return false;
