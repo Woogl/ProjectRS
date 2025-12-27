@@ -19,7 +19,6 @@ URsLockOnComponent::URsLockOnComponent()
 
 	TargetingParams.Shape.ShapeType = ERsTargetingShapeType::Sphere;
 	TargetingParams.Shape.HalfExtent = FVector(1000.f, 1000.f, 1000.f);
-	TargetingParams.Collision.CollisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 	TargetingParams.Sorter.ByDistance = ERsSortingOrder::Ascending;
 }
 

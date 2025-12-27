@@ -35,18 +35,6 @@ struct FRsTargetingShape
 };
 
 USTRUCT(BlueprintType)
-struct FRsTargetingCollision
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TEnumAsByte<ECollisionChannel>> CollisionChannels;
-};
-
-USTRUCT(BlueprintType)
 struct FRsTargetingFilter
 {
 	GENERATED_BODY()
@@ -93,14 +81,11 @@ struct FRsTargetingParams
 	FRsTargetingShape Shape;
 
 	UPROPERTY(EditAnywhere)
-	FRsTargetingCollision Collision;
-
-	UPROPERTY(EditAnywhere)
 	FRsTargetingFilter Filter;
 
 	UPROPERTY(EditAnywhere)
 	FRsTargetingSorter Sorter;
 
 	FRsTargetingParams() {}
-	FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
+	FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingFilter Filter, FRsTargetingSorter Sorter);
 };

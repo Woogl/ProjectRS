@@ -58,11 +58,7 @@ void URsAnimNotify_WeaponScan::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	Shape.ShapeType = ShapeType;
 	Shape.HalfExtent = WeaponComponent->Bounds.GetBox().GetExtent() * Offset.GetScale3D();
 	
-	FRsTargetingCollision Collision;
-	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.CollisionChannels = CollisionChannels;
-	
-	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+	FRsTargetingParams Params(Shape, Filter, Sorter);
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargeting(Owner, GetWeaponTransform(), Params, ResultActors))
 	{

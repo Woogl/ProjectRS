@@ -30,7 +30,7 @@ ARsProjectile::ARsProjectile()
 	Arrow = CreateDefaultSubobject<UArrowComponent>("Arrow");
 	Arrow->SetupAttachment(GetRootComponent());
 	
-	InitialLifeSpan = 10.f;
+	InitialLifeSpan = 5.f;
 }
 
 bool ARsProjectile::ApplyEffect(AActor* Target, const FHitResult& HitResult)

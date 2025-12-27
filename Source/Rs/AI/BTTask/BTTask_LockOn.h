@@ -20,16 +20,6 @@ public:
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-		
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingShape Shape;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingCollision Collision;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingFilter Filter;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingSorter Sorter;
+	UPROPERTY(EditAnywhere)
+	FRsTargetingParams TargetingParams;
 };

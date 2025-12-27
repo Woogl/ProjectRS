@@ -31,7 +31,7 @@ public:
 	static bool PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug = false);
+	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, bool bDrawDebug = false);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static TArray<AActor*> PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter);
@@ -43,7 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 	
-	static void DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color);
+	static void DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, FColor Color);
 	static void DrawDebugArrow(const UWorld* World, const FVector& Start, const FVector& End, FColor Color);
 	static FTransform GetSocketWorldTransform(const USceneComponent* Component, FName SocketName = NAME_None, const FTransform& LocalOffset = FTransform::Identity);
 

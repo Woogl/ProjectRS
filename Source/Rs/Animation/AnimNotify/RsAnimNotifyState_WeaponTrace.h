@@ -67,8 +67,5 @@ protected:
 	FTransform LastTransform;
 
 	UPROPERTY()
-	FRsTargetingCollision Collision;
-
-	UPROPERTY()
 	FRsTargetingShape Shape;
 };

@@ -59,8 +59,8 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 	
 	Shape.ShapeType = ShapeType;
 	Shape.HalfExtent = WeaponComponent->GetLocalBounds().GetBox().GetExtent() * Offset.GetScale3D();
-	Collision.CollisionObjectTypes = CollisionObjectTypes;
-	Collision.CollisionChannels = CollisionChannels;
+	// Collision.CollisionObjectTypes = CollisionObjectTypes;
+	// Collision.CollisionChannels = CollisionChannels;
 
 	HitTargets.Empty();
 }
@@ -79,7 +79,7 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 		return;
 	}
 
-	FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+	FRsTargetingParams Params(Shape, Filter, Sorter);
 	TArray<AActor*> ResultActors;
 	if (URsTargetingLibrary::PerformTargetingWithSubsteps(Owner, LastTransform, GetWeaponTransform(), MaxSubsteps, Params, ResultActors))
 	{

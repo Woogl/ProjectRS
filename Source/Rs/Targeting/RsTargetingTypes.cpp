@@ -21,7 +21,7 @@ FCollisionShape FRsTargetingShape::MakeShape() const
 	return FCollisionShape();
 }
 
-FRsTargetingParams::FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingCollision Collision, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
-	: Shape(Shape), Collision(Collision), Filter(Filter), Sorter(Sorter)
+FRsTargetingParams::FRsTargetingParams(FRsTargetingShape Shape, FRsTargetingFilter Filter, FRsTargetingSorter Sorter)
+	: Shape(Shape), Filter(Filter), Sorter(Sorter)
 {
 }

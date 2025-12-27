@@ -16,8 +16,7 @@ EBTNodeResult::Type UBTTask_LockOn::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	{
 		if (URsLockOnComponent* LockOnComponent = OwnerComp.GetAIOwner()->FindComponentByClass<URsLockOnComponent>())
 		{
-			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
-			if (LockOnComponent->TargetingLockOn(Params))
+			if (LockOnComponent->TargetingLockOn(TargetingParams))
 			{
 				return EBTNodeResult::Succeeded;
 			}

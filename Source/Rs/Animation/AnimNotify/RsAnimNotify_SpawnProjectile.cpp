@@ -8,6 +8,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -33,23 +34,28 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 	{
 		if (UGameplayAbility* OwningAbility = ASC->GetAnimatingAbility())
 		{
+			FTransform SocketTransform = MeshComp->GetSocketTransform(SpawnSocketName);
+			
 			FGameplayAbilityTargetingLocationInfo StartInfo;
-			StartInfo.LiteralTransform = MeshComp->GetSocketTransform(SpawnSocketName);
-				
+			StartInfo.LiteralTransform = SocketTransform;
+			
 			FGameplayAbilityTargetingLocationInfo EndInfo;
 			if (Targets.IsValidIndex(0))
 			{
-				EndInfo.LiteralTransform = Targets[0]->GetActorTransform();
+				const FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(SocketTransform.GetLocation(), Targets[0]->GetActorLocation());
+				FTransform EndTransform = Owner->GetActorTransform();
+				EndTransform.SetRotation(LookRot.Quaternion());
+				EndInfo.LiteralTransform = EndTransform;
 			}
 			else
 			{
 				FTransform EndTransform = Owner->GetActorTransform();
-				EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 100.f);
+				EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 40.f);
 				EndInfo.LiteralTransform = EndTransform;
 			}
 				
 			FGameplayAbilityTargetDataHandle TargetData = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromLocations(StartInfo, EndInfo);
-				
+			
 			if (UAbilityTask_SpawnActor* SpawnTask = UAbilityTask_SpawnActor::SpawnActor(OwningAbility, TargetData, ProjectileClass))
 			{
 				AActor* SpawnedActor;

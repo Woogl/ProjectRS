@@ -27,17 +27,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxMoveDistance = 0.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingShape Shape;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingCollision Collision;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingFilter Filter;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targeting")
-	FRsTargetingSorter Sorter;
+	UPROPERTY(EditAnywhere)
+	FRsTargetingParams TargetingParams;
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;

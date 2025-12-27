@@ -6,6 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "RsTargetingInterface.h"
 #include "Engine/OverlapResult.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Rs/Condition/RsCondition.h"
 #include "TargetingSystem/TargetingSubsystem.h"
 
@@ -20,7 +21,7 @@ namespace RsTargetingGlobals
 
 bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
-	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, Params.Collision, false);
+	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape, false);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
 	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Params.Sorter);
 	ResultActors = SortedActors;
@@ -29,7 +30,7 @@ bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Trans
 	if (UWorld* World = Owner->GetWorld())
 	{
 		FColor Color = bSuccess ? FColor::Green : FColor::Red;
-		DrawDebugShape(World, Transform, Params.Shape, Params.Collision, Color);
+		DrawDebugShape(World, Transform, Params.Shape, Color);
 	}
 	
 	return bSuccess;
@@ -65,9 +66,9 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(const AActor* Owner, FTra
 		float Alpha = static_cast<float>(i) / SubstepNum;
 		FTransform SubstepTransform;
 		SubstepTransform.Blend(Start, End, Alpha);
-		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Params.Shape, Params.Collision);
+		TArray<AActor*> SubstepOverlappedActors = PerformOverlapping(Owner, SubstepTransform, Params.Shape);
 		OverlappedSet.Append(SubstepOverlappedActors);
-		DrawDebugShape(World, SubstepTransform, Params.Shape, Params.Collision, FColor::Red);
+		DrawDebugShape(World, SubstepTransform, Params.Shape, FColor::Red);
 	}
 
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedSet.Array(), Owner, Params.Filter);
@@ -77,13 +78,13 @@ bool URsTargetingLibrary::PerformTargetingWithSubsteps(const AActor* Owner, FTra
 
 	if (bSuccess)
 	{
-		DrawDebugShape(World, Start, Params.Shape, Params.Collision, FColor::Green);
+		DrawDebugShape(World, Start, Params.Shape, FColor::Green);
 	}
 	
 	return bSuccess;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, bool bDrawDebug)
+TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, bool bDrawDebug)
 {
 	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
@@ -93,26 +94,7 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldCont
 	}
 
 	TArray<FOverlapResult> OverlapResults;
-
-	// By collision object types
-	FCollisionObjectQueryParams ObjectParams;
-	for (auto Iter = Collision.CollisionObjectTypes.CreateConstIterator(); Iter; ++Iter)
-	{
-		const ECollisionChannel Channel = UCollisionProfile::Get()->ConvertToCollisionChannel(false, *Iter);
-		ObjectParams.AddObjectTypesToQuery(Channel);
-	}
-	if (ObjectParams.IsValid())
-	{
-		World->OverlapMultiByObjectType(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), ObjectParams, Shape.MakeShape());
-	}
-
-	// By collision channels
-	for (TEnumAsByte<ECollisionChannel> Channel : Collision.CollisionChannels)
-	{
-		TArray<FOverlapResult> ChannelResults;
-		World->OverlapMultiByChannel(ChannelResults, Transform.GetLocation(), Transform.GetRotation(), Channel, Shape.MakeShape());
-		OverlapResults.Append(ChannelResults);
-	}
+	World->OverlapMultiByProfile(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), TEXT("OverlapAll"), Shape.MakeShape());
 
 	for (const FOverlapResult& OverlapResult : OverlapResults)
 	{
@@ -125,7 +107,7 @@ TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldCont
 	if (bDrawDebug)
 	{
 		FColor Color = ResultActors.IsEmpty() ? FColor::Red : FColor::Green;
-		DrawDebugShape(World, Transform, Shape, Collision, Color);
+		DrawDebugShape(World, Transform, Shape, Color);
 	}
 	
 	return ResultActors;
@@ -157,6 +139,11 @@ TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InA
 				FilteredResult.RemoveAt(i);
 				continue;
 			}
+		}
+		else
+		{
+			FilteredResult.RemoveAt(i);
+			continue;
 		}
 
 		FGenericTeamId TargetTeamId = FGenericTeamId::NoTeam;
@@ -262,7 +249,7 @@ bool URsTargetingLibrary::ExecuteTargetingPreset(AActor* SourceActor, const UTar
 	return !ResultActors.IsEmpty();
 }
 
-void URsTargetingLibrary::DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, const FRsTargetingCollision& Collision, FColor Color)
+void URsTargetingLibrary::DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, FColor Color)
 {
 	if (!World)
 	{
