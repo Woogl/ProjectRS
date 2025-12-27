@@ -15,35 +15,36 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!MeshComp)
+	AActor* Owner = MeshComp->GetOwner();	
+	if (!PassCondition(Owner))
 	{
 		return;
 	}
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
-	{
-		return;
-	}
-
-	FVector CurrentLocation = Owner->GetActorLocation();
-	FVector NewLocation = CurrentLocation;
-	FRotator NewRotation = Owner->GetActorRotation();
 	
 	// Use current lock on target.
-	AActor* TeleportTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	const AActor* TeleportTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
 	// Search new target if current lock on target is not available.
 	if (!TeleportTarget)
 	{
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), TargetingParams, OutTargets))
+		if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
 		{
 			TeleportTarget = OutTargets[0];
 		}
 	}
 	
-	if (bLookTarget && TeleportTarget)
+	if (!TeleportTarget)
 	{
-		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
+		return;
+	}
+
+	const FTransform CurrentTransform = TeleportTarget->GetActorTransform();
+	FVector NewLocation = CurrentTransform.TransformPosition(TargetLocalOffset);
+	FRotator NewRotation = Owner->GetActorRotation();
+
+	if (bLookTarget)
+	{
+		const FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(NewLocation, TeleportTarget->GetActorLocation());
 		NewRotation.Yaw = LookRotation.Yaw;
 	}
 
