@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RsAnimNotifyMisc.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_MoveTo.generated.h"
@@ -19,12 +18,9 @@ class RS_API URsAnimNotifyState_MoveTo : public UAnimNotifyState
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ERsPositionMode PositionMode = ERsPositionMode::TowardTarget;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode != ERsPositionMode::TowardTarget", EditConditionHides))
 	FVector Position = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "PositionMode == ERsPositionMode::TowardTarget", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AcceptableRadius = 0.f;
 
 	// 0 or negative means no limit

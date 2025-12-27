@@ -22,6 +22,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static bool PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
 
+	// Used in anim notifies.
+	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
+	static bool PerformTargetingInMeshSpace(const UMeshComponent* MeshComp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	
 	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static bool PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);

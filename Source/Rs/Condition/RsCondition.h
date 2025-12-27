@@ -10,7 +10,7 @@
 #include "RsCondition.generated.h"
 
 /**
- * 
+ * Pure condition check. (stateless)
  */
 UCLASS(DefaultToInstanced, EditInlineNew, Abstract)
 class RS_API URsConditionBase : public UObject
@@ -18,7 +18,6 @@ class RS_API URsConditionBase : public UObject
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable)
 	virtual bool IsSatisfied(UObject* ContextObject) const { return false; }
 };
 
@@ -55,10 +54,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	FRsTargetingParams TargetingParams;
 	
-	// Mesh space local offset
-	UPROPERTY(EditAnywhere)
-	FTransform MeshOffset = FTransform::Identity;
-	
 	virtual bool IsSatisfied(UObject* ContextObject) const override;
 	
 	UPROPERTY(Transient)
@@ -66,7 +61,7 @@ public:
 };
 
 UCLASS()
-class RS_API URsCondition_And : public URsConditionBase
+class RS_API URsCondition_AND : public URsConditionBase
 {
 	GENERATED_BODY()
 	
@@ -78,7 +73,7 @@ public:
 };
 
 UCLASS()
-class RS_API URsCondition_Or : public URsConditionBase
+class RS_API URsCondition_OR : public URsConditionBase
 {
 	GENERATED_BODY()
 	

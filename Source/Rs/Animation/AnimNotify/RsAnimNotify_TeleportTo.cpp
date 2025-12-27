@@ -34,45 +34,10 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	// Search new target if current lock on target is not available.
 	if (!TeleportTarget)
 	{
-		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), TargetingParams, OutTargets))
 		{
 			TeleportTarget = OutTargets[0];
-		}
-	}
-	
-	if (PositionMode == ERsPositionMode::LocalPosition_Target && TeleportTarget)
-	{
-		NewLocation = TeleportTarget->GetActorLocation() + TeleportTarget->GetActorTransform().TransformVector(Position);
-	}
-	else if (PositionMode == ERsPositionMode::LocalPosition_Source)
-	{
-		NewLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
-	}
-	else if (PositionMode == ERsPositionMode::WorldPosition)
-	{
-		NewLocation = Position;
-	}
-	else if (PositionMode == ERsPositionMode::TowardTarget && TeleportTarget)
-	{
-		NewLocation = TeleportTarget->GetActorLocation();
-	}
-
-	if (MaxMoveDistance > 0.f)
-	{
-		if (FVector::DistSquared(CurrentLocation, NewLocation) > MaxMoveDistance * MaxMoveDistance)
-		{
-			NewLocation = CurrentLocation + (NewLocation - CurrentLocation).GetSafeNormal() * MaxMoveDistance;
-		}
-	}
-
-	if (PositionMode == ERsPositionMode::TowardTarget && TeleportTarget)
-	{
-		if (FVector::DistSquared(CurrentLocation, NewLocation) > AcceptableRadius * AcceptableRadius)
-		{
-			FVector Direction = (NewLocation - CurrentLocation).GetSafeNormal();
-			NewLocation = TeleportTarget->GetActorLocation() - Direction * AcceptableRadius;
 		}
 	}
 	

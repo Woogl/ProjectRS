@@ -34,19 +34,15 @@ bool URsCondition_TagRequirements::IsSatisfied(UObject* ContextObject) const
 
 bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
 {
-	if (const AActor* Actor = Cast<AActor>(ContextObject))
+	if (const ACharacter* Character = Cast<ACharacter>(ContextObject))
 	{
-		const ACharacter* Character = Cast<ACharacter>(Actor);
 		const USkeletalMeshComponent* MeshComp = Character ? Character->GetMesh() : nullptr;
-		const FTransform BaseTransform = MeshComp ? MeshComp->GetComponentTransform() : Actor->GetActorTransform();
-		const FTransform TargetingTransform = FTransform(MeshOffset) * BaseTransform;
-		
-		return URsTargetingLibrary::PerformTargeting(Actor, TargetingTransform, TargetingParams, OutActors);
+		return URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutActors);
 	}
 	return false;
 }
 
-bool URsCondition_And::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_AND::IsSatisfied(UObject* ContextObject) const
 {
 	for (int32 i = 0; i < Conditions.Num(); i++)
 	{
@@ -63,7 +59,7 @@ bool URsCondition_And::IsSatisfied(UObject* ContextObject) const
 	return true;
 }
 
-bool URsCondition_Or::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_OR::IsSatisfied(UObject* ContextObject) const
 {
 	for (int32 i = 0; i < Conditions.Num(); i++)
 	{

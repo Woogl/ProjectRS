@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 
 URsAnimNotify_SpawnProjectile::URsAnimNotify_SpawnProjectile()
@@ -19,49 +20,53 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	PerformTargeting(MeshComp);
-	
-	if (AActor* Owner = MeshComp->GetOwner())
+	AActor* Owner = MeshComp->GetOwner();
+	if (!PassCondition(Owner))
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		return;
+	}
+	
+	TArray<AActor*> Targets;
+	URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, Targets);
+	
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+	{
+		if (UGameplayAbility* OwningAbility = ASC->GetAnimatingAbility())
 		{
-			if (UGameplayAbility* OwningAbility = ASC->GetAnimatingAbility())
+			FGameplayAbilityTargetingLocationInfo StartInfo;
+			StartInfo.LiteralTransform = MeshComp->GetSocketTransform(SpawnSocketName);
+				
+			FGameplayAbilityTargetingLocationInfo EndInfo;
+			if (Targets.IsValidIndex(0))
 			{
-				FGameplayAbilityTargetingLocationInfo StartInfo;
-				StartInfo.LiteralTransform = MeshComp->GetSocketTransform(SocketName);
+				EndInfo.LiteralTransform = Targets[0]->GetActorTransform();
+			}
+			else
+			{
+				FTransform EndTransform = Owner->GetActorTransform();
+				EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 100.f);
+				EndInfo.LiteralTransform = EndTransform;
+			}
 				
-				FGameplayAbilityTargetingLocationInfo EndInfo;
-				if (Targets.IsValidIndex(0))
-				{
-					EndInfo.LiteralTransform = Targets[0]->GetActorTransform();
-				}
-				else
-				{
-					FTransform EndTransform = Owner->GetActorTransform();
-					EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 100.f);
-					EndInfo.LiteralTransform = EndTransform;
-				}
+			FGameplayAbilityTargetDataHandle TargetData = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromLocations(StartInfo, EndInfo);
 				
-				FGameplayAbilityTargetDataHandle TargetData = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromLocations(StartInfo, EndInfo);
-				
-				if (UAbilityTask_SpawnActor* SpawnTask = UAbilityTask_SpawnActor::SpawnActor(OwningAbility, TargetData, ProjectileClass))
+			if (UAbilityTask_SpawnActor* SpawnTask = UAbilityTask_SpawnActor::SpawnActor(OwningAbility, TargetData, ProjectileClass))
+			{
+				AActor* SpawnedActor;
+				SpawnTask->BeginSpawningActor(OwningAbility, TargetData, ProjectileClass, SpawnedActor);
+				if (SpawnedActor)
 				{
-					AActor* SpawnedActor;
-					SpawnTask->BeginSpawningActor(OwningAbility, TargetData, ProjectileClass, SpawnedActor);
-					if (SpawnedActor)
+					SpawnedActor->SetInstigator(Cast<APawn>(ASC->GetOwnerActor()));
+					if (ARsProjectile* Projectile = Cast<ARsProjectile>(SpawnedActor))
 					{
-						SpawnedActor->SetInstigator(Cast<APawn>(ASC->GetOwnerActor()));
-						if (ARsProjectile* Projectile = Cast<ARsProjectile>(SpawnedActor))
+						Projectile->OwningAbility = OwningAbility;
+						if (Projectile->ProjectileMovement->bIsHomingProjectile && Targets.IsValidIndex(0))
 						{
-							Projectile->OwningAbility = OwningAbility;
-							if (Projectile->ProjectileMovement->bIsHomingProjectile && Targets.IsValidIndex(0))
-							{
-								Projectile->ProjectileMovement->HomingTargetComponent = Targets[0]->GetRootComponent();
-							}
+							Projectile->ProjectileMovement->HomingTargetComponent = Targets[0]->GetRootComponent();
 						}
 					}
-					SpawnTask->FinishSpawningActor(OwningAbility, TargetData, SpawnedActor);
 				}
+				SpawnTask->FinishSpawningActor(OwningAbility, TargetData, SpawnedActor);
 			}
 		}
 	}

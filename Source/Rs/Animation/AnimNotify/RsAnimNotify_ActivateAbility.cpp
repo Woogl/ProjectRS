@@ -4,8 +4,8 @@
 #include "RsAnimNotify_ActivateAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
-#include "Rs/Condition/RsCondition.h"
 
 URsAnimNotify_ActivateAbility::URsAnimNotify_ActivateAbility()
 {
@@ -16,27 +16,27 @@ void URsAnimNotify_ActivateAbility::Notify(USkeletalMeshComponent* MeshComp, UAn
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	if (!PassCondition(Owner))
 	{
 		return;
 	}
 	
-	if (Condition && !Condition->IsSatisfied(Owner))
-	{
-		return;
-	}
-	
-	if (!AbilityTags.IsValid())
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	if (!ASC)
 	{
 		return;
 	}
 
-	if (CurrentAbility.IsValid() && OwnerASC.IsValid())
+	if (bCancelCurrentAbility)
 	{
-		if (bCancelCurrentAbility == true)
+		if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
 		{
 			CurrentAbility->K2_CancelAbility();
 		}
-		OwnerASC->TryActivateAbilitiesByTag(AbilityTags);
+	}
+	
+	if (AbilityTags.IsValid())
+	{
+		ASC->TryActivateAbilitiesByTag(AbilityTags);
 	}
 }

@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Rs/RsGameplayTags.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
@@ -256,23 +257,13 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 			MontageTask->ReadyForActivation();
 		}
 	}
-
-	for (const TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>>& EffectContainer : EffectMap)
-	{
-		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EffectContainer.Key))
-		{
-			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
-			HitDetectTask->ReadyForActivation();
-		}
-	}
 	
-	for (const TTuple<FGameplayTag, FDataTableRowHandle>& DataTableEffectContainer : EffectTableMap)
+	TArray<FGameplayTag> EventTags { RsGameplayTags::ANIMNOTIFY_EVENT1, RsGameplayTags::ANIMNOTIFY_EVENT2, RsGameplayTags::ANIMNOTIFY_EVENT3, RsGameplayTags::ANIMNOTIFY_EVENT4, RsGameplayTags::ANIMNOTIFY_EVENT5, RsGameplayTags::ANIMNOTIFY_EVENT6 };
+	for (const FGameplayTag& EventTag : EventTags)
 	{
-		if (UAbilityTask_WaitGameplayEvent* HitDetectTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, DataTableEffectContainer.Key))
-		{
-			HitDetectTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
-			HitDetectTask->ReadyForActivation();
-		}
+		UAbilityTask_WaitGameplayEvent* WaitEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EventTag);
+		WaitEventTask->EventReceived.AddDynamic(this, &ThisClass::HandleGameplayEvent);
+		WaitEventTask->ReadyForActivation();
 	}
 
 	if (MaxRechargeStacks > 0)
@@ -473,4 +464,6 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			EventEffectHandles.Add(EventData.EventTag, Handle);
 		}
 	}
+	
+	K2_OnGameplayEvent(EventData);
 }

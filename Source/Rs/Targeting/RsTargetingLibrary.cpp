@@ -35,6 +35,25 @@ bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Trans
 	return bSuccess;
 }
 
+bool URsTargetingLibrary::PerformTargetingInMeshSpace(const UMeshComponent* MeshComp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
+{
+	const FTransform QueryTransform = Params.Shape.Offset * MeshComp->GetComponentTransform();
+	
+	TArray<AActor*> OverlappedActors = PerformOverlapping(MeshComp->GetOwner(), QueryTransform, Params.Shape, Params.Collision, false);
+	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, MeshComp->GetOwner(), Params.Filter);
+	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, MeshComp->GetOwner(), Params.Sorter);
+	ResultActors = SortedActors;
+	bool bSuccess = ResultActors.Num() > 0;
+	
+	if (UWorld* World = MeshComp->GetWorld())
+	{
+		const FColor Color = bSuccess ? FColor::Green : FColor::Red;
+		DrawDebugShape(World, QueryTransform, Params.Shape, Params.Collision, Color);
+	}
+
+	return bSuccess;
+}
+
 bool URsTargetingLibrary::PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
 	UWorld* World = Owner->GetWorld();

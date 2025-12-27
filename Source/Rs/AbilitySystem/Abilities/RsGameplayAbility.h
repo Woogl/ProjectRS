@@ -134,6 +134,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnRemoveAbility")
 	void K2_OnRemoveAbility();
 	
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnGameplayEvent")
+	void K2_OnGameplayEvent(FGameplayEventData EventData);
+	
 	UFUNCTION(BlueprintPure, Category = "RS")
 	int32 GetDeterministicRandomNumber(int32 Min, int32 Max) const;
 

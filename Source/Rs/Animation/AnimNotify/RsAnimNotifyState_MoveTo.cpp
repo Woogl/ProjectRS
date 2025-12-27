@@ -19,32 +19,32 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 		return;
 	}
 	
-	if (PositionMode != ERsPositionMode::WorldPosition)
-	{
-		// Use current lock on target.
-		Target = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
-		// Search new target if current lock on target is not available.
-		if (!Target.IsValid())
-		{
-			FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
-			TArray<AActor*> OutTargets;
-			if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
-			{
-				Target = OutTargets[0];
-			}
-		}
-	}
-	
-	bShouldMove = Target.IsValid();
-
-	if (bShouldMove)
-	{
-		StartLocation = Owner->GetActorLocation();
-		if (PositionMode == ERsPositionMode::TowardTarget)
-		{
-			AcceptableRadiusSquared = AcceptableRadius * AcceptableRadius;
-		}
-	}
+	// if (PositionMode != ERsPositionMode::WorldPosition)
+	// {
+	// 	// Use current lock on target.
+	// 	Target = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	// 	// Search new target if current lock on target is not available.
+	// 	if (!Target.IsValid())
+	// 	{
+	// 		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
+	// 		TArray<AActor*> OutTargets;
+	// 		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
+	// 		{
+	// 			Target = OutTargets[0];
+	// 		}
+	// 	}
+	// }
+	//
+	// bShouldMove = Target.IsValid();
+	//
+	// if (bShouldMove)
+	// {
+	// 	StartLocation = Owner->GetActorLocation();
+	// 	if (PositionMode == ERsPositionMode::TowardTarget)
+	// 	{
+	// 		AcceptableRadiusSquared = AcceptableRadius * AcceptableRadius;
+	// 	}
+	// }
 }
 
 void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -67,34 +67,34 @@ void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 	FVector CurrentLocation = Owner->GetActorLocation();
 	FVector TargetLocation = CurrentLocation;
 
-	switch (PositionMode)
-	{
-	case ERsPositionMode::LocalPosition_Target:
-		if (Target.IsValid())
-		{
-			TargetLocation = Target->GetActorLocation() + Target->GetActorTransform().TransformVector(Position);
-		}
-		break;
-
-	case ERsPositionMode::LocalPosition_Source:
-		{
-			TargetLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
-		}
-		break;
-
-	case ERsPositionMode::WorldPosition:
-		{
-			TargetLocation = Position;
-		}
-		break;
-
-	case ERsPositionMode::TowardTarget:
-		if (Target.IsValid())
-		{
-			TargetLocation = Target->GetActorLocation();
-		}
-		break;
-	}
+	// switch (PositionMode)
+	// {
+	// case ERsPositionMode::LocalPosition_Target:
+	// 	if (Target.IsValid())
+	// 	{
+	// 		TargetLocation = Target->GetActorLocation() + Target->GetActorTransform().TransformVector(Position);
+	// 	}
+	// 	break;
+	//
+	// case ERsPositionMode::LocalPosition_Source:
+	// 	{
+	// 		TargetLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
+	// 	}
+	// 	break;
+	//
+	// case ERsPositionMode::WorldPosition:
+	// 	{
+	// 		TargetLocation = Position;
+	// 	}
+	// 	break;
+	//
+	// case ERsPositionMode::TowardTarget:
+	// 	if (Target.IsValid())
+	// 	{
+	// 		TargetLocation = Target->GetActorLocation();
+	// 	}
+	// 	break;
+	// }
 
 	float MaxDistSquared = MaxMoveDistance * MaxMoveDistance;
 	float TotalDistSquared = FVector::DistSquared(StartLocation, TargetLocation);
