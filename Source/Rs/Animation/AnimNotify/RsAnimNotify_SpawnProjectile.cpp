@@ -40,17 +40,16 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 			StartInfo.LiteralTransform = SocketTransform;
 			
 			FGameplayAbilityTargetingLocationInfo EndInfo;
+			FTransform EndTransform = Owner->GetActorTransform();
 			if (Targets.IsValidIndex(0))
 			{
-				const FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(SocketTransform.GetLocation(), Targets[0]->GetActorLocation());
-				FTransform EndTransform = Owner->GetActorTransform();
+				FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(SocketTransform.GetLocation(), Targets[0]->GetActorLocation());
 				EndTransform.SetRotation(LookRot.Quaternion());
 				EndInfo.LiteralTransform = EndTransform;
 			}
 			else
 			{
-				FTransform EndTransform = Owner->GetActorTransform();
-				EndTransform.AddToTranslation(EndTransform.GetUnitAxis(EAxis::X) * 40.f);
+				EndTransform.SetRotation(Owner->GetActorQuat());
 				EndInfo.LiteralTransform = EndTransform;
 			}
 				
