@@ -21,9 +21,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float BlendTime = 0.f;
-	
-	UPROPERTY(EditAnywhere)
-	ERsTimeControlPriority Priority;
 
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
