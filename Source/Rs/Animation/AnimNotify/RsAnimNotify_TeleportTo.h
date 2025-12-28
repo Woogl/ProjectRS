@@ -7,7 +7,6 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotify_TeleportTo.generated.h"
 
-class ARsCharacterBase;
 /**
  * 
  */

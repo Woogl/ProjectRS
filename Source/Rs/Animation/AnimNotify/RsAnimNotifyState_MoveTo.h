@@ -7,7 +7,6 @@
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_MoveTo.generated.h"
 
-class ARsCharacterBase;
 /**
  * 
  */

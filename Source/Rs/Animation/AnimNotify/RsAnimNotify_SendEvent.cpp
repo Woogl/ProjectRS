@@ -50,3 +50,48 @@ void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		}
 	}
 }
+
+void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
+	
+	AActor* Owner = MeshComp->GetOwner();
+	if (!PassCondition(Owner))
+	{
+		return;
+	}
+	
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	
+	if (TargetType == ERsEventRecipient::Source)
+	{
+		if (EventTag.IsValid() && ASC)
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = EventTag;
+			Payload.Instigator = Owner;
+			Payload.EventMagnitude = TotalDuration;
+			Payload.Target = Owner;
+			ASC->HandleGameplayEvent(EventTag, &Payload);
+		}
+	}
+	
+	else if (TargetType == ERsEventRecipient::Target)
+	{
+		TArray<AActor*> OutTargets;
+		URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets);
+		
+		if (EventTag.IsValid() && ASC)
+		{
+			for (AActor* Target : OutTargets)
+			{
+				FGameplayEventData Payload;
+				Payload.EventTag = EventTag;
+				Payload.Instigator = Owner;
+				Payload.EventMagnitude = TotalDuration;
+				Payload.Target = Target;
+				ASC->HandleGameplayEvent(EventTag, &Payload);
+			}
+		}
+	}
+}

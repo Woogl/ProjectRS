@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "GameFramework/Character.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 

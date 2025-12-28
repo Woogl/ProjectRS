@@ -7,9 +7,6 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "RsAnimNotifyBase.generated.h"
 
-class URsTriggerConditionBase;
-class UGameplayAbility;
-class UAbilitySystemComponent;
 class URsConditionBase;
 /**
  * 
