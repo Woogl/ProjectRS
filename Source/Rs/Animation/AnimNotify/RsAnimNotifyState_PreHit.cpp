@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "GameplayCueManager.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 // AnimNotify_GameplayCue.cpp
 typedef void (*GameplayCueFunc)(AActor* Target, const FGameplayTag GameplayCueTag, const FGameplayCueParameters& Parameters);
@@ -71,20 +72,30 @@ URsAnimNotifyState_PreHit::URsAnimNotifyState_PreHit()
 void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-	
-	// TODO: Refactoring
-	//PerformTargeting(MeshComp, ResultActors);
-	
-	for (AActor* ResultActor : ResultActors)
+
+	AActor* Owner = MeshComp->GetOwner();
+	if (!PassCondition(Owner))
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ResultActor))
+		return;
+	}
+	
+	FPreHitRuntimeData& Data = RuntimeDataMap.Add(MeshComp);
+	
+	TArray<AActor*> OutTargets;
+	if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
+	{
+		for (AActor* Target : OutTargets)
 		{
-			ASC->AddLooseGameplayTag(GrantTargetTag);
+			Data.Targets.Add(Target);
+			if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
+			{
+				ASC->AddLooseGameplayTag(GrantTargetTag);
+			}
 		}
 	}
 
 	// Runtime
-	if (!ResultActors.IsEmpty())
+	if (!OutTargets.IsEmpty())
 	{
 		ProcessGameplayCue(&UGameplayCueManager::ExecuteGameplayCue_NonReplicated, MeshComp, GameplayCue.GameplayCueTag, Animation);
 	}
@@ -99,24 +110,23 @@ void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 #endif // WITH_EDITOR
 }
 
-void URsAnimNotifyState_PreHit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-	
-	// Should I targeting again?
-}
-
 void URsAnimNotifyState_PreHit::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	for (AActor* ResultActor : ResultActors)
+	if (FPreHitRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
 	{
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(ResultActor))
+		for (TWeakObjectPtr<AActor> WeakTarget : Data->Targets)
 		{
-			ASC->RemoveLooseGameplayTag(GrantTargetTag);
+			if (AActor* Target = WeakTarget.Get())
+			{
+				if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
+				{
+					ASC->RemoveLooseGameplayTag(GrantTargetTag);
+				}
+			}
 		}
 	}
 	
-	ResultActors.Empty();
+	RuntimeDataMap.Remove(MeshComp);
 }

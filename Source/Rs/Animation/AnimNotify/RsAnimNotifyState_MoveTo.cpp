@@ -68,3 +68,10 @@ void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 	
 	Character->AddMovementInput(Direction, 1);
 }
+
+void URsAnimNotifyState_MoveTo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyEnd(MeshComp, Animation, EventReference);
+	
+	RuntimeDataMap.Remove(MeshComp);
+}
