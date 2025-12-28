@@ -9,7 +9,7 @@
 
 class UInputAction;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnhancedInputEventDelegate, const FInputActionValue&, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEnhancedInputEventDelegate, const FInputActionValue&, Value, const APawn*, Pawn);
 
 /**
  * 
@@ -33,6 +33,6 @@ private:
 	bool bHasBeenTriggered = false;
 
 	virtual void Activate() override;
-	void HandleInputAction(const FInputActionValue& Value);
+	void HandleInputAction(const FInputActionValue& Value, const APawn* Pawn);
 	virtual void OnDestroy(const bool bInOwnerFinished) override;
 };

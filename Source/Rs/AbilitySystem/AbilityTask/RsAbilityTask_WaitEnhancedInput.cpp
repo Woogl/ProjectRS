@@ -34,11 +34,11 @@ void URsAbilityTask_WaitEnhancedInput::Activate()
 			
 	if (IsValid(EnhancedInputComponent.Get()))
 	{
-		EnhancedInputComponent->BindAction(InputAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::HandleInputAction);
+		EnhancedInputComponent->BindAction(InputAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::HandleInputAction, AvatarPawn);
 	}
 }
 
-void URsAbilityTask_WaitEnhancedInput::HandleInputAction(const FInputActionValue& Value)
+void URsAbilityTask_WaitEnhancedInput::HandleInputAction(const FInputActionValue& Value, const APawn* Pawn)
 {
 	if (bTriggerOnce && bHasBeenTriggered)
 	{
@@ -46,7 +46,7 @@ void URsAbilityTask_WaitEnhancedInput::HandleInputAction(const FInputActionValue
 	}
 	bHasBeenTriggered = true;
 	
-	InputEventReceived.Broadcast(Value);
+	InputEventReceived.Broadcast(Value, Pawn);
 }
 
 void URsAbilityTask_WaitEnhancedInput::OnDestroy(const bool bInOwnerFinished)
