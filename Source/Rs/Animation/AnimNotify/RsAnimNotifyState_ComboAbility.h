@@ -7,8 +7,8 @@
 #include "RsAnimNotifyBase.h"
 #include "RsAnimNotifyState_ComboAbility.generated.h"
 
+class UInputAction;
 struct FInputActionValue;
-class UAbilitySystemComponent;
 class URsAbilityTask_WaitEnhancedInput;
 /**
  * 
@@ -19,10 +19,13 @@ class RS_API URsAnimNotifyState_ComboAbility : public URsAnimNotifyStateBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category="AnimNotify", meta=(Categories="Ability"))
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputAction;
+	
+	UPROPERTY(EditAnywhere, meta=(Categories="Ability"))
 	FGameplayTagContainer AbilityTags;
 
-	UPROPERTY(EditAnywhere, Category="AnimNotify")
+	UPROPERTY(EditAnywhere)
 	bool bCancelCurrentAbility = false;
 	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

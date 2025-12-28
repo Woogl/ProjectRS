@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitEnhancedInput.h"
 
@@ -21,16 +20,11 @@ void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshCo
 	
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{
-		UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility();
-		URsGameplayAbility* NewAbility = URsAbilitySystemLibrary::FindRsAbilityWithTags(ASC, AbilityTags, true);
-		if (CurrentAbility && NewAbility)
+		if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
 		{
-			if (TObjectPtr<UInputAction> InputAction = NewAbility->ActivationInputAction)
-			{
-				Task = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility, NAME_None, InputAction, true);
-				Task->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputPressed);
-				Task->ReadyForActivation();
-			}
+			Task = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility, NAME_None, InputAction, true);
+			Task->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputPressed);
+			Task->ReadyForActivation();
 		}
 	}
 }
