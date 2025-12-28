@@ -3,120 +3,68 @@
 
 #include "RsAnimNotifyState_MoveTo.h"
 
+#include "GameFramework/Character.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-
-	Duration = TotalDuration;
-	Elapsed = 0.f;
-
+	
 	AActor* Owner = MeshComp->GetOwner();
-	if (Owner == nullptr)
+	if (!PassCondition(Owner))
 	{
 		return;
 	}
 	
-	// if (PositionMode != ERsPositionMode::WorldPosition)
-	// {
-	// 	// Use current lock on target.
-	// 	Target = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
-	// 	// Search new target if current lock on target is not available.
-	// 	if (!Target.IsValid())
-	// 	{
-	// 		FRsTargetingParams Params(Shape, Collision, Filter, Sorter);
-	// 		TArray<AActor*> OutTargets;
-	// 		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), Params, OutTargets))
-	// 		{
-	// 			Target = OutTargets[0];
-	// 		}
-	// 	}
-	// }
-	//
-	// bShouldMove = Target.IsValid();
-	//
-	// if (bShouldMove)
-	// {
-	// 	StartLocation = Owner->GetActorLocation();
-	// 	if (PositionMode == ERsPositionMode::TowardTarget)
-	// 	{
-	// 		AcceptableRadiusSquared = AcceptableRadius * AcceptableRadius;
-	// 	}
-	// }
+	FMoveToRuntimeData& Data = RuntimeDataMap.Add(MeshComp);
+	
+	// Use current lock on target.
+	Data.TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	// Search new target if current lock on target is not available.
+	if (!Data.TurnTarget.IsValid())
+	{
+		TArray<AActor*> OutTargets;
+		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), TargetingParams, OutTargets))
+		{
+			Data.TurnTarget = OutTargets[0];
+		}
+	}
+	
+	Data.bShouldMove = Data.TurnTarget.IsValid();
 }
 
 void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if (!bShouldMove)
+	FMoveToRuntimeData* Data = RuntimeDataMap.Find(MeshComp);
+	if (!Data || Data->bShouldMove == false || !Data->TurnTarget.IsValid())
 	{
 		return;
-	}
-
-	Elapsed += FrameDeltaTime;
-
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
-	{
-		return;
-	}
-
-	FVector CurrentLocation = Owner->GetActorLocation();
-	FVector TargetLocation = CurrentLocation;
-
-	// switch (PositionMode)
-	// {
-	// case ERsPositionMode::LocalPosition_Target:
-	// 	if (Target.IsValid())
-	// 	{
-	// 		TargetLocation = Target->GetActorLocation() + Target->GetActorTransform().TransformVector(Position);
-	// 	}
-	// 	break;
-	//
-	// case ERsPositionMode::LocalPosition_Source:
-	// 	{
-	// 		TargetLocation = CurrentLocation + Owner->GetActorTransform().TransformVector(Position);
-	// 	}
-	// 	break;
-	//
-	// case ERsPositionMode::WorldPosition:
-	// 	{
-	// 		TargetLocation = Position;
-	// 	}
-	// 	break;
-	//
-	// case ERsPositionMode::TowardTarget:
-	// 	if (Target.IsValid())
-	// 	{
-	// 		TargetLocation = Target->GetActorLocation();
-	// 	}
-	// 	break;
-	// }
-
-	float MaxDistSquared = MaxMoveDistance * MaxMoveDistance;
-	float TotalDistSquared = FVector::DistSquared(StartLocation, TargetLocation);
-	if (MaxMoveDistance > 0.f && TotalDistSquared > MaxDistSquared)
-	{
-		FVector Dir = (TargetLocation - StartLocation).GetSafeNormal();
-		TargetLocation = StartLocation + Dir * MaxMoveDistance;
 	}
 	
-	bool bReachedTarget = FVector::DistSquared(CurrentLocation, TargetLocation) <= AcceptableRadiusSquared;
-	bool bReachedMax = MaxMoveDistance > 0.f && FVector::DistSquared(CurrentLocation, StartLocation) >= MaxDistSquared;
-	if (bReachedTarget || bReachedMax)
+	AActor* Owner = MeshComp->GetOwner();
+	ACharacter* Character = Cast<ACharacter>(Owner);
+	if (!Character)
 	{
-		bShouldMove = false;
+		// Owner must be character.
+		return;
+	}
+	
+	const FVector CurrentLocation = Owner->GetActorLocation();
+	const FVector TargetLocation = CurrentLocation;
+	const float Distance = FVector::Dist2D(CurrentLocation, TargetLocation);
+
+	if (Distance <= Data->AcceptableRadius)
+	{
+		Data->bShouldMove = false;
 		return;
 	}
 
-	FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLocation, GetNotifyProgress());
-	Owner->SetActorLocation(NewLocation, true);
-}
-
-float URsAnimNotifyState_MoveTo::GetNotifyProgress() const
-{
-	return FMath::Clamp(Elapsed / FMath::Max(Duration, SMALL_NUMBER), 0.f, 1.f);
+	FVector Direction = (TargetLocation - CurrentLocation);
+	Direction.Z = 0.f;
+	Direction.Normalize();
+	
+	Character->AddMovementInput(Direction, 1);
 }

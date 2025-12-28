@@ -27,7 +27,7 @@ void URsAnimNotifyState_TurnTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	if (!Data.TurnTarget.IsValid())
 	{
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargeting(Owner, Owner->GetTransform(), TargetingParams, OutTargets))
+		if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
 		{
 			Data.TurnTarget = OutTargets[0];
 		}
@@ -47,14 +47,16 @@ void URsAnimNotifyState_TurnTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 	}
 	
 	AActor* Owner = MeshComp->GetOwner();
+	ACharacter* Character = Cast<ACharacter>(Owner);
+	if (!Character)
+	{
+		// Owner must be character
+		return;
+	}
+	
 	const FRotator CurrentRotation = Owner->GetActorRotation();
 	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(Owner->GetActorLocation(), Data->TurnTarget->GetActorLocation());
-
-	float RotationSpeed = 200.f;
-	if (const ACharacter* Character = Cast<ACharacter>(Owner))
-	{
-		RotationSpeed = Character->GetCharacterMovement()->RotationRate.Yaw;
-	}
+	const float RotationSpeed = Character->GetCharacterMovement()->RotationRate.Yaw;
 	
 	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, RotationSpeed * FrameDeltaTime);
 	Owner->SetActorRotation(FRotator(CurrentRotation.Pitch, NewYaw, CurrentRotation.Roll));
