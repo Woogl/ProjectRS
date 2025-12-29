@@ -217,15 +217,12 @@ float FRsParser::GetCapturedAttributeMagnitude(const FString& Token, const FGame
 		return 0.f;
 	}
 	
-	UE_LOG(LogRsAbility, Warning, TEXT("[CapDbg] Def: Source=%d Snapshot=%d Attr=%s"), (int32)Def.AttributeSource, (int32)Def.bSnapshot, *Def.AttributeToCapture.GetName());
-	
 	float Magnitude;
 	if (CaptureSpec->AttemptCalculateAttributeMagnitude(FAggregatorEvaluateParameters(), Magnitude) == false)
 	{
 		UE_LOG(LogRsAbility, Error, TEXT("GetCapturedAttributeMagnitude unable to calculate attribute magnitude."));
 		return 0.f;
 	}
-	UE_LOG(LogRsAbility, Warning, TEXT("[CapDbg] Magnitude: %f"), Magnitude);
 
 	return Magnitude;
 }
