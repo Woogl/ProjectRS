@@ -18,7 +18,7 @@ FGameplayAttribute URsAttributeSetBase::TagToAttribute(const FGameplayTag& Tag)
 			return Coefficient.Value;
 		}
 	}
-	UE_LOG(LogRsAbility, Warning, TEXT("Cannot find Attribute for [%s] Tag"), *Tag.ToString());
+	UE_LOG(LogRsAbility, Error, TEXT("Cannot find Attribute for [%s] Tag"), *Tag.ToString());
 	return FGameplayAttribute();
 }
 
@@ -49,13 +49,14 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 		return;
 	}
 	
-	if (OldMaxValue <= 0.f || FMath::IsNearlyEqual(OldMaxValue, NewMaxValue, 0.f))
+	if (OldMaxValue <= 0.f || FMath::IsNearlyEqual(OldMaxValue, NewMaxValue))
 	{
 		return;
 	}
 	
 	// Change current value to maintain the Current Value / Maximum Value percentage.
-	ASC->SetNumericAttributeBase(AffectedAttribute, ASC->GetNumericAttributeBase(AffectedAttribute) * NewMaxValue / OldMaxValue);
+	float NewValue = FMath::Clamp(ASC->GetNumericAttributeBase(AffectedAttribute) * NewMaxValue / OldMaxValue, 0.f, NewMaxValue);
+	ASC->SetNumericAttributeBase(AffectedAttribute, NewValue);
 }
 
 void URsAttributeSetBase::RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute)

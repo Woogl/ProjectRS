@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
 #include "RsAbilitySystemGlobals.h"
-#include "RsAbilitySystemSettings.h"
 #include "Attributes/RsAttributeTableRow.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySet.h"
@@ -163,12 +162,8 @@ void URsAbilitySystemComponent::InitAttribute(FGameplayAttribute Attribute, floa
 		UE_LOG(LogRsAbility, Warning, TEXT("[%s] has invalid attribute in ABS!"), *GetAvatarActor()->GetName());
 		return;
 	}
-
-	if (!GetAttributeSet(Attribute.GetAttributeSetClass()))
-	{
-		UAttributeSet* NewSet = NewObject<UAttributeSet>(GetOwner(), Attribute.GetAttributeSetClass());
-		AddAttributeSetSubobject(NewSet);
-	}
+	
+	GetOrCreateAttributeSubobject(Attribute.GetAttributeSetClass());
 	SetNumericAttributeBase(Attribute, BaseValue);
 }
 

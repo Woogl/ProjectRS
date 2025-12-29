@@ -17,15 +17,15 @@ struct FRsParser
 	GENERATED_BODY()
 	
 public:
-	static float CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientScriptCalculation* Calc);
-	static float CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec, const URsCoefficientScriptExecution* Exec);
+	static float CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec);
 	
 private:
 	// Coefficient Script
 	TArray<FString> Tokenize(const FString& Script) const;
-	TArray<FString> ToPostfix(const TArray<FString>& Tokens) const;
-	FString CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const;
 	bool IsValidScript(const TArray<FString>& Tokens) const;
+	TArray<FString> ToPostfix(const TArray<FString>& Tokens) const;
+	float GetCapturedAttributeMagnitude(const FString& Token, const FGameplayEffectSpec& Spec) const;
+	FString CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const;
 	int32 GetPrecedence(const FString& Operator) const;
 	bool IsOperator(const FString& Operator) const;
 	bool IsOperator(const TCHAR& Operator) const;

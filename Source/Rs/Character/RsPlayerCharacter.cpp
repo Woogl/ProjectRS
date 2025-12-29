@@ -59,7 +59,7 @@ void ARsPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	// Server-side
-	InitializeAbilitySystem();
+	SetupAbilityInput();
 	
 	SetupCamera_Client();
 }
@@ -78,19 +78,27 @@ void ARsPlayerCharacter::UnPossessed()
 	GameplayCameraComponent->DeactivateCamera();
 }
 
+void ARsPlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->RefreshAbilityActorInfo();
+}
+
 void ARsPlayerCharacter::OnRep_Controller()
 {
 	Super::OnRep_Controller();
 	
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->RefreshAbilityActorInfo();
+	
 	// Client-side
-	InitializeAbilitySystem();
+	SetupAbilityInput();
 }
 
-void ARsPlayerCharacter::InitializeAbilitySystem()
+void ARsPlayerCharacter::SetupAbilityInput()
 {
-	check(AbilitySystemComponent);
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 	// Bind ability input for player controlled character.
 	if (IsPlayerControlled() && IsLocallyControlled())
 	{

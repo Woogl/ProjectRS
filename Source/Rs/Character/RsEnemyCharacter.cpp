@@ -26,9 +26,6 @@ void ARsEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	check(AbilitySystemComponent);
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	
 	check(NameplateComponent);
 	NameplateComponent->Initialize(this);
 }

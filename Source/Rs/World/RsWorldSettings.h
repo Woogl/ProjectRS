@@ -21,7 +21,6 @@ class RS_API ARsWorldSettings : public AWorldSettings, public IAbilitySystemInte
 	
 public:
 	ARsWorldSettings();
-	virtual void BeginPlay() override;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

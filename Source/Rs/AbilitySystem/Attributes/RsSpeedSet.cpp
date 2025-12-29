@@ -7,9 +7,10 @@
 #include "Rs/RsGameplayTags.h"
 
 URsSpeedSet::URsSpeedSet()
-	: MoveSpeed(1.f)
-	, ActionSpeed(1.f)
 {
+	InitMoveSpeed(1.f);
+	InitActionSpeed(1.f);
+	
 	RegisterTagToStat(RsGameplayTags::STAT_MOV, GetMoveSpeedAttribute());
 	RegisterTagToStat(RsGameplayTags::STAT_ATS, GetActionSpeedAttribute());
 	

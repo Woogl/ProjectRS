@@ -14,6 +14,15 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+#define RS_CAPTURE_ATTRIBUTE(Attr, SourceOrTarget, Snapshot) \
+{ \
+FGameplayEffectAttributeCaptureDefinition Def; \
+Def.AttributeToCapture = (Attr); \
+Def.AttributeSource = (SourceOrTarget); \
+Def.bSnapshot = Snapshot; \
+this->RelevantAttributesToCapture.Add(Def); \
+}
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRsAttributeChangedEvent, float, OldValue, float, NewValue);
 
 /**

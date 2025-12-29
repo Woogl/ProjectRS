@@ -3,8 +3,6 @@
 
 #include "RsCoefficientScriptExecution.h"
 
-#include "Rs/RsGameplayTags.h"
-#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
@@ -16,36 +14,21 @@
 
 URsCoefficientScriptExecution::URsCoefficientScriptExecution()
 {
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATK_SOURCE, URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATS_SOURCE, URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_BP_SOURCE, URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_DEF_SOURCE, URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPcur_SOURCE, URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPmax_SOURCE, URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_IMP_SOURCE, URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATK_TARGET, URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_ATS_TARGET, URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_BP_TARGET, URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_DEF_TARGET, URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPcur_TARGET, URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_HPmax_TARGET, URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	CaptureAttribute(RsGameplayTags::COEFFICIENT_IMP_TARGET, URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-}
-
-float URsCoefficientScriptExecution::FindAttributeMagnitude(FGameplayTag Key, const FGameplayEffectSpec& Spec, const FAggregatorEvaluateParameters& EvaluationParameters) const
-{
-	float OutMagnitude = 0.f;
-	if (CapturedAttributeDefinitions.Contains(Key))
-	{
-		const FGameplayEffectAttributeCaptureSpec* CaptureSpec = Spec.CapturedRelevantAttributes.FindCaptureSpecByDefinition(CapturedAttributeDefinitions[Key], true);
-		CaptureSpec->AttemptCalculateAttributeMagnitude(EvaluationParameters, OutMagnitude);
-	}
-	else
-	{
-		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find [%s] attribute"), *Key.ToString());
-	}
-	return OutMagnitude;
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
 }
 
 void URsCoefficientScriptExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -67,20 +50,10 @@ void URsCoefficientScriptExecution::Execute_Implementation(const FGameplayEffect
 	}
 }
 
-void URsCoefficientScriptExecution::CaptureAttribute(FGameplayTag Key, const FGameplayAttribute& Attribute, EGameplayEffectAttributeCaptureSource SourceOrTarget, bool bSnapShot)
-{
-	FGameplayEffectAttributeCaptureDefinition Definition;
-	Definition.AttributeToCapture = Attribute;
-	Definition.AttributeSource = SourceOrTarget;
-	Definition.bSnapshot = bSnapShot;
-	RelevantAttributesToCapture.Add(Definition);
-	CapturedAttributeDefinitions.Add(Key, Definition);
-}
-
 void URsCoefficientScriptExecution::ApplyParseResult(const FRsEffectTableRow* Row, FName TableKey, const FGameplayAttribute& TargetAttribute, const FGameplayEffectSpec& Spec, FGameplayEffectCustomExecutionOutput& Output) const
 {
 	const FString Script = Row->FindValue<FString>(TableKey, false);
-	const float Modifying = FRsParser::CoefficientScriptToFloat(Script, Spec, this);
+	const float Modifying = FRsParser::CoefficientScriptToFloat(Script, Spec);
 	if (Modifying != 0.f)
 	{
 		Output.AddOutputModifier(FGameplayModifierEvaluatedData(TargetAttribute, EGameplayModOp::Additive, Modifying));

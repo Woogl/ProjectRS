@@ -13,13 +13,6 @@ ARsWorldSettings::ARsWorldSettings()
 	AbilitySystemComponent->SetIsReplicated(false);
 }
 
-void ARsWorldSettings::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-}
-
 UAbilitySystemComponent* ARsWorldSettings::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
