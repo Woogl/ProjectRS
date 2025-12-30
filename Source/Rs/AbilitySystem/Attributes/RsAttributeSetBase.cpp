@@ -57,11 +57,6 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 	// Change current value to maintain the Current Value / Maximum Value percentage.
 	float OldValue = ASC->GetNumericAttributeBase(AffectedAttribute);
 	float NewValue = FMath::Clamp(OldValue * NewMaxValue / OldMaxValue, 0.f, NewMaxValue);
-	if (FMath::IsNearlyEqual(OldValue, NewValue))
-	{
-		return;
-	}
-
 	ASC->SetNumericAttributeBase(AffectedAttribute, NewValue);
 }
 
