@@ -43,7 +43,7 @@ const TMap<FGameplayTag, FGameplayAttribute>& URsAttributeSetBase::GetCoefficien
 
 void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& AffectedAttribute, float OldMaxValue, float NewMaxValue) const
 {
-	UAbilitySystemComponent* const ASC = GetOwningAbilitySystemComponent();
+	UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent();
 	if (!ASC)
 	{
 		return;
@@ -55,7 +55,13 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 	}
 	
 	// Change current value to maintain the Current Value / Maximum Value percentage.
-	float NewValue = FMath::Clamp(ASC->GetNumericAttributeBase(AffectedAttribute) * NewMaxValue / OldMaxValue, 0.f, NewMaxValue);
+	float OldValue = ASC->GetNumericAttributeBase(AffectedAttribute);
+	float NewValue = FMath::Clamp(OldValue * NewMaxValue / OldMaxValue, 0.f, NewMaxValue);
+	if (FMath::IsNearlyEqual(OldValue, NewValue))
+	{
+		return;
+	}
+
 	ASC->SetNumericAttributeBase(AffectedAttribute, NewValue);
 }
 
