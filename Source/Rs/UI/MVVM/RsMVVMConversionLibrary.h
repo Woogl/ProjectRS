@@ -14,12 +14,13 @@ class RS_API URsMVVMConversionLibrary : public UMVVMConversionLibrary
 {
 	GENERATED_BODY()
 	
-	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Number (Float -> Text)"))
+public:
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Float -> Text"))
 	static FText FloatToText(float Number, int32 FractionDigits);
 	
-	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Number (Int -> Text)"))
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Int -> Text"))
 	static FText IntegerToText(int32 Number);
 
-	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Timer (MM:SS:MS)"))
-	static FText SecondToTimer(float Second);
+	UFUNCTION(BlueprintPure, Category = "RS | ViewModel", meta = (DisplayName = "Float -> Text (MM:SS:MS)"))
+	static FText SecondToTimeText(float Second);
 };

@@ -11,7 +11,7 @@ class URsAbilitySet;
 /**
  * 
  */
-UCLASS(Config=Game)
+UCLASS(Config=Game, DefaultConfig)
 class RS_API URsAbilitySystemSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()

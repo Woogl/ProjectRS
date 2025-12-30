@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Config=Game, DefaultConfig)
 class RS_API URsTargetingSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()

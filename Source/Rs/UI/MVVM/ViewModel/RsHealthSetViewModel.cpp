@@ -5,6 +5,7 @@
 
 #include "Rs/AbilitySystem/Attributes/RsHealthSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
+#include "Rs/UI/MVVM/RsMVVMConversionLibrary.h"
 
 URsHealthSetViewModel* URsHealthSetViewModel::CreateHealthSetViewModel(const URsHealthSet* HealthSet)
 {
@@ -76,14 +77,12 @@ void URsHealthSetViewModel::SetMaxHealth(float Value)
 
 FText URsHealthSetViewModel::GetCurrentHealthText() const
 {
-	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
-	return FText::AsNumber(CurrentHealth, &Format);
+	return URsMVVMConversionLibrary::FloatToText(CurrentHealth, 0);
 }
 
 FText URsHealthSetViewModel::GetMaxHealthText() const
 {
-	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
-	return FText::AsNumber(MaxHealth, &Format);
+	return URsMVVMConversionLibrary::FloatToText(MaxHealth, 0);
 }
 
 float URsHealthSetViewModel::GetHealthPercent() const

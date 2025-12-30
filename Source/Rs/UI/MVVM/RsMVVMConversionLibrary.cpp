@@ -5,7 +5,7 @@
 
 FText URsMVVMConversionLibrary::FloatToText(float Number, int32 FractionDigits)
 {
-	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(FractionDigits).SetMaximumFractionalDigits(FractionDigits);
+	static const FNumberFormattingOptions Format = FNumberFormattingOptions().SetMinimumFractionalDigits(FractionDigits).SetMaximumFractionalDigits(FractionDigits).SetUseGrouping(false);
 	return FText::AsNumber(Number, &Format);
 }
 
@@ -14,7 +14,7 @@ FText URsMVVMConversionLibrary::IntegerToText(int32 Number)
 	return FText::AsNumber(Number);
 }
 
-FText URsMVVMConversionLibrary::SecondToTimer(float Second)
+FText URsMVVMConversionLibrary::SecondToTimeText(float Second)
 {
 	int32 TotalMilliSeconds = FMath::RoundToInt(Second * 1000.0f);
 	int32 Minutes = (TotalMilliSeconds / 1000) / 60;

@@ -44,10 +44,10 @@ protected:
 	
 	void HandleLinkSkillReady(ARsCharacterBase* Target, ERsLinkSkillType Type, int32 AvailableCount);
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|UI")
 	TSoftClassPtr<URsHUDLayout> GameHUD;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (Categories = "UI.Menu", ForceInlineRow))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RS|UI", meta = (Categories = "UI.Widget", ForceInlineRow))
 	TMap<FGameplayTag, TSoftClassPtr<URsActivatableWidget>> MenuWidgets;
 
 private:
