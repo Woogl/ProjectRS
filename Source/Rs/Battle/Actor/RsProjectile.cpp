@@ -33,6 +33,18 @@ ARsProjectile::ARsProjectile()
 	InitialLifeSpan = 5.f;
 }
 
+FGenericTeamId ARsProjectile::GetGenericTeamId() const
+{
+	if (APawn* MyInstigator = GetInstigator())
+	{
+		if (IGenericTeamAgentInterface* TeamInterface = Cast<IGenericTeamAgentInterface>(MyInstigator))
+		{
+			return TeamInterface->GetGenericTeamId();
+		}
+	}
+	return FGenericTeamId::NoTeam;
+}
+
 bool ARsProjectile::ApplyEffect(AActor* Target, const FHitResult& HitResult)
 {
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsProjectile.generated.h"
 
@@ -15,7 +16,7 @@ class UGameplayEffect;
 class UProjectileMovementComponent;
 
 UCLASS(Abstract)
-class RS_API ARsProjectile : public AActor
+class RS_API ARsProjectile : public AActor, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 	
@@ -50,6 +51,8 @@ public:
 	
 public:	
 	ARsProjectile();
+	
+	virtual FGenericTeamId GetGenericTeamId() const override;
 	
 	bool ApplyEffect(AActor* Target, const FHitResult& HitResult);
 
