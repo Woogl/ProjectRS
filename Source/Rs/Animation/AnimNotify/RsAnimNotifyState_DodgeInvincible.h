@@ -21,7 +21,7 @@ class RS_API URsAnimNotifyState_DodgeInvincible : public URsAnimNotifyStateBase
 public:
 	URsAnimNotifyState_DodgeInvincible();
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> InvincibleEffect;
 	
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3"))
