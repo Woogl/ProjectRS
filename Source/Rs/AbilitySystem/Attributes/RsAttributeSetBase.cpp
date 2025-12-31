@@ -62,11 +62,23 @@ void URsAttributeSetBase::AdjustAttributeForMaxChange(const FGameplayAttribute& 
 
 void URsAttributeSetBase::RegisterTagToStat(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
+	if (TagStatMap.Contains(Tag))
+	{
+		UE_LOG(LogRsAbility, Warning, TEXT("Already registered stat tag: %s"), *Tag.ToString());
+		ensure(false);
+	}
+	
 	TagStatMap.Add(Tag, Attribute);
 	StatTagMap.Add(Attribute, Tag);
 }
 
 void URsAttributeSetBase::RegisterTagToCoefficient(const FGameplayTag& Tag, FGameplayAttribute Attribute)
 {
+	if (TagCoefficientMap.Contains(Tag))
+	{
+		UE_LOG(LogRsAbility, Warning, TEXT("Already registered coefficient tag: %s"), *Tag.ToString());
+		ensure(false);
+	}
+	
 	TagCoefficientMap.Add(Tag, Attribute);
 }

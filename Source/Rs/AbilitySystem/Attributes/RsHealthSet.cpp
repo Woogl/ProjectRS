@@ -17,16 +17,19 @@ URsHealthSet::URsHealthSet()
 	HealthDamageCueTag = RsGameplayTags::GAMEPLAYCUE_DAMAGE_HEALTH;
 	HealingCueTag = RsGameplayTags::GAMEPLAYCUE_HEALING;
 	
-	RegisterTagToStat(RsGameplayTags::STAT_HPcur, GetCurrentHealthAttribute());
-	RegisterTagToStat(RsGameplayTags::STAT_HPmax, GetMaxHealthAttribute());
-	RegisterTagToStat(RsGameplayTags::STAT_BP, GetBarrierAttribute());
+	if (HasAnyFlags(RF_ClassDefaultObject))
+	{
+		RegisterTagToStat(RsGameplayTags::STAT_HPcur, GetCurrentHealthAttribute());
+		RegisterTagToStat(RsGameplayTags::STAT_HPmax, GetMaxHealthAttribute());
+		RegisterTagToStat(RsGameplayTags::STAT_BP, GetBarrierAttribute());
 	
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_SOURCE, GetCurrentHealthAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_TARGET, GetCurrentHealthAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_SOURCE, GetMaxHealthAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_TARGET, GetMaxHealthAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_SOURCE, GetBarrierAttribute());
-	RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_TARGET, GetBarrierAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_SOURCE, GetCurrentHealthAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPcur_TARGET, GetCurrentHealthAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_SOURCE, GetMaxHealthAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_HPmax_TARGET, GetMaxHealthAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_SOURCE, GetBarrierAttribute());
+		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_BP_TARGET, GetBarrierAttribute());
+	}
 }
 
 void URsHealthSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
