@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "RsAnimNotifyBase.h"
+#include "Rs/Targeting/RsTargetingTypes.h"
 #include "RsAnimNotifyState_GrantTags.generated.h"
 
 /**
@@ -18,6 +19,12 @@ class RS_API URsAnimNotifyState_GrantTags : public URsAnimNotifyStateBase
 public:
 	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer Tags;
+	
+	UPROPERTY(EditAnywhere)
+	ERsTargetType TargetType;
+	
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "TargetType == ERsTargetType::Target", EditConditionHides))
+	FRsTargetingParams TargetingParams;
 	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

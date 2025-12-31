@@ -14,7 +14,6 @@
 #include "Rs/AbilitySystem/RsAbilitySystemSettings.h"
 #include "Rs/Character/RsCharacterBase.h"
 #include "Rs/Player/RsPlayerState.h"
-#include "Rs/AbilitySystem/Effect/RsEffectTypes.h"
 
 URsGameplayAbility::URsGameplayAbility()
 {
@@ -442,10 +441,6 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
-		if (float Duration = EventData.EventMagnitude)
-		{
-			Spec.Data->SetSetByCallerMagnitude(RsSetByCallerNames::DURATION, Duration);
-		}
 		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
 		{
@@ -463,10 +458,6 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
-		if (float Duration = EventData.EventMagnitude)
-		{
-			Spec.Data->SetSetByCallerMagnitude(RsSetByCallerNames::DURATION, Duration);
-		}
 		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 		if (Handle.IsValid())
 		{

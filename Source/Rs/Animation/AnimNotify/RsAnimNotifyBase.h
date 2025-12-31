@@ -8,6 +8,14 @@
 #include "RsAnimNotifyBase.generated.h"
 
 class URsConditionBase;
+
+UENUM()
+enum class ERsTargetType : uint8
+{
+	Source,
+	Target
+};
+
 /**
  * 
  */

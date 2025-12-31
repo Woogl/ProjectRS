@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Rs/Targeting/RsTargetingLibrary.h"
 
 void URsAnimNotifyState_GrantTags::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
@@ -17,9 +18,32 @@ void URsAnimNotifyState_GrantTags::NotifyBegin(USkeletalMeshComponent* MeshComp,
 		return;
 	}
 	
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+	if (TargetType == ERsTargetType::Source)
 	{
-		ASC->AddLooseGameplayTags(Tags);
+		if (!Tags.IsValid())
+		{
+			return;
+		}
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		{
+			ASC->AddLooseGameplayTags(Tags);
+		}
+	}
+	else if (TargetType == ERsTargetType::Target)
+	{
+		TArray<AActor*> OutTargets;
+		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
+		if (!Tags.IsValid())
+		{
+			return;
+		}
+		for (AActor* Target : OutTargets)
+		{
+			if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
+			{
+				ASC->AddLooseGameplayTags(Tags);
+			}
+		}
 	}
 }
 

@@ -29,9 +29,8 @@ public:
 private:
 	struct FMoveToRuntimeData
 	{
-		TWeakObjectPtr<AActor> TurnTarget;
-		float AcceptableRadius = 0.f;
-		bool bShouldMove = false;
+		TWeakObjectPtr<AActor> MoveTarget;
+		bool bShouldMove = true;
 	};
 	
 	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FMoveToRuntimeData> RuntimeDataMap;

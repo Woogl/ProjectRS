@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
 void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -20,7 +21,7 @@ void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
 	
-	if (TargetType == ERsEventRecipient::Source)
+	if (TargetType == ERsTargetType::Source)
 	{
 		if (EventTag.IsValid() && ASC)
 		{
@@ -32,7 +33,7 @@ void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		}
 	}
 	
-	else if (TargetType == ERsEventRecipient::Target)
+	else if (TargetType == ERsTargetType::Target)
 	{
 		TArray<AActor*> OutTargets;
 		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
@@ -63,20 +64,25 @@ void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
 	
-	if (TargetType == ERsEventRecipient::Source)
+	if (TargetType == ERsTargetType::Source)
 	{
 		if (EventTag.IsValid() && ASC)
 		{
 			FGameplayEventData Payload;
 			Payload.EventTag = EventTag;
 			Payload.Instigator = Owner;
-			Payload.EventMagnitude = TotalDuration;
 			Payload.Target = Owner;
 			ASC->HandleGameplayEvent(EventTag, &Payload);
+			
+			FSendEventRuntimeData NewData;
+			NewData.EventTag = EventTag;
+			NewData.Ability = ASC->GetAnimatingAbility();
+			NewData.Targets.Add(Owner);
+			RuntimeDataMap.Add(MeshComp, NewData);
 		}
 	}
 	
-	else if (TargetType == ERsEventRecipient::Target)
+	else if (TargetType == ERsTargetType::Target)
 	{
 		TArray<AActor*> OutTargets;
 		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
@@ -88,10 +94,30 @@ void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp,
 				FGameplayEventData Payload;
 				Payload.EventTag = EventTag;
 				Payload.Instigator = Owner;
-				Payload.EventMagnitude = TotalDuration;
 				Payload.Target = Target;
 				ASC->HandleGameplayEvent(EventTag, &Payload);
+				
+				FSendEventRuntimeData NewData;
+				NewData.EventTag = EventTag;
+				NewData.Ability = ASC->GetAnimatingAbility();
+				NewData.Targets.Add(Target);
+				RuntimeDataMap.Add(MeshComp, NewData);
 			}
 		}
 	}
+}
+
+void URsAnimNotifyState_SendEvent::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyEnd(MeshComp, Animation, EventReference);
+
+	if (FSendEventRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
+	{
+		if (URsGameplayAbility* RsAbility = Cast<URsGameplayAbility>(Data->Ability))
+		{
+			RsAbility->RevertGameplayEvent(Data->EventTag);
+		}
+	}
+	
+	RuntimeDataMap.Remove(MeshComp);
 }
