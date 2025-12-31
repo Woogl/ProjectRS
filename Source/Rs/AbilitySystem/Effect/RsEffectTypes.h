@@ -6,5 +6,5 @@
 
 namespace RsSetByCallerNames
 {
-	static FName DURATION = TEXT("Duration");
+	static const FName DURATION = TEXT("Duration");
 }

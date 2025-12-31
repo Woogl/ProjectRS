@@ -36,10 +36,10 @@ bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Trans
 	return bSuccess;
 }
 
-bool URsTargetingLibrary::PerformTargetingInMeshSpace(const UMeshComponent* MeshComp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
+bool URsTargetingLibrary::PerformTargetingInMeshSpace(const UPrimitiveComponent* Comp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)
 {
-	const FTransform QueryTransform = Params.Shape.Offset * MeshComp->GetComponentTransform();
-	return PerformTargeting(MeshComp->GetOwner(), QueryTransform, Params, ResultActors, bDrawDebug);
+	const FTransform QueryTransform = Params.Shape.Offset * Comp->GetComponentTransform();
+	return PerformTargeting(Comp->GetOwner(), QueryTransform, Params, ResultActors, bDrawDebug);
 }
 
 bool URsTargetingLibrary::PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug)

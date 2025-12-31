@@ -21,9 +21,8 @@
 ARsCharacterBase::ARsCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<URsCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	// Avoid ticking characters if possible.
-	PrimaryActorTick.bCanEverTick = false;
-	PrimaryActorTick.bStartWithTickEnabled = false;
+	// Avoid ticking if possible.
+	//PrimaryActorTick.bCanEverTick = false;
 	
 	GetCapsuleComponent()->InitCapsuleSize(40.f, 90.f);
 	

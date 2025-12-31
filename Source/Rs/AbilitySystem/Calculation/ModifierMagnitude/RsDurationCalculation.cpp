@@ -3,6 +3,7 @@
 
 #include "RsDurationCalculation.h"
 
+#include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTypes.h"
@@ -17,5 +18,6 @@ float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGamep
 	{
 		return Row->Duration;
 	}
+	UE_LOG(LogRsAbility, Warning, TEXT("Can't find effect duration : %s"), *Spec.ToSimpleString());
 	return 0.f;
 }

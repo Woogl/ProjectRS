@@ -38,7 +38,4 @@ private:
 	
 	UPROPERTY()
 	float Duration = 0.f;
-	
-	UPROPERTY()
-	TObjectPtr<UAnimMontage> TargetMontage;
 };

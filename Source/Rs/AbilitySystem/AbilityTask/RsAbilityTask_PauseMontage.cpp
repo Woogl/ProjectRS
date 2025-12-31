@@ -26,16 +26,7 @@ void URsAbilityTask_PauseMontage::Activate()
 		return;
 	}
 	
-	TargetMontage = Ability->GetAbilitySystemComponentFromActorInfo()->GetCurrentMontage();
-	if (!TargetMontage)
-	{
-		EndTask();
-		return;
-	}
-
-	//Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(SMALL_NUMBER);
-	GetAnimInstance()->Montage_Pause(TargetMontage);
-
+	Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(KINDA_SMALL_NUMBER);
 	if (ACharacter* Character = Cast<ACharacter>(Ability->GetAvatarActorFromActorInfo()))
 	{
 		Character->GetCharacterMovement()->DisableMovement();
@@ -46,15 +37,10 @@ void URsAbilityTask_PauseMontage::Activate()
 
 void URsAbilityTask_PauseMontage::OnDestroy(bool AbilityIsEnding)
 {
-	if (TargetMontage)
+	Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(1.f);
+	if (ACharacter* Character = Cast<ACharacter>(Ability->GetAvatarActorFromActorInfo()))
 	{
-		//Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(1.f);
-		GetAnimInstance()->Montage_Resume(TargetMontage);
-		
-		if (ACharacter* Character = Cast<ACharacter>(Ability->GetAvatarActorFromActorInfo()))
-		{
-			Character->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
-		}
+		Character->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	}
 
 	Super::OnDestroy(AbilityIsEnding);
