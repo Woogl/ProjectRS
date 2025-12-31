@@ -39,7 +39,7 @@ public:
 	ARsPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	
 protected:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 
 	// Called on the server to acknowledge possession of this Character.
