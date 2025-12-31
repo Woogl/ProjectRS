@@ -19,7 +19,7 @@ namespace RsTargetingGlobals
 	static FAutoConsoleVariableRef CVarTargetingDebugTime(TEXT("rs.Targeting.DebugTime"), DebugTime, TEXT("Set the duration of the debug shapes for targeting.  ex) rs.Targeting.DebugTime [Sec]"), ECVF_Cheat);
 }
 
-bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
+bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, const FTransform& Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
 {
 	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
@@ -36,11 +36,11 @@ bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, FTransform Trans
 
 bool URsTargetingLibrary::PerformTargetingFromComponent(const USceneComponent* Comp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
 {
-	const FTransform QueryTransform = Params.Shape.Offset * Comp->GetComponentTransform();
+	const FTransform QueryTransform = Params.Shape.ComponentOffset * Comp->GetComponentTransform();
 	return PerformTargeting(Comp->GetOwner(), QueryTransform, Params, ResultActors);
 }
 
-bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, FTransform Start, FTransform End, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
+bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, const FTransform& Start, const FTransform& End, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
 {
 	UWorld* World = Owner->GetWorld();
 	if (!World)
@@ -87,7 +87,7 @@ bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, FTransform 
 	return bSuccess;
 }
 
-TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape)
+TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, const FTransform& Transform, const FRsTargetingShape& Shape)
 {
 	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);

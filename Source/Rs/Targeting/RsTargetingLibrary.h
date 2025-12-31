@@ -20,7 +20,7 @@ class RS_API URsTargetingLibrary : public UBlueprintFunctionLibrary
 public:
 	// Perform overlapping, filtering and sorting.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
+	static bool PerformTargeting(const AActor* Owner, const FTransform& Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
 
 	// Used in anim notifies.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
@@ -28,10 +28,10 @@ public:
 	
 	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargetingSwept(const AActor* Owner, FTransform Start, FTransform End, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
+	static bool PerformTargetingSwept(const AActor* Owner, const FTransform& Start, const FTransform& End, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape);
+	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, const FTransform& Transform, const FRsTargetingShape& Shape);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static TArray<AActor*> PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter);

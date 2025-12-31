@@ -29,7 +29,7 @@ struct FRsTargetingShape
 	FVector HalfExtent = FVector(50.f, 50.f, 50.f);
 	
 	UPROPERTY(EditAnywhere)
-	FTransform Offset = FTransform::Identity;
+	FTransform ComponentOffset = FTransform::Identity;
 	
 	FCollisionShape MakeShape() const;
 };
