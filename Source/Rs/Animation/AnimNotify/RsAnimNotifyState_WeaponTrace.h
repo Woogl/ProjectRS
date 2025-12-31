@@ -12,7 +12,7 @@ class ARsWeapon;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsAnimNotifyState_WeaponTrace : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
