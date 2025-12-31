@@ -38,7 +38,6 @@ public:
 
 private:
 	ARsWeapon* FindWeaponActor(USkeletalMeshComponent* OwnerMeshComp) const;
-	FRsTargetingShape MakeWeaponShape(ARsWeapon* Weapon) const;
 	
 	TArray<AActor*> FindTargets(USkeletalMeshComponent* OwnerMeshComp);
 	void SendHitEvent(USkeletalMeshComponent* OwnerMeshComp, TArray<AActor*> Targets);

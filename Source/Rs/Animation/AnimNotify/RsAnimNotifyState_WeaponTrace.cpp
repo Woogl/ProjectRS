@@ -6,9 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Abilities/GameplayAbilityTypes.h"
-#include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 #include "Rs/RsLogChannels.h"
 #include "Rs/Battle/Actor/RsWeapon.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
@@ -86,59 +83,33 @@ ARsWeapon* URsAnimNotifyState_WeaponTrace::FindWeaponActor(USkeletalMeshComponen
 	return nullptr;
 }
 
-FRsTargetingShape URsAnimNotifyState_WeaponTrace::MakeWeaponShape(ARsWeapon* Weapon) const
-{
-	if (UPrimitiveComponent* WeaponPrimitive = Weapon->FindComponentByClass<UPrimitiveComponent>())
-	{
-		FRsTargetingShape Shape;
-		if (WeaponPrimitive->IsA(UBoxComponent::StaticClass()))
-		{
-			Shape.ShapeType = ERsTargetingShapeType::Box;
-		}
-		else if	(WeaponPrimitive->IsA(UCapsuleComponent::StaticClass()))
-		{
-			Shape.ShapeType = ERsTargetingShapeType::Capsule;
-		}
-		else if (WeaponPrimitive->IsA(USphereComponent::StaticClass()))
-		{
-			Shape.ShapeType = ERsTargetingShapeType::Sphere;
-		}
-		else
-		{
-			Shape.ShapeType = ERsTargetingShapeType::Box;
-		}
-		Shape.HalfExtent = WeaponPrimitive->GetLocalBounds().BoxExtent;
-		return Shape;
-	}
-	UE_LOG(LogRs, Warning, TEXT("Cannot make %s's shape"), *Weapon->GetName());
-	return FRsTargetingShape();
-}
-
 TArray<AActor*> URsAnimNotifyState_WeaponTrace::FindTargets(USkeletalMeshComponent* OwnerMeshComp)
 {
 	TArray<AActor*> OutTargets;
 	if (FWeaponTraceRuntimeData* Data = RuntimeDataMap.Find(OwnerMeshComp))
 	{
-		FTransform CurrentTransform = Data->Weapon->FindComponentByClass<UPrimitiveComponent>()->GetComponentTransform();
-		FRsTargetingShape WeaponShape = MakeWeaponShape(Data->Weapon.Get());
-		FRsTargetingParams TargetingParams(WeaponShape, Filter, Sorter);
-		URsTargetingLibrary::PerformTargetingSwept(OwnerMeshComp->GetOwner(), Data->LastTransform, CurrentTransform, TargetingParams, OutTargets);
+		if (ARsWeapon* Weapon = Data->Weapon.Get())
+		{
+			FTransform CurrentTransform = Weapon->GetRootPrimitive()->GetComponentTransform();
+			FRsTargetingShape WeaponShape = Weapon->GetWeaponShape();
+			FRsTargetingParams TargetingParams(WeaponShape, Filter, Sorter);
+			URsTargetingLibrary::PerformTargetingSwept(OwnerMeshComp->GetOwner(), Data->LastTransform, CurrentTransform, TargetingParams, OutTargets);
 		
-		Data->LastTransform = CurrentTransform;
+			Data->LastTransform = CurrentTransform;
+		}
 	}
 	else
 	{
 		if (ARsWeapon* Weapon = FindWeaponActor(OwnerMeshComp))
 		{
-			FRsTargetingShape WeaponShape = MakeWeaponShape(Weapon);
-			UPrimitiveComponent* WeaponPrimitive = Weapon->FindComponentByClass<UPrimitiveComponent>();
-	
+			UPrimitiveComponent* WeaponRoot = Weapon->GetRootPrimitive();
+			FRsTargetingShape WeaponShape = Weapon->GetWeaponShape();
 			FRsTargetingParams TargetingParams(WeaponShape, Filter, Sorter);
-			URsTargetingLibrary::PerformTargetingFromComponent(WeaponPrimitive, TargetingParams, OutTargets);
+			URsTargetingLibrary::PerformTargetingFromComponent(WeaponRoot, TargetingParams, OutTargets);
 		
 			FWeaponTraceRuntimeData NewData;
 			NewData.Weapon = Weapon;
-			NewData.LastTransform = WeaponPrimitive->GetComponentTransform();
+			NewData.LastTransform = WeaponRoot->GetComponentTransform();
 			RuntimeDataMap.Add(OwnerMeshComp, NewData);
 		}
 	}

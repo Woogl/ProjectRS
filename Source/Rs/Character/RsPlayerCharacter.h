@@ -20,6 +20,9 @@ class RS_API ARsPlayerCharacter : public ARsCharacterBase
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RS|Character", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCapsuleComponent> JustDodgeCapsule;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RS|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
@@ -67,6 +70,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetCameraRig(ERsCameraRig InCameraRig);
+	
+	UFUNCTION(BlueprintCallable)
+	void EnableJustDodgeCapsule(bool bEnable = true);
 
 	UGameplayCameraComponent* GetGameplayCameraComponent() const;
 	UInputMappingContext* GetDefaultMappingContext() const;

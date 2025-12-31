@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Rs/AbilitySystem/RsAbilitySystemComponent.h"
@@ -16,6 +17,14 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 {
 	// This will replicate minimal Gameplay Effects to Simulated Proxies and full info to everyone else.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	
+	JustDodgeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("JustDodgeCapsule"));
+	JustDodgeCapsule->SetupAttachment(RootComponent);
+	JustDodgeCapsule->SetCapsuleHalfHeight(180.f);
+	JustDodgeCapsule->SetCapsuleRadius(180.f);
+	JustDodgeCapsule->SetCollisionProfileName(TEXT("Pawn"));
+	JustDodgeCapsule->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	EnableJustDodgeCapsule(false);
 	
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));
 	GameplayCameraComponent->SetupAttachment(GetMesh());
@@ -151,6 +160,13 @@ ERsCameraRig ARsPlayerCharacter::GetCameraRig() const
 void ARsPlayerCharacter::SetCameraRig(ERsCameraRig InCameraRig)
 {
 	CameraRig = InCameraRig;
+}
+
+void ARsPlayerCharacter::EnableJustDodgeCapsule(bool bEnable)
+{
+	check(JustDodgeCapsule);
+	ECollisionEnabled::Type CollisionType = bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision;
+	JustDodgeCapsule->SetCollisionEnabled(CollisionType);
 }
 
 UGameplayCameraComponent* ARsPlayerCharacter::GetGameplayCameraComponent() const

@@ -60,7 +60,7 @@ bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, const FTran
 	float Dist = FVector::Dist(StartLoc, EndLoc);
 	FVector Dir = (EndLoc - StartLoc).GetSafeNormal();
 	FVector Extent = Params.Shape.MakeShape().GetExtent();
-	float Thickness = (FMath::Abs(Dir.X) * Extent.X + FMath::Abs(Dir.Y) * Extent.Y + FMath::Abs(Dir.Z) * Extent.Z) * 2;
+	float Thickness = FMath::Abs(Dir.X) * Extent.X + FMath::Abs(Dir.Y) * Extent.Y + FMath::Abs(Dir.Z) * Extent.Z;
 	int32 Steps = FMath::CeilToInt(Dist / Thickness);
    
 	// Perform targeting from last transform to current transform without leaving any gaps.

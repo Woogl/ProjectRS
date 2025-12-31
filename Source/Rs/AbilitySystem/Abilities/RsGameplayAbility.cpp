@@ -258,7 +258,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 	}
 	
-	TArray<FGameplayTag> EventTags { RsGameplayTags::ANIMNOTIFY_EVENT1, RsGameplayTags::ANIMNOTIFY_EVENT2, RsGameplayTags::ANIMNOTIFY_EVENT3, RsGameplayTags::ANIMNOTIFY_EVENT4, RsGameplayTags::ANIMNOTIFY_EVENT5, RsGameplayTags::ANIMNOTIFY_EVENT6 };
+	TArray<FGameplayTag> EventTags { RsGameplayTags::ANIMNOTIFY_EVENT1, RsGameplayTags::ANIMNOTIFY_EVENT2, RsGameplayTags::ANIMNOTIFY_EVENT3, RsGameplayTags::ANIMNOTIFY_EVENT4, RsGameplayTags::ANIMNOTIFY_EVENT5 };
 	for (const FGameplayTag& EventTag : EventTags)
 	{
 		UAbilityTask_WaitGameplayEvent* WaitEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EventTag);
