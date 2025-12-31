@@ -60,6 +60,9 @@ void URsAnimNotifyState_WeaponTrace::NotifyEnd(USkeletalMeshComponent* MeshComp,
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
+	TArray<AActor*> Targets = FindTargets(MeshComp);
+	SendHitEvent(MeshComp, Targets);
+	
 	RuntimeDataMap.Remove(MeshComp);
 }
 
@@ -119,7 +122,7 @@ TArray<AActor*> URsAnimNotifyState_WeaponTrace::FindTargets(USkeletalMeshCompone
 		FTransform CurrentTransform = Data->Weapon->FindComponentByClass<UPrimitiveComponent>()->GetComponentTransform();
 		FRsTargetingShape WeaponShape = MakeWeaponShape(Data->Weapon.Get());
 		FRsTargetingParams TargetingParams(WeaponShape, Filter, Sorter);
-		URsTargetingLibrary::PerformTargetingWithSubsteps(OwnerMeshComp->GetOwner(), Data->LastTransform, CurrentTransform, 5, TargetingParams, OutTargets);
+		URsTargetingLibrary::PerformTargetingSwept(OwnerMeshComp->GetOwner(), Data->LastTransform, CurrentTransform, TargetingParams, OutTargets);
 		
 		Data->LastTransform = CurrentTransform;
 	}
@@ -131,7 +134,7 @@ TArray<AActor*> URsAnimNotifyState_WeaponTrace::FindTargets(USkeletalMeshCompone
 			UPrimitiveComponent* WeaponPrimitive = Weapon->FindComponentByClass<UPrimitiveComponent>();
 	
 			FRsTargetingParams TargetingParams(WeaponShape, Filter, Sorter);
-			URsTargetingLibrary::PerformTargetingInMeshSpace(WeaponPrimitive, TargetingParams, OutTargets);
+			URsTargetingLibrary::PerformTargetingFromComponent(WeaponPrimitive, TargetingParams, OutTargets);
 		
 			FWeaponTraceRuntimeData NewData;
 			NewData.Weapon = Weapon;

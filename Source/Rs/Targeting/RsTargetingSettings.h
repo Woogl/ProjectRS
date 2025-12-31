@@ -19,4 +19,10 @@ public:
 	
 	// UDeveloperSettings interface
 	virtual FName GetCategoryName() const override;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Debug")
+	FColor SuccessColor = FColor::Green;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Debug")
+	FColor FailureColor = FColor::Red;
 };

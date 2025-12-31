@@ -20,18 +20,18 @@ class RS_API URsTargetingLibrary : public UBlueprintFunctionLibrary
 public:
 	// Perform overlapping, filtering and sorting.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargeting(const AActor* Owner, FTransform Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
 
 	// Used in anim notifies.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
-	static bool PerformTargetingInMeshSpace(const UPrimitiveComponent* Comp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargetingFromComponent(const USceneComponent* Comp, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
 	
 	// Performs multi-step targeting from Start to End to fill the gaps.
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
-	static bool PerformTargetingWithSubsteps(const AActor* Owner, FTransform Start, FTransform End, int32 MaxSubsteps, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors, bool bDrawDebug = false);
+	static bool PerformTargetingSwept(const AActor* Owner, FTransform Start, FTransform End, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors);
 	
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (WorldContext = "WorldContext"))
-	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape, bool bDrawDebug = false);
+	static TArray<AActor*> PerformOverlapping(const UObject* WorldContext, FTransform Transform, const FRsTargetingShape& Shape);
 
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library", meta = (DefaultToSelf = "Owner"))
 	static TArray<AActor*> PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter);
@@ -43,9 +43,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS Targeting Library")
 	static bool ExecuteTargetingPreset(AActor* SourceActor, const UTargetingPreset* TargetingPreset, TArray<AActor*>& ResultActors);
 	
-	static void DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, FColor Color);
+	static void DrawDebugShape(const UWorld* World, const FTransform& Transform, const FRsTargetingShape& Shape, bool bSuccess);
 	static void DrawDebugArrow(const UWorld* World, const FVector& Start, const FVector& End, FColor Color);
-	static FTransform GetSocketWorldTransform(const USceneComponent* Component, FName SocketName = NAME_None, const FTransform& LocalOffset = FTransform::Identity);
 
 private:
 	static bool ShouldDrawDebug(const UWorld* World);

@@ -28,7 +28,7 @@ void URsAnimNotify_SpawnProjectile::Notify(USkeletalMeshComponent* MeshComp, UAn
 	}
 	
 	TArray<AActor*> Targets;
-	URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, Targets);
+	URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, Targets);
 	
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{

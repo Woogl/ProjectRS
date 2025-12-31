@@ -27,7 +27,7 @@ void URsAnimNotifyState_TurnTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	if (!Data.TurnTarget.IsValid())
 	{
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
+		if (URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets))
 		{
 			Data.TurnTarget = OutTargets[0];
 		}

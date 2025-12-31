@@ -36,7 +36,7 @@ bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
 	if (const AActor* Actor = Cast<AActor>(ContextObject))
 	{
 		const USkeletalMeshComponent* MeshComp = Actor->FindComponentByClass<USkeletalMeshComponent>();
-		return URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutActors);
+		return URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutActors);
 	}
 	return false;
 }

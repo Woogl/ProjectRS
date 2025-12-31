@@ -27,7 +27,7 @@ void URsAnimNotify_TeleportTo::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	if (!TeleportTarget)
 	{
 		TArray<AActor*> OutTargets;
-		if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
+		if (URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets))
 		{
 			TeleportTarget = OutTargets[0];
 		}

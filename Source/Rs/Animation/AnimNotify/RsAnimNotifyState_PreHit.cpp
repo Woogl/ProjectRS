@@ -82,7 +82,7 @@ void URsAnimNotifyState_PreHit::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	FPreHitRuntimeData& Data = RuntimeDataMap.Add(MeshComp);
 	
 	TArray<AActor*> OutTargets;
-	if (URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets))
+	if (URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets))
 	{
 		for (AActor* Target : OutTargets)
 		{

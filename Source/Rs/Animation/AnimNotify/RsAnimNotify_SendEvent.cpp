@@ -35,7 +35,7 @@ void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	else if (TargetType == ERsEventRecipient::Target)
 	{
 		TArray<AActor*> OutTargets;
-		URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets);
+		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
 		
 		if (EventTag.IsValid() && ASC)
 		{
@@ -79,7 +79,7 @@ void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	else if (TargetType == ERsEventRecipient::Target)
 	{
 		TArray<AActor*> OutTargets;
-		URsTargetingLibrary::PerformTargetingInMeshSpace(MeshComp, TargetingParams, OutTargets);
+		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
 		
 		if (EventTag.IsValid() && ASC)
 		{
