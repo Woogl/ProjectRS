@@ -11,11 +11,6 @@
 #include "RsCharacterBase.generated.h"
 
 class URsRagdollComponent;
-class URsDefenseSet;
-class URsAttackSet;
-class URsEnergySet;
-class URsStaggerSet;
-class URsHealthSet;
 class URsStaggerComponent;
 class URsHealthComponent;
 class URsAbilitySystemComponent;
@@ -92,23 +87,4 @@ public:
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "RS")
 	ERsTeamId TeamId = ERsTeamId::Neutral;
-	
-private:
-	UPROPERTY()
-	TObjectPtr<const URsHealthSet> HealthSet;
-	
-	UPROPERTY()
-	TObjectPtr<const URsStaggerSet> StaggerSet;
-	
-	UPROPERTY()
-	TObjectPtr<const URsEnergySet> EnergySet;
-	
-	UPROPERTY()
-	TObjectPtr<const URsAttackSet> AttackSet;
-	
-	UPROPERTY()
-	TObjectPtr<const URsDefenseSet> DefenseSet;
-	
-	// UPROPERTY()
-	// TObjectPtr<const URsCombatSet> CombatSet;
 };
