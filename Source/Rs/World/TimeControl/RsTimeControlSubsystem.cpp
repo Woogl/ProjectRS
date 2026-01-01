@@ -7,7 +7,7 @@
 
 float FTimeControlRequest::GetEndTime() const
 {
-	if (Duration < 0.f)
+	if (Duration <= 0.f)
 	{
 		return FLT_MAX;
 	}

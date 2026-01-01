@@ -34,6 +34,7 @@ public class Rs : ModuleRules
 			"Niagara",
             "DeveloperSettings",
             "AIModule",
+            "LevelSequence",
         });
 	}
 }

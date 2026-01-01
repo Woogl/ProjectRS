@@ -77,7 +77,6 @@ void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp,
 			FSendEventRuntimeData NewData;
 			NewData.EventTag = EventTag;
 			NewData.Ability = ASC->GetAnimatingAbility();
-			NewData.Targets.Add(Owner);
 			RuntimeDataMap.Add(MeshComp, NewData);
 		}
 	}
@@ -100,7 +99,6 @@ void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp,
 				FSendEventRuntimeData NewData;
 				NewData.EventTag = EventTag;
 				NewData.Ability = ASC->GetAnimatingAbility();
-				NewData.Targets.Add(Target);
 				RuntimeDataMap.Add(MeshComp, NewData);
 			}
 		}

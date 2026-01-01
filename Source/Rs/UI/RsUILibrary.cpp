@@ -3,6 +3,9 @@
 
 #include "RsUILibrary.h"
 
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "MovieSceneSequencePlaybackSettings.h"
 #include "PrimaryGameLayout.h"
 #include "Kismet/GameplayStatics.h"
 #include "MVVM/ViewModel/RsViewModelBase.h"
@@ -10,6 +13,7 @@
 #include "HUD/RsHUD.h"
 #include "HUD/RsHUDLayout.h"
 #include "Input/RsUIActionRouter.h"
+#include "Rs/World/TimeControl/RsTimeControlLibrary.h"
 #include "View/MVVMView.h"
 #include "Widget/RsActivatableWidget.h"
 
@@ -210,4 +214,43 @@ void URsUILibrary::PrintSystemMessage(UObject* WorldContextObject, FText Message
 	{
 		GameHUD->AddSystemMessage(Message, Duration);
 	}
+}
+
+ULevelSequencePlayer* URsUILibrary::PlayCinematicSequence(UObject* WorldContextObject, ULevelSequence* LevelSequence, bool bHideGameHUD, float GlobalTimeDilation)
+{
+	const float LocalGlobalTimeDilation = FMath::Max(GlobalTimeDilation, 0.001);
+	
+	FMovieSceneSequencePlaybackSettings Settings;
+	Settings.bAutoPlay = true;
+	Settings.PlayRate = 1.f / LocalGlobalTimeDilation;
+	Settings.bDisableLookAtInput = true;
+	Settings.bDisableMovementInput = true;
+	
+	ALevelSequenceActor* SpawnedActor; 
+	if (ULevelSequencePlayer* LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(WorldContextObject, LevelSequence, Settings, SpawnedActor))
+	{
+		URsTimeControlLibrary::RequestTimeDilation(WorldContextObject, TEXT("PlayCinematicSequence"), ERsTimeControlPriority::System, LocalGlobalTimeDilation, 0, 0);
+		if (bHideGameHUD)
+		{
+			HideGameHUD(WorldContextObject);
+		}
+		
+		TWeakObjectPtr<ALevelSequenceActor> WeakActor = SpawnedActor;
+		LevelSequencePlayer->OnNativeFinished.BindWeakLambda(SpawnedActor, [WorldContextObject, bHideGameHUD, WeakActor]()
+		{
+			URsTimeControlLibrary::RequestTimeResume(WorldContextObject, TEXT("PlayCinematicSequence"), 0.f);
+			if (bHideGameHUD)
+			{
+				ShowGameHUD(WorldContextObject);
+			}
+			if (WeakActor.IsValid())
+			{
+				WeakActor->Destroy();
+			}
+		});
+		
+		return LevelSequencePlayer;
+	}
+	UE_LOG(LogRsUI, Warning, TEXT("Failed to PlayCinematicSequence()"));
+	return nullptr;
 }

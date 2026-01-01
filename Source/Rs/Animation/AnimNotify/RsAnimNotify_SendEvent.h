@@ -56,7 +56,6 @@ private:
 	{
 		FGameplayTag EventTag;
 		TWeakObjectPtr<UGameplayAbility> Ability;
-		TSet<TWeakObjectPtr<AActor>> Targets;
 	};
 	
 	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FSendEventRuntimeData> RuntimeDataMap;

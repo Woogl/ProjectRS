@@ -28,6 +28,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RS World Time Library", meta = (WorldContext = "WorldContext"))
 	static void RequestTimePause(UObject* WorldContext, FName Key, ERsTimeControlPriority Priority, float BlendTime);
 
+	// Duration 0 means infinite duration.
 	UFUNCTION(BlueprintCallable, Category = "RS World Time Library", meta = (WorldContext = "WorldContext"))
 	static void RequestTimeDilation(UObject* WorldContext, FName Key, ERsTimeControlPriority Priority, float Dilation, float Duration, float BlendTime);
 
