@@ -35,7 +35,7 @@ bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffec
 {
 	bool bResult;
 	float StatValue = ActiveGEContainer.Owner->GetNumericAttribute(URsDefenseSet::GetInvincibleAttribute());
-	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
+	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext()))
 	{
 		bResult = StatValue <= DamageTableRow->InvinciblePierce;
 	}
@@ -68,7 +68,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	float LocalManaGain;
 	float LocalUltimateGain;
 	
-	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(GESpec))
+	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext()))
 	{
 		LocalSuperArmorPierce = DamageTableRow->SuperArmorPierce;
 		LocalHitReaction = DamageTableRow->HitReaction;

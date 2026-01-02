@@ -15,7 +15,7 @@ void URsAbilityCooldownEffectComponent::OnGameplayEffectApplied(FActiveGameplayE
 	FGameplayTag LocalCooldownTag;
 	ECooldownModifingType LocalModifingType;
 	float LocalAmount;
-	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(GESpec))
+	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsEffectTableRow>(GESpec.GetContext()))
 	{
 		LocalCooldownTag = Row->FindValue<FGameplayTag>(TEXT("CooldownTag"), true);
 		LocalModifingType = Row->FindValue<ECooldownModifingType>(TEXT("ModifyingType"), true);

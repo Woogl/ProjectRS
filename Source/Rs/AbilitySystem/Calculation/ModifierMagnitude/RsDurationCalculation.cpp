@@ -9,7 +9,7 @@
 
 float URsDurationCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec))
+	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsEffectTableRow>(Spec.GetContext()))
 	{
 		return Row->Duration;
 	}

@@ -40,9 +40,17 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 		{
 			RepBits |= 1 << 7;
 		}
+		if (EffectTableIndex != INDEX_NONE)
+		{
+			RepBits |= 1 << 8;
+		}
+		if (EffectRowName != NAME_None)
+		{
+			RepBits |= 1 << 9;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 8); // Using total 8 Bits
+	Ar.SerializeBits(&RepBits, 10); // Using total 10 Bits
 
 	if (RepBits & (1 << 0))
 	{
@@ -87,6 +95,14 @@ bool FRsGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map
 	if (RepBits & (1 << 7))
 	{
 		Ar << bIsCriticalHit;
+	}
+	if (RepBits & (1 << 8))
+	{
+		Ar << EffectTableIndex;
+	}
+	if (RepBits & (1 << 9))
+	{
+		Ar << EffectRowName;
 	}
 
 	if (Ar.IsLoading())

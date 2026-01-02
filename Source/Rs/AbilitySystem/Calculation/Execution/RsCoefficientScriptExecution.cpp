@@ -41,7 +41,7 @@ void URsCoefficientScriptExecution::Execute_Implementation(const FGameplayEffect
 	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	
-	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec))
+	if (const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsEffectTableRow>(Spec.GetContext()))
 	{
 		for (const auto [Tag, Attribute] : URsAttributeSetBase::GetStatMap())
 		{

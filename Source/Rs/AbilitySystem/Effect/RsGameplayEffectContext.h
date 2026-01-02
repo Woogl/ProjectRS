@@ -16,6 +16,8 @@ struct FRsGameplayEffectContext : public FGameplayEffectContext
 
 public:
 	bool bIsCriticalHit = false;
+	int16 EffectTableIndex = INDEX_NONE;
+	FName EffectRowName = NAME_None;
 	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 	virtual UScriptStruct* GetScriptStruct() const override;

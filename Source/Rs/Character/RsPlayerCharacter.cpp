@@ -23,7 +23,7 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	JustDodgeCapsule->SetCapsuleHalfHeight(180.f);
 	JustDodgeCapsule->SetCapsuleRadius(180.f);
 	JustDodgeCapsule->SetCollisionProfileName(TEXT("Pawn"));
-	JustDodgeCapsule->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	JustDodgeCapsule->SetCollisionResponseToAllChannels(ECR_Overlap);
 	EnableJustDodgeCapsule(false);
 	
 	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(TEXT("GameplayCameraComponent"));

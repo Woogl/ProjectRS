@@ -3,7 +3,7 @@
 
 #include "RsAbilitySystemGlobals.h"
 
-#include "GameplayEffect.h"
+#include "RsAbilitySystemSettings.h"
 #include "Effect/RsGameplayEffectContext.h"
 #include "Rs/RsLogChannels.h"
 
@@ -12,40 +12,43 @@ FGameplayEffectContext* URsAbilitySystemGlobals::AllocGameplayEffectContext() co
 	return new FRsGameplayEffectContext();
 }
 
-void URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(FGameplayEffectSpec& OutSpec, const FDataTableRowHandle* RowHandle)
+void URsAbilitySystemGlobals::SetEffectTableRowHandle(FGameplayEffectContext& OutContext, const FDataTableRowHandle* RowHandle)
 {
-	if (!RowHandle->DataTable)
+	FRsGameplayEffectContext* RsContext = static_cast<FRsGameplayEffectContext*>(&OutContext);
+	if (!RowHandle || !RowHandle->DataTable || RowHandle->RowName.IsNone())
 	{
-		UE_LOG(LogRsAbility, Warning, TEXT("Invalid table: %s"), *RowHandle->ToDebugString());
+		UE_LOG(LogRsAbility, Warning, TEXT("Invalid table row handle in effect context"));
 		return;
 	}
-	const FString TablePath = RowHandle->DataTable.GetPath();
-	const int32 TableRowIndex = RowHandle->DataTable->GetRowNames().IndexOfByKey(RowHandle->RowName);
-	if (TableRowIndex == INDEX_NONE)
-	{
-		UE_LOG(LogRsAbility, Warning, TEXT("Invalid table row: %s"), *RowHandle->ToDebugString());
-		return;
-	}
-	OutSpec.SetSetByCallerMagnitude(FName(TablePath), TableRowIndex);
+	const TSoftObjectPtr<UDataTable> SoftDataTable(FSoftObjectPath(RowHandle->DataTable));
+	RsContext->EffectTableIndex = URsAbilitySystemSettings::Get().EffectTables.Find(SoftDataTable);
+	RsContext->EffectRowName = RowHandle->RowName;
 }
 
-FDataTableRowHandle URsAbilitySystemGlobals::GetSetByCallerTableRowHandle(const FGameplayEffectSpec& Spec)
+FDataTableRowHandle URsAbilitySystemGlobals::GetEffectTableRowHandle(FGameplayEffectContextHandle ContextHandle)
 {
-	for (const TTuple<FName, float>& SetByCallerData : Spec.SetByCallerNameMagnitudes)
+	if (!ContextHandle.IsValid())
 	{
-		const FName DataTablePath = SetByCallerData.Key;
-		const int32 RowIndex = SetByCallerData.Value;
-		if (const UDataTable* DataTable = LoadObject<UDataTable>(nullptr, *DataTablePath.ToString()))
-		{
-			TArray<FName> RowNames = DataTable->GetRowNames();
-			if (RowNames.IsValidIndex(RowIndex))
-			{
-				FDataTableRowHandle RowHandle;
-				RowHandle.DataTable = DataTable;
-				RowHandle.RowName = RowNames[RowIndex];
-				return RowHandle;
-			}
-		}
+		return FDataTableRowHandle();
 	}
-	return FDataTableRowHandle();
+	const FRsGameplayEffectContext* RsContext = static_cast<const FRsGameplayEffectContext*>(ContextHandle.Get());
+	const int32 TableIndex = RsContext->EffectTableIndex;
+	const TArray<TSoftObjectPtr<UDataTable>>& EffectTables = URsAbilitySystemSettings::Get().EffectTables;
+
+	FDataTableRowHandle RowHandle;
+	if (!EffectTables.IsValidIndex(TableIndex) || RsContext->EffectRowName.IsNone())
+	{
+		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find effect table row handle from EffectContext"));
+		return RowHandle;
+	}
+
+	UDataTable* EffectTable = EffectTables[TableIndex].Get();
+	if (!EffectTable)
+	{
+		EffectTable = EffectTables[TableIndex].LoadSynchronous();
+	}
+	
+	RowHandle.DataTable = EffectTable;
+	RowHandle.RowName = RsContext->EffectRowName;
+	return RowHandle;
 }

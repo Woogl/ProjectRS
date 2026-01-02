@@ -115,7 +115,7 @@ FGameplayEffectSpecHandle URsAbilitySystemLibrary::MakeEffectSpecByTable(const U
 		FDataTableRowHandle TableRowHandle;
 		TableRowHandle.DataTable = DataTable;
 		TableRowHandle.RowName = RowName;
-		URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*Spec.Data, &TableRowHandle);
+		URsAbilitySystemGlobals::SetEffectTableRowHandle(*Context.Get(), &TableRowHandle);
 		return Spec;
 	}
 	return FGameplayEffectSpecHandle();
@@ -126,11 +126,11 @@ FActiveGameplayEffectHandle URsAbilitySystemLibrary::ApplyEffectByTable(const UD
 	if (const FRsEffectTableRowBase* Row = DataTable->FindRow<FRsEffectTableRowBase>(RowName, ANSI_TO_TCHAR(__FUNCTION__)))
 	{
 		FGameplayEffectContextHandle MyContext = Context.IsValid() ? Context : Source->MakeEffectContext();
-		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, MyContext);
 		FDataTableRowHandle TableRowHandle;
 		TableRowHandle.DataTable = DataTable;
 		TableRowHandle.RowName = RowName;
-		URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*Spec.Data, &TableRowHandle);
+		URsAbilitySystemGlobals::SetEffectTableRowHandle(*MyContext.Get(), &TableRowHandle);
+		FGameplayEffectSpecHandle Spec = Source->MakeOutgoingSpec(Row->EffectClass, Level, MyContext);
 		return Source->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target);
 	}
 	return FActiveGameplayEffectHandle();

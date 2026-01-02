@@ -10,7 +10,7 @@
 
 float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec))
+	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(Spec.GetContext()))
 	{
 		const FString Script = Row->HealthDamageExpression;
 		return FRsParser::CoefficientScriptToFloat(Script, Spec);
@@ -21,7 +21,7 @@ float URsHealthDamageCalculation::CalculateBaseMagnitude_Implementation(const FG
 
 float URsStaggerDamageCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsDamageTableRow>(Spec))
+	if (const FRsDamageTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(Spec.GetContext()))
 	{
 		const FString Script = Row->StaggerDamageExpression;
 		return FRsParser::CoefficientScriptToFloat(Script, Spec);

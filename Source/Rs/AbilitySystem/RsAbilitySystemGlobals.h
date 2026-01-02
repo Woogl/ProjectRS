@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemGlobals.h"
 #include "GameplayEffect.h"
+#include "Effect/RsEffectTable.h"
 #include "RsAbilitySystemGlobals.generated.h"
 
 /**
@@ -18,34 +19,20 @@ class RS_API URsAbilitySystemGlobals : public UAbilitySystemGlobals
 public:
 	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
 	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
-
-	// Used in shared gameplay effect for dereferencing table row.
-	static void SetSetByCallerTableRowHandle(FGameplayEffectSpec& OutSpec, const FDataTableRowHandle* RowHandle);
 	
-	static FDataTableRowHandle GetSetByCallerTableRowHandle(const FGameplayEffectSpec& Spec);
+	// Used in global effect table for dereferencing table row.
+	static void SetEffectTableRowHandle(FGameplayEffectContext& OutContext, const FDataTableRowHandle* RowHandle);
+	
+	static FDataTableRowHandle GetEffectTableRowHandle(FGameplayEffectContextHandle ContextHandle);
 	
 	template <typename T>
-	static const T* GetSetByCallerTableRow(const FGameplayEffectSpec& Spec);
+	static const T* GetEffectTableRow(FGameplayEffectContextHandle ContextHandle);
 };
 
 template <typename T>
-const T* URsAbilitySystemGlobals::GetSetByCallerTableRow(const FGameplayEffectSpec& Spec)
+const T* URsAbilitySystemGlobals::GetEffectTableRow(FGameplayEffectContextHandle ContextHandle)
 {
-	for (const TTuple<FName, float>& SetByCallerData : Spec.SetByCallerNameMagnitudes)
-	{
-		FName DataTablePath = SetByCallerData.Key;
-		int32 RowIndex = SetByCallerData.Value;
-		if (const UDataTable* DataTable = LoadObject<UDataTable>(nullptr, *DataTablePath.ToString()))
-		{
-			TArray<FName> RowNames = DataTable->GetRowNames();
-			if (RowNames.IsValidIndex(RowIndex))
-			{
-				if (T* Row = DataTable->FindRow<T>(RowNames[RowIndex], ANSI_TO_TCHAR(__FUNCTION__)))
-				{
-					return Row;
-				}
-			}
-		}
-	}
-	return nullptr;
+	static_assert(TIsDerivedFrom<T, FRsEffectTableRowBase>::IsDerived, "T must be derived from FRsEffectTableRowBase");
+	FDataTableRowHandle EffectTableRow = GetEffectTableRowHandle(ContextHandle);
+	return EffectTableRow.GetRow<T>(ANSI_TO_TCHAR(__FUNCTION__));
 }

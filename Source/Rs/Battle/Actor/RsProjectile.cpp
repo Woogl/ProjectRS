@@ -102,8 +102,7 @@ void ARsProjectile::BeginPlay()
 			FGameplayEffectSpecHandle TableGESpec = InstigatorASC->MakeOutgoingSpec(EffectClass, 0, EffectContext);
 			if (TableGESpec.IsValid())
 			{
-				// Set table data in GE spec
-				URsAbilitySystemGlobals::SetSetByCallerTableRowHandle(*TableGESpec.Data, &EffectTableRowHandle);
+				URsAbilitySystemGlobals::SetEffectTableRowHandle(*TableGESpec.Data->GetContext().Get(), &EffectTableRowHandle);
 				EffectSpecs.Add(TableGESpec);
 			}
 		}

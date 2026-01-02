@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Config, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DefaultCooldownEffect;
 	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Effect")
+	TArray<TSoftObjectPtr<UDataTable>> EffectTables;
+	
 	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
 	float DamageReductionConstant = 190.f;
 

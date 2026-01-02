@@ -34,7 +34,7 @@ URsCoefficientScriptCalculation::URsCoefficientScriptCalculation()
 
 float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetSetByCallerTableRow<FRsEffectTableRow>(Spec);
+	const FRsEffectTableRow* Row = URsAbilitySystemGlobals::GetEffectTableRow<FRsEffectTableRow>(Spec.GetContext());
 	if (!Row)
 	{
 		UE_LOG(LogRsAbility, Warning, TEXT("No effect table row in Spec: %s"), *Spec.ToSimpleString());
