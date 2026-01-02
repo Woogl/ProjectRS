@@ -27,6 +27,12 @@ public:
 	
 	template <typename T>
 	static const T* GetEffectTableRow(FGameplayEffectContextHandle ContextHandle);
+	
+private:
+	static UDataTable* GetOrLoadEffectTable(int16 TableIndex);
+	
+	UPROPERTY(Transient)
+	TArray<UDataTable*> CachedEffectTables;
 };
 
 template <typename T>

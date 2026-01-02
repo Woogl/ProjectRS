@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 URsAbilityTask_PauseMontage::URsAbilityTask_PauseMontage()
 {
@@ -26,10 +25,20 @@ void URsAbilityTask_PauseMontage::Activate()
 		return;
 	}
 	
-	Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(KINDA_SMALL_NUMBER);
-	if (ACharacter* Character = Cast<ACharacter>(Ability->GetAvatarActorFromActorInfo()))
+	if (UAbilitySystemComponent* ASC = AbilitySystemComponent.Get())
 	{
-		Character->GetCharacterMovement()->DisableMovement();
+		ASC->CurrentMontageSetPlayRate(KINDA_SMALL_NUMBER);
+	}
+	
+	if (ACharacter* Character = Cast<ACharacter>(GetAvatarActor()))
+	{
+		if (AController* Controller = Character->GetController())
+		{
+			if (Controller->IsLocalPlayerController())
+			{
+				Controller->SetIgnoreMoveInput(true);
+			}
+		}
 	}
 	
 	GetAvatarActor()->GetWorldTimerManager().SetTimer(TimerHandle, this, &ThisClass::HandleEndTimer, Duration, false);
@@ -37,10 +46,20 @@ void URsAbilityTask_PauseMontage::Activate()
 
 void URsAbilityTask_PauseMontage::OnDestroy(bool AbilityIsEnding)
 {
-	Ability->GetAbilitySystemComponentFromActorInfo()->CurrentMontageSetPlayRate(1.f);
-	if (ACharacter* Character = Cast<ACharacter>(Ability->GetAvatarActorFromActorInfo()))
+	if (UAbilitySystemComponent* ASC = AbilitySystemComponent.Get())
 	{
-		Character->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+		ASC->CurrentMontageSetPlayRate(1.f);
+	}
+	
+	if (ACharacter* Character = Cast<ACharacter>(GetAvatarActor()))
+	{
+		if (AController* Controller = Character->GetController())
+		{
+			if (Controller->IsLocalPlayerController())
+			{
+				Controller->SetIgnoreMoveInput(false);
+			}
+		}
 	}
 
 	Super::OnDestroy(AbilityIsEnding);
@@ -58,10 +77,7 @@ UAnimInstance* URsAbilityTask_PauseMontage::GetAnimInstance() const
 	{
 		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
 		{
-			if (USkeletalMeshComponent* Mesh = Character->GetMesh())
-			{
-				return Mesh->GetAnimInstance();
-			}
+			return Character->GetMesh()->GetAnimInstance();
 		}
 	}
 	return nullptr;

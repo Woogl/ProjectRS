@@ -41,14 +41,29 @@ FDataTableRowHandle URsAbilitySystemGlobals::GetEffectTableRowHandle(FGameplayEf
 		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find effect table row handle from EffectContext"));
 		return RowHandle;
 	}
-
-	UDataTable* EffectTable = EffectTables[TableIndex].Get();
-	if (!EffectTable)
-	{
-		EffectTable = EffectTables[TableIndex].LoadSynchronous();
-	}
 	
-	RowHandle.DataTable = EffectTable;
+	RowHandle.DataTable = GetOrLoadEffectTable(TableIndex);
 	RowHandle.RowName = RsContext->EffectRowName;
 	return RowHandle;
+}
+
+UDataTable* URsAbilitySystemGlobals::GetOrLoadEffectTable(int16 TableIndex)
+{
+	URsAbilitySystemGlobals* Globals = Cast<URsAbilitySystemGlobals>(&Get());
+	if (!Globals)
+	{
+		return nullptr;
+	}
+	
+	TArray<TSoftObjectPtr<UDataTable>> EffectTables = URsAbilitySystemSettings::Get().EffectTables;
+	Globals->CachedEffectTables.SetNum(EffectTables.Num());
+	
+	if (UDataTable* CachedTable = Globals->CachedEffectTables[TableIndex])
+	{
+		return CachedTable;
+	}
+
+	UDataTable* LoadedTable = EffectTables[TableIndex].LoadSynchronous();
+	Globals->CachedEffectTables[TableIndex] = LoadedTable;
+	return LoadedTable;
 }
