@@ -218,7 +218,8 @@ void URsUILibrary::PrintSystemMessage(UObject* WorldContextObject, FText Message
 
 ULevelSequencePlayer* URsUILibrary::PlayCinematicSequence(UObject* WorldContextObject, ULevelSequence* LevelSequence, bool bHideGameHUD, float GlobalTimeDilation)
 {
-	const float LocalGlobalTimeDilation = FMath::Max(GlobalTimeDilation, 0.001);
+	// Avoid negative or divide-by-zero cases
+	const float LocalGlobalTimeDilation = FMath::Max(GlobalTimeDilation, KINDA_SMALL_NUMBER);
 	
 	FMovieSceneSequencePlaybackSettings Settings;
 	Settings.bAutoPlay = true;

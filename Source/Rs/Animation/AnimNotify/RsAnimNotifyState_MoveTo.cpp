@@ -38,7 +38,12 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 		{
 			if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
 			{
-				UAbilityTask_ApplyRootMotionMoveToActorForce* MoveTask = UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(CurrentAbility, NAME_None, LocalTarget, FVector::ZeroVector, ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource, TotalDuration, nullptr, nullptr, false, MOVE_Walking, false, nullptr, nullptr, ERootMotionFinishVelocityMode::MaintainLastRootMotionVelocity, FVector(), 0.f, false);
+				UAbilityTask_ApplyRootMotionMoveToActorForce* MoveTask = UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(CurrentAbility, NAME_None, 
+					LocalTarget, FVector::ZeroVector, ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource, 
+					TotalDuration, nullptr, nullptr, 
+					false, MOVE_Walking, 
+					false, nullptr, nullptr, 
+					ERootMotionFinishVelocityMode::MaintainLastRootMotionVelocity, FVector(), 0.f, false);
 				MoveTask->ReadyForActivation();
 			}
 		}
