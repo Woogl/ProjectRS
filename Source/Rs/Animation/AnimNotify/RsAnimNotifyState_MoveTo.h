@@ -17,6 +17,9 @@ class RS_API URsAnimNotifyState_MoveTo : public URsAnimNotifyStateBase
 
 public:
 	UPROPERTY(EditAnywhere)
+	float AcceptableRadius = 50.f;
+	
+	UPROPERTY(EditAnywhere)
 	FRsTargetingParams TargetingParams;
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;

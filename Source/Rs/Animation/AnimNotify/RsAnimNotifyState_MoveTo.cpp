@@ -43,7 +43,7 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 					TotalDuration, nullptr, nullptr, 
 					false, MOVE_Walking, 
 					false, nullptr, nullptr, 
-					ERootMotionFinishVelocityMode::MaintainLastRootMotionVelocity, FVector(), 0.f, false);
+					ERootMotionFinishVelocityMode::MaintainLastRootMotionVelocity, FVector(), 0.f, false, AcceptableRadius);
 				MoveTask->ReadyForActivation();
 			}
 		}
