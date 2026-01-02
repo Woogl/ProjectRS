@@ -3,7 +3,10 @@
 
 #include "RsAnimNotifyState_MoveTo.h"
 
-#include "GameFramework/Character.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToActorForce.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -31,51 +34,13 @@ void URsAnimNotifyState_MoveTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 	if (LocalTarget)
 	{
-		FMoveToRuntimeData NewData;
-		NewData.MoveTarget = LocalTarget;
-		NewData.bShouldMove = true;
-		RuntimeDataMap.Add(MeshComp, NewData);
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+		{
+			if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
+			{
+				UAbilityTask_ApplyRootMotionMoveToActorForce* MoveTask = UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(CurrentAbility, NAME_None, LocalTarget, FVector::ZeroVector, ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource, TotalDuration, nullptr, nullptr, false, MOVE_Walking, false, nullptr, nullptr, ERootMotionFinishVelocityMode::MaintainLastRootMotionVelocity, FVector(), 0.f, false);
+				MoveTask->ReadyForActivation();
+			}
+		}
 	}
-}
-
-void URsAnimNotifyState_MoveTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-
-	FMoveToRuntimeData* Data = RuntimeDataMap.Find(MeshComp);
-	if (!Data || Data->bShouldMove == false || !Data->MoveTarget.IsValid())
-	{
-		return;
-	}
-	
-	AActor* Owner = MeshComp->GetOwner();
-	ACharacter* Character = Cast<ACharacter>(Owner);
-	if (!Character)
-	{
-		// Owner must be character.
-		return;
-	}
-	
-	const FVector CurrentLocation = Owner->GetActorLocation();
-	const FVector TargetLocation = Data->MoveTarget->GetActorLocation();
-	const float Distance = FVector::Dist2D(CurrentLocation, TargetLocation);
-
-	if (Distance < AcceptableRadius)
-	{
-		Data->bShouldMove = false;
-		return;
-	}
-
-	FVector Direction = (TargetLocation - CurrentLocation);
-	Direction.Z = 0.f;
-	Direction.Normalize();
-	
-	Character->AddMovementInput(Direction, 1);
-}
-
-void URsAnimNotifyState_MoveTo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyEnd(MeshComp, Animation, EventReference);
-	
-	RuntimeDataMap.Remove(MeshComp);
 }
