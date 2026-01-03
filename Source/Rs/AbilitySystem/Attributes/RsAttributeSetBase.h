@@ -18,7 +18,7 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 { \
 FGameplayEffectAttributeCaptureDefinition Def; \
 Def.AttributeToCapture = (Attr); \
-Def.AttributeSource = (SourceOrTarget); \
+Def.AttributeSource = (EGameplayEffectAttributeCaptureSource::SourceOrTarget); \
 Def.bSnapshot = Snapshot; \
 this->RelevantAttributesToCapture.Add(Def); \
 }

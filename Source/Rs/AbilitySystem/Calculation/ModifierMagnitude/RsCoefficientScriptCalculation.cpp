@@ -15,21 +15,21 @@
 
 URsCoefficientScriptCalculation::URsCoefficientScriptCalculation()
 {
-	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
-	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), Source, true);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), Source, true);
 	
-	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
-	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetAttackAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsSpeedSet::GetActionSpeedAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetBarrierAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsDefenseSet::GetDefenseAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetCurrentHealthAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsHealthSet::GetMaxHealthAttribute(), Target, false);
+	RS_CAPTURE_ATTRIBUTE(URsAttackSet::GetImpactAttribute(), Target, false);
 }
 
 float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
