@@ -3,9 +3,12 @@
 
 #include "RsAnimNotifyState_TurnTo.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_TurnToLocation.h"
+#include "Rs/AbilitySystem/Attributes/RsSpeedSet.h"
 #include "Rs/Battle/RsBattleLibrary.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
@@ -19,58 +22,41 @@ void URsAnimNotifyState_TurnTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 		return;
 	}
 	
-	FTurnToRuntimeData& Data = RuntimeDataMap.Add(MeshComp);
-	
 	// Use current lock on target.
-	Data.TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	AActor* TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
 	// Search new target if current lock on target is not available.
-	if (!Data.TurnTarget.IsValid())
+	if (!TurnTarget)
 	{
 		TArray<AActor*> OutTargets;
 		if (URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets))
 		{
-			Data.TurnTarget = OutTargets[0];
+			TurnTarget = OutTargets[0];
 		}
 	}
-	
-	Data.bShouldTurn = Data.TurnTarget.IsValid();
-}
 
-void URsAnimNotifyState_TurnTo::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-
-	FTurnToRuntimeData* Data = RuntimeDataMap.Find(MeshComp);
-	if (!Data || Data->bShouldTurn == false || !Data->TurnTarget.IsValid())
+	if (!TurnTarget)
 	{
 		return;
 	}
-	
-	AActor* Owner = MeshComp->GetOwner();
-	ACharacter* Character = Cast<ACharacter>(Owner);
-	if (!Character)
-	{
-		// Owner must be character
-		return;
-	}
-	
-	const FRotator CurrentRotation = Owner->GetActorRotation();
-	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(Owner->GetActorLocation(), Data->TurnTarget->GetActorLocation());
-	const float RotationSpeed = Character->GetCharacterMovement()->RotationRate.Yaw;
-	
-	float NewYaw = FMath::FixedTurn(CurrentRotation.Yaw, TargetRotation.Yaw, RotationSpeed * FrameDeltaTime);
-	Owner->SetActorRotation(FRotator(CurrentRotation.Pitch, NewYaw, CurrentRotation.Roll));
 
-	const float YawDelta = FMath::Abs(FMath::FindDeltaAngleDegrees(NewYaw, TargetRotation.Yaw));
-	if (YawDelta <= 1.f)
+	float RotatingSpeed = 300.f;
+	if (ACharacter* Character = Cast<ACharacter>(Owner))
 	{
-		Data->bShouldTurn = false;
+		RotatingSpeed = Character->GetCharacterMovement()->RotationRate.Yaw;
 	}
-}
 
-void URsAnimNotifyState_TurnTo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyEnd(MeshComp, Animation, EventReference);
-	
-	RuntimeDataMap.Remove(MeshComp);
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
+	{
+		if (UGameplayAbility* Ability = ASC->GetAnimatingAbility())
+		{
+			if (float Stat = ASC->GetNumericAttribute(URsSpeedSet::GetMoveSpeedAttribute()))
+			{
+				RotatingSpeed *= Stat;
+			}
+			
+			FVector TargetLocation = TurnTarget->GetActorLocation();
+			URsAbilityTask_TurnToLocation* TurnToTask = URsAbilityTask_TurnToLocation::TurnToLocation(Ability, TargetLocation, RotatingSpeed, TotalDuration);
+			TurnToTask->ReadyForActivation();
+		}
+	}
 }
