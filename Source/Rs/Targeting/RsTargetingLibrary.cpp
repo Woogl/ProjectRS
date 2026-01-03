@@ -50,7 +50,7 @@ bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, const FTran
 	
 	FVector StartLoc = Start.GetLocation();
 	FVector EndLoc = End.GetLocation();
-	if (StartLoc == EndLoc)
+	if (StartLoc.Equals(EndLoc))
 	{
 		PerformTargeting(Owner, Start, Params, ResultActors);
 		return ResultActors.Num() > 0;
@@ -89,25 +89,25 @@ bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, const FTran
 
 TArray<AActor*> URsTargetingLibrary::PerformOverlapping(const UObject* WorldContext, const FTransform& Transform, const FRsTargetingShape& Shape)
 {
-	TArray<AActor*> ResultActors;
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World)
 	{
-		return ResultActors;
+		return TArray<AActor*>();
 	}
 
 	TArray<FOverlapResult> OverlapResults;
-	World->OverlapMultiByProfile(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), TEXT("OverlapAll"), Shape.MakeShape());
+	World->OverlapMultiByProfile(OverlapResults, Transform.GetLocation(), Transform.GetRotation(), TEXT("OverlapAll"), Shape.MakeShape(), FCollisionQueryParams());
 
+	TSet<AActor*> ResultActors;
 	for (const FOverlapResult& OverlapResult : OverlapResults)
 	{
 		if (AActor* Actor = OverlapResult.GetActor())
 		{
-			ResultActors.AddUnique(Actor);
+			ResultActors.Add(Actor);
 		}
 	}
 	
-	return ResultActors;
+	return ResultActors.Array();
 }
 
 TArray<AActor*> URsTargetingLibrary::PerformFiltering(const TArray<AActor*>& InActors, const AActor* Owner, const FRsTargetingFilter& Filter)
