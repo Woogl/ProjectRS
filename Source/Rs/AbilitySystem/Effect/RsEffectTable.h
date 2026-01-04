@@ -163,10 +163,10 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	/** Can apply */
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 InvinciblePierce = 0;
+	bool InvinciblePierce = false;
 
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 SuperArmorPierce = 0;
+	bool SuperArmorPierce = false;
 
 	/** Hit reaction */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Ability.HitReaction"))

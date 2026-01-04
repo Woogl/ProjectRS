@@ -8,14 +8,10 @@
 
 URsDefenseSet::URsDefenseSet()
 	: Defense(0.f)
-	, Invincible(0.f)
-	, SuperArmor(0.f)
 {
 	if (HasAnyFlags(RF_ClassDefaultObject))
 	{
 		RegisterTagToStat(RsGameplayTags::STAT_DEF, GetDefenseAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_INV, GetInvincibleAttribute());
-		RegisterTagToStat(RsGameplayTags::STAT_SUA, GetSuperArmorAttribute());
 	
 		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_DEF_SOURCE, GetDefenseAttribute());
 		RegisterTagToCoefficient(RsGameplayTags::COEFFICIENT_DEF_TARGET, GetDefenseAttribute());
@@ -27,36 +23,14 @@ void URsDefenseSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, Defense, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, Invincible, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(URsDefenseSet, SuperArmor, COND_None, REPNOTIFY_Always);
 }
 
 void URsDefenseSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
-
-	if (Attribute == GetInvincibleAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 0.f);
-	}
-	
-	else if (Attribute == GetSuperArmorAttribute())
-	{
-		NewValue = FMath::Max(NewValue, 0.f);
-	}
 }
 
 void URsDefenseSet::OnRep_Defense(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Defense, OldValue);
-}
-
-void URsDefenseSet::OnRep_Invincible(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Invincible, OldValue);
-}
-
-void URsDefenseSet::OnRep_SuperArmor(const FGameplayAttributeData& OldValue)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, SuperArmor, OldValue);
 }

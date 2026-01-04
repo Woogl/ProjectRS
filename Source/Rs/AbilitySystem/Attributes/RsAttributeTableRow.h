@@ -65,12 +65,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float CriticalDamage = 0.f;
-
-	UPROPERTY(EditAnywhere)
-	float Invincible = 0.f;
-
-	UPROPERTY(EditAnywhere)
-	float SuperArmor = 0.f;
 	
 	float GetBaseValue(const FGameplayAttribute& Attribute) const;
 };

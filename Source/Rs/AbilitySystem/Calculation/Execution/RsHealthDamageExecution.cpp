@@ -113,9 +113,9 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	
 	// Feedback to source
 	FGameplayEventData Payload;
-	Payload.EventTag = RsGameplayTags::EFFECT_DAMAGEFEEDBACK;
+	Payload.EventTag = RsGameplayTags::EFFECT_DAMAGE_FEEDBACK;
 	Payload.Instigator = ExecutionParams.GetSourceAbilitySystemComponent()->GetOwner();
 	Payload.Target = ExecutionParams.GetTargetAbilitySystemComponent()->GetOwner();
 	Payload.EventMagnitude = FinalDamage;
-	ExecutionParams.GetSourceAbilitySystemComponent()->HandleGameplayEvent(RsGameplayTags::EFFECT_DAMAGEFEEDBACK, &Payload);
+	ExecutionParams.GetSourceAbilitySystemComponent()->HandleGameplayEvent(RsGameplayTags::EFFECT_DAMAGE_FEEDBACK, &Payload);
 }

@@ -72,14 +72,6 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	{
 		return CriticalDamage;
 	}
-	if (Attribute == URsDefenseSet::GetInvincibleAttribute())
-	{
-		return Invincible;
-	}
-	if (Attribute == URsDefenseSet::GetSuperArmorAttribute())
-	{
-		return SuperArmor;
-	}
 	if (Attribute == URsSpeedSet::GetMoveSpeedAttribute())
 	{
 		return 1.f;
@@ -87,18 +79,6 @@ float FRsAttributeTableRow::GetBaseValue(const FGameplayAttribute& Attribute) co
 	if (Attribute == URsSpeedSet::GetActionSpeedAttribute())
 	{
 		return 1.f;
-	}
-	if (Attribute == URsHealthSet::GetBaseDamageAttribute())
-	{
-		return 0.f;
-	}
-	if (Attribute == URsStaggerSet::GetBaseDamageAttribute())
-	{
-		return 0.f;
-	}
-	if (Attribute == URsHealthSet::GetHealingAttribute())
-	{
-		return 0.f;
 	}
 	ensureMsgf(false, TEXT("Unknown attribute: %s"), *Attribute.AttributeName);
 	return 0.f;

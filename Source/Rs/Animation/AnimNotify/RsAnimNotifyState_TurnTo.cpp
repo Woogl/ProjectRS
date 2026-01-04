@@ -23,7 +23,7 @@ void URsAnimNotifyState_TurnTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	}
 	
 	// Use current lock on target.
-	AActor* TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
+	const AActor* TurnTarget = URsBattleLibrary::GetLockOnTarget(Cast<APawn>(Owner));
 	// Search new target if current lock on target is not available.
 	if (!TurnTarget)
 	{

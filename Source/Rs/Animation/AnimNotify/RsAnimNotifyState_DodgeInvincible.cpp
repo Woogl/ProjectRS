@@ -26,8 +26,8 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	{
 		return;
 	}
-	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-	if (!ASC.IsValid())
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	if (!ASC)
 	{
 		return;
 	}
@@ -36,59 +36,59 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	{
 		return;
 	}
-	
-	DamageBlockTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(Ability, DamageTags, true);
+
+	URsAbilityTask_WaitDamageEffectBlockedImmunity* DamageBlockTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(Ability, DamageTags, true);
 	DamageBlockTask->Blocked.AddUniqueDynamic(this, &ThisClass::HandleDamageBlocked);
 	DamageBlockTask->ReadyForActivation();
-	
+
+	FDodgeInvincibleRuntimeData Data;
 	if (InvincibleEffect)
 	{
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(InvincibleEffect, 0.f, ASC->MakeEffectContext());
-		if (SpecHandle.IsValid())
-		{
-			SpecHandle.Data->SetSetByCallerMagnitude(RsGameplayTags::SETBYCALLER_MAGNITUDE, InvincibleTier);
-			InvincibleEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-		}
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		FActiveGameplayEffectHandle InvincibleEffectHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0.f, Context);
+		
+		Data.InvincibleEffectHandle = InvincibleEffectHandle;
 	}
 	
-	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(ASC->GetAvatarActor()))
+	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(MeshComp->GetOwner()))
 	{
 		PlayerCharacter->EnableJustDodgeCapsule(true);
 	}
+	
+	Data.ASC = ASC;
+	Data.DamageBlockTask = DamageBlockTask;
+	Data.DamageBlockTask = DamageBlockTask;
+	RuntimeDataMap.Add(MeshComp, Data);
 }
 
 void URsAnimNotifyState_DodgeInvincible::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
-	if (DamageBlockTask.IsValid())
+	if (FDodgeInvincibleRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
 	{
-		DamageBlockTask->EndTask();
-		DamageBlockTask.Reset();
-	}
-
-	if (!ASC.IsValid())
-	{
-		return;
+		if (URsAbilityTask_WaitDamageEffectBlockedImmunity* Task = Data->DamageBlockTask.Get())
+		{
+			Task->EndTask();
+		}
+		if (UAbilitySystemComponent* ASC = Data->ASC.Get())
+		{
+			ASC->RemoveActiveGameplayEffect(Data->InvincibleEffectHandle);
+		}
 	}
 	
-	if (InvincibleEffectHandle.IsValid())
-	{
-		ASC->RemoveActiveGameplayEffect(InvincibleEffectHandle);
-	}
-
-	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(ASC->GetAvatarActor()))
+	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(MeshComp->GetOwner()))
 	{
 		PlayerCharacter->EnableJustDodgeCapsule(false);
 	}
+	
+	RuntimeDataMap.Remove(MeshComp);
 }
 
 void URsAnimNotifyState_DodgeInvincible::HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
 {
-	if (!ASC.IsValid())
+	if (UAbilitySystemComponent* ASC = ImmunityGameplayEffectHandle.GetOwningAbilitySystemComponent())
 	{
-		return;
+		ASC->TryActivateAbilitiesByTag(JustDodgeAbilityTags);
 	}
-	
-	ASC->TryActivateAbilitiesByTag(JustDodgeAbilityTags);
 }

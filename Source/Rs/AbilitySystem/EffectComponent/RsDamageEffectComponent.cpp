@@ -10,7 +10,6 @@
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_PauseMontage.h"
-#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsEnergySet.h"
 #include "Rs/AbilitySystem/Effect/RsEffectTable.h"
 #include "Rs/Battle/Actor/RsProjectile.h"
@@ -31,25 +30,6 @@ void URsDamageEffectComponent::OnGameplayEffectChanged()
 	Owner->CachedGrantedTags.AppendTags(DamageTags);
 }
 
-bool URsDamageEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
-{
-	bool bResult;
-	float StatValue = ActiveGEContainer.Owner->GetNumericAttribute(URsDefenseSet::GetInvincibleAttribute());
-	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext()))
-	{
-		bResult = StatValue <= DamageTableRow->InvinciblePierce;
-	}
-	else
-	{
-		bResult = StatValue <= InvinciblePierce;
-	}
-	if (!bResult)
-	{
-		ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
-	}
-	return bResult;
-}
-
 void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
 {
 	Super::OnGameplayEffectApplied(ActiveGEContainer, GESpec, PredictionKey);
@@ -62,7 +42,8 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 	
 	FGameplayTag LocalHitReaction;
-	int32 LocalSuperArmorPierce;
+	bool LocalInvinciblePierce;
+	bool LocalSuperArmorPierce;
 	float LocalSourceHitStopTime;
 	float LocalTargetHitStopTime;
 	float LocalManaGain;
@@ -70,6 +51,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	
 	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext()))
 	{
+		LocalInvinciblePierce = DamageTableRow->InvinciblePierce;
 		LocalSuperArmorPierce = DamageTableRow->SuperArmorPierce;
 		LocalHitReaction = DamageTableRow->HitReaction;
 		LocalSourceHitStopTime = DamageTableRow->SourceHitStopTime;
@@ -79,6 +61,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 	else
 	{
+		LocalInvinciblePierce = InvinciblePierce;
 		LocalSuperArmorPierce = SuperArmorPierce;
 		LocalHitReaction = HitReaction;
 		LocalSourceHitStopTime = SourceHitStopTime;
@@ -87,22 +70,27 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		LocalUltimateGain = UltimateGain;
 	}
 
-	// Check super armor
-	float TargetSuperArmor = TargetASC->GetNumericAttribute(URsDefenseSet::GetSuperArmorAttribute());
-	if (LocalSuperArmorPierce >= TargetSuperArmor)
+	if (LocalInvinciblePierce)
 	{
-		// Trigger hit reaction
-		if (LocalHitReaction.IsValid())
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = LocalHitReaction;
-			Payload.Instigator = SourceASC->GetAvatarActor();
-			Payload.Target = TargetASC->GetAvatarActor();
-			Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
-			Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
-			Payload.ContextHandle = GESpec.GetEffectContext();
-			TargetASC->HandleGameplayEvent(Payload.EventTag, &Payload);
-		}
+		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_INVINCIBLEPIERCE);
+	}
+
+	if (LocalSuperArmorPierce)
+	{
+		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_SUPERARMORPIERCE);
+	}
+
+	// Trigger hit reaction
+	if (LocalHitReaction.IsValid())
+	{
+		FGameplayEventData Payload;
+		Payload.EventTag = LocalHitReaction;
+		Payload.Instigator = SourceASC->GetAvatarActor();
+		Payload.Target = TargetASC->GetAvatarActor();
+		Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
+		Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
+		Payload.ContextHandle = GESpec.GetEffectContext();
+		TargetASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 	}
 
 	// Trigger hit stops
@@ -213,4 +201,3 @@ EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidatio
 	return Result;
 }
 #endif // WITH_EDITOR
-

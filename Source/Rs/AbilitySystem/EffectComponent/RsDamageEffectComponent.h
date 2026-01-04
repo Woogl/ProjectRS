@@ -29,11 +29,11 @@ public:
 
 	/** Can apply */
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 InvinciblePierce = 0;
+	bool InvinciblePierce = false;
 	
 	/** Hit reaction */
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 SuperArmorPierce = 0;
+	bool SuperArmorPierce = false;
 	
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Ability.HitReaction"))
 	FGameplayTag HitReaction;
@@ -59,9 +59,6 @@ public:
 public:
 	// Handle DamageTags
 	virtual void OnGameplayEffectChanged() override;
-	
-	// Handle InvinciblePierce
-	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
 
 	// Handle HitReaction, HitStops, ManaGain, UltimateGain, AdditionalEffects
 	virtual void OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const override;

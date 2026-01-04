@@ -24,9 +24,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> InvincibleEffect;
 	
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3"))
-	int32 InvincibleTier = 1;
-	
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer DamageTags;
 	
@@ -40,7 +37,12 @@ protected:
 	UFUNCTION()
 	void HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
 	
-	TWeakObjectPtr<UAbilitySystemComponent> ASC;
-	TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> DamageBlockTask;
-	FActiveGameplayEffectHandle InvincibleEffectHandle;
+	struct FDodgeInvincibleRuntimeData
+	{
+		TWeakObjectPtr<UAbilitySystemComponent> ASC;
+		TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> DamageBlockTask;
+		FActiveGameplayEffectHandle InvincibleEffectHandle;
+	};
+	
+	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FDodgeInvincibleRuntimeData> RuntimeDataMap;
 };
