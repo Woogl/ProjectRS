@@ -49,9 +49,9 @@ void URsAnimNotifyState_TurnTo::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 	{
 		if (UGameplayAbility* Ability = ASC->GetAnimatingAbility())
 		{
-			if (float Stat = ASC->GetNumericAttribute(URsSpeedSet::GetMoveSpeedAttribute()))
+			if (float SpeedMultiplier = ASC->GetNumericAttribute(URsSpeedSet::GetMoveSpeedAttribute()))
 			{
-				RotatingSpeed *= Stat;
+				RotatingSpeed *= SpeedMultiplier;
 			}
 			
 			FVector TargetLocation = TurnTarget->GetActorLocation();
