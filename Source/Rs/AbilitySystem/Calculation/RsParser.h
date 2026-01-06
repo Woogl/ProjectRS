@@ -21,12 +21,12 @@ public:
 	
 private:
 	// Coefficient Script
-	TArray<FString> Tokenize(const FString& Script) const;
-	bool IsValidScript(const TArray<FString>& Tokens) const;
-	TArray<FString> ToPostfix(const TArray<FString>& Tokens) const;
-	float GetCapturedAttributeMagnitude(const FString& Token, const FGameplayEffectSpec& Spec) const;
-	FString CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const;
-	int32 GetPrecedence(const FString& Operator) const;
-	bool IsOperator(const FString& Operator) const;
-	bool IsOperator(const TCHAR& Operator) const;
+	static TArray<FString> Tokenize(const FString& Script);
+	static bool IsValidScript(const TArray<FString>& Tokens);
+	static TArray<FString> ToPostfix(const TArray<FString>& Tokens);
+	static float GetCapturedAttributeMagnitude(const FString& Token, const FGameplayEffectSpec& Spec);
+	static FString CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator);
+	static int32 GetPrecedence(const FString& Operator) ;
+	static bool IsOperator(const FString& Operator);
+	static bool IsOperator(const TCHAR& Operator);
 };

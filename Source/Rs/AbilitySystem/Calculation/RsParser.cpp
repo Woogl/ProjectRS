@@ -7,12 +7,6 @@
 #include "Rs/RsLogChannels.h"
 #include "Rs/AbilitySystem/Attributes/RsAttributeSetBase.h"
 
-static const FRsParser& Get()
-{
-	static FRsParser ParserStatics;
-	return ParserStatics;
-}
-
 float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplayEffectSpec& Spec)
 {
 	if (Script.IsEmpty())
@@ -25,22 +19,20 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 		return FCString::Atof(*Script);
 	}
 	
-	const FRsParser Parser = Get();
-	
-	const TArray<FString> Tokens = Parser.Tokenize(Script);
+	const TArray<FString> Tokens = Tokenize(Script);
 
-	if (!Parser.IsValidScript(Tokens))
+	if (!IsValidScript(Tokens))
 	{
 		UE_LOG(LogRsAbility, Error, TEXT("Invalid script [%s] detected in [%s]."), *Script, *Spec.ToSimpleString());
 		return 0.f;
 	}
 
-	const TArray<FString> PostfixTokens = Parser.ToPostfix(Tokens);
+	const TArray<FString> PostfixTokens = ToPostfix(Tokens);
 	TArray<FString> Stack;
 
 	for (const FString& Token : PostfixTokens)
 	{
-		if (!Parser.IsOperator(Token))
+		if (!IsOperator(Token))
 		{
 			if (Token.IsNumeric())
 			{
@@ -48,7 +40,7 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 			}
 			else
 			{
-				const float AttributeValue = Parser.GetCapturedAttributeMagnitude(Token, Spec);
+				const float AttributeValue = GetCapturedAttributeMagnitude(Token, Spec);
 				Stack.Push(FString::Printf(TEXT("%f"), AttributeValue));
 			}
 		}
@@ -57,7 +49,7 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 			FString Value2 = Stack.Pop();
 			FString Value1 = Stack.Pop();
 
-			Stack.Push(Parser.CalculateOperation(Value1, Value2, Token));
+			Stack.Push(CalculateOperation(Value1, Value2, Token));
 		}
 	}
 
@@ -65,7 +57,7 @@ float FRsParser::CoefficientScriptToFloat(const FString& Script, const FGameplay
 	return Result;
 }
 
-TArray<FString> FRsParser::Tokenize(const FString& Script) const
+TArray<FString> FRsParser::Tokenize(const FString& Script)
 {
 	TArray<FString> OutTokens;
 	FString LocalToken;
@@ -100,7 +92,7 @@ TArray<FString> FRsParser::Tokenize(const FString& Script) const
 	return OutTokens;
 }
 
-bool FRsParser::IsValidScript(const TArray<FString>& Tokens) const
+bool FRsParser::IsValidScript(const TArray<FString>& Tokens)
 {
 	if (Tokens.IsEmpty())
 	{
@@ -144,7 +136,7 @@ bool FRsParser::IsValidScript(const TArray<FString>& Tokens) const
 	return true;
 }
 
-TArray<FString> FRsParser::ToPostfix(const TArray<FString>& Tokens) const
+TArray<FString> FRsParser::ToPostfix(const TArray<FString>& Tokens)
 {
 	TArray<FString> Output;
 	TArray<FString> Stack;
@@ -191,7 +183,7 @@ TArray<FString> FRsParser::ToPostfix(const TArray<FString>& Tokens) const
 	return Output;
 }
 
-float FRsParser::GetCapturedAttributeMagnitude(const FString& Token, const FGameplayEffectSpec& Spec) const
+float FRsParser::GetCapturedAttributeMagnitude(const FString& Token, const FGameplayEffectSpec& Spec)
 {
 	FGameplayEffectAttributeCaptureDefinition Def;
 	Def.AttributeToCapture = URsAttributeSetBase::TagToAttribute(FGameplayTag::RequestGameplayTag(FName(Token)));
@@ -227,7 +219,7 @@ float FRsParser::GetCapturedAttributeMagnitude(const FString& Token, const FGame
 	return Magnitude;
 }
 
-FString FRsParser::CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator) const
+FString FRsParser::CalculateOperation(const FString& Value1, const FString& Value2, const FString& Operator)
 {
 	float Value = 0.f;
 	
@@ -251,7 +243,7 @@ FString FRsParser::CalculateOperation(const FString& Value1, const FString& Valu
 	return FString::Printf(TEXT("%f"), Value);
 }
 
-int32 FRsParser::GetPrecedence(const FString& Operator) const
+int32 FRsParser::GetPrecedence(const FString& Operator)
 {
 	if (Operator == TEXT("*") || Operator == TEXT("/"))
 	{
@@ -264,7 +256,7 @@ int32 FRsParser::GetPrecedence(const FString& Operator) const
 	return 0;
 }
 
-bool FRsParser::IsOperator(const FString& Operator) const
+bool FRsParser::IsOperator(const FString& Operator)
 {
 	if (Operator == TEXT("+") || Operator == TEXT("-") || Operator == TEXT("*") || Operator == TEXT("/"))
 	{
@@ -273,7 +265,7 @@ bool FRsParser::IsOperator(const FString& Operator) const
 	return false;
 }
 
-bool FRsParser::IsOperator(const TCHAR& Operator) const
+bool FRsParser::IsOperator(const TCHAR& Operator)
 {
 	if (Operator == '+' || Operator == '-' || Operator == '*' || Operator == '/')
 	{
