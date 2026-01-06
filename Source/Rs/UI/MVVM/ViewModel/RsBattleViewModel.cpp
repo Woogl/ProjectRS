@@ -5,7 +5,7 @@
 
 #include "RsCharacterViewModel.h"
 #include "Blueprint/UserWidget.h"
-#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "Rs/Battle/RsBattleSubsystem.h"
 #include "Rs/UI/MVVM/RsMVVMGameSubsystem.h"
 
 void URsBattleViewModel::Initialize()

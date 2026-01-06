@@ -21,6 +21,7 @@ public class Rs : ModuleRules
 		{
 			"UMG",
 			"SlateCore",
+			"CommonInput",
 			"GameplayAbilities", 
 			"GameplayTasks", 
 			"GameplayTags", 

@@ -1,13 +1,13 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsButton.h"
+#include "RsButtonBase.h"
 
 #include "CommonLazyImage.h"
 #include "CommonTextBlock.h"
 #include "Rs/UI/RsUIManagerSubsystem.h"
 
-void URsButton::SetButtonText(const FText& InText)
+void URsButtonBase::SetButtonText(const FText& InText)
 {
 	if (Text_ButtonText && !InText.IsEmpty())
 	{
@@ -15,7 +15,7 @@ void URsButton::SetButtonText(const FText& InText)
 	}
 }
 
-FText URsButton::GetButtonText() const
+FText URsButtonBase::GetButtonText() const
 {
 	if (Text_ButtonText)
 	{
@@ -25,7 +25,7 @@ FText URsButton::GetButtonText() const
 	return FText::GetEmpty();
 }
 
-void URsButton::SetButtionImage(const FSlateBrush& InBrush)
+void URsButtonBase::SetButtionImage(const FSlateBrush& InBrush)
 {
 	if (LazyImage_ButtonImage)
 	{
@@ -33,14 +33,14 @@ void URsButton::SetButtionImage(const FSlateBrush& InBrush)
 	}
 }
 
-void URsButton::NativePreConstruct()
+void URsButtonBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
 	SetButtonText(ButtonDisplayText);
 }
 
-void URsButton::NativeOnCurrentTextStyleChanged()
+void URsButtonBase::NativeOnCurrentTextStyleChanged()
 {
 	Super::NativeOnCurrentTextStyleChanged();
 	
@@ -50,7 +50,7 @@ void URsButton::NativeOnCurrentTextStyleChanged()
 	}
 }
 
-void URsButton::NativeOnHovered()
+void URsButtonBase::NativeOnHovered()
 {
 	Super::NativeOnHovered();
 	
@@ -63,7 +63,7 @@ void URsButton::NativeOnHovered()
 	}
 }
 
-void URsButton::NativeOnUnhovered()
+void URsButtonBase::NativeOnUnhovered()
 {
 	Super::NativeOnUnhovered();
 	

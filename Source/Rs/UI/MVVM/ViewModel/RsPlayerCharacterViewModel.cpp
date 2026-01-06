@@ -11,7 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rs/RsGameplayTags.h"
 #include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
-#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "Rs/Battle/RsBattleSubsystem.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 #include "Rs/Party/RsPartyComponent.h"
 #include "Rs/Party/RsPartyLibrary.h"

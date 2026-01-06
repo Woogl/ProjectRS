@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RsSingletonViewModelBase.h"
-#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "Rs/Battle/RsBattleSubsystem.h"
 #include "View/MVVMViewModelContextResolver.h"
 #include "RsBattleViewModel.generated.h"
 

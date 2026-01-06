@@ -8,7 +8,7 @@
 #include "PrimaryGameLayout.h"
 #include "Rs/RsGameplayTags.h"
 #include "RsHUDLayout.h"
-#include "Rs/Battle/Subsystem/RsBattleSubsystem.h"
+#include "Rs/Battle/RsBattleSubsystem.h"
 
 ARsHUD::ARsHUD()
 {

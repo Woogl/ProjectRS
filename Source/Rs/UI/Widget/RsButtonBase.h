@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonButtonBase.h"
-#include "RsButton.generated.h"
+#include "RsButtonBase.generated.h"
 
 class UCommonLazyImage;
 class UCommonTextBlock;
@@ -12,7 +12,7 @@ class UCommonTextBlock;
  * 
  */
 UCLASS(Abstract, Blueprintable, meta = (DisableNaiveTick))
-class RS_API URsButton : public UCommonButtonBase
+class RS_API URsButtonBase : public UCommonButtonBase
 {
 	GENERATED_BODY()
 	
