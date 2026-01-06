@@ -20,6 +20,7 @@ public class Rs : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"UMG",
+			"SlateCore",
 			"GameplayAbilities", 
 			"GameplayTasks", 
 			"GameplayTags", 

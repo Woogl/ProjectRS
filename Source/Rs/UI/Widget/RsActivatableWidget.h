@@ -18,7 +18,7 @@ enum class ERsWidgetInputMode : uint8
 /**
  * 
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (DisableNaiveTick))
 class RS_API URsActivatableWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()

@@ -6,6 +6,8 @@
 #include "GameUIManagerSubsystem.h"
 #include "RsUIManagerSubsystem.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnButtonDescriptionTextUpdated, UCommonButtonBase*, Button, FText, DescriptionText);
+
 /**
  * 
  */
@@ -14,4 +16,9 @@ class RS_API URsUIManagerSubsystem : public UGameUIManagerSubsystem
 {
 	GENERATED_BODY()
 	
+public:
+	static URsUIManagerSubsystem* Get(const UObject* WorldContextObject);
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnButtonDescriptionTextUpdated OnButtonDescriptionTextUpdated;
 };
