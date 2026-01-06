@@ -1,19 +1,22 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsMessagingSubsystem.h"
+#include "RsUIMessagingSubsystem.h"
 
 #include "CommonLocalPlayer.h"
 #include "PrimaryGameLayout.h"
 #include "Messaging/CommonGameDialog.h"
 #include "Rs/RsGameplayTags.h"
 
-void URsMessagingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void URsUIMessagingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	
+	ConfirmationDialogClassPtr = ConfirmationDialogClass.LoadSynchronous();
+	ErrorDialogClassPtr = ErrorDialogClass.LoadSynchronous();
 }
 
-void URsMessagingSubsystem::ShowConfirmation(UCommonGameDialogDescriptor* DialogDescriptor, FCommonMessagingResultDelegate ResultCallback)
+void URsUIMessagingSubsystem::ShowConfirmation(UCommonGameDialogDescriptor* DialogDescriptor, FCommonMessagingResultDelegate ResultCallback)
 {
 	if (UCommonLocalPlayer* LocalPlayer = GetLocalPlayer<UCommonLocalPlayer>())
 	{
@@ -26,7 +29,7 @@ void URsMessagingSubsystem::ShowConfirmation(UCommonGameDialogDescriptor* Dialog
 	}
 }
 
-void URsMessagingSubsystem::ShowError(UCommonGameDialogDescriptor* DialogDescriptor, FCommonMessagingResultDelegate ResultCallback)
+void URsUIMessagingSubsystem::ShowError(UCommonGameDialogDescriptor* DialogDescriptor, FCommonMessagingResultDelegate ResultCallback)
 {
 	if (UCommonLocalPlayer* LocalPlayer = GetLocalPlayer<UCommonLocalPlayer>())
 	{

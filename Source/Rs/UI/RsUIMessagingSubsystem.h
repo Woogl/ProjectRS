@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Messaging/CommonMessagingSubsystem.h"
-#include "RsMessagingSubsystem.generated.h"
+#include "RsUIMessagingSubsystem.generated.h"
 
 class FSubsystemCollectionBase;
 class UCommonGameDialog;
@@ -15,7 +15,7 @@ class UObject;
  * 
  */
 UCLASS()
-class RS_API URsMessagingSubsystem : public UCommonMessagingSubsystem
+class RS_API URsUIMessagingSubsystem : public UCommonMessagingSubsystem
 {
 	GENERATED_BODY()
 	
