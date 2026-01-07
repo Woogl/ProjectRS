@@ -61,8 +61,14 @@ bool URsTargetingLibrary::PerformTargetingSwept(const AActor* Owner, const FTran
 	FVector Dir = (EndLoc - StartLoc).GetSafeNormal();
 	FVector Extent = Params.Shape.MakeShape().GetExtent();
 	float Thickness = FMath::Abs(Dir.X) * Extent.X + FMath::Abs(Dir.Y) * Extent.Y + FMath::Abs(Dir.Z) * Extent.Z;
+	Thickness = FMath::Max(Thickness, 1.f);
 	int32 Steps = FMath::CeilToInt(Dist / Thickness);
-   
+	if (Steps > 40)
+	{
+		ensureMsgf(false, TEXT("Too many steps in targeting: %d steps (Dist=%.2f, Thickness=%.2f)"), Steps, Dist, Thickness);
+		return false;
+	}
+	
 	// Perform targeting from last transform to current transform without leaving any gaps.
 	TSet<AActor*> OverlappedSet;
 	for (int32 i = 0; i <= Steps; ++i)
