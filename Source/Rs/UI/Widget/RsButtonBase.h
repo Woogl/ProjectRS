@@ -21,12 +21,9 @@ public:
 	void SetButtonText(const FText& InText);
 
 	UFUNCTION(BlueprintCallable)
-	FText GetButtonText() const;
-
-	UFUNCTION(BlueprintCallable)
 	void SetButtionImage(const FSlateBrush& InBrush);
 
-private:
+protected:
 	//~ Begin UUserWidget Interface
 	virtual void NativePreConstruct() override;
 	//~ End UUserWidget Interface
@@ -37,6 +34,8 @@ private:
 	virtual void NativeOnUnhovered() override;
 	//~ End UCommonButtonBase Interface
 	
+	// void RefreshButtonText();
+	
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonTextBlock> Text_ButtonText;
 
@@ -44,8 +43,8 @@ private:
 	TObjectPtr<UCommonLazyImage> LazyImage_ButtonImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FText ButtonDisplayText;
+	FText ButtonText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FText ButtonDescriptionText;
+	FText DescriptionText;
 };

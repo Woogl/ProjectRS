@@ -34,6 +34,11 @@ public:
 	static UAsyncAction_ShowConfirmation* ShowConfirmationOkCancel(
 		UObject* InWorldContextObject, FText Title, FText Message
 	);
+	
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, meta = (BlueprintInternalUseOnly = "true", WorldContext = "InWorldContextObject"))
+	static UAsyncAction_ShowConfirmation* ShowConfirmationOk(
+		UObject* InWorldContextObject, FText Title, FText Message
+	);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, meta = (BlueprintInternalUseOnly = "true", WorldContext = "InWorldContextObject"))
 	static UAsyncAction_ShowConfirmation* ShowConfirmationCustom(

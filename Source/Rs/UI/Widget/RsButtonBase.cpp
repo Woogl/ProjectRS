@@ -3,6 +3,7 @@
 
 #include "RsButtonBase.h"
 
+#include "CommonActionWidget.h"
 #include "CommonLazyImage.h"
 #include "CommonTextBlock.h"
 #include "Rs/UI/RsUIManagerSubsystem.h"
@@ -13,16 +14,6 @@ void URsButtonBase::SetButtonText(const FText& InText)
 	{
 		Text_ButtonText->SetText(InText);
 	}
-}
-
-FText URsButtonBase::GetButtonText() const
-{
-	if (Text_ButtonText)
-	{
-		return Text_ButtonText->GetText();
-	}
-
-	return FText::GetEmpty();
 }
 
 void URsButtonBase::SetButtionImage(const FSlateBrush& InBrush)
@@ -37,7 +28,7 @@ void URsButtonBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	SetButtonText(ButtonDisplayText);
+	SetButtonText(ButtonText);
 }
 
 void URsButtonBase::NativeOnCurrentTextStyleChanged()
@@ -54,11 +45,11 @@ void URsButtonBase::NativeOnHovered()
 {
 	Super::NativeOnHovered();
 	
-	if (!ButtonDescriptionText.IsEmpty())
+	if (!DescriptionText.IsEmpty())
 	{
 		if (URsUIManagerSubsystem* Subsystem = URsUIManagerSubsystem::Get(this))
 		{
-			Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, ButtonDescriptionText);
+			Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, DescriptionText);
 		}
 	}
 }
@@ -69,6 +60,24 @@ void URsButtonBase::NativeOnUnhovered()
 	
 	if (URsUIManagerSubsystem* Subsystem = URsUIManagerSubsystem::Get(this))
 	{
-		Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, ButtonDescriptionText);
+		Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, DescriptionText);
 	}
 }
+
+// void URsButtonBase::RefreshButtonText()
+// {
+// 	if (ButtonText.IsEmpty())
+// 	{
+// 		if (InputActionWidget)
+// 		{
+// 			const FText ActionDisplayText = InputActionWidget->GetDisplayText();	
+// 			if (!ActionDisplayText.IsEmpty())
+// 			{
+// 				UpdateButtonText(ActionDisplayText);
+// 				return;
+// 			}
+// 		}
+// 	}
+// 	
+// 	UpdateButtonText(ButtonText);	
+// }

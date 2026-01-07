@@ -33,6 +33,16 @@ UAsyncAction_ShowConfirmation* UAsyncAction_ShowConfirmation::ShowConfirmationOk
 	return Action;
 }
 
+UAsyncAction_ShowConfirmation* UAsyncAction_ShowConfirmation::ShowConfirmationOk(UObject* InWorldContextObject, FText Title, FText Message)
+{
+	UAsyncAction_ShowConfirmation* Action = NewObject<UAsyncAction_ShowConfirmation>();
+	Action->WorldContextObject = InWorldContextObject;
+	Action->Descriptor = UCommonGameDialogDescriptor::CreateConfirmationOk(Title, Message);
+	Action->RegisterWithGameInstance(InWorldContextObject);
+
+	return Action;
+}
+
 UAsyncAction_ShowConfirmation* UAsyncAction_ShowConfirmation::ShowConfirmationCustom(UObject* InWorldContextObject, UCommonGameDialogDescriptor* Descriptor)
 {
 	UAsyncAction_ShowConfirmation* Action = NewObject<UAsyncAction_ShowConfirmation>();
