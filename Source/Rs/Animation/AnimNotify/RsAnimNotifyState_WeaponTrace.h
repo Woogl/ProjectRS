@@ -40,7 +40,7 @@ private:
 	ARsWeapon* FindWeaponActor(USkeletalMeshComponent* OwnerMeshComp) const;
 	
 	TArray<AActor*> FindTargets(USkeletalMeshComponent* OwnerMeshComp);
-	void SendHitEvent(USkeletalMeshComponent* OwnerMeshComp, TArray<AActor*> Targets);
+	void SendHitEvent(USkeletalMeshComponent* OwnerMeshComp, const TArray<AActor*>& Targets);
 	
 	struct FWeaponTraceRuntimeData
 	{

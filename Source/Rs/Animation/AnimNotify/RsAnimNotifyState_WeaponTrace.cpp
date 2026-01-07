@@ -19,14 +19,10 @@ void URsAnimNotifyState_WeaponTrace::NotifyBegin(USkeletalMeshComponent* MeshCom
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	AActor* Owner = MeshComp ? MeshComp->GetOwner() : nullptr;
+	if (!Owner || !PassCondition(Owner))
 	{
-		return;
-	}
-	
-	if (!PassCondition(Owner))
-	{
+		RuntimeDataMap.Remove(MeshComp);
 		return;
 	}
 	
@@ -38,14 +34,10 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	AActor* Owner = MeshComp ? MeshComp->GetOwner() : nullptr;
+	if (!Owner || !PassCondition(Owner))
 	{
-		return;
-	}
-	
-	if (!PassCondition(Owner))
-	{
+		RuntimeDataMap.Remove(MeshComp);
 		return;
 	}
 
@@ -56,6 +48,13 @@ void URsAnimNotifyState_WeaponTrace::NotifyTick(USkeletalMeshComponent* MeshComp
 void URsAnimNotifyState_WeaponTrace::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
+	
+	AActor* Owner = MeshComp ? MeshComp->GetOwner() : nullptr;
+	if (!Owner || !PassCondition(Owner))
+	{
+		RuntimeDataMap.Remove(MeshComp);
+		return;
+	}
 	
 	TArray<AActor*> Targets = FindTargets(MeshComp);
 	SendHitEvent(MeshComp, Targets);
@@ -116,7 +115,7 @@ TArray<AActor*> URsAnimNotifyState_WeaponTrace::FindTargets(USkeletalMeshCompone
 	return OutTargets;
 }
 
-void URsAnimNotifyState_WeaponTrace::SendHitEvent(USkeletalMeshComponent* OwnerMeshComp, TArray<AActor*> Targets)
+void URsAnimNotifyState_WeaponTrace::SendHitEvent(USkeletalMeshComponent* OwnerMeshComp, const TArray<AActor*>& Targets)
 {
 	AActor* Owner = OwnerMeshComp->GetOwner();
 	FWeaponTraceRuntimeData* Data = RuntimeDataMap.Find(OwnerMeshComp);
