@@ -20,6 +20,7 @@ public class Rs : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"UMG",
+			"Slate",
 			"SlateCore",
 			"CommonInput",
 			"GameplayAbilities", 
@@ -37,6 +38,13 @@ public class Rs : ModuleRules
             "DeveloperSettings",
             "AIModule",
             "LevelSequence",
+            "GameSettings",
+            "AudioModulation",
+            "GameSubtitles",
+            "AudioMixer",
+            "RHI",
+            "ApplicationCore",
+            "PropertyPath",
         });
 	}
 }
