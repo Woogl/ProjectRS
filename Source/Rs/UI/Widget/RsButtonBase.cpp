@@ -3,7 +3,6 @@
 
 #include "RsButtonBase.h"
 
-#include "CommonActionWidget.h"
 #include "CommonLazyImage.h"
 #include "CommonTextBlock.h"
 #include "Rs/UI/RsUIManagerSubsystem.h"
@@ -12,11 +11,12 @@ void URsButtonBase::SetButtonText(const FText& InText)
 {
 	if (Text_ButtonText && !InText.IsEmpty())
 	{
+		ButtonText = InText;
 		Text_ButtonText->SetText(InText);
 	}
 }
 
-void URsButtonBase::SetButtionImage(const FSlateBrush& InBrush)
+void URsButtonBase::SetButtonImage(const FSlateBrush& InBrush)
 {
 	if (LazyImage_ButtonImage)
 	{
@@ -60,24 +60,7 @@ void URsButtonBase::NativeOnUnhovered()
 	
 	if (URsUIManagerSubsystem* Subsystem = URsUIManagerSubsystem::Get(this))
 	{
-		Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, DescriptionText);
+		Subsystem->OnButtonDescriptionTextUpdated.Broadcast(this, FText::GetEmpty());
 	}
 }
 
-// void URsButtonBase::RefreshButtonText()
-// {
-// 	if (ButtonText.IsEmpty())
-// 	{
-// 		if (InputActionWidget)
-// 		{
-// 			const FText ActionDisplayText = InputActionWidget->GetDisplayText();	
-// 			if (!ActionDisplayText.IsEmpty())
-// 			{
-// 				UpdateButtonText(ActionDisplayText);
-// 				return;
-// 			}
-// 		}
-// 	}
-// 	
-// 	UpdateButtonText(ButtonText);	
-// }

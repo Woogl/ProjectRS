@@ -21,7 +21,7 @@ public:
 	void SetButtonText(const FText& InText);
 
 	UFUNCTION(BlueprintCallable)
-	void SetButtionImage(const FSlateBrush& InBrush);
+	void SetButtonImage(const FSlateBrush& InBrush);
 
 protected:
 	//~ Begin UUserWidget Interface
@@ -34,9 +34,7 @@ protected:
 	virtual void NativeOnUnhovered() override;
 	//~ End UCommonButtonBase Interface
 	
-	// void RefreshButtonText();
-	
-	UPROPERTY(meta = (BindWidgetOptional))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	TObjectPtr<UCommonTextBlock> Text_ButtonText;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
