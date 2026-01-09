@@ -21,6 +21,10 @@ namespace RsTargetingGlobals
 
 bool URsTargetingLibrary::PerformTargeting(const AActor* Owner, const FTransform& Transform, const FRsTargetingParams& Params, TArray<AActor*>& ResultActors)
 {
+	if (!Owner)
+	{
+		return false;
+	}
 	TArray<AActor*> OverlappedActors = PerformOverlapping(Owner, Transform, Params.Shape);
 	TArray<AActor*> FilteredActors = PerformFiltering(OverlappedActors, Owner, Params.Filter);
 	TArray<AActor*> SortedActors = PerformSorting(FilteredActors, Owner, Params.Sorter);
