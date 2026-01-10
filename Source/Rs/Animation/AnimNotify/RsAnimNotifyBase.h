@@ -45,5 +45,5 @@ protected:
 	TObjectPtr<URsConditionBase> Condition;
 	
 	UFUNCTION(BlueprintCallable)
-	bool PassCondition(AActor* Owner) const;
+	bool PassCondition(const AActor* Owner) const;
 };

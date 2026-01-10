@@ -17,6 +17,8 @@ class RS_API URsAnimNotifyState_GrantTags : public URsAnimNotifyStateBase
 	GENERATED_BODY()
 	
 public:
+	URsAnimNotifyState_GrantTags();
+	
 	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer Tags;
 	

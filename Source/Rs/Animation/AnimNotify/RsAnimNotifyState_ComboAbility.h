@@ -31,8 +31,7 @@ public:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	
-	UFUNCTION()
-	void HandleInputPressed(const FInputActionValue& Value, const APawn* Pawn);
+	void HandleInputPressed(const FInputActionValue& Value, USkeletalMeshComponent* MeshComp, const FGameplayTagContainer& InAbilityTags);
 	
 private:
 	TWeakObjectPtr<URsAbilityTask_WaitEnhancedInput> Task;

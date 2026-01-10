@@ -10,6 +10,7 @@
 class UInputAction;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEnhancedInputEventDelegate, const FInputActionValue&, Value, const APawn*, Pawn);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FEnhancedInputEventDelegateNative, const FInputActionValue&, const APawn*);
 
 /**
  * 
@@ -22,6 +23,8 @@ class RS_API URsAbilityTask_WaitEnhancedInput : public UAbilityTask
 public:
 	UPROPERTY(BlueprintAssignable)
 	FEnhancedInputEventDelegate InputEventReceived;
+	
+	FEnhancedInputEventDelegateNative InputEventReceivedNative;
 	
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"), Category = "Ability Tasks")
 	static URsAbilityTask_WaitEnhancedInput* WaitEnhancedInput(UGameplayAbility* OwningAbility, const FName TaskInstanceName, UInputAction* InputAction, bool bShouldOnlyTriggerOnce = true);

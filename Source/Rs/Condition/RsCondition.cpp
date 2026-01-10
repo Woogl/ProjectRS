@@ -8,7 +8,7 @@
 #include "Rs/RsLogChannels.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
-bool URsCondition_StatQuery::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_StatQuery::IsSatisfied(const UObject* ContextObject) const
 {
 	if (const AActor* Actor = Cast<AActor>(ContextObject))
 	{
@@ -20,7 +20,7 @@ bool URsCondition_StatQuery::IsSatisfied(UObject* ContextObject) const
 	return false;
 }
 
-bool URsCondition_TagRequirements::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_TagRequirements::IsSatisfied(const UObject* ContextObject) const
 {
 	if (const IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(ContextObject))
 	{
@@ -31,7 +31,7 @@ bool URsCondition_TagRequirements::IsSatisfied(UObject* ContextObject) const
 	return false;
 }
 
-bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_Targeting::IsSatisfied(const UObject* ContextObject) const
 {
 	if (const AActor* Actor = Cast<AActor>(ContextObject))
 	{
@@ -41,7 +41,7 @@ bool URsCondition_Targeting::IsSatisfied(UObject* ContextObject) const
 	return false;
 }
 
-bool URsCondition_AND::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_AND::IsSatisfied(const UObject* ContextObject) const
 {
 	for (int32 i = 0; i < Conditions.Num(); i++)
 	{
@@ -58,7 +58,7 @@ bool URsCondition_AND::IsSatisfied(UObject* ContextObject) const
 	return true;
 }
 
-bool URsCondition_OR::IsSatisfied(UObject* ContextObject) const
+bool URsCondition_OR::IsSatisfied(const UObject* ContextObject) const
 {
 	for (int32 i = 0; i < Conditions.Num(); i++)
 	{

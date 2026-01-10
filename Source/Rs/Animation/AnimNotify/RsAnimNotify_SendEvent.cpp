@@ -9,6 +9,11 @@
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
+URsAnimNotify_SendEvent::URsAnimNotify_SendEvent()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
@@ -50,6 +55,11 @@ void URsAnimNotify_SendEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 			}
 		}
 	}
+}
+
+URsAnimNotifyState_SendEvent::URsAnimNotifyState_SendEvent()
+{
+	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_SendEvent::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)

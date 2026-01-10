@@ -47,6 +47,7 @@ void URsAbilityTask_WaitEnhancedInput::HandleInputAction(const FInputActionValue
 	bHasBeenTriggered = true;
 	
 	InputEventReceived.Broadcast(Value, Pawn);
+	InputEventReceivedNative.Broadcast(Value, Pawn);
 }
 
 void URsAbilityTask_WaitEnhancedInput::OnDestroy(const bool bInOwnerFinished)

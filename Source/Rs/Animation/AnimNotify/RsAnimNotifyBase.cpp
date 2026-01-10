@@ -7,6 +7,10 @@
 
 bool URsAnimNotifyBase::PassCondition(AActor* Owner) const
 {
+	if (!Owner)
+	{
+		return false;
+	}
 	if (!Condition)
 	{
 		// No condition means always pass.
@@ -15,8 +19,12 @@ bool URsAnimNotifyBase::PassCondition(AActor* Owner) const
 	return Condition->IsSatisfied(Owner);
 }
 
-bool URsAnimNotifyStateBase::PassCondition(AActor* Owner) const
+bool URsAnimNotifyStateBase::PassCondition(const AActor* Owner) const
 {
+	if (!Owner)
+	{
+		return false;
+	}
 	if (!Condition)
 	{
 		// No condition means always pass.

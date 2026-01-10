@@ -7,12 +7,16 @@
 #include "AbilitySystemGlobals.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
+URsAnimNotifyState_GrantTags::URsAnimNotifyState_GrantTags()
+{
+	bIsNativeBranchingPoint = true;
+}
+
 void URsAnimNotifyState_GrantTags::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	
 	if (!PassCondition(Owner))
 	{
 		return;

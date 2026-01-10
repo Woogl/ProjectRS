@@ -22,7 +22,7 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
+	if (!PassCondition(Owner))
 	{
 		return;
 	}
@@ -42,11 +42,13 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	DamageBlockTask->ReadyForActivation();
 
 	FDodgeInvincibleRuntimeData Data;
+	
 	if (InvincibleEffect)
 	{
 		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 		FActiveGameplayEffectHandle InvincibleEffectHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0.f, Context);
 		
+		Data.DamageBlockTask = DamageBlockTask;
 		Data.InvincibleEffectHandle = InvincibleEffectHandle;
 	}
 	
@@ -55,15 +57,18 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 		PlayerCharacter->EnableJustDodgeCapsule(true);
 	}
 	
-	Data.ASC = ASC;
-	Data.DamageBlockTask = DamageBlockTask;
-	Data.DamageBlockTask = DamageBlockTask;
 	RuntimeDataMap.Add(MeshComp, Data);
 }
 
 void URsAnimNotifyState_DodgeInvincible::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
+
+	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
 	
 	if (FDodgeInvincibleRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
 	{
@@ -71,13 +76,12 @@ void URsAnimNotifyState_DodgeInvincible::NotifyEnd(USkeletalMeshComponent* MeshC
 		{
 			Task->EndTask();
 		}
-		if (UAbilitySystemComponent* ASC = Data->ASC.Get())
+		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 		{
 			ASC->RemoveActiveGameplayEffect(Data->InvincibleEffectHandle);
 		}
 	}
-	
-	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(MeshComp->GetOwner()))
+	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Owner))
 	{
 		PlayerCharacter->EnableJustDodgeCapsule(false);
 	}

@@ -18,6 +18,8 @@ class RS_API URsAnimNotify_SendEvent : public URsAnimNotifyBase
 	GENERATED_BODY()
 	
 public:
+	URsAnimNotify_SendEvent();
+	
 	UPROPERTY(EditAnywhere, meta=(Categories="AnimNotify"))
 	FGameplayTag EventTag;
 
@@ -39,6 +41,8 @@ class RS_API URsAnimNotifyState_SendEvent : public URsAnimNotifyStateBase
 	GENERATED_BODY()
 	
 public:
+	URsAnimNotifyState_SendEvent();
+	
 	UPROPERTY(EditAnywhere, meta=(Categories="AnimNotify"))
 	FGameplayTag EventTag;
 

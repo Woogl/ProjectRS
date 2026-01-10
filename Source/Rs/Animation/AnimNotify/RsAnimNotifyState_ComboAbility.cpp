@@ -23,7 +23,15 @@ void URsAnimNotifyState_ComboAbility::NotifyBegin(USkeletalMeshComponent* MeshCo
 		if (UGameplayAbility* CurrentAbility = ASC->GetAnimatingAbility())
 		{
 			Task = URsAbilityTask_WaitEnhancedInput::WaitEnhancedInput(CurrentAbility, NAME_None, InputAction, true);
-			Task->InputEventReceived.AddDynamic(this, &ThisClass::HandleInputPressed);
+			const FGameplayTagContainer TagsCopy = AbilityTags;
+			const TWeakObjectPtr<USkeletalMeshComponent> WeakMesh = MeshComp;
+			Task->InputEventReceivedNative.AddWeakLambda(this, [this, WeakMesh, TagsCopy](const FInputActionValue& Value, const APawn* Pawn)
+			{
+				if (USkeletalMeshComponent* MeshComp = WeakMesh.Get())
+				{
+					HandleInputPressed(Value, WeakMesh.Get(), TagsCopy);
+				}
+			});
 			Task->ReadyForActivation();
 		}
 	}
@@ -39,9 +47,10 @@ void URsAnimNotifyState_ComboAbility::NotifyEnd(USkeletalMeshComponent* MeshComp
 	}
 }
 
-void URsAnimNotifyState_ComboAbility::HandleInputPressed(const FInputActionValue& Value, const APawn* Pawn)
+void URsAnimNotifyState_ComboAbility::HandleInputPressed(const FInputActionValue& Value, USkeletalMeshComponent* MeshComp, const FGameplayTagContainer& InAbilityTags)
 {
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Pawn))
+	AActor* Owner = MeshComp->GetOwner();
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{
 		if (bCancelCurrentAbility)
 		{
@@ -50,6 +59,6 @@ void URsAnimNotifyState_ComboAbility::HandleInputPressed(const FInputActionValue
 				CurrentAbility->K2_CancelAbility();
 			}
 		}
-		ASC->TryActivateAbilitiesByTag(AbilityTags);
+		ASC->TryActivateAbilitiesByTag(InAbilityTags);
 	}
 }

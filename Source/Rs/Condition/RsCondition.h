@@ -18,7 +18,7 @@ class RS_API URsConditionBase : public UObject
 	GENERATED_BODY()
 	
 public:
-	virtual bool IsSatisfied(UObject* ContextObject) const { return false; }
+	virtual bool IsSatisfied(const UObject* ContextObject) const { return false; }
 };
 
 UCLASS()
@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FRsStatQuery StatQuery;
 	
-	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	virtual bool IsSatisfied(const UObject* ContextObject) const override;
 };
 
 UCLASS()
@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FGameplayTagRequirements TagRequirements;
 	
-	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	virtual bool IsSatisfied(const UObject* ContextObject) const override;
 };
 
 UCLASS()
@@ -54,7 +54,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FRsTargetingParams TargetingParams;
 	
-	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	virtual bool IsSatisfied(const UObject* ContextObject) const override;
 	
 	UPROPERTY(Transient)
 	mutable TArray<AActor*> OutActors;
@@ -69,7 +69,7 @@ public:
 	UPROPERTY(Instanced, EditAnywhere)
 	TArray<URsConditionBase*> Conditions;
 	
-	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	virtual bool IsSatisfied(const UObject* ContextObject) const override;
 };
 
 UCLASS()
@@ -81,5 +81,5 @@ public:
 	UPROPERTY(Instanced, EditAnywhere)
 	TArray<URsConditionBase*> Conditions;
 	
-	virtual bool IsSatisfied(UObject* ContextObject) const override;
+	virtual bool IsSatisfied(const UObject* ContextObject) const override;
 };

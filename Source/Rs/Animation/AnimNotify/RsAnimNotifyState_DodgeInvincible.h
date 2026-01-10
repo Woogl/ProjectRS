@@ -39,7 +39,6 @@ protected:
 	
 	struct FDodgeInvincibleRuntimeData
 	{
-		TWeakObjectPtr<UAbilitySystemComponent> ASC;
 		TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> DamageBlockTask;
 		FActiveGameplayEffectHandle InvincibleEffectHandle;
 	};
