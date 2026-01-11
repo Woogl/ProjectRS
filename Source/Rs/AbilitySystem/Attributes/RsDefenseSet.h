@@ -25,7 +25,14 @@ public:
 	FGameplayAttributeData Defense;
 	ATTRIBUTE_ACCESSORS(URsDefenseSet, Defense)
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance)
+	FGameplayAttributeData Resistance;
+	ATTRIBUTE_ACCESSORS(URsDefenseSet, Resistance)
+	
 protected:
 	UFUNCTION()
 	virtual void OnRep_Defense(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_Resistance(const FGameplayAttributeData& OldValue);
 };

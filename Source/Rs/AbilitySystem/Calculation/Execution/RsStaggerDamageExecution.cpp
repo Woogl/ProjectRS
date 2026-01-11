@@ -4,6 +4,8 @@
 #include "RsStaggerDamageExecution.h"
 
 #include "Rs/RsGameplayTags.h"
+#include "Rs/AbilitySystem/Attributes/RsAttackSet.h"
+#include "Rs/AbilitySystem/Attributes/RsDefenseSet.h"
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/AbilitySystem/Effect/RsGameplayEffectContext.h"
 
@@ -11,12 +13,16 @@
 struct RsStaggerDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(StaggerDamageBonus);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(FinalDamage);
 
 	RsStaggerDamageStatics()
 	{
 		// Capture optional attribute set
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, BaseDamage, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, StaggerDamageBonus, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Resistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsStaggerSet, FinalDamage, Target, false);
 	}
 
@@ -61,6 +67,16 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	
 	// Stagger calculation start
 	float FinalDamage = BaseDamage;
+	
+	// Damage bonus calc
+	float StaggerDamageBonus = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->StaggerDamageBonusDef, EvaluationParameters, StaggerDamageBonus);
+	FinalDamage *= (1 + StaggerDamageBonus * 0.01f);
+	
+	// Resistance calc
+	float Resistance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ResistanceDef, EvaluationParameters, Resistance);
+	FinalDamage *= (1 - Resistance * 0.01f);
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));

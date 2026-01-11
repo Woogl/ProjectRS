@@ -11,6 +11,8 @@ URsAttackSet::URsAttackSet()
 	, Impact(0.f)
 	, CriticalRate(0.f)
 	, CriticalDamage(0.f)
+	, HealthDamageBonus(0.f)
+	, StaggerDamageBonus(0.f)
 {
 	if (HasAnyFlags(RF_ClassDefaultObject))
 	{
@@ -34,6 +36,8 @@ void URsAttackSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, Impact, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, CriticalRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, CriticalDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, HealthDamageBonus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(URsAttackSet, StaggerDamageBonus, COND_None, REPNOTIFY_Always);
 }
 
 void URsAttackSet::OnRep_Attack(const FGameplayAttributeData& OldValue)
@@ -54,4 +58,14 @@ void URsAttackSet::OnRep_CriticalRate(const FGameplayAttributeData& OldValue)
 void URsAttackSet::OnRep_CriticalDamage(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, CriticalDamage, OldValue);
+}
+
+void URsAttackSet::OnRep_HealthDamageBonus(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, HealthDamageBonus, OldValue);
+}
+
+void URsAttackSet::OnRep_StaggerDamageBonus(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsAttackSet, StaggerDamageBonus, OldValue);
 }

@@ -16,7 +16,9 @@ struct RsHealthDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BaseDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(HealthDamageBonus);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(FinalDamage);
 
 	RsHealthDamageStatics()
@@ -25,7 +27,9 @@ struct RsHealthDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, BaseDamage, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, CriticalDamage, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsAttackSet, HealthDamageBonus, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Defense, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(URsDefenseSet, Resistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URsHealthSet, FinalDamage, Target, false);
 	}
 
@@ -43,7 +47,9 @@ URsHealthDamageExecution::URsHealthDamageExecution()
 	RelevantAttributesToCapture.Add(DamageStatics->BaseDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics->CriticalDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics->HealthDamageBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics->DefenseDef);
+	RelevantAttributesToCapture.Add(DamageStatics->ResistanceDef);
 }
 
 void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -98,9 +104,19 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	// Critical damage calc
 	FinalDamage *= bCriticalHit ? (1 + CriticalDamage * 0.01f) : 1.f;
 	
-	// Damage reduction rate calc
+	// Defense reduction rate calc
 	float DefenseConstant = URsAbilitySystemSettings::Get().DamageReductionConstant;
 	FinalDamage *= (DefenseConstant / (Defense + DefenseConstant));
+	
+	// Damage bonus calc
+	float HealthDamageBonus = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->HealthDamageBonusDef, EvaluationParameters, HealthDamageBonus);
+	FinalDamage *= (1 + HealthDamageBonus * 0.01f);
+	
+	// Resistance calc
+	float Resistance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics->ResistanceDef, EvaluationParameters, Resistance);
+	FinalDamage *= (1 - Resistance * 0.01f);
 
 	// Groggy has 160 % damage bonus
 	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::ABILITY_GROGGY))

@@ -39,6 +39,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalDamage)
 	FGameplayAttributeData CriticalDamage;
 	ATTRIBUTE_ACCESSORS(URsAttackSet, CriticalDamage)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthDamageBonus)
+	FGameplayAttributeData HealthDamageBonus;
+	ATTRIBUTE_ACCESSORS(URsAttackSet, HealthDamageBonus)
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaggerDamageBonus)
+	FGameplayAttributeData StaggerDamageBonus;
+	ATTRIBUTE_ACCESSORS(URsAttackSet, StaggerDamageBonus)
 
 protected:
 	UFUNCTION()
@@ -52,4 +60,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_CriticalDamage(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_HealthDamageBonus(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_StaggerDamageBonus(const FGameplayAttributeData& OldValue);
 };

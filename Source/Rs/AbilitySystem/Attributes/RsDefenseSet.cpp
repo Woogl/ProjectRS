@@ -8,6 +8,7 @@
 
 URsDefenseSet::URsDefenseSet()
 	: Defense(0.f)
+	, Resistance(0.f)
 {
 	if (HasAnyFlags(RF_ClassDefaultObject))
 	{
@@ -33,4 +34,9 @@ void URsDefenseSet::PreAttributeChange(const FGameplayAttribute& Attribute, floa
 void URsDefenseSet::OnRep_Defense(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Defense, OldValue);
+}
+
+void URsDefenseSet::OnRep_Resistance(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(URsDefenseSet, Resistance, OldValue);
 }
