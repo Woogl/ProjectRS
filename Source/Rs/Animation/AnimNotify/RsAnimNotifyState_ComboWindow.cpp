@@ -105,6 +105,23 @@ void URsAnimNotifyState_ComboWindow::HandleInputTriggered(const FInputActionValu
 	{
 		return;
 	}
+
+	FGameplayAbilitySpecHandle Handle = URsAbilitySystemLibrary::FindAbilitySpecWithTags(ASC, AbilityTags, true);
+	FGameplayAbilitySpec* AbilitySpec = ASC->FindAbilitySpecFromHandle(Handle);
+	if (!AbilitySpec)
+	{
+		return;
+	}
+	
+	if (!AbilitySpec->Ability->CheckCost(Handle, ASC->AbilityActorInfo.Get()))
+	{
+		return;
+	}
+
+	if (!AbilitySpec->Ability->CheckCooldown(Handle, ASC->AbilityActorInfo.Get()))
+	{
+		return;
+	}
 	
 	if (bCancelCurrentAbility)
 	{
@@ -114,7 +131,7 @@ void URsAnimNotifyState_ComboWindow::HandleInputTriggered(const FInputActionValu
 		}
 	}
 
-	ASC->TryActivateAbilitiesByTag(AbilityTags);
+	ASC->TryActivateAbility(Handle);
 	
 	if (FComboWindowRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
 	{
