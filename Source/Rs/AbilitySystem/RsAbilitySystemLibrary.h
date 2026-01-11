@@ -34,6 +34,10 @@ public: /** Ability System Component */
 	static void SendGameplayEventToActor_Replicated(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload);
 
 public:	/** Gameplay Ability */
+	// Find the first ability spec handle that matches tags. 
+	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
+	static FGameplayAbilitySpecHandle FindAbilitySpecWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);
+	
 	// Find the first ability that matches tags. 
 	UFUNCTION(BlueprintCallable, Category = "RS Ability System Library", meta = (GameplayTagFilter = "Ability"))
 	static UGameplayAbility* FindAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch);

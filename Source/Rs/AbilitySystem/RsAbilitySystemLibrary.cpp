@@ -47,11 +47,11 @@ void URsAbilitySystemLibrary::SendGameplayEventToActor_Replicated(AActor* Actor,
 	}
 }
 
-UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
+FGameplayAbilitySpecHandle URsAbilitySystemLibrary::FindAbilitySpecWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
 {
 	if (AbilitySystemComponent == nullptr)
 	{
-		return nullptr;
+		return FGameplayAbilitySpecHandle();
 	}
 
 	TArray<FGameplayAbilitySpecHandle> OutHandles;
@@ -59,10 +59,21 @@ UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySys
 	if (OutHandles.IsEmpty())
 	{
 		UE_LOG(LogRsAbility, Warning, TEXT("Cannot find Ability: [%s]"), *AbilityTags.ToString());
-		return nullptr;
+		return FGameplayAbilitySpecHandle();
 	}
+	
+	return AbilitySystemComponent->FindAbilitySpecFromHandle(OutHandles[0])->Handle;
+}
 
-	FGameplayAbilitySpec* FoundSpec = AbilitySystemComponent->FindAbilitySpecFromHandle(OutHandles[0]);
+UGameplayAbility* URsAbilitySystemLibrary::FindAbilityWithTags(const UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer AbilityTags, bool bExactMatch)
+{
+	FGameplayAbilitySpecHandle Handle = FindAbilitySpecWithTags(AbilitySystemComponent, AbilityTags, bExactMatch);
+	if (!Handle.IsValid())
+	{
+		return nullptr;
+	}    
+
+	FGameplayAbilitySpec* FoundSpec = AbilitySystemComponent->FindAbilitySpecFromHandle(Handle);
 	UGameplayAbility* AbilityInstance = FoundSpec->GetPrimaryInstance();
 	if (AbilityInstance == nullptr)
 	{
