@@ -40,6 +40,12 @@ float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(con
 		UE_LOG(LogRsAbility, Warning, TEXT("No effect table row in Spec: %s"), *Spec.ToSimpleString());
 		return 0.f;
 	}
+	
+	if (TableKey.IsNone())
+	{
+		UE_LOG(LogRsAbility, Warning, TEXT("Table key is None: %s"), *Spec.ToSimpleString());
+		return 0.f;
+	}
 
 	for (const FGameplayModifierInfo& Modifier : Spec.Def->Modifiers)
 	{
@@ -47,12 +53,7 @@ float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(con
 		{
 			continue;
 		}
-		const FGameplayTag ModifierStatTag = URsAttributeSetBase::AttributeToTag(Modifier.Attribute);
-		if (!ModifierStatTag.IsValid())
-		{
-			continue;
-		}
-		const FString Script = Row->FindValue<FString>(ModifierStatTag.GetTagName(), false);
+		const FString Script = Row->FindValue<FString>(TableKey, false);
 		if (Script.IsEmpty())
 		{
 			continue;

@@ -9,13 +9,16 @@
 /**
  * Calculate magnitude based on captured attributes from source and target.
  */
-UCLASS()
+UCLASS(Abstract)
 class RS_API URsCoefficientScriptCalculation : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 
 public:
 	URsCoefficientScriptCalculation();
+	
+	UPROPERTY(EditDefaultsOnly, Category="RS")
+	FName TableKey = NAME_None;
 	
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 };
