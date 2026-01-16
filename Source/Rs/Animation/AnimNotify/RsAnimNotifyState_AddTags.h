@@ -6,18 +6,18 @@
 #include "GameplayTagContainer.h"
 #include "RsAnimNotifyBase.h"
 #include "Rs/Targeting/RsTargetingTypes.h"
-#include "RsAnimNotifyState_GrantTags.generated.h"
+#include "RsAnimNotifyState_AddTags.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_GrantTags : public URsAnimNotifyStateBase
+class RS_API URsAnimNotifyState_AddTags : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
 	
 public:
-	URsAnimNotifyState_GrantTags();
+	URsAnimNotifyState_AddTags();
 	
 	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer Tags;

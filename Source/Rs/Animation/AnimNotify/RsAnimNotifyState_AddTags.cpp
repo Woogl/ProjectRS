@@ -1,18 +1,18 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsAnimNotifyState_GrantTags.h"
+#include "RsAnimNotifyState_AddTags.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/Targeting/RsTargetingLibrary.h"
 
-URsAnimNotifyState_GrantTags::URsAnimNotifyState_GrantTags()
+URsAnimNotifyState_AddTags::URsAnimNotifyState_AddTags()
 {
 	bIsNativeBranchingPoint = true;
 }
 
-void URsAnimNotifyState_GrantTags::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_AddTags::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
@@ -51,7 +51,7 @@ void URsAnimNotifyState_GrantTags::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	}
 }
 
-void URsAnimNotifyState_GrantTags::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_AddTags::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
