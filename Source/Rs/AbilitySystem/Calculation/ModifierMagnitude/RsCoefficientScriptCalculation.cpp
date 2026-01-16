@@ -47,20 +47,6 @@ float URsCoefficientScriptCalculation::CalculateBaseMagnitude_Implementation(con
 		return 0.f;
 	}
 
-	for (const FGameplayModifierInfo& Modifier : Spec.Def->Modifiers)
-	{
-		if (Modifier.ModifierMagnitude.GetCustomMagnitudeCalculationClass() != GetClass())
-		{
-			continue;
-		}
-		const FString Script = Row->FindValue<FString>(TableKey, false);
-		if (Script.IsEmpty())
-		{
-			continue;
-		}
-		return FRsParser::CoefficientScriptToFloat(Script, Spec);
-	}
-	
-	UE_LOG(LogRsAbility, Warning, TEXT("Cannot find coefficient script of [%s]"), *Spec.ToSimpleString());
-	return 0.f;
+	const FString Script = Row->FindValue<FString>(TableKey, false);
+	return FRsParser::CoefficientScriptToFloat(Script, Spec);
 }
