@@ -6,48 +6,55 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Rs/AbilitySystem/RsAbilitySystemGlobals.h"
-#include "Rs/AbilitySystem/RsAbilitySystemLibrary.h"
 
 bool URsCanApplyEffectComponent::CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
-	if (ShouldImmunityBlock(ActiveGEContainer, GESpec))
-	{
-		ActiveGEContainer.Owner->OnImmunityBlockGameplayEffectDelegate.Broadcast(GESpec, nullptr);
-		return false;
-	}
-	return Super::CanGameplayEffectApply(ActiveGEContainer, GESpec);
+	bool bParentPass = Super::CanGameplayEffectApply(ActiveGEContainer, GESpec);
+	bool bTagPass = CheckTagRequirements(ActiveGEContainer, GESpec);
+	bool bStackPass = CheckMaxStackCount(ActiveGEContainer, GESpec);
+	
+	return bParentPass && bTagPass && bStackPass;
 }
 
-bool URsCanApplyEffectComponent::ShouldImmunityBlock(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
+bool URsCanApplyEffectComponent::CheckTagRequirements(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
 {
-	// Check stat
-	bool bStatBlock = false;
-	if (Comparision != ERsComparisionOperator::None)
+	UAbilitySystemComponent* TargetASC = ActiveGEContainer.Owner;
+	if (!TargetASC)
 	{
-		float StatValue = URsAbilitySystemLibrary::GetNumericAttributeByTag(ActiveGEContainer.Owner, Stat);
-		switch (Comparision)
-		{
-		case ERsComparisionOperator::Greater:
-			bStatBlock = StatValue > Value;
-			break;
-		case ERsComparisionOperator::Equal:
-			bStatBlock = FMath::IsNearlyEqual(StatValue, Value, UE_KINDA_SMALL_NUMBER);
-			break;
-		case ERsComparisionOperator::Less:
-			bStatBlock = StatValue < Value;
-			break;
-		default:
-			break;
-		}
+		return false;
 	}
-
-	// Check tag requirements
-	bool bTagBlock = false;
+	
 	if (!TagRequirements.IsEmpty())
 	{
 		FGameplayTagContainer Tags = ActiveGEContainer.Owner->GetOwnedGameplayTags();
-		bTagBlock = TagRequirements.RequirementsMet(Tags);
+		return TagRequirements.RequirementsMet(Tags);
 	}
 	
-	return bStatBlock || bTagBlock;
+	return true;
+}
+
+bool URsCanApplyEffectComponent::CheckMaxStackCount(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const
+{
+	UAbilitySystemComponent* TargetASC = ActiveGEContainer.Owner;
+	if (!TargetASC)
+	{
+		return false;
+	}
+
+	int32 LocalMaxStack = MaxStack;
+	if (const FRsEffectTableRow* EffectTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsEffectTableRow>(GESpec.GetContext()))
+	{
+		LocalMaxStack = EffectTableRow->FindValue<int32>(TEXT("MaxStack"), false);
+	}
+	
+	int32 CurrentStack = 0;
+	FGameplayEffectQuery Query;
+	Query.EffectDefinition = GESpec.Def.GetClass();
+	TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveGEContainer.GetActiveEffects(Query);
+	if (ActiveEffects.IsValidIndex(0))
+	{
+		FActiveGameplayEffectHandle ActiveEffect = ActiveEffects[0];
+		CurrentStack = TargetASC->GetCurrentStackCount(ActiveEffect);
+	}
+	return CurrentStack < LocalMaxStack;
 }

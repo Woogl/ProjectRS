@@ -7,15 +7,6 @@
 #include "GameplayEffectTypes.h"
 #include "RsCanApplyEffectComponent.generated.h"
 
-UENUM(BlueprintType)
-enum class ERsComparisionOperator : uint8
-{
-	None,
-	Greater,
-	Equal,
-	Less,
-};
-
 /**
  * 
  */
@@ -25,21 +16,17 @@ class RS_API URsCanApplyEffectComponent : public UGameplayEffectComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Stat"))
-	FGameplayTag Stat;
-
-	UPROPERTY(EditDefaultsOnly)
-	ERsComparisionOperator Comparision = ERsComparisionOperator::None;
-
-	UPROPERTY(EditDefaultsOnly)
-	float Value = 0.f;
-
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTagRequirements TagRequirements;
+	
+	// 0 or minus means infinite stack count.
+	UPROPERTY(EditDefaultsOnly)
+	int32 MaxStack = 0;
 
 public:
 	/** Determine if we can apply this GameplayEffect or not */
 	virtual bool CanGameplayEffectApply(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const override;
 	
-	bool ShouldImmunityBlock(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const;
+	bool CheckTagRequirements(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const;
+	bool CheckMaxStackCount(const FActiveGameplayEffectsContainer& ActiveGEContainer, const FGameplayEffectSpec& GESpec) const;
 };
