@@ -21,14 +21,17 @@ class RS_API URsAnimNotifyState_DodgeInvincible : public URsAnimNotifyStateBase
 public:
 	URsAnimNotifyState_DodgeInvincible();
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> InvincibleEffect;
 	
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer DamageTags;
 	
-	UPROPERTY(EditAnywhere, meta=(Categories="Ability"))
+	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer JustDodgeAbilityTags;
+	
+	UPROPERTY(EditAnywhere)
+	bool bEnableJustDodgeCapsule = true;
 	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

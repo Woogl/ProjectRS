@@ -162,10 +162,10 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 	FString StaggerDamageExpression;
 
 	/** Can apply */
-	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
+	UPROPERTY(EditDefaultsOnly)
 	bool InvinciblePierce = false;
 
-	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0", ClampMax = "3"))
+	UPROPERTY(EditDefaultsOnly)
 	bool SuperArmorPierce = false;
 
 	/** Hit reaction */

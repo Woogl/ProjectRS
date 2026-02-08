@@ -19,26 +19,17 @@ class URsAbilitySet : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	
-#if WITH_EDITOR
-	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
-	virtual bool CanEditChange(const FProperty* InProperty) const override;
-#endif // WITH_EDITOR
-	
+	// Attributes to set base values.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute", meta = (RowType = "RsAttributeTableRow"))
 	FDataTableRowHandle GrantedAttributeTableRow;
-	
-	// Attributes / float used to set base values.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attribute")
-	TMap<FGameplayAttribute, FScalableFloat> GrantedAttributes;
 
 	// Gameplay Abilities to give.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability")
-	TSet<TSubclassOf<UGameplayAbility>> GrantedAbilities;
+	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 
 	// Gameplay Effects to apply.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effect")
-	TSet<TSubclassOf<UGameplayEffect>> GrantedEffects;
+	TArray<TSubclassOf<UGameplayEffect>> GrantedEffects;
 
 	// Gameplay Tags to add.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Tag")

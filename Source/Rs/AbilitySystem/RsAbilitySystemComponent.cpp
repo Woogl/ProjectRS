@@ -123,22 +123,12 @@ void URsAbilitySystemComponent::InitAbilitySet(URsAbilitySet* AbilitySet)
 		return;
 	}
 
-	if (AbilitySet->GrantedAttributeTableRow.IsNull())
+	if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
 	{
-		for (auto [Attribute, BaseValue] : AbilitySet->GrantedAttributes)
+		for (const auto [Tag, Attribute] : URsAttributeSetBase::GetStatMap())
 		{
-			InitAttribute(Attribute, BaseValue.GetValueAtLevel(0));
-		}
-	}
-	else
-	{
-		if (const FRsAttributeTableRow* Row = AbilitySet->GrantedAttributeTableRow.GetRow<FRsAttributeTableRow>(ANSI_TO_TCHAR(__FUNCTION__)))
-		{
-			for (const auto [Tag, Attribute] : URsAttributeSetBase::GetStatMap())
-			{
-				float BaseValue = Row->GetBaseValue(Attribute);
-				InitAttribute(Attribute, BaseValue);
-			}
+			float BaseValue = Row->GetBaseValue(Attribute);
+			InitAttribute(Attribute, BaseValue);
 		}
 	}
 		

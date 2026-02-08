@@ -11,7 +11,6 @@
 #include "Rs/AbilitySystem/Attributes/RsStaggerSet.h"
 #include "Rs/AbilitySystem/Calculation/Execution/RsHealthDamageExecution.h"
 #include "Rs/AbilitySystem/Calculation/Execution/RsStaggerDamageExecution.h"
-#include "Rs/AbilitySystem/EffectComponent/RsCanApplyEffectComponent.h"
 #include "Rs/AbilitySystem/EffectComponent/RsDamageEffectComponent.h"
 #include "Rs/AbilitySystem/EffectComponent/RsModifierDataEffectComponent.h"
 #include "UObject/ObjectSaveContext.h"

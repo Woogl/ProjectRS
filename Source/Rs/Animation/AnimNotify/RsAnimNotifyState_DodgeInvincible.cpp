@@ -54,7 +54,7 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	
 	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(MeshComp->GetOwner()))
 	{
-		PlayerCharacter->EnableJustDodgeCapsule(true);
+		PlayerCharacter->EnableJustDodgeCapsule(bEnableJustDodgeCapsule);
 	}
 	
 	RuntimeDataMap.Add(MeshComp, Data);
