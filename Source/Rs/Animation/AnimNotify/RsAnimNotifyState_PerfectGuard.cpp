@@ -99,8 +99,11 @@ void URsAnimNotifyState_PerfectGuard::HandleDamageBlocked(FGameplayEffectSpecHan
 		return;
 	}
 
-	FGameplayEffectContextHandle EffectContext = ImmunityGameplayEffectHandle.GetOwningAbilitySystemComponent()->MakeEffectContext();
-	AttackerASC->BP_ApplyGameplayEffectToSelf(CounterEffect, 0, EffectContext);
+	if (CounterEffect)
+	{
+		FGameplayEffectContextHandle EffectContext = DefenderASC->MakeEffectContext();
+		DefenderASC->ApplyGameplayEffectToTarget(CounterEffect->GetDefaultObject<UGameplayEffect>(), AttackerASC, 0, EffectContext);
+	}
 	
 	DefenderASC->RemoveLooseGameplayTag(RsGameplayTags::COOLDOWN_GUARD);
 }
