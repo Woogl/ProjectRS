@@ -3,48 +3,37 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "RsAnimNotifyBase.h"
-#include "RsAnimNotifyState_DodgeInvincible.generated.h"
+#include "RsAnimNotifyState_PerfectGuard.generated.h"
 
+struct FActiveGameplayEffectHandle;
+struct FGameplayEffectSpecHandle;
 class UGameplayEffect;
-class URsAbilityTask_WaitDamageEffectBlockedImmunity;
 /**
  * 
  */
-UCLASS(Abstract)
-class RS_API URsAnimNotifyState_DodgeInvincible : public URsAnimNotifyStateBase
+UCLASS()
+class RS_API URsAnimNotifyState_PerfectGuard : public URsAnimNotifyStateBase
 {
 	GENERATED_BODY()
 	
 public:
-	URsAnimNotifyState_DodgeInvincible();
+	URsAnimNotifyState_PerfectGuard();
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> InvincibleEffect;
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> CounterEffect;
+	
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer DamageTags;
 	
-	UPROPERTY(EditAnywhere)
-	FGameplayTagContainer JustDodgeAbilityTags;
-	
-	UPROPERTY(EditAnywhere)
-	bool bEnableJustDodgeCapsule = true;
-	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
-
+	
 protected:
 	UFUNCTION()
 	void HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
-	
-	struct FDodgeInvincibleRuntimeData
-	{
-		TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> DamageBlockTask;
-		FActiveGameplayEffectHandle InvincibleEffectHandle;
-	};
-	
-	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FDodgeInvincibleRuntimeData> RuntimeDataMap;
 };

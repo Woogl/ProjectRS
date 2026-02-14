@@ -20,8 +20,8 @@ ARsPlayerCharacter::ARsPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	
 	JustDodgeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("JustDodgeCapsule"));
 	JustDodgeCapsule->SetupAttachment(RootComponent);
-	JustDodgeCapsule->SetCapsuleHalfHeight(180.f);
-	JustDodgeCapsule->SetCapsuleRadius(180.f);
+	JustDodgeCapsule->SetCapsuleHalfHeight(140.f);
+	JustDodgeCapsule->SetCapsuleRadius(140.f);
 	JustDodgeCapsule->SetCollisionProfileName(TEXT("Pawn"));
 	JustDodgeCapsule->SetCollisionResponseToAllChannels(ECR_Overlap);
 	EnableJustDodgeCapsule(false);

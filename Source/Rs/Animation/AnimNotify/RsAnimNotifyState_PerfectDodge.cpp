@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Team BH.
 
 
-#include "RsAnimNotifyState_DodgeInvincible.h"
+#include "RsAnimNotifyState_PerfectDodge.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
@@ -9,15 +9,14 @@
 #include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 
-URsAnimNotifyState_DodgeInvincible::URsAnimNotifyState_DodgeInvincible()
+URsAnimNotifyState_PerfectDodge::URsAnimNotifyState_PerfectDodge()
 {
-	JustDodgeAbilityTags.AddTag(RsGameplayTags::ABILITY_DODGE);
-	JustDodgeAbilityTags.AddTag(RsGameplayTags::ABILITY_JUST);
+	DodgeCounterAbilityTags.AddTag(RsGameplayTags::ABILITY_DODGE_PERFECT);
 	
 	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
 }
 
-void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
@@ -60,7 +59,7 @@ void URsAnimNotifyState_DodgeInvincible::NotifyBegin(USkeletalMeshComponent* Mes
 	RuntimeDataMap.Add(MeshComp, Data);
 }
 
-void URsAnimNotifyState_DodgeInvincible::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void URsAnimNotifyState_PerfectDodge::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
@@ -89,10 +88,10 @@ void URsAnimNotifyState_DodgeInvincible::NotifyEnd(USkeletalMeshComponent* MeshC
 	RuntimeDataMap.Remove(MeshComp);
 }
 
-void URsAnimNotifyState_DodgeInvincible::HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
+void URsAnimNotifyState_PerfectDodge::HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
 {
 	if (UAbilitySystemComponent* ASC = ImmunityGameplayEffectHandle.GetOwningAbilitySystemComponent())
 	{
-		ASC->TryActivateAbilitiesByTag(JustDodgeAbilityTags);
+		ASC->TryActivateAbilitiesByTag(DodgeCounterAbilityTags);
 	}
 }
