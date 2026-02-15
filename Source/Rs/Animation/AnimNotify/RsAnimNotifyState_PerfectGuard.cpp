@@ -47,6 +47,21 @@ void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshCo
 	
 	BlockTask->Blocked.AddDynamic(this, &ThisClass::HandleDamageBlocked);
 	BlockTask->ReadyForActivation();
+	
+	if (UWorld* World = MeshComp->GetWorld())
+	{
+		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
+		
+		FTimerHandle TimerHandle;
+		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask]()
+		{
+			if (WeakTask.IsValid())
+			{
+				WeakTask->EndTask();
+			}
+		}),
+	TotalDuration, false);
+	}
 }
 
 void URsAnimNotifyState_PerfectGuard::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -104,6 +119,9 @@ void URsAnimNotifyState_PerfectGuard::HandleDamageBlocked(FGameplayEffectSpecHan
 		FGameplayEffectContextHandle EffectContext = DefenderASC->MakeEffectContext();
 		DefenderASC->ApplyGameplayEffectToTarget(CounterEffect->GetDefaultObject<UGameplayEffect>(), AttackerASC, 0, EffectContext);
 	}
-	
-	DefenderASC->RemoveLooseGameplayTag(RsGameplayTags::COOLDOWN_GUARD);
+
+	if (DefenderASC->HasMatchingGameplayTag(RsGameplayTags::COOLDOWN_GUARD))
+	{
+		DefenderASC->RemoveLooseGameplayTag(RsGameplayTags::COOLDOWN_GUARD);
+	}
 }
