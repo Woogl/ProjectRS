@@ -5,8 +5,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectBlockedImmunity.h"
 #include "Rs/RsGameplayTags.h"
-#include "Rs/AbilitySystem/AbilityTask/RsAbilityTask_WaitDamageEffectBlockedImmunity.h"
 #include "Rs/Character/RsPlayerCharacter.h"
 
 URsAnimNotifyState_PerfectDodge::URsAnimNotifyState_PerfectDodge()
@@ -36,9 +36,23 @@ void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshCo
 		return;
 	}
 
-	URsAbilityTask_WaitDamageEffectBlockedImmunity* DamageBlockTask = URsAbilityTask_WaitDamageEffectBlockedImmunity::WaitDamageEffectBlockedByImmunity(Ability, DamageTags, true);
-	DamageBlockTask->Blocked.AddUniqueDynamic(this, &ThisClass::HandleDamageBlocked);
-	DamageBlockTask->ReadyForActivation();
+	UAbilityTask_WaitGameplayEffectBlockedImmunity* BlockTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(Ability, FGameplayTagRequirements(), FGameplayTagRequirements());
+	BlockTask->Blocked.AddUniqueDynamic(this, &ThisClass::HandleDamageBlocked);
+	BlockTask->ReadyForActivation();
+	
+	if (UWorld* World = MeshComp->GetWorld())
+	{
+		FTimerHandle TimerHandle;
+		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
+		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask]()
+		{
+			if (WeakTask.IsValid())
+			{
+				WeakTask->EndTask();
+			}
+		}),
+		TotalDuration, false);
+	}
 
 	FDodgeInvincibleRuntimeData Data;
 	
@@ -47,7 +61,7 @@ void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshCo
 		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 		FActiveGameplayEffectHandle InvincibleEffectHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0.f, Context);
 		
-		Data.DamageBlockTask = DamageBlockTask;
+		Data.DamageBlockTask = BlockTask;
 		Data.InvincibleEffectHandle = InvincibleEffectHandle;
 	}
 	
@@ -71,7 +85,7 @@ void URsAnimNotifyState_PerfectDodge::NotifyEnd(USkeletalMeshComponent* MeshComp
 	
 	if (FDodgeInvincibleRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
 	{
-		if (URsAbilityTask_WaitDamageEffectBlockedImmunity* Task = Data->DamageBlockTask.Get())
+		if (UAbilityTask_WaitGameplayEffectBlockedImmunity* Task = Data->DamageBlockTask.Get())
 		{
 			Task->EndTask();
 		}

@@ -9,7 +9,7 @@
 #include "RsAnimNotifyState_PerfectDodge.generated.h"
 
 class UGameplayEffect;
-class URsAbilityTask_WaitDamageEffectBlockedImmunity;
+class UAbilityTask_WaitGameplayEffectBlockedImmunity;
 /**
  * 
  */
@@ -42,7 +42,7 @@ protected:
 	
 	struct FDodgeInvincibleRuntimeData
 	{
-		TWeakObjectPtr<URsAbilityTask_WaitDamageEffectBlockedImmunity> DamageBlockTask;
+		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> DamageBlockTask;
 		FActiveGameplayEffectHandle InvincibleEffectHandle;
 	};
 	

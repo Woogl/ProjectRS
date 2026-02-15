@@ -50,9 +50,8 @@ void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshCo
 	
 	if (UWorld* World = MeshComp->GetWorld())
 	{
-		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
-		
 		FTimerHandle TimerHandle;
+		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
 		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask]()
 		{
 			if (WeakTask.IsValid())
