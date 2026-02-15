@@ -12,7 +12,6 @@
 URsAnimNotifyState_PerfectDodge::URsAnimNotifyState_PerfectDodge()
 {
 	DodgeCounterAbilityTags.AddTag(RsGameplayTags::ABILITY_DODGE_PERFECT);
-	
 	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
 }
 
@@ -21,7 +20,7 @@ void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshCo
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
 	AActor* Owner = MeshComp->GetOwner();
-	if (!PassCondition(Owner))
+	if (!Owner)
 	{
 		return;
 	}
@@ -35,6 +34,13 @@ void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshCo
 	{
 		return;
 	}
+	
+	FActiveGameplayEffectHandle InvincibleHandle;
+	if (InvincibleEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		InvincibleHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0.f, Context);
+	}
 
 	UAbilityTask_WaitGameplayEffectBlockedImmunity* BlockTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(Ability, FGameplayTagRequirements(), FGameplayTagRequirements());
 	BlockTask->Blocked.AddUniqueDynamic(this, &ThisClass::HandleDamageBlocked);
@@ -44,33 +50,25 @@ void URsAnimNotifyState_PerfectDodge::NotifyBegin(USkeletalMeshComponent* MeshCo
 	{
 		FTimerHandle TimerHandle;
 		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
-		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask]()
+		TWeakObjectPtr<UAbilitySystemComponent> WeakASC = ASC;
+		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask, WeakASC, InvincibleHandle]()
 		{
 			if (WeakTask.IsValid())
 			{
 				WeakTask->EndTask();
 			}
+			if (WeakASC.IsValid())
+			{
+				WeakASC->RemoveActiveGameplayEffect(InvincibleHandle);
+			}
 		}),
 		TotalDuration, false);
-	}
-
-	FDodgeInvincibleRuntimeData Data;
-	
-	if (InvincibleEffect)
-	{
-		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
-		FActiveGameplayEffectHandle InvincibleEffectHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0.f, Context);
-		
-		Data.DamageBlockTask = BlockTask;
-		Data.InvincibleEffectHandle = InvincibleEffectHandle;
 	}
 	
 	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(MeshComp->GetOwner()))
 	{
 		PlayerCharacter->EnableJustDodgeCapsule(bEnableJustDodgeCapsule);
 	}
-	
-	RuntimeDataMap.Add(MeshComp, Data);
 }
 
 void URsAnimNotifyState_PerfectDodge::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -83,23 +81,10 @@ void URsAnimNotifyState_PerfectDodge::NotifyEnd(USkeletalMeshComponent* MeshComp
 		return;
 	}
 	
-	if (FDodgeInvincibleRuntimeData* Data = RuntimeDataMap.Find(MeshComp))
-	{
-		if (UAbilityTask_WaitGameplayEffectBlockedImmunity* Task = Data->DamageBlockTask.Get())
-		{
-			Task->EndTask();
-		}
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
-		{
-			ASC->RemoveActiveGameplayEffect(Data->InvincibleEffectHandle);
-		}
-	}
 	if (ARsPlayerCharacter* PlayerCharacter = Cast<ARsPlayerCharacter>(Owner))
 	{
 		PlayerCharacter->EnableJustDodgeCapsule(false);
 	}
-	
-	RuntimeDataMap.Remove(MeshComp);
 }
 
 void URsAnimNotifyState_PerfectDodge::HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)

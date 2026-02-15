@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "RsAnimNotifyBase.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "RsAnimNotifyState_PerfectGuard.generated.h"
 
 struct FActiveGameplayEffectHandle;
@@ -13,8 +13,8 @@ class UGameplayEffect;
 /**
  * 
  */
-UCLASS()
-class RS_API URsAnimNotifyState_PerfectGuard : public URsAnimNotifyStateBase
+UCLASS(Abstract)
+class RS_API URsAnimNotifyState_PerfectGuard : public UAnimNotifyState
 {
 	GENERATED_BODY()
 	
@@ -29,6 +29,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer DamageTags;
+	
+	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
+	FGameplayTag WarningDamageTags;
+	
+	UPROPERTY(EditAnywhere, meta=(Categories="Ability.HitReaction"))
+	FGameplayTag WarningCounterHitReaction;
 	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

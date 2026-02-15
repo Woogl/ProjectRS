@@ -11,6 +11,7 @@
 URsAnimNotifyState_PerfectGuard::URsAnimNotifyState_PerfectGuard()
 {
 	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
+	WarningDamageTags = RsGameplayTags::EFFECT_DAMAGE_WARNING;
 }
 
 void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -18,7 +19,7 @@ void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshCo
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	
 	AActor* Owner = MeshComp->GetOwner();
-	if (!PassCondition(Owner))
+	if (!Owner)
 	{
 		return;
 	}
@@ -33,10 +34,11 @@ void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshCo
 		return;
 	}
 
+	FActiveGameplayEffectHandle InvincibleHandle;
 	if (InvincibleEffect)
 	{
 		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
-		ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0, EffectContext);
+		InvincibleHandle = ASC->BP_ApplyGameplayEffectToSelf(InvincibleEffect, 0, EffectContext);
 	}
 
 	UAbilityTask_WaitGameplayEffectBlockedImmunity* BlockTask = UAbilityTask_WaitGameplayEffectBlockedImmunity::WaitGameplayEffectBlockedByImmunity(Ability, FGameplayTagRequirements(), FGameplayTagRequirements());
@@ -51,12 +53,17 @@ void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshCo
 	if (UWorld* World = MeshComp->GetWorld())
 	{
 		FTimerHandle TimerHandle;
+		TWeakObjectPtr<UAbilitySystemComponent> WeakASC = ASC;
 		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> WeakTask = BlockTask;
-		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask]()
+		World->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakTask, WeakASC, InvincibleHandle]()
 		{
 			if (WeakTask.IsValid())
 			{
 				WeakTask->EndTask();
+			}
+			if (WeakASC.IsValid())
+			{
+				WeakASC->RemoveActiveGameplayEffect(InvincibleHandle);
 			}
 		}),
 	TotalDuration, false);
@@ -67,24 +74,24 @@ void URsAnimNotifyState_PerfectGuard::NotifyEnd(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
-	{
-		return;
-	}
-	
-	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-	if (!ASC)
-	{
-		return;
-	}
-	
-	if (InvincibleEffect)
-	{
-		FGameplayEffectQuery Query;
-		Query.EffectDefinition = InvincibleEffect;
-		ASC->RemoveActiveEffects(Query);
-	}
+	// AActor* Owner = MeshComp->GetOwner();
+	// if (!Owner)
+	// {
+	// 	return;
+	// }
+	//
+	// UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	// if (!ASC)
+	// {
+	// 	return;
+	// }
+	//
+	// if (InvincibleEffect)
+	// {
+	// 	FGameplayEffectQuery Query;
+	// 	Query.EffectDefinition = InvincibleEffect;
+	// 	ASC->RemoveActiveEffects(Query);
+	// }
 }
 
 void URsAnimNotifyState_PerfectGuard::HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle)
@@ -117,6 +124,14 @@ void URsAnimNotifyState_PerfectGuard::HandleDamageBlocked(FGameplayEffectSpecHan
 	{
 		FGameplayEffectContextHandle EffectContext = DefenderASC->MakeEffectContext();
 		DefenderASC->ApplyGameplayEffectToTarget(CounterEffect->GetDefaultObject<UGameplayEffect>(), AttackerASC, 0, EffectContext);
+	}
+	
+	if (OutTags.HasTagExact(WarningDamageTags))
+	{
+		FGameplayEventData Payload;
+		Payload.EventTag = WarningDamageTags;
+		Payload.ContextHandle = AttackerASC->MakeEffectContext();
+		DefenderASC->HandleGameplayEvent(WarningCounterHitReaction, &Payload);
 	}
 
 	if (DefenderASC->HasMatchingGameplayTag(RsGameplayTags::COOLDOWN_GUARD))

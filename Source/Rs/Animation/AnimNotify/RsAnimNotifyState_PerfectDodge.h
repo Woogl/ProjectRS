@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
-#include "RsAnimNotifyBase.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "RsAnimNotifyState_PerfectDodge.generated.h"
 
 class UGameplayEffect;
@@ -14,7 +14,7 @@ class UAbilityTask_WaitGameplayEffectBlockedImmunity;
  * 
  */
 UCLASS(Abstract)
-class RS_API URsAnimNotifyState_PerfectDodge : public URsAnimNotifyStateBase
+class RS_API URsAnimNotifyState_PerfectDodge : public UAnimNotifyState
 {
 	GENERATED_BODY()
 	
@@ -39,12 +39,4 @@ public:
 protected:
 	UFUNCTION()
 	void HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
-	
-	struct FDodgeInvincibleRuntimeData
-	{
-		TWeakObjectPtr<UAbilityTask_WaitGameplayEffectBlockedImmunity> DamageBlockTask;
-		FActiveGameplayEffectHandle InvincibleEffectHandle;
-	};
-	
-	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FDodgeInvincibleRuntimeData> RuntimeDataMap;
 };
