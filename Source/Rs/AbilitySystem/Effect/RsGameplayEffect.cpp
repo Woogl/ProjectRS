@@ -138,93 +138,93 @@ void URsGameplayEffect::SetModifiersFromTable(const URsModifierDataEffectCompone
 
 void URsGameplayEffect::SetModifiersFromAsset(const URsDamageEffectComponent* DamageDataComp)
 {
-	// Health base damage
-	for (const auto [CoeffTag, CoeffNum] : DamageDataComp->HealthDamageCoefficients)
-	{
-		// (Coefficient.ATK.source * 1.5) + 500
-		//                                   ^
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
-		{
-			FGameplayModifierInfo ModifierInfo(URsHealthSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
-			Modifiers.Add(ModifierInfo);
-			continue;
-		}
-			
-		// (Coefficient.ATK.source * 1.5) + 500
-		//               ^
-		FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
-		// (Coefficient.ATK.source * 1.5) + 500
-		//                    ^
-		EGameplayEffectAttributeCaptureSource SourceOrTarget;
-		if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
-		{
-			SourceOrTarget = EGameplayEffectAttributeCaptureSource::Source;
-		}
-		else if (CoeffTag.ToString().EndsWith(TEXT(".Target")))
-		{
-			SourceOrTarget = EGameplayEffectAttributeCaptureSource::Target;
-		}
-		else
-		{
-			UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
-			continue;
-		}
-		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
-		FGameplayEffectAttributeCaptureDefinition CaptureDefinition(StatToCapture, SourceOrTarget, bSnapshot);
-
-		FAttributeBasedFloat MagnitudeData;
-		// (Coefficient.ATK.source * 1.5) + 500
-		//                            ^
-		MagnitudeData.Coefficient = CoeffNum;
-		MagnitudeData.BackingAttribute = CaptureDefinition;
-
-		FGameplayModifierInfo ModifierInfo(URsHealthSet::GetBaseDamageAttribute(), EGameplayModOp::Additive, MagnitudeData);
-		Modifiers.Add(ModifierInfo);
-	}
-
-	// Stagger base damage
-	for (const auto [CoeffTag, CoeffNum] : DamageDataComp->StaggerDamageCoefficients)
-	{
-		// (Coefficient.IMP.source * 1.5) + 500
-		//                                   ^
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
-		{
-			FGameplayModifierInfo ModifierInfo(URsStaggerSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
-			Modifiers.Add(ModifierInfo);
-			continue;
-		}
-			
-		// (Coefficient.IMP.source * 1.5) + 500
-		//               ^
-		FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
-		// (Coefficient.IMP.source * 1.5) + 500
-		//                    ^
-		EGameplayEffectAttributeCaptureSource SourceOrTarget;
-		if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
-		{
-			SourceOrTarget = EGameplayEffectAttributeCaptureSource::Source;
-		}
-		else if (CoeffTag.ToString().EndsWith(TEXT(".Target")))
-		{
-			SourceOrTarget = EGameplayEffectAttributeCaptureSource::Target;
-		}
-		else
-		{
-			UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
-			continue;
-		}
-		bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
-		FGameplayEffectAttributeCaptureDefinition CaptureDefinition(StatToCapture, SourceOrTarget, bSnapshot);
-
-		FAttributeBasedFloat MagnitudeData;
-		// (Coefficient.IMP.source * 1.5) + 500
-		//                            ^
-		MagnitudeData.Coefficient = CoeffNum;
-		MagnitudeData.BackingAttribute = CaptureDefinition;
-
-		FGameplayModifierInfo ModifierInfo(URsStaggerSet::GetBaseDamageAttribute(), EGameplayModOp::Additive, MagnitudeData);
-		Modifiers.Add(ModifierInfo);
-	}
+	// // Health base damage
+	// for (const auto [CoeffTag, CoeffNum] : DamageDataComp->HealthDamageCoefficients)
+	// {
+	// 	// (Coefficient.ATK.source * 1.5) + 500
+	// 	//                                   ^
+	// 	if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
+	// 	{
+	// 		FGameplayModifierInfo ModifierInfo(URsHealthSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
+	// 		Modifiers.Add(ModifierInfo);
+	// 		continue;
+	// 	}
+	// 		
+	// 	// (Coefficient.ATK.source * 1.5) + 500
+	// 	//               ^
+	// 	FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
+	// 	// (Coefficient.ATK.source * 1.5) + 500
+	// 	//                    ^
+	// 	EGameplayEffectAttributeCaptureSource SourceOrTarget;
+	// 	if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
+	// 	{
+	// 		SourceOrTarget = EGameplayEffectAttributeCaptureSource::Source;
+	// 	}
+	// 	else if (CoeffTag.ToString().EndsWith(TEXT(".Target")))
+	// 	{
+	// 		SourceOrTarget = EGameplayEffectAttributeCaptureSource::Target;
+	// 	}
+	// 	else
+	// 	{
+	// 		UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+	// 		continue;
+	// 	}
+	// 	bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
+	// 	FGameplayEffectAttributeCaptureDefinition CaptureDefinition(StatToCapture, SourceOrTarget, bSnapshot);
+	//
+	// 	FAttributeBasedFloat MagnitudeData;
+	// 	// (Coefficient.ATK.source * 1.5) + 500
+	// 	//                            ^
+	// 	MagnitudeData.Coefficient = CoeffNum;
+	// 	MagnitudeData.BackingAttribute = CaptureDefinition;
+	//
+	// 	FGameplayModifierInfo ModifierInfo(URsHealthSet::GetBaseDamageAttribute(), EGameplayModOp::Additive, MagnitudeData);
+	// 	Modifiers.Add(ModifierInfo);
+	// }
+	//
+	// // Stagger base damage
+	// for (const auto [CoeffTag, CoeffNum] : DamageDataComp->StaggerDamageCoefficients)
+	// {
+	// 	// (Coefficient.IMP.source * 1.5) + 500
+	// 	//                                   ^
+	// 	if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
+	// 	{
+	// 		FGameplayModifierInfo ModifierInfo(URsStaggerSet::GetBaseDamageAttribute(), EGameplayModOp::AddFinal, FGameplayEffectModifierMagnitude(CoeffNum));
+	// 		Modifiers.Add(ModifierInfo);
+	// 		continue;
+	// 	}
+	// 		
+	// 	// (Coefficient.IMP.source * 1.5) + 500
+	// 	//               ^
+	// 	FGameplayAttribute StatToCapture = URsAttributeSetBase::TagToAttribute(CoeffTag);
+	// 	// (Coefficient.IMP.source * 1.5) + 500
+	// 	//                    ^
+	// 	EGameplayEffectAttributeCaptureSource SourceOrTarget;
+	// 	if (CoeffTag.ToString().EndsWith(TEXT(".Source")))
+	// 	{
+	// 		SourceOrTarget = EGameplayEffectAttributeCaptureSource::Source;
+	// 	}
+	// 	else if (CoeffTag.ToString().EndsWith(TEXT(".Target")))
+	// 	{
+	// 		SourceOrTarget = EGameplayEffectAttributeCaptureSource::Target;
+	// 	}
+	// 	else
+	// 	{
+	// 		UE_LOG(LogRsAbility, Error, TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\"."), *CoeffTag.ToString());
+	// 		continue;
+	// 	}
+	// 	bool bSnapshot = (SourceOrTarget == EGameplayEffectAttributeCaptureSource::Source);
+	// 	FGameplayEffectAttributeCaptureDefinition CaptureDefinition(StatToCapture, SourceOrTarget, bSnapshot);
+	//
+	// 	FAttributeBasedFloat MagnitudeData;
+	// 	// (Coefficient.IMP.source * 1.5) + 500
+	// 	//                            ^
+	// 	MagnitudeData.Coefficient = CoeffNum;
+	// 	MagnitudeData.BackingAttribute = CaptureDefinition;
+	//
+	// 	FGameplayModifierInfo ModifierInfo(URsStaggerSet::GetBaseDamageAttribute(), EGameplayModOp::Additive, MagnitudeData);
+	// 	Modifiers.Add(ModifierInfo);
+	// }
 }
 
 void URsGameplayEffect::SetDamageExecutions(const URsDamageEffectComponent* DamageDataComp)

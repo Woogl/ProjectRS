@@ -16,18 +16,11 @@
 
 URsDamageEffectComponent::URsDamageEffectComponent()
 {
-	HealthDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_ATK_SOURCE, 1.f);
-	StaggerDamageCoefficients.Add(RsGameplayTags::COEFFICIENT_IMP_SOURCE, 1.f);
-	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
 }
 
 void URsDamageEffectComponent::OnGameplayEffectChanged()
 {
 	Super::OnGameplayEffectChanged();
-	
-	UGameplayEffect* Owner = GetOwner();
-	Owner->CachedAssetTags.AppendTags(DamageTags);
-	Owner->CachedGrantedTags.AppendTags(DamageTags);
 }
 
 void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsContainer& ActiveGEContainer, FGameplayEffectSpec& GESpec, FPredictionKey& PredictionKey) const
@@ -41,50 +34,32 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		return;
 	}
 	
-	FGameplayTag LocalHitReaction;
-	bool LocalInvinciblePierce;
-	bool LocalSuperArmorPierce;
-	float LocalSourceHitStopTime;
-	float LocalTargetHitStopTime;
-	float LocalManaGain;
-	float LocalUltimateGain;
-	
-	if (const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext()))
+	const FRsDamageTableRow* DamageTableRow = URsAbilitySystemGlobals::GetEffectTableRow<FRsDamageTableRow>(GESpec.GetContext());
+	if (!DamageTableRow)
 	{
-		LocalInvinciblePierce = DamageTableRow->InvinciblePierce;
-		LocalSuperArmorPierce = DamageTableRow->SuperArmorPierce;
-		LocalHitReaction = DamageTableRow->HitReaction;
-		LocalSourceHitStopTime = DamageTableRow->SourceHitStopTime;
-		LocalTargetHitStopTime = DamageTableRow->TargetHitStopTime;
-		LocalManaGain = DamageTableRow->ManaGain;
-		LocalUltimateGain = DamageTableRow->UltimateGain;
-	}
-	else
-	{
-		LocalInvinciblePierce = InvinciblePierce;
-		LocalSuperArmorPierce = SuperArmorPierce;
-		LocalHitReaction = HitReaction;
-		LocalSourceHitStopTime = SourceHitStopTime;
-		LocalTargetHitStopTime = TargetHitStopTime;
-		LocalManaGain = ManaGain;
-		LocalUltimateGain = UltimateGain;
+		return;
 	}
 
-	if (LocalInvinciblePierce)
+	if (DamageTableRow->InvinciblePierce)
 	{
 		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_INVINCIBLEPIERCE);
 	}
 
-	if (LocalSuperArmorPierce)
+	if (DamageTableRow->SuperArmorPierce)
 	{
 		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_SUPERARMORPIERCE);
 	}
 
+	if (DamageTableRow->Warning)
+	{
+		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_WARNING);
+	}
+
 	// Trigger hit reaction
-	if (LocalHitReaction.IsValid())
+	if (DamageTableRow->HitReaction.IsValid())
 	{
 		FGameplayEventData Payload;
-		Payload.EventTag = LocalHitReaction;
+		Payload.EventTag = DamageTableRow->HitReaction;
 		Payload.Instigator = SourceASC->GetAvatarActor();
 		Payload.Target = TargetASC->GetAvatarActor();
 		Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
@@ -94,27 +69,27 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 	}
 
 	// Trigger hit stops
-	if (LocalSourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
+	if (DamageTableRow->SourceHitStopTime > 0.f && SourceASC->GetAnimatingAbility())
 	{
 		AActor* EffectCauser = GESpec.GetEffectContext().GetEffectCauser();
 		if (!EffectCauser->IsA(ARsProjectile::StaticClass()))
 		{
-			if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), LocalSourceHitStopTime))
+			if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(SourceASC->GetAnimatingAbility(), DamageTableRow->SourceHitStopTime))
 			{
 				PauseMontageTask->ReadyForActivation();
 			}
 		}
 	}
-	if (LocalTargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
+	if (DamageTableRow->TargetHitStopTime > 0.f && TargetASC->GetAnimatingAbility())
 	{
-		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), LocalTargetHitStopTime))
+		if (URsAbilityTask_PauseMontage* PauseMontageTask = URsAbilityTask_PauseMontage::PauseMontage(TargetASC->GetAnimatingAbility(), DamageTableRow->TargetHitStopTime))
 		{
 			PauseMontageTask->ReadyForActivation();
 		}
 	}
 
 	// Advantage to damage source
-	if (LocalManaGain != 0)
+	if (DamageTableRow->ManaGain != 0)
 	{
 		UGameplayEffect* GainMP = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainMP"));
 		GainMP->DurationPolicy = EGameplayEffectDurationType::Instant;
@@ -122,14 +97,14 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		GainMP->Modifiers.SetNum(Idx + 1);
 	
 		FGameplayModifierInfo& InfoMana = GainMP->Modifiers[Idx];
-		InfoMana.ModifierMagnitude = FScalableFloat(LocalManaGain);
+		InfoMana.ModifierMagnitude = FScalableFloat(DamageTableRow->ManaGain);
 		InfoMana.ModifierOp = EGameplayModOp::Additive;
 		InfoMana.Attribute = URsEnergySet::GetCurrentManaAttribute();
 		
 		SourceASC->ApplyGameplayEffectToSelf(GainMP, 0, SourceASC->MakeEffectContext());
 	}
 	
-	if (LocalUltimateGain != 0)
+	if (DamageTableRow->UltimateGain != 0)
 	{
 		UGameplayEffect* GainUP = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("GainUP"));
 		GainUP->DurationPolicy = EGameplayEffectDurationType::Instant;
@@ -137,7 +112,7 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		GainUP->Modifiers.SetNum(Idx + 1);
 	
 		FGameplayModifierInfo& InfoUP = GainUP->Modifiers[Idx];
-		InfoUP.ModifierMagnitude = FScalableFloat(LocalUltimateGain);
+		InfoUP.ModifierMagnitude = FScalableFloat(DamageTableRow->UltimateGain);
 		InfoUP.ModifierOp = EGameplayModOp::Additive;
 		InfoUP.Attribute = URsEnergySet::GetCurrentUltimateAttribute();
 		
@@ -149,55 +124,6 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 EDataValidationResult URsDamageEffectComponent::IsDataValid(class FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = Super::IsDataValid(Context);
-
-	// Check asset data
-	for (const auto& [CoeffTag, CoeffNum] : HealthDamageCoefficients)
-	{
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
-		{
-			continue;
-		}
-		const FString CoeffTagString = CoeffTag.ToString();
-		if (CoeffTagString.IsEmpty())
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));
-			return EDataValidationResult::Invalid;
-		}
-		if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag [%s] must start with \"Coefficient.\""), *CoeffTag.ToString())));
-			return EDataValidationResult::Invalid;
-		}
-		if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag [%s] must end with \".Target\" or \".Source\""), *CoeffTag.ToString())));
-			return EDataValidationResult::Invalid;
-		}
-	}
-
-	for (const auto& [CoeffTag, CoeffNum] : StaggerDamageCoefficients)
-	{
-		if (CoeffTag == RsGameplayTags::COEFFICIENT_CONSTANT)
-		{
-			continue;
-		}
-		const FString CoeffTagString = CoeffTag.ToString();
-		if (CoeffTagString.IsEmpty())
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag is empty"))));
-			return EDataValidationResult::Invalid;
-		}
-		if (!CoeffTagString.StartsWith(TEXT("Coefficient.")))
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must start with \"Coefficient.\""), *CoeffTag.ToString())));
-			return EDataValidationResult::Invalid;
-		}
-		if (!CoeffTagString.EndsWith(TEXT(".Source")) && !CoeffTagString.EndsWith(TEXT(".Target")))
-		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Coefficient tag \"%s\" must end with \".Target\" or \".Source\""), *CoeffTag.ToString())));
-			return EDataValidationResult::Invalid;
-		}
-	}
 	return Result;
 }
 #endif // WITH_EDITOR
