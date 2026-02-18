@@ -22,7 +22,7 @@ public:
 	URsAnimNotifyState_PerfectGuard();
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> InvincibleEffect;
+	TSubclassOf<UGameplayEffect> GuardEffect;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> CounterEffect;
@@ -31,7 +31,7 @@ public:
 	FGameplayTagContainer DamageTags;
 	
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
-	FGameplayTag WarningDamageTags;
+	FGameplayTag WarningDamageTag;
 	
 	UPROPERTY(EditAnywhere, meta=(Categories="Ability.HitReaction"))
 	FGameplayTag WarningCounterHitReaction;
@@ -41,5 +41,5 @@ public:
 	
 protected:
 	UFUNCTION()
-	void HandleDamageBlocked(FGameplayEffectSpecHandle BlockedSpec, FActiveGameplayEffectHandle ImmunityGameplayEffectHandle);
+	void HandleDamageApplied(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle);
 };

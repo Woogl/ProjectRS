@@ -1,7 +1,6 @@
 ﻿#include "RsEditor.h"
 
 #include "Rs/AbilitySystem/Abilities/RsGameplayAbility.h"
-#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
 #include "Thumbnail/RsAbilityThumbnailRenderer.h"
 #include "Thumbnail/RsEffectThumbnailRenderer.h"
 #include "ThumbnailRendering/ThumbnailManager.h"

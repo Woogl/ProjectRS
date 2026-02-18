@@ -115,7 +115,6 @@ FText URsCharacterViewModel::GetCharacterName() const
 	{
 		if (Character->CharacterName.IsEmpty())
 		{
-			UE_LOG(LogRs, Warning, TEXT("Character %s has no name."), *Character->GetName());
 			return FText::FromString(UKismetSystemLibrary::GetDisplayName(Character));
 		}
 		return Character->CharacterName;

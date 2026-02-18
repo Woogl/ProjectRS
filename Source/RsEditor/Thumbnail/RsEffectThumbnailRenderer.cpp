@@ -5,7 +5,7 @@
 
 #include "CanvasItem.h"
 #include "CanvasTypes.h"
-#include "Rs/AbilitySystem/Effect/RsGameplayEffect.h"
+#include "GameplayEffect.h"
 #include "Rs/AbilitySystem/EffectComponent/RsUIDataEffectComponent.h"
 
 void URsEffectThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* RenderTarget, FCanvas* Canvas, bool bAdditionalViewFamily)

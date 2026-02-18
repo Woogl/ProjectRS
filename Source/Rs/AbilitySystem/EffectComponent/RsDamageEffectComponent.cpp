@@ -50,9 +50,9 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_SUPERARMORPIERCE);
 	}
 
-	if (DamageTableRow->Warning)
+	if (DamageTableRow->GuardPierce)
 	{
-		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_WARNING);
+		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_GUARDPIERCE);
 	}
 
 	// Trigger hit reaction

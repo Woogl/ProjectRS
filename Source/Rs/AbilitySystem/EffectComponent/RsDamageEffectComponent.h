@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectComponent.h"
-#include "GameplayTagContainer.h"
 #include "RsDamageEffectComponent.generated.h"
 
 struct FRsDamageTableRow;
