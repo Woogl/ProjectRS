@@ -55,7 +55,8 @@ URsHealthDamageExecution::URsHealthDamageExecution()
 void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
-	if (!TargetASC)
+	UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
+	if (!TargetASC || !SourceASC)
 	{
 		return;
 	}
@@ -64,10 +65,16 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+
+	// Handle edge cases
 	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::ABILITY_DEATH))
 	{
-		// Don't show damage floater.
-		OutExecutionOutput.MarkGameplayCuesHandledManually();
+		return;
+	}
+	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::CHARACTER_PERFECTDODGE))
+	{
+		FGameplayTag DodgeAbilityTag = RsGameplayTags::ABILITY_DODGE_PERFECT;
+		TargetASC->TryActivateAbilitiesByTag(DodgeAbilityTag.GetSingleTagContainer());
 		return;
 	}
 
@@ -123,15 +130,34 @@ void URsHealthDamageExecution::Execute_Implementation(const FGameplayEffectCusto
 	{
 		FinalDamage *= URsAbilitySystemSettings::Get().GroggyDamageMultiplier;
 	}
+	
+	// Check guard
+	bool bIsGuard = EvaluationParameters.TargetTags->HasTag(RsGameplayTags::ABILITY_GUARD);
+	bool bIsWarningAttack = EvaluationParameters.SourceTags->HasTag(RsGameplayTags::ABILITY_WARNING);
+	if (bIsGuard && !bIsWarningAttack)
+	{
+		FinalDamage *= URsAbilitySystemSettings::Get().GuardDamageMultiplier;
+	}
+	
+	bool bIsPerfectGuard = EvaluationParameters.TargetTags->HasTag(RsGameplayTags::CHARACTER_PERFECTGUARD);
+	if (bIsPerfectGuard)
+	{
+		FinalDamage = 0.f;
+	}
+
+	// Apply guard counter.
+	if (bIsGuard || bIsPerfectGuard)
+	{
+		TSubclassOf<UGameplayEffect> CounterEffect = URsAbilitySystemSettings::Get().GuardCounterEffect;
+		if (bIsPerfectGuard && bIsWarningAttack)
+		{
+			CounterEffect = URsAbilitySystemSettings::Get().PerfectGuardCounterEffect;
+		}
+		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+		FGameplayEffectSpecHandle EffectSpec = TargetASC->MakeOutgoingSpec(CounterEffect, 0, EffectContext);
+		TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpec.Data, SourceASC);
+	}
 
 	OutExecutionOutput.MarkConditionalGameplayEffectsToTrigger();
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics->FinalDamageProperty, EGameplayModOp::Override, FinalDamage));
-	
-	// // Feedback to source
-	// FGameplayEventData Payload;
-	// Payload.EventTag = RsGameplayTags::EFFECT_DAMAGE_FEEDBACK;
-	// Payload.Instigator = ExecutionParams.GetSourceAbilitySystemComponent()->GetOwner();
-	// Payload.Target = ExecutionParams.GetTargetAbilitySystemComponent()->GetOwner();
-	// Payload.EventMagnitude = FinalDamage;
-	// ExecutionParams.GetSourceAbilitySystemComponent()->HandleGameplayEvent(RsGameplayTags::EFFECT_DAMAGE_FEEDBACK, &Payload);
 }

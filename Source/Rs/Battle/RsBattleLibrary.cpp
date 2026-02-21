@@ -51,29 +51,3 @@ AActor* URsBattleLibrary::GetLockOnTarget(APawn* Pawn)
 
 	return nullptr;
 }
-
-void URsBattleLibrary::GetLinkSkillInfo(UObject* WorldContextObject, ARsCharacterBase*& LinkSkillTarget, ERsLinkSkillType& LinkSkillType, int32& AvailableCount)
-{
-	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
-	{
-		LinkSkillTarget = BattleSubsystem->GetLinkSkillTarget();
-		LinkSkillType = BattleSubsystem->GetLinkSkillType();
-		AvailableCount = BattleSubsystem->GetAvailableLinkSkillCount();
-	}
-}
-
-void URsBattleLibrary::SetLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
-{
-	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
-	{
-		BattleSubsystem->SetLinkSkillTarget(LinkSkillTarget, Type);
-	}
-}
-
-void URsBattleLibrary::DecrementLinkSkillTarget(UObject* WorldContextObject, ARsCharacterBase* LinkSkillTarget, ERsLinkSkillType Type)
-{
-	if (URsBattleSubsystem* BattleSubsystem = URsBattleSubsystem::Get(WorldContextObject))
-	{
-		BattleSubsystem->DecrementLinkSkillCount(LinkSkillTarget, Type);
-	}
-}

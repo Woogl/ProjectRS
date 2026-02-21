@@ -5,49 +5,29 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Rs/Targeting/RsTargetingLibrary.h"
 
 URsAnimNotifyState_AddTags::URsAnimNotifyState_AddTags()
 {
-	bIsNativeBranchingPoint = true;
 }
 
 void URsAnimNotifyState_AddTags::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	AActor* Owner = MeshComp->GetOwner();
-	if (!PassCondition(Owner))
+	if (!Tags.IsValid())
 	{
 		return;
 	}
 	
-	if (TargetType == ERsTargetType::Source)
+	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner)
 	{
-		if (!Tags.IsValid())
-		{
-			return;
-		}
-		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
-		{
-			ASC->AddLooseGameplayTags(Tags);
-		}
+		return;
 	}
-	else if (TargetType == ERsTargetType::Target)
+	
+	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{
-		TArray<AActor*> OutTargets;
-		URsTargetingLibrary::PerformTargetingFromComponent(MeshComp, TargetingParams, OutTargets);
-		if (!Tags.IsValid())
-		{
-			return;
-		}
-		for (AActor* Target : OutTargets)
-		{
-			if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Target))
-			{
-				ASC->AddLooseGameplayTags(Tags);
-			}
-		}
+		ASC->AddLooseGameplayTags(Tags);
 	}
 }
 
@@ -55,7 +35,16 @@ void URsAnimNotifyState_AddTags::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
+	if (!Tags.IsValid())
+	{
+		return;
+	}
+	
 	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
 	
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner))
 	{

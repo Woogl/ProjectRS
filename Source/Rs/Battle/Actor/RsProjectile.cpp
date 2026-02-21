@@ -90,6 +90,8 @@ void ARsProjectile::BeginPlay()
 		FGameplayEffectSpecHandle GESpec = InstigatorASC->MakeOutgoingSpec(Effect, Level, EffectContext);
 		if (GESpec.IsValid())
 		{
+			FGameplayTagContainer SourceTags = InstigatorASC->GetOwnedGameplayTags();
+			GESpec.Data->CapturedSourceTags.GetSpecTags().AppendTags(SourceTags);
 			EffectSpecs.Add(GESpec);
 		}
 	}
@@ -103,6 +105,8 @@ void ARsProjectile::BeginPlay()
 			if (TableGESpec.IsValid())
 			{
 				URsAbilitySystemGlobals::SetEffectTableRowHandle(*TableGESpec.Data->GetContext().Get(), &EffectTableRowHandle);
+				FGameplayTagContainer SourceTags = InstigatorASC->GetOwnedGameplayTags();
+				TableGESpec.Data->CapturedSourceTags.GetSpecTags().AppendTags(SourceTags);
 				EffectSpecs.Add(TableGESpec);
 			}
 		}

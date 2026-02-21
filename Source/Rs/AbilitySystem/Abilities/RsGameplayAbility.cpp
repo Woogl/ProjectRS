@@ -200,14 +200,6 @@ void URsGameplayAbility::TeardownEnhancedInputBindings(const FGameplayAbilityAct
 	}
 }
 
-void URsGameplayAbility::RevertGameplayEvent(FGameplayTag EventTag)
-{
-	if (FActiveGameplayEffectHandle* EffectHandle = EventEffectHandles.Find(EventTag))
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(*EffectHandle);
-	}
-}
-
 void URsGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
@@ -245,7 +237,7 @@ void URsGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	MontageToPlay = SelectMontageToPlay();
+	MontageToPlay = SelectMontageToPlay(TriggerEventData ? *TriggerEventData : FGameplayEventData());
 	if (MontageToPlay)
 	{
 		if (UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay))
@@ -376,7 +368,7 @@ void URsGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 	K2_OnRemoveAbility();
 }
 
-UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation() const
+UAnimMontage* URsGameplayAbility::SelectMontageToPlay_Implementation(FGameplayEventData EventData) const
 {
 	const int32 MontagesNum = Montages.Num();
 	if (MontagesNum == 0)
@@ -441,11 +433,7 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
-		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
-		if (Handle.IsValid())
-		{
-			EventEffectHandles.Add(EventData.EventTag, Handle);
-		}
+		SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 	}
 
 	if (const FDataTableRowHandle* EffectTableRow = EffectTableMap.Find(EventData.EventTag))
@@ -458,12 +446,6 @@ void URsGameplayAbility::HandleGameplayEvent(FGameplayEventData EventData)
 			return;
 		}
 		Spec.Data->AppendDynamicAssetTags(GetAssetTags());
-		FActiveGameplayEffectHandle Handle = SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
-		if (Handle.IsValid())
-		{
-			EventEffectHandles.Add(EventData.EventTag, Handle);
-		}
+		SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
 	}
-	
-	K2_OnGameplayEvent(EventData);
 }

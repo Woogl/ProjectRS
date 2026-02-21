@@ -32,8 +32,20 @@ public:
 	TArray<TSoftObjectPtr<UDataTable>> EffectTables;
 	
 	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	TSubclassOf<UGameplayEffect> DamageEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	TSubclassOf<UGameplayEffect> GuardCounterEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	TSubclassOf<UGameplayEffect> PerfectGuardCounterEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
 	float DamageReductionConstant = 190.f;
 
 	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
 	float GroggyDamageMultiplier = 1.6f;
+	
+	UPROPERTY(EditDefaultsOnly, Config, Category = "Battle")
+	float GuardDamageMultiplier = 0.5f;
 };

@@ -167,9 +167,6 @@ struct FRsDamageTableRow : public FRsEffectTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	bool SuperArmorPierce = false;
-	
-	UPROPERTY(EditDefaultsOnly)
-	bool GuardPierce = false;
 
 	/** Hit reaction */
 	UPROPERTY(EditDefaultsOnly, meta = (Categories = "Ability.HitReaction"))

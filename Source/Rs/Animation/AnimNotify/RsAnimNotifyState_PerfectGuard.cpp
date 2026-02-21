@@ -6,13 +6,11 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEffectApplied_Self.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectBlockedImmunity.h"
 #include "Rs/RsGameplayTags.h"
 
 URsAnimNotifyState_PerfectGuard::URsAnimNotifyState_PerfectGuard()
 {
 	DamageTags.AddTag(RsGameplayTags::EFFECT_DAMAGE);
-	WarningDamageTag = RsGameplayTags::EFFECT_DAMAGE_GUARDPIERCE;
 }
 
 void URsAnimNotifyState_PerfectGuard::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -78,24 +76,24 @@ void URsAnimNotifyState_PerfectGuard::NotifyEnd(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	
-	AActor* Owner = MeshComp->GetOwner();
-	if (!Owner)
-	{
-		return;
-	}
-	
-	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
-	if (!ASC)
-	{
-		return;
-	}
-	
-	if (GuardEffect)
-	{
-		FGameplayEffectQuery Query;
-		Query.EffectDefinition = GuardEffect;
-		ASC->RemoveActiveEffects(Query);
-	}
+	// AActor* Owner = MeshComp->GetOwner();
+	// if (!Owner)
+	// {
+	// 	return;
+	// }
+	//
+	// UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+	// if (!ASC)
+	// {
+	// 	return;
+	// }
+	//
+	// if (GuardEffect)
+	// {
+	// 	FGameplayEffectQuery Query;
+	// 	Query.EffectDefinition = GuardEffect;
+	// 	ASC->RemoveActiveEffects(Query);
+	// }
 }
 
 void URsAnimNotifyState_PerfectGuard::HandleDamageApplied(AActor* Source, FGameplayEffectSpecHandle SpecHandle, FActiveGameplayEffectHandle ActiveHandle)
@@ -122,17 +120,6 @@ void URsAnimNotifyState_PerfectGuard::HandleDamageApplied(AActor* Source, FGamep
 	{
 		FGameplayEffectContextHandle CounterContext = DefenderASC->MakeEffectContext();
 		DefenderASC->ApplyGameplayEffectToTarget(CounterEffect->GetDefaultObject<UGameplayEffect>(), AttackerASC, 0, CounterContext);
-		
-		FGameplayTagContainer OutTags;
-		SpecHandle.Data->GetAllAssetTags(OutTags);
-		if (OutTags.HasTagExact(WarningDamageTag))
-		{
-			FGameplayEventData Payload;
-			Payload.EventTag = WarningCounterHitReaction;
-			Payload.ContextHandle = CounterContext;
-			Payload.Instigator = DefenderASC->GetAvatarActor();
-			AttackerASC->HandleGameplayEvent(WarningCounterHitReaction, &Payload);
-		}
 	}
 
 	if (DefenderASC->HasMatchingGameplayTag(RsGameplayTags::COOLDOWN_GUARD))

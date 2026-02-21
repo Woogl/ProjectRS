@@ -30,12 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
 	FGameplayTagContainer DamageTags;
 	
-	UPROPERTY(EditAnywhere, meta=(Categories="Effect.Damage"))
-	FGameplayTag WarningDamageTag;
-	
-	UPROPERTY(EditAnywhere, meta=(Categories="Ability.HitReaction"))
-	FGameplayTag WarningCounterHitReaction;
-	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 	

@@ -52,10 +52,15 @@ void URsStaggerDamageExecution::Execute_Implementation(const FGameplayEffectCust
 	FAggregatorEvaluateParameters EvaluationParameters{};
 	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	
+	// Handle edge case
 	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::ABILITY_DEATH))
 	{
-		// Don't show hit VFX.
 		OutExecutionOutput.MarkGameplayCuesHandledManually();
+		return;
+	}
+	if (EvaluationParameters.TargetTags->HasTag(RsGameplayTags::CHARACTER_PERFECTDODGE))
+	{
 		return;
 	}
 

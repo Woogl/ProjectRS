@@ -31,36 +31,3 @@ public:
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };
-
-/**
- * 
- */
-UCLASS(Abstract)
-class RS_API URsAnimNotifyState_SendEvent : public URsAnimNotifyStateBase
-{
-	GENERATED_BODY()
-	
-public:
-	URsAnimNotifyState_SendEvent();
-	
-	UPROPERTY(EditAnywhere, meta=(Categories="AnimNotify"))
-	FGameplayTag EventTag;
-
-	UPROPERTY(EditAnywhere)
-	ERsTargetType TargetType;
-	
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "TargetType == ERsTargetType::Target", EditConditionHides))
-	FRsTargetingParams TargetingParams;
-
-	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
-	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
-	
-private:
-	struct FSendEventRuntimeData
-	{
-		FGameplayTag EventTag;
-		TWeakObjectPtr<UGameplayAbility> Ability;
-	};
-	
-	TMap<TWeakObjectPtr<USkeletalMeshComponent>, FSendEventRuntimeData> RuntimeDataMap;
-};

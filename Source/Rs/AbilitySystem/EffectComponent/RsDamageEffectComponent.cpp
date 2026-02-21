@@ -50,11 +50,6 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_SUPERARMORPIERCE);
 	}
 
-	if (DamageTableRow->GuardPierce)
-	{
-		GESpec.AddDynamicAssetTag(RsGameplayTags::EFFECT_DAMAGE_GUARDPIERCE);
-	}
-
 	// Trigger hit reaction
 	if (DamageTableRow->HitReaction.IsValid())
 	{
@@ -62,8 +57,8 @@ void URsDamageEffectComponent::OnGameplayEffectApplied(FActiveGameplayEffectsCon
 		Payload.EventTag = DamageTableRow->HitReaction;
 		Payload.Instigator = SourceASC->GetAvatarActor();
 		Payload.Target = TargetASC->GetAvatarActor();
-		Payload.InstigatorTags = GESpec.CapturedSourceTags.GetActorTags();
-		Payload.TargetTags = GESpec.CapturedTargetTags.GetActorTags();
+		Payload.InstigatorTags = *GESpec.CapturedSourceTags.GetAggregatedTags();
+		Payload.TargetTags = *GESpec.CapturedTargetTags.GetAggregatedTags();
 		Payload.ContextHandle = GESpec.GetEffectContext();
 		TargetASC->HandleGameplayEvent(Payload.EventTag, &Payload);
 	}
